@@ -1,6 +1,7 @@
 (fp_lib_table
   (version 7)
-  (lib (name "parts")(type "KiCad")(uri "/home/taylor/pcb/rp2040-motor-controller/parts")(options "")(descr ""))
+  (lib (name "parts1")(type "KiCad")(uri "/home/taylor/pcb/rp2040-motor-controller/parts")(options "")(descr ""))
   (lib (name "RP2040_minimal")(type "KiCad")(uri "/home/taylor/pcb/rp2040-motor-controller/RP2040_minimal.pretty")(options "")(descr ""))
   (lib (name "RP2350")(type "KiCad")(uri "/home/taylor/pcb/rp2040-motor-controller/parts/RP2350")(options "")(descr ""))
+  (lib (name "parts")(type "KiCad")(uri "${KIPRJMOD}/parts")(options "")(descr ""))
 )
