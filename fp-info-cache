@@ -1,4 +1,4 @@
-24339257981962044
+24344467516772620
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -97986,12 +97986,26 @@ connector Molex KK-254 vertical
 6
 6
 parts
+DFN-6_L1.6-W1.0-P0.50-BL
+
+
+0
+6
+6
+parts
 DFN-8_L3.0-W3.0-P0.65-BL-EP
 
 
 0
 9
 9
+parts
+FILTER-SMD_4P-L2.0-W1.2-BL_DLW21H
+
+
+0
+4
+4
 parts
 MountingHole_3.9mm_Plastite_#6
 Mounting Hole 3.2mm, no annular, M3
@@ -98012,6 +98026,13 @@ PowerPAK SO-8 Single (https://www.vishay.com/docs/71655/powerpak.pdf, https://ww
 PowerPAK SO-8 Single
 0
 9
+3
+parts
+SOT-723_L1.2-W0.8-P0.40-LS1.2-BR
+
+
+0
+3
 3
 parts1
 AMASS_XT60-F_1x02_P7.20mm_Vertical
