@@ -7,8 +7,11 @@
 This board is open source.
 
 Design by Sequoia Hope Alexander. 
-I want to build tools that help people get what they need.
-Follow me on Bluesky: https://bsky.app/profile/sequoia.farm
+
+I want to build tools that help people get what they need. 
+
+Follow me on Bluesky:
+    https://bsky.app/profile/sequoia.farm
 
 CERN-OHL-P license. See LICENSE file for details.
 
