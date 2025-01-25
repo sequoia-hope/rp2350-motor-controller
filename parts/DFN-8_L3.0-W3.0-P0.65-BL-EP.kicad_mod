@@ -3,7 +3,7 @@
 	(generator "pcbnew")
 	(generator_version "8.0")
 	(layer "F.Cu")
-	(property "Reference" ""
+	(property "Reference" "Ref**"
 		(at 0 0 0)
 		(layer "F.SilkS")
 		(uuid "5a97bc13-e70b-4d55-a5ac-c765e182d0ee")
@@ -14,7 +14,7 @@
 			)
 		)
 	)
-	(property "Value" ""
+	(property "Value" "Val**"
 		(at 0 0 0)
 		(layer "F.Fab")
 		(uuid "3fb3f896-ccd3-48f5-a709-79b1ff0daebf")
@@ -183,6 +183,17 @@
 		(fill none)
 		(layer "Cmts.User")
 		(uuid "20005fca-94d6-4b6d-a36d-6ece92985937")
+	)
+	(fp_rect
+		(start -1.6 -1.6)
+		(end 1.6 1.6)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "f48bbfe9-2c23-49c8-bc3d-65eae6cd6a20")
 	)
 	(fp_text user ""
 		(at 0 0 0)
