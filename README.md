@@ -6,7 +6,7 @@
 
 This board is open source.
 
-Design by Sequoia Hope Alexander
+Design by Sequoia Hope Alexander. 
 I want to build tools that help people get what they need.
 
 CERN-OHL-P license. See LICENSE file for details.
