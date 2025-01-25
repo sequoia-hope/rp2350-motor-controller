@@ -37,9 +37,10 @@ Board features:
     - Switchable filtering for single ended hall sensor support
     - Support for single ended or differential SPI or quadrature encoders
     - Dual channel analog encoder support for sin/cos or linear analog sensors
-    - I2C position sensor
+    - I2C sensor support
     - Switchable encoder output voltage - 3.3v or 5v - so nearly any sensor can easily be connected
     - Unused line drivers can be used as additional high speed bidirectional comms.
+ - All configuration happens in software, no jumpers needed. 
  - Expandable emergency stop circuit
  - Phase and encoder leads on one side of the board, data connectors on the other
     - It is possible to design a PCB which mates to both the phase and encoder leads, to make connector adapter PCBs to your preferred motor and encoder PCBs.
