@@ -23,6 +23,7 @@ at LCSC/JLCPCB. When the board is ready, you can order them yourself at cost
 by uploading a zip file to JLCPCB for under $50 per board QTY 10.
 
 Board features:
+--
  - Dual core 150MHz RP2350B CPU with floating point and excellent firmware APIs
  - Four independent software-controlled half-h bridges
  - Supports brushless motors, stepper motors, or two brushed motors.
