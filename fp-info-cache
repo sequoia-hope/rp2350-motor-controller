@@ -1,4 +1,4 @@
-24344470801738809
+24346211411679415
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -98001,6 +98001,13 @@ DFN-8_L3.0-W3.0-P0.65-BL-EP
 9
 parts
 FILTER-SMD_4P-L2.0-W1.2-BL_DLW21H
+
+
+0
+4
+4
+parts
+KEY-SMD_4P-L4.2-W3.2-P2.20-LS4.6
 
 
 0
