@@ -49,7 +49,7 @@
         "silk_text_upright": false,
         "zones": {
           "45_degree_only": false,
-          "min_clearance": 0.0
+          "min_clearance": 0.2
         }
       },
       "diff_pair_dimensions": [
@@ -60,6 +60,14 @@
         }
       ],
       "drc_exclusions": [
+        [
+          "courtyards_overlap|169576415|91920000|63f26ad6-f3a3-4c58-aa6f-6603df2c039a|d782694a-a3be-4754-924f-814adb00ce52",
+          ""
+        ],
+        [
+          "courtyards_overlap|172845000|120675000|533a43fa-f20b-4a11-b8da-afea162c366d|f17087d4-9e6a-4e5b-adde-c9ab65efc2dc",
+          ""
+        ],
         [
           "hole_clearance|182630000|113455001|2aa3fadd-b4bc-4b63-ac65-85dd959038bd|6d895f8a-e9d6-4070-89a1-0b83de8213fc",
           ""
@@ -74,6 +82,38 @@
         ],
         [
           "hole_clearance|182630000|119255001|6afc1d6a-21e5-4090-903e-d9552c887f01|8597416b-0901-4042-a80a-47901eeb11c4",
+          ""
+        ],
+        [
+          "silk_over_copper|183019168|113774447|865b4440-f9e3-46c2-9ebd-20843217079c|00000000-0000-0000-0000-000000000000",
+          ""
+        ],
+        [
+          "silk_over_copper|183036283|119018816|64fd7065-6ddc-4f36-9d9f-2b80be7a8d6c|00000000-0000-0000-0000-000000000000",
+          ""
+        ],
+        [
+          "silk_over_copper|183162791|113790000|db62ea6b-503c-4489-b8fa-b041e00d79be|00000000-0000-0000-0000-000000000000",
+          ""
+        ],
+        [
+          "silk_over_copper|183380064|119045447|4de079a1-f8d3-4bf7-9713-de56ca245ee2|00000000-0000-0000-0000-000000000000",
+          ""
+        ],
+        [
+          "silk_overlap|161575000|109275000|476432fb-0c9c-4715-b7dd-9719746906c7|6c53e0aa-b7d9-4005-bb3f-c35643d6fb0b",
+          ""
+        ],
+        [
+          "starved_thermal|169346212|101066818|c06019ba-8a26-4680-aafa-5bf3c1015f1e|97d3d352-7efc-4023-b319-567a47817b45|F.Cu",
+          ""
+        ],
+        [
+          "starved_thermal|184552544|90958727|bed4387a-5d46-404a-8ad5-fe22a4516491|176eed67-678c-4166-8c0c-2b82577b84b6|F.Cu",
+          ""
+        ],
+        [
+          "track_dangling|149150000|105400000|7d0602b1-2314-410d-a1a5-537b5bda9a5f|00000000-0000-0000-0000-000000000000",
           ""
         ]
       ],
@@ -624,7 +664,7 @@
       "plot": "gerber",
       "pos_files": "gerber/",
       "specctra_dsn": "",
-      "step": "driver_module.step",
+      "step": "board.step",
       "svg": "",
       "vrml": ""
     },
