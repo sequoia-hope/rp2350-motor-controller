@@ -3,4 +3,5 @@
   (lib (name "ldo")(type "KiCad")(uri "/home/sequoia/pcb/rp2040-motor-controller/parts/2024-04-19_02-21-16.kicad_sym")(options "")(descr ""))
   (lib (name "MCU_RaspberryPi")(type "KiCad")(uri "/home/sequoia/pcb/rp2040-motor-controller/parts/RP2350/MCU_RaspberryPi.kicad_sym")(options "")(descr ""))
   (lib (name "integrated")(type "KiCad")(uri "${KIPRJMOD}/integrated.kicad_sym")(options "")(descr ""))
+  (lib (name "LM73100RPWR")(type "KiCad")(uri "${KIPRJMOD}/parts/LM73100RPWR.kicad_sym")(options "")(descr ""))
 )

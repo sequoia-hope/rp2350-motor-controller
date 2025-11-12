@@ -61,27 +61,35 @@
       ],
       "drc_exclusions": [
         [
-          "courtyards_overlap|169576415|91920000|63f26ad6-f3a3-4c58-aa6f-6603df2c039a|d782694a-a3be-4754-924f-814adb00ce52",
+          "courtyards_overlap|148980000|96851268|277fd6eb-43fc-47df-84e9-e25b575f9779|52918ef2-91b9-47db-a382-a681af54382c",
           ""
         ],
         [
-          "courtyards_overlap|172845000|120675000|533a43fa-f20b-4a11-b8da-afea162c366d|f17087d4-9e6a-4e5b-adde-c9ab65efc2dc",
+          "courtyards_overlap|163235000|118280000|89fbb6b3-afef-4737-9716-3aac92429a49|f17087d4-9e6a-4e5b-adde-c9ab65efc2dc",
           ""
         ],
         [
-          "hole_clearance|182630000|113455001|2aa3fadd-b4bc-4b63-ac65-85dd959038bd|6d895f8a-e9d6-4070-89a1-0b83de8213fc",
+          "courtyards_overlap|169601415|91895000|63f26ad6-f3a3-4c58-aa6f-6603df2c039a|d782694a-a3be-4754-924f-814adb00ce52",
           ""
         ],
         [
-          "hole_clearance|182630000|113655001|2aa3fadd-b4bc-4b63-ac65-85dd959038bd|c7537f2d-749e-4f56-8aca-e7c4637d6e50",
+          "courtyards_overlap|171845000|120675000|533a43fa-f20b-4a11-b8da-afea162c366d|f17087d4-9e6a-4e5b-adde-c9ab65efc2dc",
           ""
         ],
         [
-          "hole_clearance|182630000|119055001|6afc1d6a-21e5-4090-903e-d9552c887f01|af4d9184-ce71-4a2e-b31a-79360b8ace76",
+          "hole_clearance|182630000|113455001|6d895f8a-e9d6-4070-89a1-0b83de8213fc|2aa3fadd-b4bc-4b63-ac65-85dd959038bd",
           ""
         ],
         [
-          "hole_clearance|182630000|119255001|6afc1d6a-21e5-4090-903e-d9552c887f01|8597416b-0901-4042-a80a-47901eeb11c4",
+          "hole_clearance|182630000|113655001|c7537f2d-749e-4f56-8aca-e7c4637d6e50|2aa3fadd-b4bc-4b63-ac65-85dd959038bd",
+          ""
+        ],
+        [
+          "hole_clearance|182630000|119055001|af4d9184-ce71-4a2e-b31a-79360b8ace76|6afc1d6a-21e5-4090-903e-d9552c887f01",
+          ""
+        ],
+        [
+          "hole_clearance|182630000|119255001|8597416b-0901-4042-a80a-47901eeb11c4|6afc1d6a-21e5-4090-903e-d9552c887f01",
           ""
         ],
         [
@@ -653,7 +661,14 @@
       "version": 4
     },
     "net_colors": null,
-    "netclass_assignments": null,
+    "netclass_assignments": {
+      "+3V3": [
+        "power"
+      ],
+      "VBUS": [
+        "power"
+      ]
+    },
     "netclass_patterns": []
   },
   "pcbnew": {
