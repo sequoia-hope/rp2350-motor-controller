@@ -75848,7 +75848,7 @@
 		)
 	)
 	(gr_text "I made this for you. <3"
-		(at 163.6 117.8 0)
+		(at 163.6 117.4 0)
 		(layer "B.SilkS")
 		(uuid "025f70cb-bb07-40d7-b2fe-9eefc0c79c85")
 		(effects
@@ -75885,8 +75885,8 @@
 			(justify left bottom mirror)
 		)
 	)
-	(gr_text "and in time, the work advances."
-		(at 178.8 98.6 0)
+	(gr_text "and in     time, the work advances."
+		(at 180.8 97.8 0)
 		(layer "B.SilkS")
 		(uuid "30d94c77-f8af-4c3c-98cc-073b3c53152d")
 		(effects
@@ -75924,7 +75924,7 @@
 		)
 	)
 	(gr_text "that I will finish this work"
-		(at 177.6 95.6 0)
+		(at 177.8 95.4 0)
 		(layer "B.SilkS")
 		(uuid "6c5e361d-032e-42a2-ba7b-3af2b4ec0da2")
 		(effects
@@ -76000,7 +76000,7 @@
 		)
 	)
 	(gr_text "Sometimes it's hard to believe"
-		(at 181.180901 94 0)
+		(at 181.580901 94 0)
 		(layer "B.SilkS")
 		(uuid "d56f6afc-75a3-4db9-86de-d68d2536c4ee")
 		(effects
@@ -76024,7 +76024,7 @@
 		)
 	)
 	(gr_text "but now and then I give a push"
-		(at 180 97 0)
+		(at 180.6 96.6 0)
 		(layer "B.SilkS")
 		(uuid "fbf480cd-f2bb-40eb-8c50-7d954f3b9518")
 		(effects
