@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.0,
-          "height": 1.7,
-          "width": 0.3
+          "drill": 0.25,
+          "height": 0.6,
+          "width": 0.6
         },
         "silk_line_width": 0.12,
         "silk_text_italic": false,
@@ -106,10 +106,6 @@
         ],
         [
           "silk_over_copper|183380064|119045447|4de079a1-f8d3-4bf7-9713-de56ca245ee2|00000000-0000-0000-0000-000000000000",
-          ""
-        ],
-        [
-          "silk_overlap|161575000|109275000|476432fb-0c9c-4715-b7dd-9719746906c7|6c53e0aa-b7d9-4005-bb3f-c35643d6fb0b",
           ""
         ],
         [
@@ -266,6 +262,7 @@
         0.6,
         0.8,
         1.0,
+        1.5,
         2.0
       ],
       "tuning_pattern_settings": {
@@ -910,7 +907,7 @@
       "workbook_filename": ""
     },
     "page_layout_descr_file": "",
-    "plot_directory": "docs/",
+    "plot_directory": "",
     "space_save_all_events": true,
     "spice_adjust_passive_values": false,
     "spice_current_sheet_as_root": false,
