@@ -8135,7 +8135,7 @@
 			(at 0 -3.98 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "47ac932d-52db-4190-a3f1-9a4b54a86cbe")
+			(uuid "0348f50b-8077-4dd3-9f0e-6c22ea6e5ba9")
 			(effects
 				(font
 					(size 1 1)
@@ -8146,7 +8146,7 @@
 		(property "Value" "SM03B-SRSS-TB"
 			(at 0 3.98 90)
 			(layer "F.Fab")
-			(uuid "04d48bba-57cb-43f4-bfa6-41f8e95dc46c")
+			(uuid "1e116606-e36d-40ac-9e10-12e8d08ffc99")
 			(effects
 				(font
 					(size 1 1)
@@ -8159,7 +8159,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "10f92d3e-1cc8-410e-8e8b-c145a024d7bd")
+			(uuid "e847117e-d16d-4f45-a910-9e97c33dd168")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8172,7 +8172,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "43fede8f-514c-40c7-8018-733d9042143f")
+			(uuid "2ad70caf-1f41-4b22-8873-42a7897a5f6b")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18601,7 +18601,7 @@
 			(at 0 -3.98 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "cabad040-2dd8-4414-95d0-cd7ada9aa0e0")
+			(uuid "10544c77-982f-49c8-a771-17b310eca9fa")
 			(effects
 				(font
 					(size 1 1)
@@ -18612,7 +18612,7 @@
 		(property "Value" "SM03B-SRSS-TB"
 			(at 0 3.98 90)
 			(layer "F.Fab")
-			(uuid "533bb908-99bf-4c58-bd6b-3e4920b7a760")
+			(uuid "3d458e35-ae52-4a07-a2fa-28dda43e1b17")
 			(effects
 				(font
 					(size 1 1)
@@ -18624,7 +18624,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "09f60f68-829b-4c84-a40e-01b407dc8df7")
+			(uuid "a67a5138-ac7b-4704-bff2-4f45cc30ba1f")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18636,7 +18636,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "744a08f4-8968-430e-82ab-1f71f8b46276")
+			(uuid "3d952423-a235-42d4-952b-d05d9bcc9f98")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -74429,26 +74429,6 @@
 		(uuid "c76a28fb-11fd-4a45-8ca6-7e91816e8558")
 	)
 	(gr_line
-		(start 187.75 94)
-		(end 110 94)
-		(stroke
-			(width 0.1)
-			(type default)
-		)
-		(layer "Eco2.User")
-		(uuid "19a73c65-57ee-4ae8-96d6-f7f87c5dc26a")
-	)
-	(gr_line
-		(start 188 106)
-		(end 110 106)
-		(stroke
-			(width 0.1)
-			(type default)
-		)
-		(layer "Eco2.User")
-		(uuid "27caacf1-fd81-4c70-a1fa-fd6b21876042")
-	)
-	(gr_line
 		(start 170.45 117.4)
 		(end 170.45 81.9)
 		(stroke
@@ -74468,30 +74448,20 @@
 		(layer "Eco2.User")
 		(uuid "41fedc5c-1de0-40a6-9a6f-a24a3b0a5b89")
 	)
-	(gr_line
-		(start 112 100)
-		(end 188 100)
-		(stroke
-			(width 0.1)
-			(type default)
-		)
-		(layer "Eco2.User")
-		(uuid "51cb62aa-eb30-43ef-a132-f543a3b7193d")
-	)
 	(gr_rect
-		(start 49 -55.6)
-		(end 138 -3.6)
+		(start 56.55 21.6)
+		(end 145.55 72.6)
 		(stroke
 			(width 0.1)
-			(type default)
+			(type solid)
 		)
 		(fill no)
 		(layer "Eco2.User")
 		(uuid "60e70587-6cc2-41dc-b29e-063aa6a74204")
 	)
 	(gr_rect
-		(start 145.7 -52.2)
-		(end 231.2 1.8)
+		(start 154.3 19.25)
+		(end 239.8 73.25)
 		(stroke
 			(width 0.1)
 			(type default)
@@ -74913,6 +74883,30 @@
 			(justify left mirror)
 		)
 	)
+	(gr_text "Standard sized credit card"
+		(at 172.95 63.8 0)
+		(layer "Eco2.User")
+		(uuid "3d455255-c1a4-452e-b314-7c2c97b57b0d")
+		(effects
+			(font
+				(size 2 2)
+				(thickness 0.3)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "Standard sized business card"
+		(at 78.3 66.65 0)
+		(layer "Eco2.User")
+		(uuid "417df3d3-6c38-4a6f-b076-c421891360e3")
+		(effects
+			(font
+				(size 2 2)
+				(thickness 0.3)
+			)
+			(justify left bottom)
+		)
+	)
 	(dimension
 		(type aligned)
 		(layer "Eco1.User")
@@ -74977,114 +74971,6 @@
 			(at 150.5 77.075001 0)
 			(layer "Eco1.User")
 			(uuid "80367e43-9f61-4926-8924-7a7c52c5b310")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-	)
-	(dimension
-		(type aligned)
-		(layer "Eco2.User")
-		(uuid "0628149f-ae75-4ab6-845c-726efbf4b4cb")
-		(pts
-			(xy 187.5 94) (xy 187.5 106)
-		)
-		(height -4.5)
-		(format
-			(prefix "")
-			(suffix "")
-			(units 3)
-			(units_format 1)
-			(precision 4)
-		)
-		(style
-			(thickness 0.1)
-			(arrow_length 1.27)
-			(text_position_mode 0)
-			(arrow_direction outward)
-			(extension_height 0.58642)
-			(extension_offset 0.5)
-			(keep_text_aligned yes)
-		)
-		(gr_text "12.0000 mm"
-			(at 190.85 100 90)
-			(layer "Eco2.User")
-			(uuid "0628149f-ae75-4ab6-845c-726efbf4b4cb")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-	)
-	(dimension
-		(type aligned)
-		(layer "Eco2.User")
-		(uuid "755498b0-b41e-4625-92d7-dd8745a78f85")
-		(pts
-			(xy 187.5 82) (xy 187.5 94)
-		)
-		(height -5)
-		(format
-			(prefix "")
-			(suffix "")
-			(units 3)
-			(units_format 1)
-			(precision 4)
-		)
-		(style
-			(thickness 0.1)
-			(arrow_length 1.27)
-			(text_position_mode 0)
-			(arrow_direction outward)
-			(extension_height 0.58642)
-			(extension_offset 0.5)
-			(keep_text_aligned yes)
-		)
-		(gr_text "12.0000 mm"
-			(at 191.35 88 90)
-			(layer "Eco2.User")
-			(uuid "755498b0-b41e-4625-92d7-dd8745a78f85")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-	)
-	(dimension
-		(type aligned)
-		(layer "Eco2.User")
-		(uuid "abe5a7cb-9991-42ca-b526-0ee1c9699778")
-		(pts
-			(xy 187.5 118) (xy 187.5 106)
-		)
-		(height 5)
-		(format
-			(prefix "")
-			(suffix "")
-			(units 3)
-			(units_format 1)
-			(precision 4)
-		)
-		(style
-			(thickness 0.1)
-			(arrow_length 1.27)
-			(text_position_mode 0)
-			(arrow_direction outward)
-			(extension_height 0.58642)
-			(extension_offset 0.5)
-			(keep_text_aligned yes)
-		)
-		(gr_text "12.0000 mm"
-			(at 191.35 112 90)
-			(layer "Eco2.User")
-			(uuid "abe5a7cb-9991-42ca-b526-0ee1c9699778")
 			(effects
 				(font
 					(size 1 1)
