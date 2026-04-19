@@ -1,0 +1,284 @@
+@font-face {
+  font-family: "ic"; /* Project id 1917654 */
+  src: url('iconfont.woff2?t=1625803943605') format('woff2'),
+       url('iconfont.woff?t=1625803943605') format('woff'),
+       url('iconfont.ttf?t=1625803943605') format('truetype');
+  font-display: swap;
+}
+
+.ic {
+  font-family: "ic" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ic-linkedIn:before {
+  content: "\e69a";
+}
+
+.ic-facebook:before {
+  content: "\e604";
+}
+
+.ic-instagram:before {
+  content: "\e600";
+}
+
+.ic-youtube:before {
+  content: "\e8db";
+}
+
+.ic-twitter:before {
+  content: "\e605";
+}
+
+.ic-sousuo:before {
+  content: "\e658";
+}
+
+.ic-weibiaoti--:before {
+  content: "\e621";
+}
+
+.ic-geren:before {
+  content: "\e627";
+}
+
+.ic-instagram-old:before {
+  content: "\e63f";
+}
+
+.ic-yanjing_bi:before {
+  content: "\e601";
+}
+
+.ic-wenhaoxiao:before {
+  content: "\e8c8";
+}
+
+.ic-yanjing:before {
+  content: "\e6af";
+}
+
+.ic-icon_suo-:before {
+  content: "\e645";
+}
+
+.ic-bianji:before {
+  content: "\e609";
+}
+
+.ic-clear:before {
+  content: "\e62a";
+}
+
+.ic-fanhuidingbu:before {
+  content: "\e63a";
+}
+
+.ic-gantanhao2:before {
+  content: "\e60e";
+}
+
+.ic-drxx38:before {
+  content: "\e70a";
+}
+
+.ic-gantanhao1:before {
+  content: "\e603";
+}
+
+.ic-daochu2:before {
+  content: "\e602";
+}
+
+.ic-left:before {
+  content: "\e684";
+}
+
+.ic-right:before {
+  content: "\e687";
+}
+
+.ic-CombinedShape:before {
+  content: "\e698";
+}
+
+.ic-icon-test:before {
+  content: "\e699";
+}
+
+.ic-icon-test1:before {
+  content: "\e6ac";
+}
+
+.ic-facebook-old:before {
+  content: "\e6b1";
+}
+
+.ic-twitter-old:before {
+  content: "\e6b2";
+}
+
+.ic-linkedin-old:before {
+  content: "\e6b3";
+}
+
+.ic-youtube-old:before {
+  content: "\e6b4";
+}
+
+.ic-guanbi:before {
+  content: "\e6bf";
+}
+
+.ic-user:before {
+  content: "\e6c0";
+}
+
+.ic-contact:before {
+  content: "\e6c4";
+}
+
+.ic-buy:before {
+  content: "\e6c5";
+}
+
+.ic-Download:before {
+  content: "\e6c6";
+}
+
+.ic-OneStop:before {
+  content: "\e6c7";
+}
+
+.ic-play:before {
+  content: "\e6c9";
+}
+
+.ic-top:before {
+  content: "\e6ca";
+}
+
+.ic-wenhao:before {
+  content: "\e6cb";
+}
+
+.ic-zhankai:before {
+  content: "\e6cc";
+}
+
+.ic-gouxuan:before {
+  content: "\e6ce";
+}
+
+.ic-down:before {
+  content: "\e6cf";
+}
+
+.ic-xuanzhong:before {
+  content: "\e6d0";
+}
+
+.ic-guanbi2:before {
+  content: "\e6d2";
+}
+
+.ic-gengduo:before {
+  content: "\e6d3";
+}
+
+.ic-gouxuan1:before {
+  content: "\e6d4";
+}
+
+.ic-tips:before {
+  content: "\e6d5";
+}
+
+.ic-chenggong:before {
+  content: "\e6d6";
+}
+
+.ic-rohs:before {
+  content: "\e6d7";
+}
+
+.ic-qingchu:before {
+  content: "\e6d8";
+}
+
+.ic-xingzhuangjiehe:before {
+  content: "\e6da";
+}
+
+.ic-icon-test2:before {
+  content: "\e6db";
+}
+
+.ic-icon-test3:before {
+  content: "\e6dc";
+}
+
+.ic-youxiang:before {
+  content: "\e6dd";
+}
+
+.ic-dianhua:before {
+  content: "\e6de";
+}
+
+.ic-xingzhuang:before {
+  content: "\e6df";
+}
+
+.ic-xingzhuang1:before {
+  content: "\e6e0";
+}
+
+.ic-xingzhuang2:before {
+  content: "\e6e1";
+}
+
+.ic-xingzhuang3:before {
+  content: "\e6e2";
+}
+
+.ic-suoxiao:before {
+  content: "\e6e3";
+}
+
+.ic-fangda:before {
+  content: "\e6e4";
+}
+
+.ic-dingwei:before {
+  content: "\e6e5";
+}
+
+.ic-easyeda:before {
+  content: "\e6e6";
+}
+
+.ic-icon-test4:before {
+  content: "\e6e7";
+}
+
+.ic-gantanhao:before {
+  content: "\e6e8";
+}
+
+.ic-shanchu:before {
+  content: "\e6e9";
+}
+
+.ic-wenhao1:before {
+  content: "\e6ea";
+}
+
+.ic-email:before {
+  content: "\e6eb";
+}
+

@@ -12828,12 +12828,6 @@
 		(uuid "6e8d6e6c-9b3d-4897-a273-b4f839923868")
 	)
 	(junction
-		(at 579.12 267.97)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "6eb497fa-9a1e-47e0-8549-7155c604ab34")
-	)
-	(junction
 		(at 190.5 509.27)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -13096,6 +13090,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "9e531437-3743-4c9d-b30f-dcb918b84dd0")
+	)
+	(junction
+		(at 577.85 267.97)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9ea827d8-5395-40a3-bc46-a17bf4ef8143")
 	)
 	(junction
 		(at 234.95 478.79)
@@ -14337,7 +14337,7 @@
 	)
 	(wire
 		(pts
-			(xy 618.49 265.43) (xy 624.84 265.43)
+			(xy 618.49 265.43) (xy 629.92 265.43)
 		)
 		(stroke
 			(width 0)
@@ -17717,7 +17717,7 @@
 	)
 	(wire
 		(pts
-			(xy 635 265.43) (xy 640.08 265.43)
+			(xy 640.08 265.43) (xy 652.78 265.43)
 		)
 		(stroke
 			(width 0)
@@ -17847,7 +17847,7 @@
 	)
 	(wire
 		(pts
-			(xy 579.12 278.13) (xy 594.36 278.13)
+			(xy 577.85 278.13) (xy 594.36 278.13)
 		)
 		(stroke
 			(width 0)
@@ -18917,7 +18917,7 @@
 	)
 	(wire
 		(pts
-			(xy 635 270.51) (xy 657.86 270.51)
+			(xy 640.08 270.51) (xy 657.86 270.51)
 		)
 		(stroke
 			(width 0)
@@ -19554,6 +19554,16 @@
 			(type default)
 		)
 		(uuid "8c7cd26d-4b92-40f4-8067-9e7e0531b662")
+	)
+	(wire
+		(pts
+			(xy 577.85 267.97) (xy 594.36 267.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8c85a44f-32fa-4286-9218-9a2ae30e269d")
 	)
 	(wire
 		(pts
@@ -20274,16 +20284,6 @@
 			(type default)
 		)
 		(uuid "9e8bd9de-334a-4919-9bcc-820840ea43fe")
-	)
-	(wire
-		(pts
-			(xy 579.12 267.97) (xy 594.36 267.97)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9ea876cb-3223-4270-be53-d85c35b3a208")
 	)
 	(wire
 		(pts
@@ -21217,7 +21217,7 @@
 	)
 	(wire
 		(pts
-			(xy 618.49 270.51) (xy 624.84 270.51)
+			(xy 618.49 270.51) (xy 629.92 270.51)
 		)
 		(stroke
 			(width 0)
@@ -23007,7 +23007,7 @@
 	)
 	(wire
 		(pts
-			(xy 579.12 267.97) (xy 579.12 278.13)
+			(xy 577.85 267.97) (xy 577.85 278.13)
 		)
 		(stroke
 			(width 0)
@@ -23067,7 +23067,7 @@
 	)
 	(wire
 		(pts
-			(xy 575.31 267.97) (xy 579.12 267.97)
+			(xy 575.31 267.97) (xy 577.85 267.97)
 		)
 		(stroke
 			(width 0)
@@ -23837,7 +23837,7 @@
 	)
 	(wire
 		(pts
-			(xy 591.82 273.05) (xy 593.09 273.05)
+			(xy 581.66 273.05) (xy 593.09 273.05)
 		)
 		(stroke
 			(width 0)
@@ -24986,12 +24986,12 @@
 		(uuid "6f345ae3-643c-4d04-9834-71a6a18ef5be")
 	)
 	(label "ENC_A_P_SW"
-		(at 640.08 265.43 0)
+		(at 652.78 265.43 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify right bottom)
 		)
 		(uuid "6ff66ea4-df51-4225-af96-e430d04cba02")
 	)
@@ -25736,7 +25736,7 @@
 		(uuid "d2659903-57d6-45a1-88bc-1dfb3e0ed384")
 	)
 	(label "ENC_A_N_SW"
-		(at 637.54 270.51 0)
+		(at 641.35 270.51 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -26046,12 +26046,12 @@
 		(uuid "fce01f86-c8e2-4aae-934c-a6c1aeb28e87")
 	)
 	(label "ENC_A_SW"
-		(at 591.82 273.05 180)
+		(at 581.66 273.05 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
 		(uuid "fd8f773d-c82c-42d4-995b-42d374d1673a")
 	)
@@ -29673,7 +29673,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "parts:DFN-8_L3.0-W3.0-P0.65-BL-EP"
+		(property "Footprint" "Package_SO:MSOP-8-1EP_3x3mm_P0.65mm_EP1.5x1.8mm"
 			(at 604.52 295.91 0)
 			(effects
 				(font
@@ -49346,7 +49346,7 @@
 		(dnp no)
 		(uuid "a115579d-193b-4150-b67d-21f4b7bdcc98")
 		(property "Reference" "R82"
-			(at 619.506 267.7159 0)
+			(at 619.76 266.9539 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49354,8 +49354,8 @@
 				(justify right)
 			)
 		)
-		(property "Value" "100R 0402"
-			(at 614.426 262.8899 0)
+		(property "Value" "100R"
+			(at 619.76 268.9859 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -50951,7 +50951,7 @@
 	)
 	(symbol
 		(lib_id "Device:Filter_EMI_CommonMode")
-		(at 629.92 267.97 0)
+		(at 635 267.97 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -50960,7 +50960,7 @@
 		(dnp no)
 		(uuid "a86d0c8c-d5f7-48ab-8da5-7a0d5b46d6a1")
 		(property "Reference" "FL2"
-			(at 631.063 262.382 0)
+			(at 636.143 262.382 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -50968,7 +50968,7 @@
 			)
 		)
 		(property "Value" "DLW21SN900SQ2L"
-			(at 629.793 272.796 0)
+			(at 634.873 272.796 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -50976,7 +50976,7 @@
 			)
 		)
 		(property "Footprint" "parts:FILTER-SMD_4P-L2.0-W1.2-BL_DLW21H"
-			(at 629.92 268.986 0)
+			(at 635 268.986 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -50985,7 +50985,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 629.92 268.986 0)
+			(at 635 268.986 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -50994,7 +50994,7 @@
 			)
 		)
 		(property "Description" "EMI 2-inductor common mode filter"
-			(at 629.92 267.97 0)
+			(at 635 267.97 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -51003,7 +51003,7 @@
 			)
 		)
 		(property "LCSC" "C97856"
-			(at 629.92 267.97 0)
+			(at 635 267.97 0)
 			(effects
 				(font
 					(size 1.27 1.27)
