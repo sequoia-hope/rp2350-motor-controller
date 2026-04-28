@@ -29673,7 +29673,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_SO:MSOP-8-1EP_3x3mm_P0.65mm_EP1.5x1.8mm"
+		(property "Footprint" "parts:DFN-8_L3.0-W3.0-P0.65-BL-EP"
 			(at 604.52 295.91 0)
 			(effects
 				(font
@@ -30147,7 +30147,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 668.02 486.41 0)
 			(effects
 				(font
@@ -30529,7 +30529,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 699.77 422.91 0)
 			(effects
 				(font
@@ -30607,7 +30607,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 114.3 264.16 0)
 			(effects
 				(font
@@ -35013,7 +35013,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 618.49 421.64 0)
 			(effects
 				(font
@@ -37649,7 +37649,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "220uF 63V solid"
+		(property "Value" "100uF 100V"
 			(at 348.996 487.934 90)
 			(effects
 				(font
@@ -37685,7 +37685,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C5455531"
+		(property "LCSC" "C2887236"
 			(at 354.33 481.33 0)
 			(effects
 				(font
@@ -40155,7 +40155,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 715.01 314.96 0)
 			(effects
 				(font
@@ -44198,7 +44198,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 669.29 453.39 0)
 			(effects
 				(font
@@ -46521,7 +46521,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 619.76 281.94 0)
 			(effects
 				(font
@@ -46599,7 +46599,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 496.57 180.34 0)
 			(effects
 				(font
@@ -48134,7 +48134,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 713.74 278.13 0)
 			(effects
 				(font
@@ -52075,7 +52075,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 697.23 355.6 0)
 			(effects
 				(font
@@ -53375,7 +53375,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 619.76 327.66 0)
 			(effects
 				(font
@@ -55128,7 +55128,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 712.47 241.3 0)
 			(effects
 				(font
@@ -61202,7 +61202,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 618.49 375.92 0)
 			(effects
 				(font
@@ -61576,7 +61576,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 782.32 257.81 0)
 			(effects
 				(font
@@ -62010,7 +62010,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "220uF 63V solid"
+		(property "Value" "100uF 100V"
 			(at 359.156 487.934 90)
 			(effects
 				(font
@@ -62046,7 +62046,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C5455531"
+		(property "LCSC" "C2887236"
 			(at 364.49 481.33 0)
 			(effects
 				(font
@@ -63244,7 +63244,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C14663"
+		(property "LCSC" "C131394"
 			(at 698.5 388.62 0)
 			(effects
 				(font
