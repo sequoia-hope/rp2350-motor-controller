@@ -1,0 +1,36 @@
+root - ERROR - 'NoneType' object cannot be interpreted as an integer
+Traceback (most recent call last):
+  File "/home/sequoia/Software/SimpleFOCStudio/src/simpleFOCConnector.py", line 870, in run
+    reading = self.serialComm.readline()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/serial/serialposix.py", line 575, in read
+    buf = os.read(self.fd, size - len(read))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object cannot be interpreted as an integer
+root - ERROR - 'NoneType' object cannot be interpreted as an integer
+Traceback (most recent call last):
+  File "/home/sequoia/Software/SimpleFOCStudio/src/simpleFOCConnector.py", line 870, in run
+    reading = self.serialComm.readline()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/serial/serialposix.py", line 575, in read
+    buf = os.read(self.fd, size - len(read))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object cannot be interpreted as an integer
+root - ERROR - 'NoneType' object cannot be interpreted as an integer
+Traceback (most recent call last):
+  File "/home/sequoia/Software/SimpleFOCStudio/src/simpleFOCConnector.py", line 870, in run
+    reading = self.serialComm.readline()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/serial/serialposix.py", line 575, in read
+    buf = os.read(self.fd, size - len(read))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object cannot be interpreted as an integer
+root - ERROR - 'NoneType' object cannot be interpreted as an integer
+Traceback (most recent call last):
+  File "/home/sequoia/Software/SimpleFOCStudio/src/simpleFOCConnector.py", line 870, in run
+    reading = self.serialComm.readline()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/serial/serialposix.py", line 575, in read
+    buf = os.read(self.fd, size - len(read))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object cannot be interpreted as an integer

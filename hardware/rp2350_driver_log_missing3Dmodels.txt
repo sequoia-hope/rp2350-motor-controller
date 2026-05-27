@@ -1,0 +1,251 @@
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_THT.3dshapes/CP_Radial_D10.0mm_P5.00mm.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SMA.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_1206_3216Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_1206_3216Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Connector_Molex.3dshapes/Molex_KK-254_AE-6410-04A_1x04_P2.54mm_Vertical.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/TestPoint.3dshapes/TestPoint_Keystone_5019_Minature.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Crystal.3dshapes/Crystal_SMD_3225-4Pin_3.2x2.5mm.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SMA.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD7_3DMODEL_DIR}/Inductor_SMD.3dshapes/AOTA-B201610SR47MT.STEP
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_THT.3dshapes/CP_Radial_D10.0mm_P5.00mm.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_1206_3216Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Connector_Molex.3dshapes/Molex_KK-254_AE-6410-03A_1x03_P2.54mm_Vertical.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SMA.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-523.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/SOT-23.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD7_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-123.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SMC.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-523.wrl
+Can not find model defined with enviroment variable:
+${EASY_EDA_3D}/test.3dshapes/FILTER-SMD_4P-L2.0-W1.2-BL_DLW21H.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${EASY_EDA_3D}/test.3dshapes/FILTER-SMD_4P-L2.0-W1.2-BL_DLW21H.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-523.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-123.wrl
+Can not find model defined with enviroment variable:
+${EASY_EDA_3D}/test.3dshapes/DFN-8_L3.0-W3.0-P0.65-BL-EP.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-123.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/SOT-23.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${EASY_EDA_3D}/test.3dshapes/FILTER-SMD_4P-L2.0-W1.2-BL_DLW21H.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0402_1005Metric.wrl
+Can not find model defined with enviroment variable:
+${EASY_EDA_3D}/test.3dshapes/FILTER-SMD_4P-L2.0-W1.2-BL_DLW21H.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/SOT-23.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${EASY_EDA_3D}/test.3dshapes/IND-SMD_L3.0-W3.0_FNR30XXS.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-523.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-523.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-523.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+Can not find model defined with enviroment variable:
+${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
+[('C215', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('C6', '${KICAD6_3DMODEL_DIR}/Capacitor_THT.3dshapes/CP_Radial_D10.0mm_P5.00mm.wrl'), ('R86', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl'), ('C106', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl'), ('D9', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SMA.wrl'), ('C77', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_1206_3216Metric.wrl'), ('SW202', '/home/sequoia/pcb/rp2350-motor-controller/parts/KEY-SMD_4P-L4.2-W3.2-P2.20-LS4.6.wrl'), ('R91', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl'), ('AL2', '/home/sequoia/pcb/rp2350-motor-controller/parts/PowerPAK-SO8.STEP'), ('J21', '/home/sequoia/pcb/rp2040-motor-controller/parts/XT30PW-M--3DModel-STEP-269445.STEP'), ('J203', '/home/sequoia/pcb/rp2350-motor-controller/parts/HDR-TH_12P-P2.00-H-M_PM200-2-06-W-4.3.wrl'), ('C214', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('C211', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('J3', '/home/sequoia/pcb/rp2040-motor-controller/parts/XT30PW-M--3DModel-STEP-269445.STEP'), ('C101', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl'), ('R88', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl'), ('BL2', '/home/sequoia/pcb/rp2350-motor-controller/parts/PowerPAK-SO8.STEP'), ('C102', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl'), ('R202', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0402_1005Metric.wrl'), ('J206', '/home/sequoia/pcb/rp2350-motor-controller/parts/SM03B-SRSS-TB.STEP'), ('BH2', '/home/sequoia/pcb/rp2350-motor-controller/parts/PowerPAK-SO8.STEP'), ('CH2', '/home/sequoia/pcb/rp2350-motor-controller/parts/PowerPAK-SO8.STEP'), ('R206', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0402_1005Metric.wrl'), ('CL2', '/home/sequoia/pcb/rp2350-motor-controller/parts/PowerPAK-SO8.STEP'), ('C216', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('C207', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('R87', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl'), ('C218', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('C79', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_1206_3216Metric.wrl'), ('R90', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl'), ('R89', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0805_2012Metric.wrl'), ('C208', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('AH2', '/home/sequoia/pcb/rp2350-motor-controller/parts/PowerPAK-SO8.STEP'), ('J2', '${KICAD6_3DMODEL_DIR}/Connector_Molex.3dshapes/Molex_KK-254_AE-6410-04A_1x04_P2.54mm_Vertical.wrl'), ('R211', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0402_1005Metric.wrl'), ('R114', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.wrl'), ('J205', '/home/sequoia/pcb/rp2040-motor-controller/parts/XT30PW-F.STEP'), ('C212', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('C105', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl'), ('TP71', '${KICAD6_3DMODEL_DIR}/TestPoint.3dshapes/TestPoint_Keystone_5019_Minature.wrl'), ('Y201', '${KICAD6_3DMODEL_DIR}/Crystal.3dshapes/Crystal_SMD_3225-4Pin_3.2x2.5mm.wrl'), ('C206', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('SW201', '/home/sequoia/pcb/rp2350-motor-controller/parts/KEY-SMD_4P-L4.2-W3.2-P2.20-LS4.6.wrl'), ('C204', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('R201', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0402_1005Metric.wrl'), ('R113', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.wrl'), ('R105', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.wrl'), ('J204', '/home/sequoia/pcb/rp2350-motor-controller/parts/SM03B-SRSS-TB.STEP'), ('CL201', '/home/sequoia/pcb/rp2350-motor-controller/parts/PowerPAK-SO8.STEP'), ('C221', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('J1', '/home/sequoia/pcb/rp2040-motor-controller/parts/XT30PW-M--3DModel-STEP-269445.STEP'), ('C104', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl'), ('D8', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SMA.wrl'), ('C213', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('C217', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('R5', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.wrl'), ('C209', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('R109', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.wrl'), ('C222', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('R203', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0402_1005Metric.wrl'), ('C210', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('L201', '${KICAD7_3DMODEL_DIR}/Inductor_SMD.3dshapes/AOTA-B201610SR47MT.STEP'), ('C219', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl'), ('C103', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl'), ('C3', '${KICAD6_3DMODEL_DIR}/Capacitor_THT.3dshapes/CP_Radial_D10.0mm_P5.00mm.wrl'), ('C203', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('R4', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_2512_6332Metric.wrl'), ('C205', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0402_1005Metric.wrl'), ('C78', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_1206_3216Metric.wrl'), ('J201', '${KICAD6_3DMODEL_DIR}/Connector_Molex.3dshapes/Molex_KK-254_AE-6410-03A_1x03_P2.54mm_Vertical.wrl'), ('CH201', '/home/sequoia/pcb/rp2350-motor-controller/parts/PowerPAK-SO8.STEP'), ('D18', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SMA.wrl'), ('R30', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('D14', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-523.wrl'), ('R33', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('TH1', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('Q2', '${KICAD6_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/SOT-23.wrl'), ('C202', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl'), ('C15', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('C66', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('C201', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl'), ('C11', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('U6', '/usr/share/kicad/3dmodels/Package_SO.3dshapes/SOIC-8_7.5x5.85mm_P1.27mm.wrl'), ('R28', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('R2', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('C65', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('C17', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('U1', '${KICAD7_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.wrl'), ('D19', '/usr/share/kicad/3dmodels/Package_TO_SOT_SMD.3dshapes/SOT-883.wrl'), ('C4', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('R124', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('R31', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('C9', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('D10', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-123.wrl'), ('U8', '${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.wrl'), ('R1', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('C70', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('R25', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('U9', '/home/sequoia/pcb/rp2350-motor-controller/parts/DFN-8_L3.0-W3.0-P0.65-BL-EP.wrl'), ('U2', '${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.wrl'), ('D1', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SMC.wrl'), ('R9', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('R29', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('U5', '${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.wrl'), ('D15', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-523.wrl'), ('FL1', '${EASY_EDA_3D}/test.3dshapes/FILTER-SMD_4P-L2.0-W1.2-BL_DLW21H.wrl'), ('U44', '${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.wrl'), ('R32', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('R18', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('FL4', '${EASY_EDA_3D}/test.3dshapes/FILTER-SMD_4P-L2.0-W1.2-BL_DLW21H.wrl'), ('R119', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('R3', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('D16', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-523.wrl'), ('D7', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-123.wrl'), ('U7', '${EASY_EDA_3D}/test.3dshapes/DFN-8_L3.0-W3.0-P0.65-BL-EP.wrl'), ('R26', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('D2', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-123.wrl'), ('C25', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('R23', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('C2', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('D21', '/usr/share/kicad/3dmodels/Package_TO_SOT_SMD.3dshapes/SOT-883.wrl'), ('R121', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('Q3', '${KICAD6_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/SOT-23.wrl'), ('U21', '${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_3.9x4.9mm_P1.27mm.wrl'), ('R112', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('C1', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('FL2', '${EASY_EDA_3D}/test.3dshapes/FILTER-SMD_4P-L2.0-W1.2-BL_DLW21H.wrl'), ('R208', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0402_1005Metric.wrl'), ('FL3', '${EASY_EDA_3D}/test.3dshapes/FILTER-SMD_4P-L2.0-W1.2-BL_DLW21H.wrl'), ('R27', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('D20', '/home/sequoia/pcb/rp2350-motor-controller/parts/SOT-883-3_L1.0-W0.6-BR.wrl'), ('R22', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('R8', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('U10', '/home/sequoia/pcb/rp2350-motor-controller/parts/DFN-8_L3.0-W3.0-P0.65-BL-EP.wrl'), ('R122', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('J202', '/home/sequoia/pcb/rp2350-motor-controller/parts/USB4125-GF-A-0190--3DModel-STEP-56544.STEP'), ('Q1', '${KICAD6_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/SOT-23.wrl'), ('R36', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('D23', '/usr/share/kicad/3dmodels/Package_TO_SOT_SMD.3dshapes/SOT-883.wrl'), ('R24', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('D22', '/usr/share/kicad/3dmodels/Package_TO_SOT_SMD.3dshapes/SOT-883.wrl'), ('U12', '/home/sequoia/pcb/rp2350-motor-controller/parts/DFN-8_L3.0-W3.0-P0.65-BL-EP.wrl'), ('L1', '${EASY_EDA_3D}/test.3dshapes/IND-SMD_L3.0-W3.0_FNR30XXS.wrl'), ('C13', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('R120', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('C74', '${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl'), ('D6', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-523.wrl'), ('D17', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-523.wrl'), ('D5', '${KICAD6_3DMODEL_DIR}/Diode_SMD.3dshapes/D_SOD-523.wrl'), ('R7', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('R45', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl'), ('R123', '${KICAD6_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.wrl')]

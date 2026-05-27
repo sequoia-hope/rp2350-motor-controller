@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RP2350 Debug Dashboard</title>
+<style>
+:root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --text: #e6edf3; --text2: #8b949e;
+    --accent: #58a6ff; --green: #3fb950; --red: #f85149;
+    --yellow: #d29922; --purple: #bc8cff; --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5; }
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+h1 { font-size: 1.8em; margin-bottom: 4px; }
+h1 span { color: var(--accent); }
+.subtitle { color: var(--text2); margin-bottom: 24px; font-size: 0.95em; }
+h2 { color: var(--accent); margin: 32px 0 16px; font-size: 1.3em;
+    border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+h3 { color: var(--purple); margin: 0; font-size: 1.1em; display: inline; }
+
+/* Status cards */
+.status-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px; margin-bottom: 24px; }
+.status-card { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px; border-left: 4px solid var(--border); }
+.status-card.ok { border-left-color: var(--green); }
+.status-card.critical { border-left-color: var(--red); background: #1a0a0a; }
+.status-card.warn { border-left-color: var(--yellow); }
+.status-card.info { border-left-color: var(--accent); }
+.status-label { font-size: 0.8em; color: var(--text2); text-transform: uppercase;
+    letter-spacing: 0.05em; }
+.status-value { font-size: 1.1em; font-weight: 600; margin-top: 4px; }
+.status-card.critical .status-value { color: var(--red); }
+.status-card.ok .status-value { color: var(--green); }
+.status-card.warn .status-value { color: var(--yellow); }
+
+/* Pin cards */
+.pin-grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px; margin-bottom: 24px; }
+.pin-card { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px; }
+.pin-card.pin-high { border-left: 4px solid var(--green); }
+.pin-card.pin-low { border-left: 4px solid var(--text2); }
+.pin-card.pin-stuck { border-left: 4px solid var(--red); background: #1a0a0a; }
+.pin-name { font-weight: 700; font-size: 1.05em; margin-bottom: 8px; font-family: var(--mono); }
+.pin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; font-size: 0.9em; }
+.pin-field { color: var(--text2); }
+.pin-field strong { color: var(--text); }
+.pin-raw { margin-top: 8px; font-family: var(--mono); font-size: 0.7em; color: var(--text2);
+    word-break: break-all; }
+
+/* Clock tree */
+.clock-tree { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px; margin-bottom: 24px; font-family: var(--mono);
+    font-size: 0.85em; overflow-x: auto; }
+.clock-tree pre { color: var(--text); white-space: pre; }
+.clk-active { color: var(--green); font-weight: bold; }
+.clk-inactive { color: var(--text2); }
+
+/* Register decode */
+.reg-decode { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px; margin: 10px 0; }
+.reg-header { font-family: var(--mono); font-size: 0.95em; margin-bottom: 8px;
+    color: var(--accent); font-weight: 600; }
+.fields { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+.fields th { text-align: left; color: var(--text2); padding: 4px 12px 4px 0;
+    border-bottom: 1px solid var(--border); font-weight: 500; }
+.fields td { padding: 3px 12px 3px 0; border-bottom: 1px solid var(--surface2); }
+.val-good { color: var(--green); font-weight: 600; }
+.val-bad { color: var(--red); font-weight: 600; }
+.val-warn { color: var(--yellow); }
+
+.mono { font-family: var(--mono); font-size: 0.92em; }
+.bitbar { font-family: var(--mono); font-size: 0.65em; color: var(--text2);
+    letter-spacing: 0.5px; margin-left: 8px; word-break: break-all; }
+.bitbar-small { font-family: var(--mono); font-size: 0.6em; color: var(--text2);
+    letter-spacing: 0.3px; }
+
+/* Details / collapsible */
+details.section-detail { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; margin: 12px 0; }
+details.section-detail > summary { padding: 14px; cursor: pointer; list-style: none; }
+details.section-detail > summary::-webkit-details-marker { display: none; }
+details.section-detail > summary::before { content: "\25B6\FE0E "; color: var(--accent); }
+details.section-detail[open] > summary::before { content: "\25BC\FE0E "; }
+details.section-detail > summary:hover { background: var(--surface2); }
+details.section-detail > :not(summary) { padding: 0 14px 14px; }
+
+/* Flash hex */
+.hex-dump { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 14px; font-family: var(--mono); font-size: 0.78em;
+    overflow-x: auto; white-space: pre; color: var(--text2); max-height: 400px; overflow-y: auto; }
+
+/* Picotool output */
+.pre-block { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 14px; font-family: var(--mono); font-size: 0.82em;
+    overflow-x: auto; white-space: pre-wrap; color: var(--text); max-height: 500px;
+    overflow-y: auto; }
+
+/* All registers table */
+.all-regs { max-height: 600px; overflow-y: auto; }
+.all-regs table { width: 100%; }
+
+/* Diagnosis box */
+.diagnosis { background: #1a0a0a; border: 2px solid var(--red); border-radius: 8px;
+    padding: 20px; margin: 24px 0; }
+.diagnosis h3 { color: var(--red); margin-bottom: 12px; display: block; }
+.diagnosis ul { margin-left: 20px; margin-top: 8px; }
+.diagnosis li { margin: 4px 0; }
+
+/* Tabs */
+.tab-bar { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+.tab-btn { background: none; border: none; color: var(--text2); padding: 10px 18px;
+    cursor: pointer; font-size: 0.95em; border-bottom: 2px solid transparent;
+    font-family: inherit; }
+.tab-btn:hover { color: var(--text); background: var(--surface); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1><span>RP2350</span> Debug Dashboard</h1>
+<p class="subtitle">Live hardware state captured via SWD debug probe and picotool &mdash; Sequoia Motor Controller Board (QFN-80)</p>
+
+<div class="diagnosis">
+<h3>Diagnosis: QSPI_SS (BOOTSEL) Pin Stuck LOW</h3>
+<p>The SWD debug probe confirms that <strong>QSPI_SS reads LOW</strong> despite the internal pull-up being enabled.
+Something external is pulling the pin to ground, causing the bootrom to enter BOOTSEL mode on every reset.
+The crystal, PLLs, flash, and firmware are all fine.</p>
+<ul>
+<li>Measure QSPI_SS to GND with a multimeter &mdash; should be open when BOOTSEL button is not pressed</li>
+<li>Inspect for solder bridges near the QFN-80 QSPI_SS pad and flash chip CS pin</li>
+<li>If no BOOTSEL button exists on this board, add a 10k&Omega; pull-up from QSPI_SS to IOVDD</li>
+</ul>
+</div>
+
+<h2>System Status</h2>
+<div class="status-grid"><div class="status-card critical"><div class="status-label">QSPI_SS Pin</div><div class="status-value">LOW (STUCK)</div></div><div class="status-card ok"><div class="status-label">Pull-up</div><div class="status-value">Enabled</div></div><div class="status-card ok"><div class="status-label">Crystal (XOSC)</div><div class="status-value">Stable</div></div><div class="status-card warn"><div class="status-label">PLL SYS</div><div class="status-value">Unlocked</div></div><div class="status-card ok"><div class="status-label">PLL USB</div><div class="status-value">Locked (48 MHz)</div></div><div class="status-card warn"><div class="status-label">Watchdog</div><div class="status-value">Enabled</div></div><div class="status-card critical"><div class="status-label">Boot Mode</div><div class="status-value">BOOTSEL</div></div><div class="status-card info"><div class="status-label">Core 0 PC</div><div class="status-value">0x00006086 (bootrom)</div></div></div>
+
+<div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('qspi')">QSPI Pins</button>
+    <button class="tab-btn" onclick="showTab('clocks')">Clock Tree</button>
+    <button class="tab-btn" onclick="showTab('details')">Register Details</button>
+    <button class="tab-btn" onclick="showTab('flash')">Flash</button>
+    <button class="tab-btn" onclick="showTab('picotool')">Picotool Info</button>
+    <button class="tab-btn" onclick="showTab('allregs')">All Registers</button>
+    <button class="tab-btn" onclick="showTab('raw')">Raw Dump</button>
+</div>
+
+<div id="tab-qspi" class="tab-content active">
+<h2>QSPI Pin States</h2>
+<div class="pin-grid-container"><div class="pin-card pin-low">
+            <div class="pin-name">QSPI_SCLK</div>
+            <div class="pin-grid">
+                <span class="pin-field">Input: <strong>LOW</strong></span>
+                <span class="pin-field">OE: <strong>OFF</strong></span>
+                <span class="pin-field">Out: <strong>LOW</strong></span>
+                <span class="pin-field">Func: <strong>NULL</strong></span>
+                <span class="pin-field">IE: <strong>1</strong></span>
+                <span class="pin-field">PU: <strong>0</strong> PD: <strong>1</strong></span>
+            </div>
+            <div class="pin-raw">STATUS=N/A CTRL=0x0000001f PAD=0x00000056</div>
+        </div><div class="pin-card pin-stuck">
+            <div class="pin-name">QSPI_SS</div>
+            <div class="pin-grid">
+                <span class="pin-field">Input: <strong>LOW</strong></span>
+                <span class="pin-field">OE: <strong>OFF</strong></span>
+                <span class="pin-field">Out: <strong>LOW</strong></span>
+                <span class="pin-field">Func: <strong>NULL</strong></span>
+                <span class="pin-field">IE: <strong>1</strong></span>
+                <span class="pin-field">PU: <strong>1</strong> PD: <strong>0</strong></span>
+            </div>
+            <div class="pin-raw">STATUS=N/A CTRL=0x0000001f PAD=0x0000005a</div>
+        </div><div class="pin-card pin-low">
+            <div class="pin-name">QSPI_SD0</div>
+            <div class="pin-grid">
+                <span class="pin-field">Input: <strong>LOW</strong></span>
+                <span class="pin-field">OE: <strong>ON</strong></span>
+                <span class="pin-field">Out: <strong>LOW</strong></span>
+                <span class="pin-field">Func: <strong>QSPI</strong></span>
+                <span class="pin-field">IE: <strong>1</strong></span>
+                <span class="pin-field">PU: <strong>0</strong> PD: <strong>1</strong></span>
+            </div>
+            <div class="pin-raw">STATUS=0x00002000 CTRL=N/A PAD=0x00000056</div>
+        </div><div class="pin-card pin-high">
+            <div class="pin-name">QSPI_SD1</div>
+            <div class="pin-grid">
+                <span class="pin-field">Input: <strong>HIGH</strong></span>
+                <span class="pin-field">OE: <strong>ON</strong></span>
+                <span class="pin-field">Out: <strong>HIGH</strong></span>
+                <span class="pin-field">Func: <strong>QSPI</strong></span>
+                <span class="pin-field">IE: <strong>1</strong></span>
+                <span class="pin-field">PU: <strong>0</strong> PD: <strong>1</strong></span>
+            </div>
+            <div class="pin-raw">STATUS=0x04022200 CTRL=N/A PAD=0x00000056</div>
+        </div><div class="pin-card pin-low">
+            <div class="pin-name">QSPI_SD2</div>
+            <div class="pin-grid">
+                <span class="pin-field">Input: <strong>LOW</strong></span>
+                <span class="pin-field">OE: <strong>OFF</strong></span>
+                <span class="pin-field">Out: <strong>LOW</strong></span>
+                <span class="pin-field">Func: <strong>QSPI</strong></span>
+                <span class="pin-field">IE: <strong>1</strong></span>
+                <span class="pin-field">PU: <strong>1</strong> PD: <strong>0</strong></span>
+            </div>
+            <div class="pin-raw">STATUS=N/A CTRL=N/A PAD=0x0000005a</div>
+        </div><div class="pin-card pin-low">
+            <div class="pin-name">QSPI_SD3</div>
+            <div class="pin-grid">
+                <span class="pin-field">Input: <strong>LOW</strong></span>
+                <span class="pin-field">OE: <strong>OFF</strong></span>
+                <span class="pin-field">Out: <strong>LOW</strong></span>
+                <span class="pin-field">Func: <strong>QSPI</strong></span>
+                <span class="pin-field">IE: <strong>1</strong></span>
+                <span class="pin-field">PU: <strong>1</strong> PD: <strong>0</strong></span>
+            </div>
+            <div class="pin-raw">STATUS=N/A CTRL=N/A PAD=0x0000005a</div>
+        </div></div>
+</div>
+
+<div id="tab-clocks" class="tab-content">
+<h2>Clock Tree</h2>
+<div class="clock-tree"><pre>
+  ┌─────────────┐
+  │  12 MHz XTAL │──┐  XOSC_STATUS: <span class="clk-active">STABLE</span>
+  └─────────────┘  │
+                    ▼
+              ┌──────────┐      ┌───────────────┐
+              │   XOSC   │─────▶│   PLL_SYS     │  <span class="clk-inactive">UNLOCKED</span>
+              │          │      │ FBDIV=  0     │  REFDIV=1 POSTDIV=7x7
+              │          │      │ <span class="clk-active">   0.0 MHz</span>   │
+              └──────────┘      └───────┬───────┘
+                    │                   │
+                    │                   ▼
+  ┌─────────┐      │           ┌───────────────┐
+  │  ROSC   │      │           │   CLK_SYS     │  SRC=AUX  AUXSRC=PLL_USB
+  │ (~6 MHz)│      │           └───────┬───────┘
+  └────┬────┘      │                   │
+       │           │                   ▼
+       │           │            Cortex-M33 cores, bus fabric, memory
+       │           │
+       │           │
+       │      ┌────┴──────┐    ┌───────────────┐
+       │      │   XOSC    │───▶│   PLL_USB     │  <span class="clk-active">LOCKED</span>
+       │      └───────────┘    │ FBDIV=100     │  REFDIV=1 POSTDIV=5x5
+       │                       │ <span class="clk-active">  48.0 MHz</span>   │
+       │                       └───────┬───────┘
+       │                               │
+       ▼                               ▼
+  ┌──────────┐                 ┌───────────────┐
+  │ CLK_REF  │                 │   CLK_USB     │  USB controller (48 MHz for BOOTSEL)
+  │ SRC=AUX   │                 └───────────────┘
+  └──────────┘
+</pre></div>
+</div>
+
+<div id="tab-details" class="tab-content">
+<h2>Detailed Register Decode</h2>
+<details class="section-detail"><summary><h3>QSPI_SS (BOOTSEL Pin)</h3></summary><div class="reg-decode">
+            <div class="reg-header">QSPI_SS_STATUS = <span class="mono">0x00000000</span>
+                <span class="bitbar">00000000000000000000000000000000</span>
+            </div>
+            <table class="fields"><tr><th>Bits</th><th>Field</th><th>Value</th><th>Description</th></tr>
+            <tr>
+                <td class="mono">[26]</td>
+                <td><strong>IRQTOPROC</strong></td>
+                <td class="mono">0</td>
+                <td>No IRQ</td>
+            </tr><tr>
+                <td class="mono">[17]</td>
+                <td><strong>INFROMPAD</strong></td>
+                <td class="mono" class="val-bad">0</td>
+                <td>LOW</td>
+            </tr><tr>
+                <td class="mono">[13]</td>
+                <td><strong>OETOPAD</strong></td>
+                <td class="mono">0</td>
+                <td>Output disabled</td>
+            </tr><tr>
+                <td class="mono">[9]</td>
+                <td><strong>OUTTOPAD</strong></td>
+                <td class="mono">0</td>
+                <td>Drive LOW</td>
+            </tr></table></div><div class="reg-decode">
+            <div class="reg-header">QSPI_SS_CTRL = <span class="mono">0x0000001f</span>
+                <span class="bitbar">00000000000000000000000000011111</span>
+            </div>
+            <table class="fields"><tr><th>Bits</th><th>Field</th><th>Value</th><th>Description</th></tr>
+            <tr>
+                <td class="mono">[29:28]</td>
+                <td><strong>IRQOVER</strong></td>
+                <td class="mono">0</td>
+                <td>Normal</td>
+            </tr><tr>
+                <td class="mono">[17:16]</td>
+                <td><strong>INOVER</strong></td>
+                <td class="mono">0</td>
+                <td>Normal</td>
+            </tr><tr>
+                <td class="mono">[15:14]</td>
+                <td><strong>OEOVER</strong></td>
+                <td class="mono">0</td>
+                <td>Normal</td>
+            </tr><tr>
+                <td class="mono">[13:12]</td>
+                <td><strong>OUTOVER</strong></td>
+                <td class="mono">0</td>
+                <td>Normal</td>
+            </tr><tr>
+                <td class="mono">[4:0]</td>
+                <td><strong>FUNCSEL</strong></td>
+                <td class="mono">31</td>
+                <td>NULL (disconnected)</td>
+            </tr></table></div><div class="reg-decode">
+            <div class="reg-header">PADS_QSPI_SS = <span class="mono">0x0000005a</span>
+                <span class="bitbar">00000000000000000000000001011010</span>
+            </div>
+            <table class="fields"><tr><th>Bits</th><th>Field</th><th>Value</th><th>Description</th></tr>
+            <tr>
+                <td class="mono">[7]</td>
+                <td><strong>OD</strong></td>
+                <td class="mono">0</td>
+                <td>Output enabled</td>
+            </tr><tr>
+                <td class="mono">[6]</td>
+                <td><strong>IE</strong></td>
+                <td class="mono" class="val-good">1</td>
+                <td>Input enabled</td>
+            </tr><tr>
+                <td class="mono">[5:4]</td>
+                <td><strong>DRIVE</strong></td>
+                <td class="mono">1</td>
+                <td>4mA</td>
+            </tr><tr>
+                <td class="mono">[3]</td>
+                <td><strong>PUE</strong></td>
+                <td class="mono" class="val-good">1</td>
+                <td>Pull-up enabled</td>
+            </tr><tr>
+                <td class="mono">[2]</td>
+                <td><strong>PDE</strong></td>
+                <td class="mono">0</td>
+                <td>No pull-down</td>
+            </tr><tr>
+                <td class="mono">[1]</td>
+                <td><strong>SCHMITT</strong></td>
+                <td class="mono">1</td>
+                <td>Enabled</td>
+            </tr><tr>
+                <td class="mono">[0]</td>
+                <td><strong>SLEWFAST</strong></td>
+                <td class="mono">0</td>
+                <td>Slow slew</td>
+            </tr></table></div></details><details class="section-detail"><summary><h3>Crystal Oscillator (XOSC)</h3></summary><div class="reg-decode">
+            <div class="reg-header">XOSC_STATUS = <span class="mono">0x81001000</span>
+                <span class="bitbar">10000001000000000001000000000000</span>
+            </div>
+            <table class="fields"><tr><th>Bits</th><th>Field</th><th>Value</th><th>Description</th></tr>
+            <tr>
+                <td class="mono">[31]</td>
+                <td><strong>STABLE</strong></td>
+                <td class="mono" class="val-good">1</td>
+                <td>Stable & running</td>
+            </tr><tr>
+                <td class="mono">[24]</td>
+                <td><strong>BADWRITE</strong></td>
+                <td class="mono">1</td>
+                <td>Bad write detected</td>
+            </tr><tr>
+                <td class="mono">[12]</td>
+                <td><strong>ENABLED</strong></td>
+                <td class="mono">1</td>
+                <td>Enabled</td>
+            </tr><tr>
+                <td class="mono">[1:0]</td>
+                <td><strong>FREQ_RANGE</strong></td>
+                <td class="mono">0</td>
+                <td>1-15 MHz</td>
+            </tr></table></div><div class="reg-decode"><div class="reg-header">XOSC_CTRL = <span class="mono">0x00fab000</span></div><p>ENABLE=0xfab (enabled), FREQ_RANGE configured for 12 MHz crystal</p></div><div class="reg-decode"><div class="reg-header">XOSC_STARTUP = <span class="mono">0x000000c3</span></div><p>Startup delay: 195 &times; 256 XOSC cycles</p></div></details><details class="section-detail"><summary><h3>PLL System</h3></summary><div class="reg-decode">
+            <div class="reg-header">PLL_SYS_CS = <span class="mono">0x00000001</span>
+                <span class="bitbar">00000000000000000000000000000001</span>
+            </div>
+            <table class="fields"><tr><th>Bits</th><th>Field</th><th>Value</th><th>Description</th></tr>
+            <tr>
+                <td class="mono">[31]</td>
+                <td><strong>LOCK</strong></td>
+                <td class="mono" class="val-bad">0</td>
+                <td>Not locked</td>
+            </tr><tr>
+                <td class="mono">[8]</td>
+                <td><strong>BYPASS</strong></td>
+                <td class="mono">0</td>
+                <td>Normal</td>
+            </tr><tr>
+                <td class="mono">[5:0]</td>
+                <td><strong>REFDIV</strong></td>
+                <td class="mono">1</td>
+                <td></td>
+            </tr></table></div><div class="reg-decode">
+            <div class="reg-header">PLL_SYS_PRIM = <span class="mono">0x00077000</span>
+                <span class="bitbar">00000000000001110111000000000000</span>
+            </div>
+            <table class="fields"><tr><th>Bits</th><th>Field</th><th>Value</th><th>Description</th></tr>
+            <tr>
+                <td class="mono">[18:16]</td>
+                <td><strong>POSTDIV1</strong></td>
+                <td class="mono">7</td>
+                <td></td>
+            </tr><tr>
+                <td class="mono">[14:12]</td>
+                <td><strong>POSTDIV2</strong></td>
+                <td class="mono">7</td>
+                <td></td>
+            </tr></table></div><div class="reg-decode"><div class="reg-header">PLL_SYS_FBDIV_INT = <span class="mono">N/A</span></div><p>Feedback divisor: 0</p><p>Output: (12 MHz / 1) &times; 0 / (7 &times; 7) = <strong>0.0 MHz</strong></p></div></details><details class="section-detail"><summary><h3>PLL USB</h3></summary><div class="reg-decode">
+            <div class="reg-header">PLL_USB_CS = <span class="mono">0x80000001</span>
+                <span class="bitbar">10000000000000000000000000000001</span>
+            </div>
+            <table class="fields"><tr><th>Bits</th><th>Field</th><th>Value</th><th>Description</th></tr>
+            <tr>
+                <td class="mono">[31]</td>
+                <td><strong>LOCK</strong></td>
+                <td class="mono" class="val-good">1</td>
+                <td>PLL locked</td>
+            </tr><tr>
+                <td class="mono">[8]</td>
+                <td><strong>BYPASS</strong></td>
+                <td class="mono">0</td>
+                <td>Normal</td>
+            </tr><tr>
+                <td class="mono">[5:0]</td>
+                <td><strong>REFDIV</strong></td>
+                <td class="mono">1</td>
+                <td></td>
+            </tr></table></div><div class="reg-decode">
+            <div class="reg-header">PLL_USB_PRIM = <span class="mono">0x00055000</span>
+                <span class="bitbar">00000000000001010101000000000000</span>
+            </div>
+            <table class="fields"><tr><th>Bits</th><th>Field</th><th>Value</th><th>Description</th></tr>
+            <tr>
+                <td class="mono">[18:16]</td>
+                <td><strong>POSTDIV1</strong></td>
+                <td class="mono">5</td>
+                <td></td>
+            </tr><tr>
+                <td class="mono">[14:12]</td>
+                <td><strong>POSTDIV2</strong></td>
+                <td class="mono">5</td>
+                <td></td>
+            </tr></table></div><div class="reg-decode"><div class="reg-header">PLL_USB_FBDIV_INT = <span class="mono">0x00000064</span></div><p>Feedback divisor: 100</p><p>Output: (12 MHz / 1) &times; 100 / (5 &times; 5) = <strong>48.0 MHz</strong></p></div></details><details class="section-detail"><summary><h3>SIO (Single-cycle IO)</h3></summary><div class="reg-decode"><div class="reg-header">CPUID = <span class="mono">N/A</span></div><p>Currently executing on Core 0</p></div><div class="reg-decode"><div class="reg-header">GPIO_IN = <span class="mono">N/A</span></div><p class="bitbar">00000000000000000000000000000000</p></div><div class="reg-decode"><div class="reg-header">GPIO_OUT = <span class="mono">N/A</span></div><p class="bitbar">00000000000000000000000000000000</p></div><div class="reg-decode"><div class="reg-header">GPIO_OE = <span class="mono">N/A</span></div><p class="bitbar">00000000000000000000000000000000</p></div></details><details class="section-detail"><summary><h3>System Identification</h3></summary><div class="reg-decode"><div class="reg-header">CHIP_ID = <span class="mono">0x30004927</span></div><p>Manufacturer: 0x927, Part: 0x0004, Revision: 3</p></div><div class="reg-decode"><div class="reg-header">PLATFORM = <span class="mono">N/A</span></div><p>Bit 0 (FPGA): 0, Bit 1 (ASIC): 0</p></div><div class="reg-decode"><div class="reg-header">ROM GITREF = <span class="mono">0x5a09d5a2</span></div></div></details><details class="section-detail"><summary><h3>Peripheral Resets</h3></summary><div class="reg-decode"><div class="reg-header">RESET = <span class="mono">0x095d793f</span> &nbsp; RESET_DONE = <span class="mono">0x16e286c0</span></div><table class="fields"><tr><th>Bit</th><th>Peripheral</th><th>State</th></tr><tr><td>0</td><td>ADC</td><td class="val-bad">In reset</td></tr><tr><td>1</td><td>BUSCTRL</td><td class="val-bad">In reset</td></tr><tr><td>2</td><td>DMA</td><td class="val-bad">In reset</td></tr><tr><td>3</td><td>HSTX</td><td class="val-bad">In reset</td></tr><tr><td>4</td><td>I2C0</td><td class="val-bad">In reset</td></tr><tr><td>5</td><td>I2C1</td><td class="val-bad">In reset</td></tr><tr><td>6</td><td>IO_BANK0</td><td class="val-good">Running</td></tr><tr><td>7</td><td>IO_QSPI</td><td class="val-good">Running</td></tr><tr><td>8</td><td>JTAG</td><td class="val-bad">In reset</td></tr><tr><td>9</td><td>PADS_BANK0</td><td class="val-good">Running</td></tr><tr><td>10</td><td>PADS_QSPI</td><td class="val-good">Running</td></tr><tr><td>11</td><td>PIO0</td><td class="val-bad">In reset</td></tr><tr><td>12</td><td>PIO1</td><td class="val-bad">In reset</td></tr><tr><td>13</td><td>PIO2</td><td class="val-bad">In reset</td></tr><tr><td>14</td><td>PLL_SYS</td><td class="val-bad">In reset</td></tr><tr><td>15</td><td>PLL_USB</td><td class="val-good">Running</td></tr><tr><td>16</td><td>PWM</td><td class="val-bad">In reset</td></tr><tr><td>17</td><td>SHA256</td><td class="val-good">Running</td></tr><tr><td>18</td><td>SPI0</td><td class="val-bad">In reset</td></tr><tr><td>19</td><td>SPI1</td><td class="val-bad">In reset</td></tr><tr><td>20</td><td>SYSCFG</td><td class="val-bad">In reset</td></tr><tr><td>21</td><td>SYSINFO</td><td class="val-good">Running</td></tr><tr><td>22</td><td>TBMAN</td><td class="val-bad">In reset</td></tr><tr><td>23</td><td>TIMER0</td><td class="val-good">Running</td></tr><tr><td>24</td><td>TIMER1</td><td class="val-bad">In reset</td></tr><tr><td>25</td><td>TRNG</td><td class="val-good">Running</td></tr><tr><td>26</td><td>UART0</td><td class="val-good">Running</td></tr><tr><td>27</td><td>UART1</td><td class="val-bad">In reset</td></tr><tr><td>28</td><td>USBCTRL</td><td class="val-good">Running</td></tr></table></div></details><details class="section-detail"><summary><h3>ARM Cortex-M33 Core 0 Registers</h3></summary><table class="fields"><tr><th>Register</th><th>Value</th><th>Notes</th></tr><tr><td><strong>pc</strong></td><td class="mono">0x00006086</td><td> (bootrom)</td></tr><tr><td><strong>sp</strong></td><td class="mono">0x50100fc8</td><td></td></tr><tr><td><strong>lr</strong></td><td class="mono">0x00004b0f</td><td></td></tr><tr><td><strong>xpsr</strong></td><td class="mono">0x81000000</td><td> Thread mode</td></tr><tr><td><strong>msp</strong></td><td class="mono">0x50100fc8</td><td></td></tr><tr><td><strong>psp</strong></td><td class="mono">0xfffffffc</td><td></td></tr><tr><td><strong>control</strong></td><td class="mono">0x00000000</td><td></td></tr><tr><td><strong>primask</strong></td><td class="mono">0x00000000</td><td></td></tr></table></details>
+</div>
+
+<div id="tab-flash" class="tab-content">
+<h2>Flash Header (first 256 bytes at 0x10000000)</h2>
+<div class="hex-dump">00000000: 0020 0820 5d01 0010 1b01 0010 1d01 0010  . . ]...........
+00000010: 1901 0010 1901 0010 1901 0010 1901 0010  ................
+00000020: 1901 0010 1901 0010 1901 0010 1f01 0010  ................
+00000030: 1901 0010 1901 0010 2101 0010 2301 0010  ........!...#...
+00000040: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+00000050: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+00000060: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+00000070: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+00000080: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+00000090: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+000000a0: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+000000b0: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+000000c0: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+000000d0: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+000000e0: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+000000f0: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+</div>
+</div>
+
+<div id="tab-picotool" class="tab-content">
+<h2>Picotool Device Info</h2>
+<div class="pre-block">Program Information
+ name:                   blink
+ web site:               https://github.com/raspberrypi/pico-examples/tree/HEAD/blink
+ binary start:           0x10000000
+ binary end:             0x10001774
+ target chip:            RP2350
+ image type:             ARM Secure
+
+Fixed Pin Information
+ none
+
+Build Information
+ sdk version:            2.1.2-develop
+ pico_board:             pico2
+ boot2_name:             boot2_generic_03h
+ build date:             May  9 2026
+ build attributes:       Release
+
+Metadata Block 1
+ address:                0x10000138
+ next block address:     0x10001760
+ block type:             image def
+ target chip:            RP2350
+ image type:             ARM Secure
+
+Metadata Block 2
+ address:                0x10001760
+ next block address:     0x10000138
+ block type:             ignored
+
+Device Information
+ type:                   RP2350
+ revision:               Unknown
+ package:                QFN80
+ chipid:                 0xa03f6db4b924f695
+ flash devinfo:          0x0c00
+ current cpu:            ARM
+ available cpus:         ARM, RISC-V
+ default cpu:            ARM
+ secure boot:            0
+ debug enable:           1
+ secure debug enable:    1
+ boot_random:            0f1d1bb5:1bcc499d:e3f7ccda:0501f22b
+ boot type:              bootsel
+ last booted partition:  none
+ reboot param 0:         0x00000000
+ reboot param 1:         0x00000000
+ rom gitrev:             0xa8bfe860
+ flash size:             2048K
+</div>
+</div>
+
+<div id="tab-allregs" class="tab-content">
+<h2>All Captured Registers</h2>
+<div class="all-regs">
+<table class="fields">
+<tr><th>Address</th><th>Name</th><th>Value</th><th>Binary</th></tr>
+<tr><td class="mono">0x40000000</td><td>SYSINFO_CHIP_ID</td><td class="mono">0x30004927</td><td class="bitbar-small">00110000000000000100100100100111</td></tr><tr><td class="mono">0x40000004</td><td>SYSINFO_PLATFORM</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40000014</td><td>SYSINFO_GITREF_RP2350</td><td class="mono">0x5a09d5a2</td><td class="bitbar-small">01011010000010011101010110100010</td></tr><tr><td class="mono">0x40010000</td><td>CLK_GPOUT0_CTRL</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40010030</td><td>CLK_REF_CTRL</td><td class="mono">0x00000001</td><td class="bitbar-small">00000000000000000000000000000001</td></tr><tr><td class="mono">0x40010034</td><td>CLK_REF_DIV</td><td class="mono">0x00020000</td><td class="bitbar-small">00000000000000100000000000000000</td></tr><tr><td class="mono">0x40010038</td><td>CLK_REF_SELECTED</td><td class="mono">0x00000002</td><td class="bitbar-small">00000000000000000000000000000010</td></tr><tr><td class="mono">0x4001003c</td><td>CLK_SYS_CTRL</td><td class="mono">0x00000021</td><td class="bitbar-small">00000000000000000000000000100001</td></tr><tr><td class="mono">0x40010040</td><td>CLK_SYS_DIV</td><td class="mono">0x00010000</td><td class="bitbar-small">00000000000000010000000000000000</td></tr><tr><td class="mono">0x40010044</td><td>CLK_SYS_SELECTED</td><td class="mono">0x00000002</td><td class="bitbar-small">00000000000000000000000000000010</td></tr><tr><td class="mono">0x40010048</td><td>CLK_PERI_CTRL</td><td class="mono">0x10000800</td><td class="bitbar-small">00010000000000000000100000000000</td></tr><tr><td class="mono">0x40010054</td><td>CLK_USB_CTRL</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40010060</td><td>CLK_ADC_CTRL</td><td class="mono">0x10000800</td><td class="bitbar-small">00010000000000000000100000000000</td></tr><tr><td class="mono">0x40010098</td><td>FC0_RESULT</td><td class="mono">0x00000001</td><td class="bitbar-small">00000000000000000000000000000001</td></tr><tr><td class="mono">0x40018000</td><td>PSM_FRCE_ON</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40018004</td><td>PSM_FRCE_OFF</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x4001800c</td><td>PSM_DONE</td><td class="mono">0x01ffffff</td><td class="bitbar-small">00000001111111111111111111111111</td></tr><tr><td class="mono">0x40020000</td><td>RESET</td><td class="mono">0x095d793f</td><td class="bitbar-small">00001001010111010111100100111111</td></tr><tr><td class="mono">0x40020008</td><td>RESET_DONE</td><td class="mono">0x16e286c0</td><td class="bitbar-small">00010110111000101000011011000000</td></tr><tr><td class="mono">0x40028000</td><td>GPIO0_STATUS</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40028008</td><td>GPIO1_STATUS</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40028010</td><td>GPIO2_STATUS</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40028018</td><td>GPIO3_STATUS</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40028020</td><td>GPIO4_STATUS</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40028028</td><td>GPIO5_STATUS</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x400280c8</td><td>GPIO25_STATUS</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40030000</td><td>QSPI_SCLK_STATUS</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40030004</td><td>QSPI_SCLK_CTRL</td><td class="mono">0x0000001f</td><td class="bitbar-small">00000000000000000000000000011111</td></tr><tr><td class="mono">0x40030008</td><td>QSPI_SS_STATUS</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x4003000c</td><td>QSPI_SS_CTRL</td><td class="mono">0x0000001f</td><td class="bitbar-small">00000000000000000000000000011111</td></tr><tr><td class="mono">0x40030010</td><td>QSPI_SD0_STATUS</td><td class="mono">0x00002000</td><td class="bitbar-small">00000000000000000010000000000000</td></tr><tr><td class="mono">0x40030014</td><td>QSPI_SD0_CTRL</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40030018</td><td>QSPI_SD1_STATUS</td><td class="mono">0x04022200</td><td class="bitbar-small">00000100000000100010001000000000</td></tr><tr><td class="mono">0x4003001c</td><td>QSPI_SD1_CTRL</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40030020</td><td>QSPI_SD2_STATUS</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40030024</td><td>QSPI_SD2_CTRL</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40030028</td><td>QSPI_SD3_STATUS</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x4003002c</td><td>QSPI_SD3_CTRL</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40040000</td><td>PADS_QSPI_VOLTAGE_SELECT</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40040004</td><td>PADS_QSPI_SCLK</td><td class="mono">0x00000056</td><td class="bitbar-small">00000000000000000000000001010110</td></tr><tr><td class="mono">0x40040008</td><td>PADS_QSPI_SD0</td><td class="mono">0x00000056</td><td class="bitbar-small">00000000000000000000000001010110</td></tr><tr><td class="mono">0x4004000c</td><td>PADS_QSPI_SD1</td><td class="mono">0x00000056</td><td class="bitbar-small">00000000000000000000000001010110</td></tr><tr><td class="mono">0x40040010</td><td>PADS_QSPI_SD2</td><td class="mono">0x0000005a</td><td class="bitbar-small">00000000000000000000000001011010</td></tr><tr><td class="mono">0x40040014</td><td>PADS_QSPI_SD3</td><td class="mono">0x0000005a</td><td class="bitbar-small">00000000000000000000000001011010</td></tr><tr><td class="mono">0x40040018</td><td>PADS_QSPI_SS</td><td class="mono">0x0000005a</td><td class="bitbar-small">00000000000000000000000001011010</td></tr><tr><td class="mono">0x40048000</td><td>XOSC_CTRL</td><td class="mono">0x00fab000</td><td class="bitbar-small">00000000111110101011000000000000</td></tr><tr><td class="mono">0x40048004</td><td>XOSC_STATUS</td><td class="mono">0x81001000</td><td class="bitbar-small">10000001000000000001000000000000</td></tr><tr><td class="mono">0x4004800c</td><td>XOSC_STARTUP</td><td class="mono">0x000000c3</td><td class="bitbar-small">00000000000000000000000011000011</td></tr><tr><td class="mono">0x40050000</td><td>PLL_SYS_CS</td><td class="mono">0x00000001</td><td class="bitbar-small">00000000000000000000000000000001</td></tr><tr><td class="mono">0x40050004</td><td>PLL_SYS_PWR</td><td class="mono">0x0000002d</td><td class="bitbar-small">00000000000000000000000000101101</td></tr><tr><td class="mono">0x40050008</td><td>PLL_SYS_FBDIV_INT</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x4005000c</td><td>PLL_SYS_PRIM</td><td class="mono">0x00077000</td><td class="bitbar-small">00000000000001110111000000000000</td></tr><tr><td class="mono">0x40058000</td><td>PLL_USB_CS</td><td class="mono">0x80000001</td><td class="bitbar-small">10000000000000000000000000000001</td></tr><tr><td class="mono">0x40058004</td><td>PLL_USB_PWR</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x40058008</td><td>PLL_USB_FBDIV_INT</td><td class="mono">0x00000064</td><td class="bitbar-small">00000000000000000000000001100100</td></tr><tr><td class="mono">0x4005800c</td><td>PLL_USB_PRIM</td><td class="mono">0x00055000</td><td class="bitbar-small">00000000000001010101000000000000</td></tr><tr><td class="mono">0x400d8000</td><td>WDG_CTRL</td><td class="mono">0x40000000</td><td class="bitbar-small">01000000000000000000000000000000</td></tr><tr><td class="mono">0x400d8004</td><td>WDG_LOAD</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x400d8008</td><td>WDG_REASON</td><td class="mono">0x00000001</td><td class="bitbar-small">00000000000000000000000000000001</td></tr><tr><td class="mono">0x400d800c</td><td>WDG_SCRATCH0</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x400d8010</td><td>WDG_SCRATCH1</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x400d8014</td><td>WDG_SCRATCH2</td><td class="mono">0xffffffff</td><td class="bitbar-small">11111111111111111111111111111111</td></tr><tr><td class="mono">0x400d8018</td><td>WDG_SCRATCH3</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x400d801c</td><td>WDG_SCRATCH4</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0x400d8020</td><td>WDG_SCRATCH5</td><td class="mono">0xfffffffe</td><td class="bitbar-small">11111111111111111111111111111110</td></tr><tr><td class="mono">0x400d8024</td><td>WDG_SCRATCH6</td><td class="mono">0x00000002</td><td class="bitbar-small">00000000000000000000000000000010</td></tr><tr><td class="mono">0x400d8028</td><td>WDG_SCRATCH7</td><td class="mono">0xb007c0d3</td><td class="bitbar-small">10110000000001111100000011010011</td></tr><tr><td class="mono">0xd0000000</td><td>SIO_CPUID</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0xd0000004</td><td>SIO_GPIO_IN</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0xd0000010</td><td>SIO_GPIO_OUT</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0xd0000020</td><td>SIO_GPIO_OE</td><td class="mono">0x00000000</td><td class="bitbar-small">00000000000000000000000000000000</td></tr><tr><td class="mono">0xd0000050</td><td>SIO_FIFO_ST</td><td class="mono">0x00000003</td><td class="bitbar-small">00000000000000000000000000000011</td></tr>
+</table>
+</div>
+</div>
+
+<div id="tab-raw" class="tab-content">
+<h2>Raw Dump Output</h2>
+<div class="pre-block">================================================================================
+RP2350 COMPREHENSIVE REGISTER & DEVICE DUMP
+================================================================================
+Date: 2026-05-13 00:04:25 PDT
+Probe: CMSIS-DAP v2 (VID:PID=0x2e8a:0x000c)
+Target: RP2350 Cortex-M33 r1p0 (core0, ARM Secure)
+================================================================================
+
+================================================================================
+SECTION 1: OpenOCD CONNECTION LOG
+================================================================================
+Open On-Chip Debugger 0.12.0+dev-gebec9504d-dirty (2025-05-30-21:52)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Warn : An adapter speed is not selected in the init scripts. OpenOCD will try to run the adapter at very low speed (100 kHz).
+Warn : To remove this warnings and achieve reasonable communication speed with the target, set "adapter speed" or "jtag_rclk" in the init scripts.
+Info : Using CMSIS-DAPv2 interface with VID:PID=0x2e8a:0x000c, serial=E6634827D33F9022
+Info : CMSIS-DAP: SWD supported
+Info : CMSIS-DAP: Atomic commands supported
+Info : CMSIS-DAP: Test domain timer supported
+Info : CMSIS-DAP: FW Version = 2.0.0
+Info : CMSIS-DAP: Interface Initialised (SWD)
+Info : SWCLK/TCK = 0 SWDIO/TMS = 0 TDI = 0 TDO = 0 nTRST = 0 nRESET = 0
+Info : CMSIS-DAP: Interface ready
+Info : clock speed 100 kHz
+Info : SWD DPIDR 0x4c013477
+Info : [rp2350.core0] Cortex-M33 r1p0 processor detected
+Info : [rp2350.core0] target has 8 breakpoints, 4 watchpoints
+Info : [rp2350.core0] Examination succeed
+Info : starting gdb server for rp2350.core0 on 3333
+Info : Listening on port 3333 for gdb connections
+Warn : [rp2350.core0] target was in unknown state when halt was requested
+=== SYSTEM & ID ===
+REG SYSINFO_CHIP_ID 0x40000000 0x30004927
+REG SYSINFO_PLATFORM 0x40000004 0x00000000
+REG SYSINFO_GITREF_RP2350 0x40000014 0x5a09d5a2
+=== QSPI IO (status + ctrl) ===
+REG QSPI_SCLK_STATUS 0x40030000 0x00000000
+REG QSPI_SCLK_CTRL 0x40030004 0x0000001f
+REG QSPI_SS_STATUS 0x40030008 0x00000000
+REG QSPI_SS_CTRL 0x4003000c 0x0000001f
+REG QSPI_SD0_STATUS 0x40030010 0x00002000
+REG QSPI_SD0_CTRL 0x40030014 0x00000000
+REG QSPI_SD1_STATUS 0x40030018 0x04022200
+REG QSPI_SD1_CTRL 0x4003001c 0x00000000
+REG QSPI_SD2_STATUS 0x40030020 0x00000000
+REG QSPI_SD2_CTRL 0x40030024 0x00000000
+REG QSPI_SD3_STATUS 0x40030028 0x00000000
+REG QSPI_SD3_CTRL 0x4003002c 0x00000000
+=== PADS_QSPI ===
+REG PADS_QSPI_VOLTAGE_SELECT 0x40040000 0x00000000
+REG PADS_QSPI_SCLK 0x40040004 0x00000056
+REG PADS_QSPI_SD0 0x40040008 0x00000056
+REG PADS_QSPI_SD1 0x4004000c 0x00000056
+REG PADS_QSPI_SD2 0x40040010 0x0000005a
+REG PADS_QSPI_SD3 0x40040014 0x0000005a
+REG PADS_QSPI_SS 0x40040018 0x0000005a
+=== XOSC (Crystal Oscillator) ===
+REG XOSC_CTRL 0x40048000 0x00fab000
+REG XOSC_STATUS 0x40048004 0x81001000
+REG XOSC_STARTUP 0x4004800c 0x000000c3
+=== PLL_SYS ===
+REG PLL_SYS_CS 0x40050000 0x00000001
+REG PLL_SYS_PWR 0x40050004 0x0000002d
+REG PLL_SYS_FBDIV_INT 0x40050008 0x00000000
+REG PLL_SYS_PRIM 0x4005000c 0x00077000
+=== PLL_USB ===
+REG PLL_USB_CS 0x40058000 0x80000001
+REG PLL_USB_PWR 0x40058004 0x00000000
+REG PLL_USB_FBDIV_INT 0x40058008 0x00000064
+REG PLL_USB_PRIM 0x4005800c 0x00055000
+=== CLOCKS ===
+REG CLK_GPOUT0_CTRL 0x40010000 0x00000000
+REG CLK_REF_CTRL 0x40010030 0x00000001
+REG CLK_REF_DIV 0x40010034 0x00020000
+REG CLK_REF_SELECTED 0x40010038 0x00000002
+REG CLK_SYS_CTRL 0x4001003c 0x00000021
+REG CLK_SYS_DIV 0x40010040 0x00010000
+REG CLK_SYS_SELECTED 0x40010044 0x00000002
+REG CLK_PERI_CTRL 0x40010048 0x10000800
+REG CLK_USB_CTRL 0x40010054 0x00000000
+REG CLK_ADC_CTRL 0x40010060 0x10000800
+REG FC0_RESULT 0x40010098 0x00000001
+=== RESETS ===
+REG RESET 0x40020000 0x095d793f
+REG RESET_DONE 0x40020008 0x16e286c0
+=== PSM (Power State Machine) ===
+REG PSM_FRCE_ON 0x40018000 0x00000000
+REG PSM_FRCE_OFF 0x40018004 0x00000000
+REG PSM_DONE 0x4001800c 0x01ffffff
+=== GPIO (Status Registers) ===
+REG GPIO0_STATUS 0x40028000 0x00000000
+REG GPIO1_STATUS 0x40028008 0x00000000
+REG GPIO2_STATUS 0x40028010 0x00000000
+REG GPIO3_STATUS 0x40028018 0x00000000
+REG GPIO4_STATUS 0x40028020 0x00000000
+REG GPIO5_STATUS 0x40028028 0x00000000
+REG GPIO25_STATUS 0x400280c8 0x00000000
+=== WATCHDOG ===
+REG WDG_CTRL 0x400d8000 0x40000000
+REG WDG_LOAD 0x400d8004 0x00000000
+REG WDG_REASON 0x400d8008 0x00000001
+REG WDG_SCRATCH0 0x400d800c 0x00000000
+REG WDG_SCRATCH1 0x400d8010 0x00000000
+REG WDG_SCRATCH2 0x400d8014 0xffffffff
+REG WDG_SCRATCH3 0x400d8018 0x00000000
+REG WDG_SCRATCH4 0x400d801c 0x00000000
+REG WDG_SCRATCH5 0x400d8020 0xfffffffe
+REG WDG_SCRATCH6 0x400d8024 0x00000002
+REG WDG_SCRATCH7 0x400d8028 0xb007c0d3
+=== SIO (Single-cycle IO) ===
+REG SIO_CPUID 0xd0000000 0x00000000
+REG SIO_GPIO_IN 0xd0000004 0x00000000
+REG SIO_GPIO_OUT 0xd0000010 0x00000000
+REG SIO_GPIO_OE 0xd0000020 0x00000000
+REG SIO_FIFO_ST 0xd0000050 0x00000003
+=== PROCESSOR REGISTERS ===
+CPUREG pc (/32): 0x00006086
+CPUREG sp (/32): 0x50100fc8
+CPUREG lr (/32): 0x00004b0f
+CPUREG xpsr (/32): 0x81000000
+CPUREG msp (/32): 0x50100fc8
+CPUREG psp (/32): 0xfffffffc
+CPUREG control (/3): 0x00
+CPUREG primask (/1): 0x00
+=== DUMP COMPLETE ===
+shutdown command invoked
+
+================================================================================
+SECTION 2: PICOTOOL DEVICE INFO (picotool info -a)
+================================================================================
+Program Information
+ name:                   blink
+ web site:               https://github.com/raspberrypi/pico-examples/tree/HEAD/blink
+ binary start:           0x10000000
+ binary end:             0x10001774
+ target chip:            RP2350
+ image type:             ARM Secure
+
+Fixed Pin Information
+ none
+
+Build Information
+ sdk version:            2.1.2-develop
+ pico_board:             pico2
+ boot2_name:             boot2_generic_03h
+ build date:             May  9 2026
+ build attributes:       Release
+
+Metadata Block 1
+ address:                0x10000138
+ next block address:     0x10001760
+ block type:             image def
+ target chip:            RP2350
+ image type:             ARM Secure
+
+Metadata Block 2
+ address:                0x10001760
+ next block address:     0x10000138
+ block type:             ignored
+
+Device Information
+ type:                   RP2350
+ revision:               Unknown
+ package:                QFN80
+ chipid:                 0xa03f6db4b924f695
+ flash devinfo:          0x0c00
+ current cpu:            ARM
+ available cpus:         ARM, RISC-V
+ default cpu:            ARM
+ secure boot:            0
+ debug enable:           1
+ secure debug enable:    1
+ boot_random:            0f1d1bb5:1bcc499d:e3f7ccda:0501f22b
+ boot type:              bootsel
+ last booted partition:  none
+ reboot param 0:         0x00000000
+ reboot param 1:         0x00000000
+ rom gitrev:             0xa8bfe860
+ flash size:             2048K
+
+================================================================================
+SECTION 3: FLASH HEAD (first 256 bytes at 0x10000000)
+================================================================================
+00000000: 0020 0820 5d01 0010 1b01 0010 1d01 0010  . . ]...........
+00000010: 1901 0010 1901 0010 1901 0010 1901 0010  ................
+00000020: 1901 0010 1901 0010 1901 0010 1f01 0010  ................
+00000030: 1901 0010 1901 0010 2101 0010 2301 0010  ........!...#...
+00000040: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+00000050: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+00000060: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+00000070: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+00000080: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+00000090: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+000000a0: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+000000b0: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+000000c0: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+000000d0: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+000000e0: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+000000f0: 1101 0010 1101 0010 1101 0010 1101 0010  ................
+
+================================================================================
+SECTION 4: REGISTER SUMMARY (parsed from OpenOCD output)
+================================================================================
+
+--- SYSTEM & ID ---
+
+--- SYSTEM & ID ---
+  SYSINFO_CHIP_ID                     @ 0x40000000  =  0x30004927
+  SYSINFO_PLATFORM                    @ 0x40000004  =  0x00000000
+  SYSINFO_GITREF_RP2350               @ 0x40000014  =  0x5a09d5a2
+
+--- QSPI IO (status + ctrl) ---
+  QSPI_SCLK_STATUS                    @ 0x40030000  =  0x00000000
+  QSPI_SCLK_CTRL                      @ 0x40030004  =  0x0000001f
+  QSPI_SS_STATUS                      @ 0x40030008  =  0x00000000
+  QSPI_SS_CTRL                        @ 0x4003000c  =  0x0000001f
+  QSPI_SD0_STATUS                     @ 0x40030010  =  0x00002000
+  QSPI_SD0_CTRL                       @ 0x40030014  =  0x00000000
+  QSPI_SD1_STATUS                     @ 0x40030018  =  0x04022200
+  QSPI_SD1_CTRL                       @ 0x4003001c  =  0x00000000
+  QSPI_SD2_STATUS                     @ 0x40030020  =  0x00000000
+  QSPI_SD2_CTRL                       @ 0x40030024  =  0x00000000
+  QSPI_SD3_STATUS                     @ 0x40030028  =  0x00000000
+  QSPI_SD3_CTRL                       @ 0x4003002c  =  0x00000000
+
+--- PADS_QSPI ---
+  PADS_QSPI_VOLTAGE_SELECT            @ 0x40040000  =  0x00000000
+  PADS_QSPI_SCLK                      @ 0x40040004  =  0x00000056
+  PADS_QSPI_SD0                       @ 0x40040008  =  0x00000056
+  PADS_QSPI_SD1                       @ 0x4004000c  =  0x00000056
+  PADS_QSPI_SD2                       @ 0x40040010  =  0x0000005a
+  PADS_QSPI_SD3                       @ 0x40040014  =  0x0000005a
+  PADS_QSPI_SS                        @ 0x40040018  =  0x0000005a
+
+--- XOSC (Crystal Oscillator) ---
+  XOSC_CTRL                           @ 0x40048000  =  0x00fab000
+  XOSC_STATUS                         @ 0x40048004  =  0x81001000
+  XOSC_STARTUP                        @ 0x4004800c  =  0x000000c3
+
+--- PLL_SYS ---
+  PLL_SYS_CS                          @ 0x40050000  =  0x00000001
+  PLL_SYS_PWR                         @ 0x40050004  =  0x0000002d
+  PLL_SYS_FBDIV_INT                   @ 0x40050008  =  0x00000000
+  PLL_SYS_PRIM                        @ 0x4005000c  =  0x00077000
+
+--- PLL_USB ---
+  PLL_USB_CS                          @ 0x40058000  =  0x80000001
+  PLL_USB_PWR                         @ 0x40058004  =  0x00000000
+  PLL_USB_FBDIV_INT                   @ 0x40058008  =  0x00000064
+  PLL_USB_PRIM                        @ 0x4005800c  =  0x00055000
+
+--- CLOCKS ---
+  CLK_GPOUT0_CTRL                     @ 0x40010000  =  0x00000000
+  CLK_REF_CTRL                        @ 0x40010030  =  0x00000001
+  CLK_REF_DIV                         @ 0x40010034  =  0x00020000
+  CLK_REF_SELECTED                    @ 0x40010038  =  0x00000002
+  CLK_SYS_CTRL                        @ 0x4001003c  =  0x00000021
+  CLK_SYS_DIV                         @ 0x40010040  =  0x00010000
+  CLK_SYS_SELECTED                    @ 0x40010044  =  0x00000002
+  CLK_PERI_CTRL                       @ 0x40010048  =  0x10000800
+  CLK_USB_CTRL                        @ 0x40010054  =  0x00000000
+  CLK_ADC_CTRL                        @ 0x40010060  =  0x10000800
+  FC0_RESULT                          @ 0x40010098  =  0x00000001
+
+--- RESETS ---
+  RESET                               @ 0x40020000  =  0x095d793f
+  RESET_DONE                          @ 0x40020008  =  0x16e286c0
+
+--- PSM (Power State Machine) ---
+  PSM_FRCE_ON                         @ 0x40018000  =  0x00000000
+  PSM_FRCE_OFF                        @ 0x40018004  =  0x00000000
+  PSM_DONE                            @ 0x4001800c  =  0x01ffffff
+
+--- GPIO (Status Registers) ---
+  GPIO0_STATUS                        @ 0x40028000  =  0x00000000
+  GPIO1_STATUS                        @ 0x40028008  =  0x00000000
+  GPIO2_STATUS                        @ 0x40028010  =  0x00000000
+  GPIO3_STATUS                        @ 0x40028018  =  0x00000000
+  GPIO4_STATUS                        @ 0x40028020  =  0x00000000
+  GPIO5_STATUS                        @ 0x40028028  =  0x00000000
+  GPIO25_STATUS                       @ 0x400280c8  =  0x00000000
+
+--- WATCHDOG ---
+  WDG_CTRL                            @ 0x400d8000  =  0x40000000
+  WDG_LOAD                            @ 0x400d8004  =  0x00000000
+  WDG_REASON                          @ 0x400d8008  =  0x00000001
+  WDG_SCRATCH0                        @ 0x400d800c  =  0x00000000
+  WDG_SCRATCH1                        @ 0x400d8010  =  0x00000000
+  WDG_SCRATCH2                        @ 0x400d8014  =  0xffffffff
+  WDG_SCRATCH3                        @ 0x400d8018  =  0x00000000
+  WDG_SCRATCH4                        @ 0x400d801c  =  0x00000000
+  WDG_SCRATCH5                        @ 0x400d8020  =  0xfffffffe
+  WDG_SCRATCH6                        @ 0x400d8024  =  0x00000002
+  WDG_SCRATCH7                        @ 0x400d8028  =  0xb007c0d3
+
+--- SIO (Single-cycle IO) ---
+  SIO_CPUID                           @ 0xd0000000  =  0x00000000
+  SIO_GPIO_IN                         @ 0xd0000004  =  0x00000000
+  SIO_GPIO_OUT                        @ 0xd0000010  =  0x00000000
+  SIO_GPIO_OE                         @ 0xd0000020  =  0x00000000
+  SIO_FIFO_ST                         @ 0xd0000050  =  0x00000003
+
+--- PROCESSOR REGISTERS ---
+
+--- PROCESSOR CORE REGISTERS ---
+  pc (/32): 0x00006086
+  sp (/32): 0x50100fc8
+  lr (/32): 0x00004b0f
+  xpsr (/32): 0x81000000
+  msp (/32): 0x50100fc8
+  psp (/32): 0xfffffffc
+  control (/3): 0x00
+  primask (/1): 0x00
+
+================================================================================
+SECTION 5: REGISTER INTERPRETATION NOTES
+================================================================================
+
+SYSINFO_CHIP_ID = 0x30004927
+  -> Manufacturer ID bits [11:0]: 0x927 (Raspberry Pi Trading)
+  -> Part number bits [27:12]: 0x3000 (RP2350)
+
+XOSC_STATUS = 0x81001000
+  -> bit[31] STABLE = 1 (crystal oscillator is running and stable)
+  -> bit[24] BADWRITE = 0 (no bad writes)
+  -> bit[12] ENABLED = 1 (oscillator enabled)
+
+PLL_USB:
+  CS = 0x80000001 -> LOCK=1, REFDIV=1 (PLL locked)
+  FBDIV = 0x64 = 100 decimal
+  PRIM = 0x00055000 -> POSTDIV1=5, POSTDIV2=5
+  -> USB PLL freq = (12 MHz * 100) / (5 * 5) = 48 MHz (correct for USB)
+
+PLL_SYS:
+  CS = 0x00000001 -> LOCK=0, REFDIV=1 (PLL NOT locked / powered down)
+  PWR = 0x0000002d -> PD=1, DSMPD=1, POSTDIVPD=1, VCOPD=1 (all powered down)
+  -> System PLL is off; system clock sourced from XOSC directly or ring osc
+
+CLK_SYS_CTRL = 0x00000021
+  -> AUXSRC = 0x1 (PLL_USB selected as aux), SRC = 0x1 (aux mux selected)
+  -> System clock is running from PLL_USB (48 MHz)
+
+CLK_REF_SELECTED = 0x00000002
+  -> Reference clock source index 1 = XOSC (12 MHz crystal)
+
+RESET = 0x095d793f
+RESET_DONE = 0x16e286c0
+  -> Various peripherals in reset or released from reset
+
+PSM_DONE = 0x01ffffff
+  -> All power domains are up
+
+WDG_REASON = 0x00000001
+  -> bit[0] TIMER = 1 (last reset was caused by watchdog timer)
+
+WDG_SCRATCH7 = 0xb007c0d3
+  -> "BOOTCODE" magic value (boot ROM marker)
+
+SIO_CPUID = 0x00000000
+  -> Core 0 (as expected)
+
+SIO_FIFO_ST = 0x00000003
+  -> VLD=1 (data in FIFO), RDY=1 (FIFO has space) -- inter-core FIFO status
+
+Processor state at halt:
+  PC  = 0x00006086 (executing in SRAM/ROM boot code area)
+  SP  = 0x50100fc8 (stack in SRAM)
+  LR  = 0x00004b0f
+  xPSR = 0x81000000 (Negative flag set, Thumb mode)
+  MSP = 0x50100fc8 (main stack pointer = SP, so in Thread mode using MSP)
+  PSP = 0xfffffffc (process stack not initialized)
+  CONTROL = 0x00 (privileged, using MSP)
+  PRIMASK = 0x00 (interrupts enabled)
+
+Flash head analysis:
+  0x10000000: 0x20080020 = Initial SP (stack top at 0x20080020, top of 512KB SRAM)
+  0x10000004: 0x1000015d = Reset vector (entry point in flash)
+  This is a standard ARM Cortex-M vector table for the "blink" example.
+
+================================================================================
+END OF DUMP
+================================================================================
+</div>
+</div>
+
+</div>
+<script>
+function showTab(id) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
