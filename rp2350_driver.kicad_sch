@@ -9769,10 +9769,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Switch:SW_Push"
-			(pin_numbers
-				(hide yes)
-			)
+		(symbol "Switch:SW_MEC_5E"
 			(pin_names
 				(offset 1.016)
 				(hide yes)
@@ -9781,7 +9778,7 @@
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "SW"
-				(at 1.27 2.54 0)
+				(at 0.635 5.715 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -9789,8 +9786,8 @@
 					(justify left)
 				)
 			)
-			(property "Value" "SW_Push"
-				(at 0 -1.524 0)
+			(property "Value" "SW_MEC_5E"
+				(at 0 -3.175 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -9798,7 +9795,7 @@
 				)
 			)
 			(property "Footprint" ""
-				(at 0 5.08 0)
+				(at 0 7.62 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -9806,8 +9803,8 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "~"
-				(at 0 5.08 0)
+			(property "Datasheet" "http://www.apem.com/int/index.php?controller=attachment&id_attachment=1371"
+				(at 0 7.62 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -9815,7 +9812,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Push button switch, generic, two pins"
+			(property "Description" "MEC 5E single pole normally-open tactile switch"
 				(at 0 0 0)
 				(effects
 					(font
@@ -9833,9 +9830,42 @@
 					(hide yes)
 				)
 			)
-			(symbol "SW_Push_0_1"
+			(property "ki_fp_filters" "SW*MEC*5G*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "SW_MEC_5E_0_1"
+				(polyline
+					(pts
+						(xy -2.54 0) (xy -2.54 2.54) (xy -2.286 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.286 3.81) (xy 2.286 3.81)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
 				(circle
-					(center -2.032 0)
+					(center -1.778 2.54)
 					(radius 0.508)
 					(stroke
 						(width 0)
@@ -9847,7 +9877,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 1.27) (xy 0 3.048)
+						(xy 0 3.81) (xy 0 5.588)
 					)
 					(stroke
 						(width 0)
@@ -9858,7 +9888,7 @@
 					)
 				)
 				(circle
-					(center 2.032 0)
+					(center 1.778 2.54)
 					(radius 0.508)
 					(stroke
 						(width 0)
@@ -9870,7 +9900,7 @@
 				)
 				(polyline
 					(pts
-						(xy 2.54 1.27) (xy -2.54 1.27)
+						(xy 2.54 0) (xy 2.54 2.54) (xy 2.286 2.54)
 					)
 					(stroke
 						(width 0)
@@ -9881,7 +9911,7 @@
 					)
 				)
 				(pin passive line
-					(at -5.08 0 0)
+					(at -5.08 2.54 0)
 					(length 2.54)
 					(name "1"
 						(effects
@@ -9899,7 +9929,7 @@
 					)
 				)
 				(pin passive line
-					(at 5.08 0 180)
+					(at -5.08 0 0)
 					(length 2.54)
 					(name "2"
 						(effects
@@ -9909,6 +9939,42 @@
 						)
 					)
 					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 2.54 180)
+					(length 2.54)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 2.54)
+					(name "K"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -13847,7 +13913,7 @@
 	)
 	(wire
 		(pts
-			(xy 238.76 494.03) (xy 248.92 494.03)
+			(xy 238.76 494.03) (xy 247.65 494.03)
 		)
 		(stroke
 			(width 0)
@@ -14997,7 +15063,7 @@
 	)
 	(wire
 		(pts
-			(xy 193.04 473.71) (xy 248.92 473.71)
+			(xy 193.04 473.71) (xy 247.65 473.71)
 		)
 		(stroke
 			(width 0)
@@ -15627,7 +15693,7 @@
 	)
 	(wire
 		(pts
-			(xy 248.92 482.6) (xy 248.92 473.71)
+			(xy 247.65 482.6) (xy 247.65 473.71)
 		)
 		(stroke
 			(width 0)
@@ -16267,7 +16333,7 @@
 	)
 	(wire
 		(pts
-			(xy 248.92 494.03) (xy 248.92 490.22)
+			(xy 247.65 494.03) (xy 247.65 490.22)
 		)
 		(stroke
 			(width 0)
@@ -29769,7 +29835,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "3mΩ"
+		(property "Value" "8mΩ"
 			(at 332.994 422.529 0)
 			(effects
 				(font
@@ -29805,7 +29871,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2688862"
+		(property "LCSC" "C2904240"
 			(at 336.55 426.72 0)
 			(effects
 				(font
@@ -36670,7 +36736,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "3mΩ"
+		(property "Value" "8mΩ"
 			(at 152.654 418.719 0)
 			(effects
 				(font
@@ -36706,7 +36772,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2688862"
+		(property "LCSC" "C2904240"
 			(at 156.21 422.91 0)
 			(effects
 				(font
@@ -45124,8 +45190,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_Push")
-		(at 203.2 242.57 0)
+		(lib_id "Switch:SW_MEC_5E")
+		(at 203.2 245.11 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -45133,7 +45199,7 @@
 		(dnp no)
 		(uuid "82ed7e68-63db-4ee1-92e0-824f75b7ed5d")
 		(property "Reference" "SW2"
-			(at 203.2 245.11 0)
+			(at 198.882 247.396 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -45141,7 +45207,7 @@
 			)
 		)
 		(property "Value" "Button"
-			(at 203.2 237.744 0)
+			(at 203.2 240.284 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -45158,7 +45224,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "http://www.apem.com/int/index.php?controller=attachment&id_attachment=1371"
 			(at 203.2 237.49 0)
 			(effects
 				(font
@@ -45167,8 +45233,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 203.2 242.57 0)
+		(property "Description" "MEC 5E single pole normally-open tactile switch"
+			(at 203.2 245.11 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -45177,7 +45243,7 @@
 			)
 		)
 		(property "LCSC" "C19724063"
-			(at 203.2 242.57 0)
+			(at 203.2 245.11 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -45186,7 +45252,7 @@
 			)
 		)
 		(property "Name" "Reset"
-			(at 203.2 237.998 0)
+			(at 204.978 247.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -45198,6 +45264,12 @@
 		)
 		(pin "2"
 			(uuid "c9168ec3-295f-4444-ad59-2b38f59079b6")
+		)
+		(pin "4"
+			(uuid "0072bd4f-ce0e-41f3-b817-b4eee3439de4")
+		)
+		(pin "3"
+			(uuid "0899df95-f10d-47d7-8553-570cb21840d6")
 		)
 		(instances
 			(project "integrated_driver"
@@ -45370,7 +45442,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "3mΩ"
+		(property "Value" "8mΩ"
 			(at 146.939 418.719 0)
 			(effects
 				(font
@@ -45406,7 +45478,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2688862"
+		(property "LCSC" "C2904240"
 			(at 151.13 422.91 0)
 			(effects
 				(font
@@ -45594,7 +45666,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 248.92 486.41 180)
+		(at 247.65 486.41 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -45602,7 +45674,7 @@
 		(dnp no)
 		(uuid "85ae81f6-4b36-4a67-ad94-8521e1cbc8e0")
 		(property "Reference" "C28"
-			(at 246.38 485.775 0)
+			(at 246.634 482.727 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -45611,7 +45683,7 @@
 			)
 		)
 		(property "Value" "10uF 35v"
-			(at 252.73 478.155 0)
+			(at 251.46 478.155 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -45620,7 +45692,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
-			(at 247.9548 482.6 0)
+			(at 246.6848 482.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -45629,7 +45701,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 248.92 486.41 0)
+			(at 247.65 486.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -45638,7 +45710,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 248.92 486.41 0)
+			(at 247.65 486.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -45647,7 +45719,7 @@
 			)
 		)
 		(property "LCSC" "C194427"
-			(at 248.92 486.41 0)
+			(at 247.65 486.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -54584,7 +54656,7 @@
 		(dnp no)
 		(uuid "bfd43bc4-b509-4105-8640-39fa8cbd0aa8")
 		(property "Reference" "R39"
-			(at 252.5014 494.03 0)
+			(at 252.7554 494.792 0)
 			(effects
 				(font
 					(size 1.778 1.778)
@@ -54592,8 +54664,8 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "3mΩ"
-			(at 249.809 485.394 0)
+		(property "Value" "8mΩ"
+			(at 251.333 486.156 0)
 			(effects
 				(font
 					(size 1.651 1.651)
@@ -54628,7 +54700,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2688862"
+		(property "LCSC" "C2904240"
 			(at 254 488.95 0)
 			(effects
 				(font
@@ -56002,8 +56074,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_Push")
-		(at 199.39 208.28 90)
+		(lib_id "Switch:SW_MEC_5E")
+		(at 201.93 208.28 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -56011,7 +56083,7 @@
 		(dnp no)
 		(uuid "cb4d4a9a-b044-44a1-b5f3-7711482e7f43")
 		(property "Reference" "SW1"
-			(at 200.914 208.0259 90)
+			(at 203.454 208.0259 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -56020,7 +56092,7 @@
 			)
 		)
 		(property "Value" "Button"
-			(at 192.278 206.5019 90)
+			(at 194.818 206.5019 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -56038,7 +56110,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "http://www.apem.com/int/index.php?controller=attachment&id_attachment=1371"
 			(at 194.31 208.28 0)
 			(effects
 				(font
@@ -56047,8 +56119,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 199.39 208.28 0)
+		(property "Description" "MEC 5E single pole normally-open tactile switch"
+			(at 201.93 208.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -56057,7 +56129,7 @@
 			)
 		)
 		(property "LCSC" "C19724063"
-			(at 199.39 208.28 90)
+			(at 201.93 208.28 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -56066,7 +56138,7 @@
 			)
 		)
 		(property "Name" "Boot"
-			(at 194.31 206.756 90)
+			(at 205.232 210.82 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -56078,6 +56150,12 @@
 		)
 		(pin "2"
 			(uuid "a0f80243-6139-475d-b6f5-01c7baff0f95")
+		)
+		(pin "4"
+			(uuid "79a5cf63-1eb5-4147-b046-9289d738a2bf")
+		)
+		(pin "3"
+			(uuid "bfed725f-a6cd-4f12-8b4a-b7806e335438")
 		)
 		(instances
 			(project "integrated_driver"
@@ -58103,7 +58181,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "3mΩ"
+		(property "Value" "8mΩ"
 			(at 256.794 486.029 0)
 			(effects
 				(font
@@ -58139,7 +58217,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2688862"
+		(property "LCSC" "C2904240"
 			(at 260.35 490.22 0)
 			(effects
 				(font
@@ -60333,7 +60411,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "3mΩ"
+		(property "Value" "8mΩ"
 			(at 326.009 421.894 0)
 			(effects
 				(font
@@ -60369,7 +60447,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2688862"
+		(property "LCSC" "C2904240"
 			(at 330.2 425.45 0)
 			(effects
 				(font

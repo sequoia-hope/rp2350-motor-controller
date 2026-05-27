@@ -1,0 +1,5 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "parts")(type "KiCad")(uri "${KIPRJMOD}/parts/parts.pretty")(options "")(descr ""))
+  (lib (name "parts_motor")(type "KiCad")(uri "/home/sequoia/pcb/rp2350-motor-controller/parts")(options "")(descr ""))
+)

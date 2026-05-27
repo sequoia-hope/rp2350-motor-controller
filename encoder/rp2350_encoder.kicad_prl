@@ -1,6 +1,6 @@
 {
   "board": {
-    "active_layer": 10,
+    "active_layer": 0,
     "active_layer_preset": "",
     "auto_track_width": true,
     "hidden_netclasses": [],
@@ -13,7 +13,7 @@
       "shapes": 1.0,
       "tracks": 1.0,
       "vias": 1.0,
-      "zones": 1.0
+      "zones": 0.6
     },
     "ratsnest_display_mode": 0,
     "selection_filter": {
@@ -48,8 +48,8 @@
       "drc_warnings",
       "shapes"
     ],
-    "visible_layers": "00000000_00000000_00000000_0000015d",
-    "zone_display_mode": 1
+    "visible_layers": "00000000_00000000_0000f1e7_800000a5",
+    "zone_display_mode": 0
   },
   "git": {
     "integration_disabled": false,
@@ -59,15 +59,11 @@
     "ssh_key": ""
   },
   "meta": {
-    "filename": "rp2350_driver.kicad_prl",
+    "filename": "rp2350_encoder.kicad_prl",
     "version": 5
   },
   "net_inspector_panel": {
     "col_hidden": [
-      false,
-      false,
-      false,
-      false,
       false,
       false,
       false,
@@ -89,17 +85,9 @@
       6,
       7,
       8,
-      9,
-      10,
-      11,
-      12,
-      13
+      9
     ],
     "col_widths": [
-      0,
-      0,
-      0,
-      0,
       0,
       0,
       0,
