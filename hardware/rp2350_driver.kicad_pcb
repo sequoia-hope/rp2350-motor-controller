@@ -76935,18 +76935,6 @@
 			(justify left)
 		)
 	)
-	(gr_text "53V\nmax"
-		(at 149.2 121.8 0)
-		(layer "F.SilkS")
-		(uuid "cb0de0c1-1c62-47b5-be62-62fc13c7caf5")
-		(effects
-			(font
-				(size 0.8 0.8)
-				(thickness 0.2)
-			)
-			(justify left)
-		)
-	)
 	(gr_text "Design by\nSequoia Hope\nAlexander"
 		(at 164.945354 93.945 0)
 		(layer "F.SilkS")
