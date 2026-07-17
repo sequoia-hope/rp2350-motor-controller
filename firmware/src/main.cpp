@@ -263,6 +263,54 @@ void doRun(char *cmd) {
     SERIAL_PORT.println(target, 2);
 }
 
+// Motor tuning defaults. Applied in setup() as well as initHardware() so a
+// query (MQP, MVI, ...) reports the value we actually intend before the
+// hardware is up — otherwise the controller answers with SimpleFOC's library
+// defaults (curr I=300, vel I=10, ramp=NOT_SET), and tune.py's read_params
+// faithfully loads those into the dashboard on page load.
+// Keep in sync with the input `value` attributes in tune.py.
+static void applyMotorTuning() {
+#if MOTOR_CONFIG == MOTOR_MT6701
+    motor->voltage_limit = 4.0;
+    motor->voltage_sensor_align = 1.0;  // reduced from 2.0: 20mOhm shunts saturate INA240 at ~4A
+    motor->current_limit = 5.0;
+    motor->velocity_limit = 20.0;
+    motor->controller = MotionControlType::velocity;
+    motor->torque_controller = TorqueControlType::foc_current;
+    motor->PID_current_q.P = 0.6;
+    motor->PID_current_q.I = 0.3;
+    motor->PID_current_d.P = 0.6;
+    motor->PID_current_d.I = 0.3;
+    motor->LPF_current_q.Tf = 0.02;
+    motor->LPF_current_d.Tf = 0.02;
+    motor->PID_velocity.P = 0.3;
+    motor->PID_velocity.I = 0.1;
+    motor->PID_velocity.D = 0.0;
+    motor->PID_velocity.output_ramp = 200.0;
+    motor->LPF_velocity.Tf = 0.01;
+#elif MOTOR_CONFIG == MOTOR_HALLS
+    motor->voltage_limit = 4.0;
+    motor->voltage_sensor_align = 2.5;  // 10mΩ shunts: ±8A range, comfortable margin
+    motor->current_limit = 3.0;
+    motor->velocity_limit = 10.0;
+    motor->controller = MotionControlType::velocity;
+    motor->torque_controller = TorqueControlType::foc_current;
+    // Current loop
+    motor->PID_current_q.P = 1.5;
+    motor->PID_current_q.I = 0.1;
+    motor->PID_current_d.P = 1.5;
+    motor->PID_current_d.I = 0.1;
+    motor->LPF_current_q.Tf = 0.01;
+    motor->LPF_current_d.Tf = 0.01;
+    // Velocity loop
+    motor->PID_velocity.P = 1.0;
+    motor->PID_velocity.I = 0.1;
+    motor->PID_velocity.D = 0.0;
+    motor->PID_velocity.output_ramp = 200.0;
+    motor->LPF_velocity.Tf = 0.1;
+#endif
+}
+
 static void initHardware() {
     if (hw_initialized) return;
 
@@ -359,45 +407,10 @@ static void initHardware() {
     motor->linkCurrentSense(current_sense);
 #if MOTOR_CONFIG == MOTOR_MT6701
     if (enc_detected) motor->linkSensor(encoder);
-    motor->voltage_limit = 4.0;
-    motor->voltage_sensor_align = 1.0;  // reduced from 2.0: 20mOhm shunts saturate INA240 at ~4A
-    motor->current_limit = 5.0;
-    motor->velocity_limit = 20.0;
-    motor->controller = MotionControlType::velocity;
-    motor->torque_controller = TorqueControlType::foc_current;
-    motor->PID_current_q.P = 0.6;
-    motor->PID_current_q.I = 0.3;
-    motor->PID_current_d.P = 0.6;
-    motor->PID_current_d.I = 0.3;
-    motor->LPF_current_q.Tf = 0.02;
-    motor->LPF_current_d.Tf = 0.02;
-    motor->PID_velocity.P = 0.3;
-    motor->PID_velocity.I = 0.1;
-    motor->PID_velocity.D = 0.0;
-    motor->PID_velocity.output_ramp = 200.0;
-    motor->LPF_velocity.Tf = 0.01;
 #elif MOTOR_CONFIG == MOTOR_HALLS
     if (enc_detected) motor->linkSensor(hall_sensor);
-    motor->voltage_limit = 4.0;
-    motor->voltage_sensor_align = 2.5;  // 10mΩ shunts: ±8A range, comfortable margin
-    motor->current_limit = 3.0;
-    motor->velocity_limit = 10.0;
-    motor->controller = MotionControlType::velocity;
-    motor->torque_controller = TorqueControlType::foc_current;
-    // Current loop
-    motor->PID_current_q.P = 1.5;
-    motor->PID_current_q.I = 0.1;
-    motor->PID_current_d.P = 1.5;
-    motor->PID_current_d.I = 0.1;
-    motor->LPF_current_q.Tf = 0.01;
-    motor->LPF_current_d.Tf = 0.01;
-    // Velocity loop
-    motor->PID_velocity.P = 1.0;
-    motor->PID_velocity.I = 0.1;
-    motor->PID_velocity.D = 0.0;
-    motor->PID_velocity.output_ramp = 200.0;
-    motor->LPF_velocity.Tf = 0.1;
 #endif
+    applyMotorTuning();
     motor->useMonitoring(SERIAL_PORT);
     motor->monitor_downsample = 0;
 
@@ -1729,6 +1742,7 @@ void setup() {
                                            PIN_SENSE_A, PIN_SENSE_B, PIN_SENSE_C);
     delay(1);
     motor = new BLDCMotor(POLE_PAIRS);
+    applyMotorTuning();
     delay(1);
 #if MOTOR_CONFIG == MOTOR_MT6701
     encoder = new MagneticSensorMT6835(PIN_ENC_CS);
