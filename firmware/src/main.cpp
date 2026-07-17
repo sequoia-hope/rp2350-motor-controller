@@ -52,6 +52,23 @@
 #endif
 #define CURRENT_AMP_GAIN 20.0f
 
+// --- Current sense saturation: the hard ceiling on current_limit ---
+//
+// The INA240 output swings between its mid-rail reference (~1.65V) and the 3.3V
+// rail, so the largest current it can REPORT is:
+//     I_sat = 1.65V / (SHUNT_RESISTOR * CURRENT_AMP_GAIN)
+// 20mOhm/20x -> 4.12A.  10mOhm/20x -> 8.25A.
+//
+// Past I_sat the measurement stops rising while the real current keeps climbing.
+// The current PID then sees a too-low current, winds up, and commands MORE
+// voltage -- positive feedback with the sense chain blind, bounded only by
+// voltage_limit and the winding resistance. current_limit MUST stay under I_sat.
+//
+// This is the same ceiling that already forced voltage_sensor_align down to 1.0V.
+#define CURRENT_SENSE_REF_V  1.65f
+#define CURRENT_SENSE_SAT_A  (CURRENT_SENSE_REF_V / (SHUNT_RESISTOR * CURRENT_AMP_GAIN))
+#define CURRENT_LIMIT_MAX_A  (CURRENT_SENSE_SAT_A * 0.7f)  // 30% margin below saturation
+
 // VMOT sensing: GPIO46 = ADC channel 6, voltage divider 100k / 5.1k
 #define PIN_VMOT 46
 #define VMOT_DIVIDER_RATIO (105.1f / 5.1f)  // Vmot = Vadc * ratio
@@ -146,7 +163,7 @@ static float loop_freq_hz = 0;
 // 1 = self-starting demo: wait for motor power, load calibration from flash,
 // then run a continuous sine with all output suppressed. 0 = manual bring-up
 // (H / A / Cs / Y from tune.py). Nothing moves on boot when this is 0.
-#define DEMO_MODE 1
+#define DEMO_MODE 0
 #define DEMO_SPEED      50.0f    // rad/s amplitude
 #define DEMO_PERIOD_MS  2000.0f  // -> 0.5Hz
 #define DEMO_MIN_VMOT   15.0f    // any bench supply above this also arms it
@@ -292,7 +309,24 @@ void doVmot(char *cmd) {
     SERIAL_PORT.print("VMOT=");
     SERIAL_PORT.println(readVMOT(), 2);
 }
-void doMotor(char *cmd) { commander->motor(motor, cmd); }
+// Hard ceiling on current_limit, enforced everywhere it can be set. Above
+// CURRENT_LIMIT_MAX_A the sense chain saturates and the current loop runs open
+// with no feedback. updateCurrentLimit() is used rather than assigning the field
+// so PID_velocity.limit (which bounds the velocity loop's current setpoint)
+// tracks it -- assigning current_limit alone would leave the PID uncapped.
+static void clampCurrentLimit() {
+    if (motor->current_limit > CURRENT_LIMIT_MAX_A)
+        motor->updateCurrentLimit(CURRENT_LIMIT_MAX_A);
+    if (motor->PID_velocity.limit > CURRENT_LIMIT_MAX_A)
+        motor->PID_velocity.limit = CURRENT_LIMIT_MAX_A;
+}
+
+// MLC from the dashboard calls updateCurrentLimit() with whatever is typed, so
+// re-clamp after every motor command.
+void doMotor(char *cmd) {
+    commander->motor(motor, cmd);
+    clampCurrentLimit();
+}
 void doPolePairs(char *cmd) {
     if (cmd[0] == '\0' || cmd[0] == '\n' || cmd[0] == '\r') {
         // Read
@@ -384,7 +418,9 @@ static void applyMotorTuning() {
 #if MOTOR_CONFIG == MOTOR_MT6701
     motor->voltage_limit = 4.0;
     motor->voltage_sensor_align = 1.0;  // reduced from 2.0: 20mOhm shunts saturate INA240 at ~4A
-    motor->current_limit = 5.0;
+    // Was 5.0 -- ABOVE the 4.12A the 20mOhm shunts can measure, so the current
+    // loop could be commanding current it was blind to. See CURRENT_LIMIT_MAX_A.
+    motor->current_limit = 2.5;
     motor->velocity_limit = 20.0;
     motor->controller = MotionControlType::velocity;
     motor->torque_controller = TorqueControlType::foc_current;
@@ -420,6 +456,7 @@ static void applyMotorTuning() {
     motor->PID_velocity.output_ramp = 200.0;
     motor->LPF_velocity.Tf = 0.1;
 #endif
+    clampCurrentLimit();  // backstop: never configure past the sense range
 }
 
 static void initHardware() {
