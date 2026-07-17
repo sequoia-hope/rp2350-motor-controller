@@ -1738,6 +1738,10 @@ void setup() {
     delay(1);
     commander = new Commander();
     commander->com_port = &SERIAL_PORT;
+    // on_request drops the "PID curr q| " label but keeps the value, so queries
+    // return a bare number for tune.py to parse. VerboseMode::nothing would
+    // suppress the value too.
+    commander->verbose = VerboseMode::on_request;
 
 #ifdef HAS_USB_PD
     Wire1.setSDA(PIN_PD_SDA);
