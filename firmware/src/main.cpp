@@ -67,7 +67,7 @@
 // This is the same ceiling that already forced voltage_sensor_align down to 1.0V.
 #define CURRENT_SENSE_REF_V  1.65f
 #define CURRENT_SENSE_SAT_A  (CURRENT_SENSE_REF_V / (SHUNT_RESISTOR * CURRENT_AMP_GAIN))
-#define CURRENT_LIMIT_MAX_A  (CURRENT_SENSE_SAT_A * 0.7f)  // 30% margin below saturation
+#define CURRENT_LIMIT_MAX_A  (CURRENT_SENSE_SAT_A * 0.98f)  // just under saturation
 
 // VMOT sensing: GPIO46 = ADC channel 6, voltage divider 100k / 5.1k
 #define PIN_VMOT 46
@@ -163,7 +163,7 @@ static float loop_freq_hz = 0;
 // 1 = self-starting demo: wait for motor power, load calibration from flash,
 // then run a continuous sine with all output suppressed. 0 = manual bring-up
 // (H / A / Cs / Y from tune.py). Nothing moves on boot when this is 0.
-#define DEMO_MODE 0
+#define DEMO_MODE 1
 #define DEMO_SPEED      50.0f    // rad/s amplitude
 #define DEMO_PERIOD_MS  2000.0f  // -> 0.5Hz
 #define DEMO_MIN_VMOT   15.0f    // any bench supply above this also arms it
@@ -420,7 +420,7 @@ static void applyMotorTuning() {
     motor->voltage_sensor_align = 1.0;  // reduced from 2.0: 20mOhm shunts saturate INA240 at ~4A
     // Was 5.0 -- ABOVE the 4.12A the 20mOhm shunts can measure, so the current
     // loop could be commanding current it was blind to. See CURRENT_LIMIT_MAX_A.
-    motor->current_limit = 2.5;
+    motor->current_limit = 4.0;
     motor->velocity_limit = 20.0;
     motor->controller = MotionControlType::velocity;
     motor->torque_controller = TorqueControlType::foc_current;
