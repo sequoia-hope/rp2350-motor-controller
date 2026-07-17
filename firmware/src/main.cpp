@@ -142,6 +142,47 @@ static unsigned long loop_count = 0;
 static unsigned long loop_freq_t0 = 0;
 static float loop_freq_hz = 0;
 
+// Per-iteration step-test CSV logging. OFF by default.
+//
+// SERIAL_PORT is Serial1 (115200 UART via the debug probe), and print() blocks
+// once the TX FIFO fills. A ~28-byte CSV row costs ~2.4ms at that baud, so
+// logging every FOC iteration throttled loopFOC()/move() to a measured 407Hz --
+// the control loop ran ~100x slower than its gains assume, which oscillates and
+// reads as far too much velocity gain. (The original demo printed to USB CDC,
+// a buffered 12Mbit/s pipe, which hid this.)
+//
+// When enabled, rows are DROPPED rather than blocking: availableForWrite() is
+// checked first, so a full TX FIFO can never stall the control loop.
+#define FOC_TRACE 0
+
+#if FOC_TRACE
+#define TRACE_ROOM(n) (SERIAL_PORT.availableForWrite() >= (n))
+#define TRACE(...)    SERIAL_PORT.print(__VA_ARGS__)
+#define TRACELN(...)  SERIAL_PORT.println(__VA_ARGS__)
+#else
+#define TRACE_ROOM(n) (false)
+#define TRACE(...)    ((void)0)
+#define TRACELN(...)  ((void)0)
+#endif
+
+// FOC loop rate limit. Left ungated, loop() spins loopFOC()/move() as fast as
+// the core allows (measured ~208kHz), which oversamples the encoder and feeds
+// a noisy differentiated velocity into PID_velocity.
+#define FOC_LOOP_HZ 40000
+#define FOC_LOOP_PERIOD_US (1000000UL / FOC_LOOP_HZ)
+static uint32_t foc_last_us = 0;
+static float foc_rate_hz = 0;    // measured, reported by R
+static uint32_t foc_run_count = 0;
+
+// True once per FOC_LOOP_PERIOD_US. Unsigned subtraction handles micros() rollover.
+static inline bool focLoopDue() {
+    uint32_t now = micros();
+    if ((uint32_t)(now - foc_last_us) < FOC_LOOP_PERIOD_US) return false;
+    foc_last_us = now;
+    foc_run_count++;
+    return true;
+}
+
 // Continuous velocity sine mode (non-blocking, runs in loop)
 static bool sine_running = false;
 static float sine_amplitude = 0;
@@ -674,8 +715,11 @@ void doStep(char *cmd) {
         unsigned long duration = (unsigned long)(period_ms * 3);  // 3 full cycles
 
         motor->target = 0;
+        uint32_t foc0 = foc_run_count;
         unsigned long t0 = millis();
         while (millis() - t0 < duration) {
+            if (!focLoopDue()) continue;
+
             unsigned long t_ms = millis() - t0;
             float t_sec = t_ms * 0.001f;
             motor->target = amplitude * sinf(2.0f * 3.14159265f * freq_hz * t_sec);
@@ -683,17 +727,29 @@ void doStep(char *cmd) {
             motor->loopFOC();
             motor->move();
 
-            SERIAL_PORT.print(t_ms);
-            SERIAL_PORT.print(',');
-            SERIAL_PORT.print(motor->target, 4);
-            SERIAL_PORT.print(',');
-            SERIAL_PORT.print(motor->shaft_velocity, 4);
-            SERIAL_PORT.print(',');
-            SERIAL_PORT.println(motor->current.q, 4);
+            if (TRACE_ROOM(32)) {
+                TRACE(t_ms);
+                TRACE(',');
+                TRACE(motor->target, 4);
+                TRACE(',');
+                TRACE(motor->shaft_velocity, 4);
+                TRACE(',');
+                TRACELN(motor->current.q, 4);
+            }
         }
+        unsigned long elapsed = millis() - t0;
+        uint32_t iters = foc_run_count - foc0;
 
         motor->target = 0;
         motor->disable();
+        // Achieved FOC rate, printed once after the loop so it costs nothing.
+        SERIAL_PORT.print("foc_iters=");
+        SERIAL_PORT.print(iters);
+        SERIAL_PORT.print(" in ");
+        SERIAL_PORT.print(elapsed);
+        SERIAL_PORT.print("ms -> ");
+        SERIAL_PORT.print(elapsed ? (iters * 1000.0f / elapsed) : 0, 0);
+        SERIAL_PORT.println(" Hz");
         SERIAL_PORT.println("DONE");
         return;
     }
@@ -757,8 +813,10 @@ void doStep(char *cmd) {
     int iter_count = 0;
     unsigned long t0 = millis();
     while (millis() - t0 < duration) {
+        if (!focLoopDue()) continue;
+
         // Instrument first 10 iterations: print angle, alpha/beta, dq before PID
-        if (iter_count < 10 && (mode == 'q' || mode == 'Q')) {
+        if (FOC_TRACE && iter_count < 10 && (mode == 'q' || mode == 'Q')) {
 #if MOTOR_CONFIG == MOTOR_MT6701
             encoder->update();
 #elif MOTOR_CONFIG == MOTOR_HALLS
@@ -798,6 +856,8 @@ void doStep(char *cmd) {
             motor->target = value;
         else
             motor->target = 0;
+
+        if (!TRACE_ROOM(96)) continue;  // drop the row rather than stall loopFOC()
 
         switch (mode) {
             case 'q': case 'Q': {
@@ -860,6 +920,8 @@ void doStep(char *cmd) {
 void doReport(char *cmd) {
     SERIAL_PORT.print("loop_hz=");
     SERIAL_PORT.print(loop_freq_hz, 0);
+    SERIAL_PORT.print(" foc_hz=");
+    SERIAL_PORT.print(foc_rate_hz, 0);
     SERIAL_PORT.print(" enabled=");
     SERIAL_PORT.print(motor->enabled);
     SERIAL_PORT.print(" mode=");
@@ -1846,7 +1908,9 @@ void loop() {
     unsigned long now = millis();
     if (now - loop_freq_t0 >= 1000) {
         loop_freq_hz = loop_count * 1000.0f / (now - loop_freq_t0);
+        foc_rate_hz = foc_run_count * 1000.0f / (now - loop_freq_t0);
         loop_count = 0;
+        foc_run_count = 0;
         loop_freq_t0 = now;
     }
 
@@ -1879,16 +1943,20 @@ void loop() {
 #endif
 
     if (sine_running) {
-        float t_sec = (millis() - sine_t0) * 0.001f;
-        motor->target = sine_amplitude * sinf(2.0f * 3.14159265f * sine_freq_hz * t_sec);
-        motor->loopFOC();
-        motor->move();
+        if (focLoopDue()) {
+            float t_sec = (millis() - sine_t0) * 0.001f;
+            motor->target = sine_amplitude * sinf(2.0f * 3.14159265f * sine_freq_hz * t_sec);
+            motor->loopFOC();
+            motor->move();
+        }
     }
 #if MOTOR_CONFIG == MOTOR_HALLS
     else if (foc_ready && motor->enabled) {
         // Continuous FOC loop for hall sensor motor
-        motor->loopFOC();
-        motor->move();
+        if (focLoopDue()) {
+            motor->loopFOC();
+            motor->move();
+        }
         yield();  // Keep USB CDC alive during continuous FOC
     }
 #endif
