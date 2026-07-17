@@ -142,28 +142,64 @@ static unsigned long loop_count = 0;
 static unsigned long loop_freq_t0 = 0;
 static float loop_freq_hz = 0;
 
-// Per-iteration step-test CSV logging. OFF by default.
-//
-// SERIAL_PORT is Serial1 (115200 UART via the debug probe), and print() blocks
-// once the TX FIFO fills. A ~28-byte CSV row costs ~2.4ms at that baud, so
-// logging every FOC iteration throttled loopFOC()/move() to a measured 407Hz --
-// the control loop ran ~100x slower than its gains assume, which oscillates and
-// reads as far too much velocity gain. (The original demo printed to USB CDC,
-// a buffered 12Mbit/s pipe, which hid this.)
-//
-// When enabled, rows are DROPPED rather than blocking: availableForWrite() is
-// checked first, so a full TX FIFO can never stall the control loop.
-#define FOC_TRACE 0
+// Blocking per-iteration debug dump (angle/alpha/beta/dq for the first 10
+// iterations). Costs ~9ms per line at 115200 and stalls the control loop, so
+// it stays off unless you are chasing a commutation problem.
+#define STEP_DEBUG 0
 
-#if FOC_TRACE
-#define TRACE_ROOM(n) (SERIAL_PORT.availableForWrite() >= (n))
-#define TRACE(...)    SERIAL_PORT.print(__VA_ARGS__)
-#define TRACELN(...)  SERIAL_PORT.println(__VA_ARGS__)
-#else
-#define TRACE_ROOM(n) (false)
-#define TRACE(...)    ((void)0)
-#define TRACELN(...)  ((void)0)
-#endif
+// --- Step-test sample log ---
+//
+// Samples are captured into RAM during the FOC loop and dumped once the loop
+// ends. SERIAL_PORT is Serial1 (115200 UART), and print() blocks when the TX
+// FIFO fills: a ~28-byte CSV row costs ~2.4ms, so printing per iteration
+// throttled loopFOC()/move() to a measured 407Hz -- the control loop ran ~100x
+// slower than its gains assume, which oscillates and reads as far too much
+// velocity gain. (The original demo printed to USB CDC, a buffered 12Mbit/s
+// pipe, which hid this.) Buffering keeps the plots and costs ~100ns per sample.
+//
+// 2000 x 12 floats + timestamps = ~104KB of the 512KB SRAM.
+#define LOG_MAX_SAMPLES 2000
+#define LOG_MAX_COLS    12
+static uint32_t log_t_ms[LOG_MAX_SAMPLES];
+static float    log_col[LOG_MAX_SAMPLES][LOG_MAX_COLS];
+static uint8_t  log_ncols = 0;
+static uint16_t log_n = 0;
+static uint32_t log_last_us = 0;
+static uint32_t log_interval_us = 1000;
+static const char *log_header = "";
+
+// Pick an interval that fits the whole run in the buffer, no faster than 1kHz.
+static void logBegin(const char *header, uint8_t ncols, unsigned long duration_ms) {
+    log_header = header;
+    log_ncols = ncols < LOG_MAX_COLS ? ncols : LOG_MAX_COLS;
+    log_n = 0;
+    uint32_t need = (uint32_t)((uint64_t)duration_ms * 1000UL / LOG_MAX_SAMPLES);
+    log_interval_us = need > 1000 ? need : 1000;
+    log_last_us = micros() - log_interval_us;  // capture the first sample immediately
+}
+
+// Returns a row to fill, or nullptr if it isn't time yet / the buffer is full.
+static inline float *logSample(uint32_t t_ms) {
+    uint32_t now = micros();
+    if ((uint32_t)(now - log_last_us) < log_interval_us) return nullptr;
+    if (log_n >= LOG_MAX_SAMPLES) return nullptr;
+    log_last_us = now;
+    log_t_ms[log_n] = t_ms;
+    return log_col[log_n++];
+}
+
+// Dump after the control loop has stopped, where blocking is harmless.
+static void logDump() {
+    SERIAL_PORT.println(log_header);
+    for (uint16_t i = 0; i < log_n; i++) {
+        SERIAL_PORT.print(log_t_ms[i]);
+        for (uint8_t c = 0; c < log_ncols; c++) {
+            SERIAL_PORT.print(',');
+            SERIAL_PORT.print(log_col[i][c], 4);
+        }
+        SERIAL_PORT.println();
+    }
+}
 
 // FOC loop rate limit. Left ungated, loop() spins loopFOC()/move() as fast as
 // the core allows (measured ~208kHz), which oversamples the encoder and feeds
@@ -213,12 +249,36 @@ static float readVMOT() {
 
 // Forward declarations
 void stopSine();
+void startSine(float amplitude, float freq);
 void doHallScan(char *cmd);
+
+// Serial output is blocked while the automatic sine demo runs: SERIAL_PORT is a
+// 115200 UART and every reply stalls loopFOC(). "VMOT=19.86" is ~1ms, about 16
+// lost FOC iterations, and tune.py polls V once a second; an R report is ~200
+// bytes, ~17ms. Commands are still PARSED while blocked -- only the reply is
+// dropped -- so tune.py's Stop button (T0 -> doTarget -> stopSine) still works.
+static inline bool outputBlocked() { return sine_running; }
+
+// Continuous sine demo: Y<amplitude>[,<freq_hz>] starts it, Y alone stops it.
+// This is the only way to reach startSine() -- the PD 20V/5A auto-start in
+// loop() is commented out, so without this the demo path is unreachable.
+void doDemo(char *cmd) {
+    if (cmd[0] == '\0' || cmd[0] == '\n' || cmd[0] == '\r') {
+        stopSine();
+        return;
+    }
+    float amplitude = atof(cmd);
+    float freq = 1.0f;
+    char *comma = strchr(cmd, ',');
+    if (comma) freq = atof(comma + 1);
+    startSine(amplitude, freq);
+}
 void doCSDebug(char *cmd);
 
 // --- Commander callbacks ---
 static bool hw_initialized = false;
 void doVmot(char *cmd) {
+    if (outputBlocked()) return;  // tune.py polls this once a second
     SERIAL_PORT.print("VMOT=");
     SERIAL_PORT.println(readVMOT(), 2);
 }
@@ -687,8 +747,6 @@ void doStep(char *cmd) {
 
     // --- Sinusoidal velocity tracking test ---
     if (mode == 'w' || mode == 'W') {
-        SERIAL_PORT.println("t_ms,vel_target,vel,Iq");
-
         // Reset PID/LPF state
         motor->PID_current_q.reset();
         motor->PID_current_d.reset();
@@ -716,6 +774,7 @@ void doStep(char *cmd) {
 
         motor->target = 0;
         uint32_t foc0 = foc_run_count;
+        logBegin("t_ms,vel_target,vel,Iq", 3, duration);
         unsigned long t0 = millis();
         while (millis() - t0 < duration) {
             if (!focLoopDue()) continue;
@@ -727,14 +786,11 @@ void doStep(char *cmd) {
             motor->loopFOC();
             motor->move();
 
-            if (TRACE_ROOM(32)) {
-                TRACE(t_ms);
-                TRACE(',');
-                TRACE(motor->target, 4);
-                TRACE(',');
-                TRACE(motor->shaft_velocity, 4);
-                TRACE(',');
-                TRACELN(motor->current.q, 4);
+            float *s = logSample(t_ms);
+            if (s) {
+                s[0] = motor->target;
+                s[1] = motor->shaft_velocity;
+                s[2] = motor->current.q;
             }
         }
         unsigned long elapsed = millis() - t0;
@@ -742,6 +798,7 @@ void doStep(char *cmd) {
 
         motor->target = 0;
         motor->disable();
+        logDump();
         // Achieved FOC rate, printed once after the loop so it costs nothing.
         SERIAL_PORT.print("foc_iters=");
         SERIAL_PORT.print(iters);
@@ -759,19 +816,24 @@ void doStep(char *cmd) {
     // Save current state
     MotionControlType prev_controller = motor->controller;
 
-    // Configure mode for the test
+    // Configure mode for the test. Headers are emitted by logDump() afterwards.
+    const char *hdr;
+    uint8_t ncols;
     switch (mode) {
         case 'q': case 'Q':
             motor->controller = MotionControlType::torque;
-            SERIAL_PORT.println("t_ms,Iq_target,Iq,Id,Vq,Vd,Ia,Ib,Ic,raw0,raw1,raw2");
+            hdr = "t_ms,Iq_target,Iq,Id,Vq,Vd,Ia,Ib,Ic,raw0,raw1,raw2";
+            ncols = 11;
             break;
         case 'v': case 'V':
             motor->controller = MotionControlType::velocity;
-            SERIAL_PORT.println("t_ms,vel_target,vel,Iq");
+            hdr = "t_ms,vel_target,vel,Iq";
+            ncols = 3;
             break;
         case 'p': case 'P':
             motor->controller = MotionControlType::angle;
-            SERIAL_PORT.println("t_ms,angle_target,angle,vel");
+            hdr = "t_ms,angle_target,angle,vel";
+            ncols = 3;
             break;
         default:
             SERIAL_PORT.println("Unknown mode. Use i, q, v, or p.");
@@ -811,12 +873,14 @@ void doStep(char *cmd) {
     // Record 100ms of baseline at target=0, then step to value
     motor->target = 0;
     int iter_count = 0;
+    uint32_t foc0 = foc_run_count;
+    logBegin(hdr, ncols, duration);
     unsigned long t0 = millis();
     while (millis() - t0 < duration) {
         if (!focLoopDue()) continue;
 
         // Instrument first 10 iterations: print angle, alpha/beta, dq before PID
-        if (FOC_TRACE && iter_count < 10 && (mode == 'q' || mode == 'Q')) {
+        if (STEP_DEBUG && iter_count < 10 && (mode == 'q' || mode == 'Q')) {
 #if MOTOR_CONFIG == MOTOR_MT6701
             encoder->update();
 #elif MOTOR_CONFIG == MOTOR_HALLS
@@ -857,67 +921,60 @@ void doStep(char *cmd) {
         else
             motor->target = 0;
 
-        if (!TRACE_ROOM(96)) continue;  // drop the row rather than stall loopFOC()
+        float *s = logSample(t_ms);
+        if (!s) continue;
 
         switch (mode) {
             case 'q': case 'Q': {
                 PhaseCurrent_s phase = current_sense->getPhaseCurrents();
                 RP2040ADCEngine *eng = getADCEngine();
-                SERIAL_PORT.print(t_ms);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(motor->target, 4);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(motor->current.q, 4);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(motor->current.d, 4);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(motor->voltage.q, 4);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(motor->voltage.d, 4);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(phase.a, 4);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(phase.b, 4);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(phase.c, 4);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(eng->getRawChannel(0));
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(eng->getRawChannel(1));
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.println(eng->getRawChannel(2));
+                s[0] = motor->target;
+                s[1] = motor->current.q;
+                s[2] = motor->current.d;
+                s[3] = motor->voltage.q;
+                s[4] = motor->voltage.d;
+                s[5] = phase.a;
+                s[6] = phase.b;
+                s[7] = phase.c;
+                s[8] = eng->getRawChannel(0);
+                s[9] = eng->getRawChannel(1);
+                s[10] = eng->getRawChannel(2);
                 break;
             }
             case 'v': case 'V':
-                SERIAL_PORT.print(t_ms);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(motor->target, 4);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(motor->shaft_velocity, 4);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.println(motor->current.q, 4);
+                s[0] = motor->target;
+                s[1] = motor->shaft_velocity;
+                s[2] = motor->current.q;
                 break;
             case 'p': case 'P':
-                SERIAL_PORT.print(t_ms);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(motor->target, 4);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.print(motor->shaft_angle, 4);
-                SERIAL_PORT.print(',');
-                SERIAL_PORT.println(motor->shaft_velocity, 4);
+                s[0] = motor->target;
+                s[1] = motor->shaft_angle;
+                s[2] = motor->shaft_velocity;
                 break;
         }
     }
+
+    unsigned long elapsed = millis() - t0;
+    uint32_t iters = foc_run_count - foc0;
 
     // Restore previous state and disable motor
     motor->target = 0;
     motor->controller = prev_controller;
     motor->disable();
+    logDump();
+    SERIAL_PORT.print("foc_iters=");
+    SERIAL_PORT.print(iters);
+    SERIAL_PORT.print(" in ");
+    SERIAL_PORT.print(elapsed);
+    SERIAL_PORT.print("ms -> ");
+    SERIAL_PORT.print(elapsed ? (iters * 1000.0f / elapsed) : 0, 0);
+    SERIAL_PORT.println(" Hz");
     SERIAL_PORT.println("DONE");
 }
 
 // Report current motor state
 void doReport(char *cmd) {
+    if (outputBlocked()) return;  // ~200 bytes, ~17ms of stalled FOC
     SERIAL_PORT.print("loop_hz=");
     SERIAL_PORT.print(loop_freq_hz, 0);
     SERIAL_PORT.print(" foc_hz=");
@@ -1856,6 +1913,7 @@ void setup() {
     commander->add('W', doWindingResistance, "winding_R");
     commander->add('F', doHallScan, "hall_scan");
     commander->add('G', doCSDebug, "cs_debug");
+    commander->add('Y', doDemo, "sine_demo");
 
     // Auto-init disabled: stale calibration from flash (wrong shunt config)
     // can corrupt state and prevent align from working.
