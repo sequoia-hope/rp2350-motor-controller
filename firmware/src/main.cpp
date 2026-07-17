@@ -142,6 +142,15 @@ static unsigned long loop_count = 0;
 static unsigned long loop_freq_t0 = 0;
 static float loop_freq_hz = 0;
 
+// --- Automatic demo ---
+// 1 = self-starting demo: wait for motor power, load calibration from flash,
+// then run a continuous sine with all output suppressed. 0 = manual bring-up
+// (H / A / Cs / Y from tune.py). Nothing moves on boot when this is 0.
+#define DEMO_MODE 1
+#define DEMO_SPEED      50.0f    // rad/s amplitude
+#define DEMO_PERIOD_MS  2000.0f  // -> 0.5Hz
+#define DEMO_MIN_VMOT   15.0f    // any bench supply above this also arms it
+
 // Blocking per-iteration debug dump (angle/alpha/beta/dq for the first 10
 // iterations). Costs ~9ms per line at 115200 and stalls the control loop, so
 // it stays off unless you are chasing a commutation problem.
@@ -252,11 +261,12 @@ void stopSine();
 void startSine(float amplitude, float freq);
 void doHallScan(char *cmd);
 
-// Serial output is blocked while the automatic sine demo runs: SERIAL_PORT is a
-// 115200 UART and every reply stalls loopFOC(). "VMOT=19.86" is ~1ms, about 16
-// lost FOC iterations, and tune.py polls V once a second; an R report is ~200
-// bytes, ~17ms. Commands are still PARSED while blocked -- only the reply is
-// dropped -- so tune.py's Stop button (T0 -> doTarget -> stopSine) still works.
+// Serial output is blocked while the sine runs: SERIAL_PORT is a 115200 UART and
+// every reply stalls loopFOC(). "VMOT=19.86" is ~1ms, about 16 lost FOC
+// iterations, and tune.py polls V once a second; an R report is ~200 bytes,
+// ~17ms -- which is what would make a "continuous" sine stutter. Commands are
+// still PARSED while blocked -- only the reply is dropped -- so tune.py's Stop
+// button (T0 -> doTarget -> stopSine) still works.
 static inline bool outputBlocked() { return sine_running; }
 
 // Continuous sine demo: Y<amplitude>[,<freq_hz>] starts it, Y alone stops it.
@@ -1960,6 +1970,56 @@ void stopSine() {
     SERIAL_PORT.println("Sine stopped.");
 }
 
+#if DEMO_MODE
+// Self-starting demo. Arms once motor power appears -- either a negotiated USB
+// PD 20V contract or any VMOT above DEMO_MIN_VMOT, so a bench supply works too
+// -- then loads calibration from flash and runs the sine forever.
+//
+// Everything here prints BEFORE the sine starts. Once sine_running is set,
+// outputBlocked() suppresses replies so nothing can stall loopFOC(): a single
+// blocking print is ~1ms, i.e. ~20 dropped FOC iterations, which is exactly the
+// stutter that makes a "continuous" sine not continuous.
+static bool demo_done = false;
+static unsigned long demo_last_check = 0;
+
+static void demoTick() {
+    if (demo_done || sine_running) return;
+    // Poll at 10Hz; readVMOT() falls back to analogRead() before the ADC engine
+    // is up, and there is no reason to spin on it.
+    unsigned long now = millis();
+    if (now - demo_last_check < 100) return;
+    demo_last_check = now;
+
+    bool pd_20v = false;
+#ifdef HAS_USB_PD
+    pd_20v = pd_ready && pd_voltage_raw >= 400;  // 400 * 50mV = 20V
+#endif
+    float vmot = readVMOT();
+    if (!pd_20v && vmot < DEMO_MIN_VMOT) return;
+
+    demo_done = true;  // one shot: never retry, even if the steps below fail
+    SERIAL_PORT.print("DEMO: power up (VMOT=");
+    SERIAL_PORT.print(vmot, 1);
+    SERIAL_PORT.println("V), loading calibration...");
+
+    // Same order as doCalibration('l'): the hardware must be up before
+    // load_calibration_and_init() calls initFOC(), or FOC initialises against
+    // an uninitialised driver/current sense/encoder and the motor never turns.
+    initHardware();
+    if (!enc_detected) {
+        SERIAL_PORT.println("DEMO: encoder not detected — not starting.");
+        return;
+    }
+    load_calibration_and_init();
+    if (!foc_ready) {
+        SERIAL_PORT.println("DEMO: no valid calibration in flash. Run A then Cs.");
+        return;
+    }
+    startSine(DEMO_SPEED, 1000.0f / DEMO_PERIOD_MS);
+    SERIAL_PORT.println("DEMO: running. Output is now suppressed.");
+}
+#endif
+
 void loop() {
     // Measure loop frequency (update every second)
     loop_count++;
@@ -1991,13 +2051,11 @@ void loop() {
             SERIAL_PORT.print("VMOT updated: ");
             SERIAL_PORT.println(vmot, 1);
         }
-        // Auto-start sine test if PD negotiated 20V / 5A
-        // 20V = 400 (50mV units), 5A = 500 (10mA units)
-        if (pd_voltage_raw >= 400 && pd_current_raw >= 500 && foc_ready) {
-            SERIAL_PORT.println("PD: 20V/5A available — starting continuous sine test");
-            // startSine(30.0f, 1.0f);
-        }
     }
+#endif
+
+#if DEMO_MODE
+    demoTick();  // arms on PD 20V or VMOT > DEMO_MIN_VMOT, then runs forever
 #endif
 
     if (sine_running) {
