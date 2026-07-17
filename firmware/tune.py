@@ -956,8 +956,10 @@ select { background: var(--surface); color: var(--text); border: 1px solid var(-
     <button id="btnAlign" onclick="doAlignBtn()">Align</button>
     <button id="btnReport" onclick="sendCmd('R')">Report</button>
     <button id="btnAdcDiag" onclick="sendCmd('D')">ADC Diag</button>
+    <button id="btnWindingR" onclick="sendCmd('W')">Winding R</button>
     <button id="btnRead" onclick="sendCmd('R')" style="display:none">Read</button>
     <button class="danger" id="btnStop" onclick="sendStop()">Stop</button>
+    <button onclick="doReconnect()">Reconnect</button>
 </div>
 
 <div class="main">
@@ -1063,21 +1065,25 @@ select { background: var(--surface); color: var(--text); border: 1px solid var(-
             </div>
         </div>
 
-        <!-- Control Mode -->
+        <!-- Motor Control -->
         <div class="section" id="sec-mode">
-            <div class="section-header" onclick="toggleSection('sec-mode')">Control Mode</div>
+            <div class="section-header" onclick="toggleSection('sec-mode')">Motor Control</div>
             <div class="section-body">
-                <div class="param-row">
-                    <button onclick="sendCmd('MC0')" style="flex:1">Torque</button>
-                    <button onclick="sendCmd('MC1')" style="flex:1">Velocity</button>
-                    <button onclick="sendCmd('MC2')" style="flex:1">Angle</button>
+                <div class="param-row"><span class="param-label">Velocity (rad/s)</span>
+                    <input type="number" id="motorSpeed" step="1" value="50" style="flex:1"></div>
+                <div class="param-row" style="gap:4px">
+                    <button class="primary" onclick="motorRunVel(1)" style="flex:1">Forward</button>
+                    <button class="primary" onclick="motorRunVel(-1)" style="flex:1">Reverse</button>
                 </div>
-                <div class="param-row"><span class="param-label">Target</span>
-                    <input type="number" id="targetVal" step="0.1" value="0">
-                    <button onclick="sendCmd('T'+document.getElementById('targetVal').value)">Set</button></div>
-                <div class="param-row" style="margin-top:4px">
-                    <button onclick="sendCmd('ME')" style="flex:1">Enable</button>
-                    <button class="danger" onclick="sendCmd('MD')" style="flex:1">Disable</button>
+                <div class="param-row"><span class="param-label">Current (A)</span>
+                    <input type="number" id="motorCurrent" step="0.1" value="0.5" style="flex:1"></div>
+                <div class="param-row" style="gap:4px">
+                    <button class="primary" onclick="motorRunCur(1)" style="flex:1">Forward</button>
+                    <button class="primary" onclick="motorRunCur(-1)" style="flex:1">Reverse</button>
+                </div>
+                <div class="param-row" style="margin-top:4px;gap:4px">
+                    <button class="danger" onclick="motorStop()" style="flex:1">Stop</button>
+                    <button onclick="motorCoast()" style="flex:1">Coast</button>
                 </div>
             </div>
         </div>
@@ -1129,7 +1135,7 @@ select { background: var(--surface); color: var(--text); border: 1px solid var(-
 
     <div class="plot-area">
         <div class="step-controls">
-            <select id="stepMode">
+            <select id="stepMode" onchange="onStepModeChange()">
                 <option value="q">Current (Iq)</option>
                 <option value="i">Current Impulse (fixed angle)</option>
                 <option value="v">Velocity</option>
@@ -1137,6 +1143,7 @@ select { background: var(--surface); color: var(--text); border: 1px solid var(-
                 <option value="p">Position</option>
             </select>
             <input type="number" id="stepValue" step="0.1" value="0.5" placeholder="step">
+            <input type="number" id="sinePeriod" step="100" value="1000" placeholder="period ms" title="Sine period (ms)" style="display:none;width:80px">
             <button class="primary" id="stepBtn" onclick="runStepTest()">Run Step Test</button>
             <button id="contBtn" onclick="toggleContinuous()">Continuous</button>
             <span id="stepStatus" style="color:var(--text2);font-size:0.85em"></span>
@@ -1343,6 +1350,24 @@ function sendStop() {
     }
 }
 
+function motorRunVel(direction) {
+    const speed = Math.abs(parseFloat(document.getElementById('motorSpeed').value) || 50);
+    sendCmd('Bv' + (direction * speed));
+}
+
+function motorRunCur(direction) {
+    const cur = Math.abs(parseFloat(document.getElementById('motorCurrent').value) || 0.5);
+    sendCmd('Bt' + (direction * cur));
+}
+
+function motorStop() {
+    sendCmd('B');
+}
+
+function motorCoast() {
+    sendCmd('Bx');
+}
+
 async function runSweep() {
     const btn = document.getElementById('stepBtn');
     const status = document.getElementById('stepStatus');
@@ -1404,6 +1429,11 @@ function toggleSection(id) {
     document.getElementById(id).classList.toggle('collapsed');
 }
 
+function onStepModeChange() {
+    const mode = document.getElementById('stepMode').value;
+    document.getElementById('sinePeriod').style.display = (mode === 'w') ? '' : 'none';
+}
+
 // --- Continuous mode ---
 let stepRunning = false;
 
@@ -1440,9 +1470,13 @@ async function runStepTest() {
             await sendCmd('C0');
             await new Promise(r => setTimeout(r, 50));
         }
+        const stepBody = {mode: mode, value: value};
+        if (mode === 'w') {
+            stepBody.period = document.getElementById('sinePeriod').value;
+        }
         await fetch('/step', { method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({mode: mode, value: value}) });
+            body: JSON.stringify(stepBody) });
         // Result arrives via SSE step_result event -> handleStepResult()
     } catch(e) {
         status.textContent = 'Error: ' + e.message;
@@ -2099,6 +2133,23 @@ function readAllParams() {
     }).catch(e => console.error('Failed to read params:', e));
 }
 
+function doReconnect() {
+    // Close existing SSE connection
+    if (evtSource) { evtSource.close(); evtSource = null; }
+    // Clear console
+    document.getElementById('consoleOut').textContent = '';
+    // Reset status dot
+    document.getElementById('statusDot').className = 'status-dot';
+    // Re-fetch info and adapt UI
+    fetch('/info').then(r => r.json()).then(info => {
+        document.getElementById('portInfo').textContent = info.port;
+        if (info.firmware) adaptUIForFirmware(info.firmware);
+        setTimeout(readAllParams, 500);
+    });
+    // Reconnect SSE
+    connectSSE();
+}
+
 // --- Init ---
 window.addEventListener('load', () => {
     fetch('/info').then(r => r.json()).then(info => {
@@ -2160,6 +2211,7 @@ class TuneHandler(http.server.BaseHTTPRequestHandler):
         elif self.path == "/step":
             mode = data.get("mode", "q")
             value = data.get("value", "0.5")
+            period = data.get("period", "")
             mgr = self.serial_mgr
             def _run_step():
                 if mgr.firmware_type == "current_test":
@@ -2167,7 +2219,14 @@ class TuneHandler(http.server.BaseHTTPRequestHandler):
                     result = mgr.run_step_test(cmd, timeout=3.0)
                 else:
                     cmd = f"S{mode}{value}"
-                    result = mgr.run_step_test(cmd, timeout=5.0)
+                    if mode == "w" and period:
+                        cmd += f",{period}"
+                        # Timeout = 3 cycles + margin
+                        p_ms = float(period) if period else 1000
+                        timeout = (p_ms * 3 / 1000.0) + 2.0
+                    else:
+                        timeout = 5.0
+                    result = mgr.run_step_test(cmd, timeout=timeout)
                 mgr.broadcast_sse("step_result", json.dumps(result))
             threading.Thread(target=_run_step, daemon=True).start()
             self._send_json({"ok": True})
@@ -2319,20 +2378,33 @@ class ThreadedHTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 # ---------------------------------------------------------------------------
 
 def find_serial_port():
-    """Auto-detect serial port. Looks for RP2350 (VID:PID 2e8a:f00f) first."""
+    """Auto-detect serial port.
+
+    Priority order:
+    1. Debug probe UART bridge (VID:PID 2e8a:000c) — reliable, no USB CDC issues
+    2. RP2350 USB CDC (VID:PID 2e8a:f00f) — fallback
+    3. First available /dev/ttyACM* or /dev/ttyUSB*
+    """
     import subprocess
+    candidates = {"debugger": None, "rp2350": None}
     for port in sorted(glob.glob("/dev/ttyACM*")) + sorted(glob.glob("/dev/ttyUSB*")):
         try:
             out = subprocess.check_output(
                 ["udevadm", "info", "--query=property", port],
                 stderr=subprocess.DEVNULL, text=True)
             props = dict(line.split("=", 1) for line in out.splitlines() if "=" in line)
-            vid = props.get("ID_USB_VENDOR_ID", "")
-            pid = props.get("ID_USB_MODEL_ID", "")
-            if vid == "2e8a" and pid == "f00f":
-                return port
+            vid = props.get("ID_USB_VENDOR_ID", props.get("ID_VENDOR_ID", ""))
+            pid = props.get("ID_USB_MODEL_ID", props.get("ID_MODEL_ID", ""))
+            if vid == "2e8a" and pid == "000c":
+                candidates["debugger"] = port
+            elif vid == "2e8a" and pid == "f00f":
+                candidates["rp2350"] = port
         except Exception:
             continue
+    if candidates["debugger"]:
+        return candidates["debugger"]
+    if candidates["rp2350"]:
+        return candidates["rp2350"]
     # Fallback: return first available port
     ports = sorted(glob.glob("/dev/ttyACM*")) + sorted(glob.glob("/dev/ttyUSB*"))
     return ports[0] if ports else None

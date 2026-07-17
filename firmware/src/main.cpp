@@ -3,8 +3,21 @@
 #include <SPI.h>
 #include <LittleFS.h>
 #include <Adafruit_NeoPixel.h>
-#include "MagneticSensorMT6835.h"
 #include "../patches/simplefoc_rp2040_current_sense.h"
+
+// Motor configuration
+// MOTOR_MT6701 (1): MT6701 magnetic encoder (SPI, differential transceivers)
+// MOTOR_HALLS  (2): Hall sensors (3-wire digital, GPIO 31/32/33)
+#define MOTOR_MT6701 1
+#define MOTOR_HALLS  2
+
+#ifndef MOTOR_CONFIG
+#define MOTOR_CONFIG MOTOR_MT6701
+#endif
+
+#if MOTOR_CONFIG == MOTOR_MT6701
+#include "MagneticSensorMT6835.h"
+#endif
 
 // --- Pin definitions ---
 // Board labels A/B/C are swapped vs schematic for A and C.
@@ -27,8 +40,16 @@
 #define PIN_SENSE_B 41  // GPIO41 = ADC1
 #define PIN_SENSE_C 40  // GPIO40 = ADC0
 
-// INA240A1D: 20x gain, 20mOhm shunt
-#define SHUNT_RESISTOR 0.020f
+// INA240A1D: 20x gain, shunt resistor selected per motor config
+// Available shunt values (swap resistors on board to match)
+#define SHUNT_20MOHM 0.020f  // 20mΩ: ±4A range, 0.4 V/A
+#define SHUNT_10MOHM 0.010f  // 10mΩ: ±8A range, 0.2 V/A
+#define SHUNT_5MOHM  0.005f  //  5mΩ: ±16A range, 0.1 V/A
+#if MOTOR_CONFIG == MOTOR_MT6701
+#define SHUNT_RESISTOR SHUNT_20MOHM
+#elif MOTOR_CONFIG == MOTOR_HALLS
+#define SHUNT_RESISTOR SHUNT_10MOHM
+#endif
 #define CURRENT_AMP_GAIN 20.0f
 
 // VMOT sensing: GPIO46 = ADC channel 6, voltage divider 100k / 5.1k
@@ -36,7 +57,11 @@
 #define VMOT_DIVIDER_RATIO (105.1f / 5.1f)  // Vmot = Vadc * ratio
 
 // Motor configuration
+#if MOTOR_CONFIG == MOTOR_MT6701
 #define POLE_PAIRS 11
+#elif MOTOR_CONFIG == MOTOR_HALLS
+#define POLE_PAIRS 11  // TODO: Set pole pairs for hall sensor motor
+#endif
 
 // Encoder power switch (U17, TS5A3159DCK)
 // V_SW LOW = V_ENC outputs +3V3 (NC path)
@@ -65,6 +90,11 @@
 #define PIN_H2_SW 35  // ENC_A_N routing
 #define PIN_H3_SW 36  // ENC_B_P routing
 
+// Hall sensor pins (active when H*_SW = HIGH, directly to MCU)
+#define PIN_HALL_A 31
+#define PIN_HALL_B 32
+#define PIN_HALL_C 33
+
 // USB PD controller (FUSB302BMPX on I2C1)
 #define PIN_PD_SDA  22
 #define PIN_PD_SCL  23
@@ -79,17 +109,33 @@ static void setLED(uint8_t r, uint8_t g, uint8_t b) {
     led.show();
 }
 
-#define SERIAL_PORT Serial
+// Debug serial via UART0 (GPIO0 TX, GPIO1 RX) through debug probe UART bridge.
+// Falls back to USB CDC if debug probe not connected.
+#define PIN_UART_TX 0
+#define PIN_UART_RX 1
+#define SERIAL_PORT Serial1
 
 // --- Global objects (pointers, constructed in setup() to avoid static initializers) ---
 // RP2350 USB CDC is corrupted by ANY SimpleFOC global constructors running before main().
 static BLDCDriver6PWM *driver;
 static InlineCurrentSense *current_sense;
 static BLDCMotor *motor;
+#if MOTOR_CONFIG == MOTOR_MT6701
 static MagneticSensorMT6835 *encoder;
+#elif MOTOR_CONFIG == MOTOR_HALLS
+static HallSensor *hall_sensor;
+#endif
 static Commander *commander;
 static bool enc_detected = false;
 static bool foc_ready = false;
+
+#if MOTOR_CONFIG == MOTOR_HALLS
+static bool hall_order_determined = false;
+
+void hallA_ISR() { hall_sensor->handleA(); }
+void hallB_ISR() { hall_sensor->handleB(); }
+void hallC_ISR() { hall_sensor->handleC(); }
+#endif
 
 // Loop frequency measurement
 static unsigned long loop_count = 0;
@@ -126,6 +172,8 @@ static float readVMOT() {
 
 // Forward declarations
 void stopSine();
+void doHallScan(char *cmd);
+void doCSDebug(char *cmd);
 
 // --- Commander callbacks ---
 static bool hw_initialized = false;
@@ -156,28 +204,101 @@ void doTarget(char *cmd) {
     commander->scalar(&motor->target, cmd);
 }
 
+// Run motor continuously: Bv<target> = velocity, Bt<target> = torque, B = stop, Bx = coast
+void doRun(char *cmd) {
+    if (sine_running) stopSine();
+
+    // B alone = stop (active brake: target=0, FOC keeps running)
+    if (cmd[0] == '\0' || cmd[0] == '\n' || cmd[0] == '\r') {
+        motor->target = 0;
+        SERIAL_PORT.println("Motor stopped (braking).");
+        return;
+    }
+
+    // Bx = coast (disable driver, motor spins freely)
+    if (cmd[0] == 'x' || cmd[0] == 'X') {
+        motor->target = 0;
+        motor->disable();
+        SERIAL_PORT.println("Motor coasting.");
+        return;
+    }
+
+    if (!foc_ready) {
+        SERIAL_PORT.println("ERR: Not aligned. Run 'A' first.");
+        return;
+    }
+
+    char mode = cmd[0];
+    float target = atof(&cmd[1]);
+
+    // Reset PID/LPF state
+    motor->PID_current_q.reset();
+    motor->PID_current_d.reset();
+    motor->PID_velocity.reset();
+    motor->LPF_current_q.y_prev = 0;
+    motor->LPF_current_d.y_prev = 0;
+    motor->LPF_velocity.y_prev = 0;
+    motor->current_sp = 0;
+    motor->feed_forward_current = {0, 0};
+    motor->feed_forward_voltage = {0, 0};
+
+    if (mode == 'v' || mode == 'V') {
+        motor->controller = MotionControlType::velocity;
+    } else if (mode == 't' || mode == 'T') {
+        motor->controller = MotionControlType::torque;
+    } else {
+        SERIAL_PORT.println("Usage: Bv<rad/s>, Bt<amps>, B (stop)");
+        return;
+    }
+
+    motor->target = target;
+    motor->enable();
+    float vn = driver->voltage_power_supply / 2.0f;
+    driver->setPwm(vn, vn, vn);
+
+    const char *mode_name = (mode == 'v' || mode == 'V') ? "velocity" : "torque";
+    SERIAL_PORT.print("Running ");
+    SERIAL_PORT.print(mode_name);
+    SERIAL_PORT.print(": target=");
+    SERIAL_PORT.println(target, 2);
+}
+
 static void initHardware() {
     if (hw_initialized) return;
 
     SERIAL_PORT.println("GPIO init...");
-    // Enable encoder 3.3V supply
     pinMode(PIN_V_SW, OUTPUT);
-    digitalWrite(PIN_V_SW, LOW);
-    // Configure encoder transceiver directions
     pinMode(PIN_ENC_A_SW, OUTPUT);
     pinMode(PIN_ENC_B_SW, OUTPUT);
     pinMode(PIN_ENC_C_SW, OUTPUT);
-    digitalWrite(PIN_ENC_A_SW, LOW);
-    digitalWrite(PIN_ENC_B_SW, HIGH);
-    digitalWrite(PIN_ENC_C_SW, HIGH);
-    // Route transceiver signals to encoder connector
     pinMode(PIN_H1_SW, OUTPUT);
     pinMode(PIN_H2_SW, OUTPUT);
     pinMode(PIN_H3_SW, OUTPUT);
+#if MOTOR_CONFIG == MOTOR_MT6701
+    // Encoder 3.3V supply
+    digitalWrite(PIN_V_SW, LOW);
+    // Differential transceiver directions: MISO=receive, CS/SCK=transmit
+    digitalWrite(PIN_ENC_A_SW, LOW);
+    digitalWrite(PIN_ENC_B_SW, HIGH);
+    digitalWrite(PIN_ENC_C_SW, HIGH);
+    // Route to differential transceiver (NC path)
     digitalWrite(PIN_H1_SW, LOW);
     digitalWrite(PIN_H2_SW, LOW);
     digitalWrite(PIN_H3_SW, LOW);
+#elif MOTOR_CONFIG == MOTOR_HALLS
+    // Hall sensor Vdrive supply
+    digitalWrite(PIN_V_SW, HIGH);
+    // Transceivers unused for halls, all receive (safe default)
+    digitalWrite(PIN_ENC_A_SW, LOW);
+    digitalWrite(PIN_ENC_B_SW, LOW);
+    digitalWrite(PIN_ENC_C_SW, LOW);
+    // Route to hall sensor inputs (NO path)
+    digitalWrite(PIN_H1_SW, HIGH);
+    digitalWrite(PIN_H2_SW, HIGH);
+    digitalWrite(PIN_H3_SW, HIGH);
+#endif
 
+#if MOTOR_CONFIG == MOTOR_MT6701
     // Encoder SPI
     SERIAL_PORT.println("SPI init...");
     SPI.setRX(PIN_ENC_MISO);
@@ -196,6 +317,15 @@ static void initHardware() {
         SERIAL_PORT.print(raw1);
         SERIAL_PORT.println(")");
     }
+#elif MOTOR_CONFIG == MOTOR_HALLS
+    SERIAL_PORT.println("Hall sensor init...");
+    hall_sensor->init();
+    hall_sensor->enableInterrupts(hallA_ISR, hallB_ISR, hallC_ISR);
+    enc_detected = true;
+    SERIAL_PORT.print("Hall sensors OK (state=");
+    SERIAL_PORT.print(hall_sensor->electric_sector);
+    SERIAL_PORT.println(")");
+#endif
 
     // Driver
     SERIAL_PORT.println("Driver init...");
@@ -227,6 +357,7 @@ static void initHardware() {
     // Motor config
     motor->linkDriver(driver);
     motor->linkCurrentSense(current_sense);
+#if MOTOR_CONFIG == MOTOR_MT6701
     if (enc_detected) motor->linkSensor(encoder);
     motor->voltage_limit = 4.0;
     motor->voltage_sensor_align = 1.0;  // reduced from 2.0: 20mOhm shunts saturate INA240 at ~4A
@@ -245,6 +376,28 @@ static void initHardware() {
     motor->PID_velocity.D = 0.0;
     motor->PID_velocity.output_ramp = 200.0;
     motor->LPF_velocity.Tf = 0.01;
+#elif MOTOR_CONFIG == MOTOR_HALLS
+    if (enc_detected) motor->linkSensor(hall_sensor);
+    motor->voltage_limit = 4.0;
+    motor->voltage_sensor_align = 2.5;  // 10mΩ shunts: ±8A range, comfortable margin
+    motor->current_limit = 3.0;
+    motor->velocity_limit = 10.0;
+    motor->controller = MotionControlType::velocity;
+    motor->torque_controller = TorqueControlType::foc_current;
+    // Current loop
+    motor->PID_current_q.P = 1.5;
+    motor->PID_current_q.I = 0.1;
+    motor->PID_current_d.P = 1.5;
+    motor->PID_current_d.I = 0.1;
+    motor->LPF_current_q.Tf = 0.01;
+    motor->LPF_current_d.Tf = 0.01;
+    // Velocity loop
+    motor->PID_velocity.P = 1.0;
+    motor->PID_velocity.I = 0.1;
+    motor->PID_velocity.D = 0.0;
+    motor->PID_velocity.output_ramp = 200.0;
+    motor->LPF_velocity.Tf = 0.1;
+#endif
     motor->useMonitoring(SERIAL_PORT);
     motor->monitor_downsample = 0;
 
@@ -268,9 +421,20 @@ void doAlign(char *cmd) {
     initHardware();
 
     if (!enc_detected) {
-        SERIAL_PORT.println("ERR: Encoder not detected — cannot align.");
+        SERIAL_PORT.println("ERR: Sensor not detected — cannot align.");
         return;
     }
+
+#if MOTOR_CONFIG == MOTOR_HALLS
+    if (!hall_order_determined) {
+        SERIAL_PORT.println("First align — running hall auto-scan...");
+        doHallScan(cmd);
+        if (!hall_order_determined) {
+            SERIAL_PORT.println("ERR: Hall scan failed — cannot align.");
+            return;
+        }
+    }
+#endif
 
     // Force full re-calibration every time (don't reuse stale values)
     motor->sensor_direction = Direction::UNKNOWN;
@@ -279,6 +443,28 @@ void doAlign(char *cmd) {
     SERIAL_PORT.print("align_voltage=");
     SERIAL_PORT.println(motor->voltage_sensor_align, 2);
     SERIAL_PORT.println("Aligning...");
+
+#if MOTOR_CONFIG == MOTOR_HALLS
+    // Nudge motor away from its current position before initFOC.
+    // After the hall scan (or cold boot), the motor may be sitting at the
+    // exact angle initFOC tests first, so the halls see no transitions
+    // → "Failed to notice movement" → bad zero_electric_angle
+    // → driverAlign applies voltage at wrong angles → "all currents same magnitude".
+    {
+        float v = motor->voltage_sensor_align;
+        float nudge = _2PI / 3.0f;  // 120° electrical — 2 hall sectors away
+        driver->setPhaseState(PhaseState::PHASE_ON, PhaseState::PHASE_ON, PhaseState::PHASE_ON);
+        float na = v * cosf(nudge);
+        float nb = v * cosf(nudge - _2PI / 3.0f);
+        float nc = v * cosf(nudge + _2PI / 3.0f);
+        driver->setPwm((na + v) * 0.5f, (nb + v) * 0.5f, (nc + v) * 0.5f);
+        delay(700);
+        driver->setPhaseState(PhaseState::PHASE_OFF, PhaseState::PHASE_OFF, PhaseState::PHASE_OFF);
+        delay(200);
+        SERIAL_PORT.println("Motor nudged to offset position.");
+    }
+#endif
+
     motor->enable();
     int result = motor->initFOC();
 
@@ -310,7 +496,11 @@ void doAlign(char *cmd) {
     SERIAL_PORT.println(current_sense->offset_ic, 4);
 
     // Read current at rest after alignment
+#if MOTOR_CONFIG == MOTOR_MT6701
     encoder->update();
+#elif MOTOR_CONFIG == MOTOR_HALLS
+    hall_sensor->update();
+#endif
     float elec_angle = motor->electricalAngle();
     SERIAL_PORT.print("electrical_angle: ");
     SERIAL_PORT.println(elec_angle, 4);
@@ -343,7 +533,7 @@ void doAlign(char *cmd) {
 // Step response test: Sq<val>, Sv<val>, Sp<val>
 void doStep(char *cmd) {
     if (cmd[0] == '\0') {
-        SERIAL_PORT.println("Usage: Si<A>, Sq<A>, Sv<rad/s>, Sp<rad>, Sw<rad/s>");
+        SERIAL_PORT.println("Usage: Si<A>, Sq<A>, Sv<rad/s>, Sp<rad>, Sw<rad/s>[,<period_ms>]");
         return;
     }
     if (!foc_ready) {
@@ -365,7 +555,11 @@ void doStep(char *cmd) {
         motor->LPF_current_d.y_prev = 0;
 
         // Freeze electrical angle at current rotor position
+#if MOTOR_CONFIG == MOTOR_MT6701
         encoder->update();
+#elif MOTOR_CONFIG == MOTOR_HALLS
+        hall_sensor->update();
+#endif
         float angle = motor->electricalAngle();
 
         // Enable driver, set neutral PWM
@@ -457,10 +651,14 @@ void doStep(char *cmd) {
         float vn = driver->voltage_power_supply / 2.0f;
         driver->setPwm(vn, vn, vn);
 
-        // 3 full sine cycles over 3000ms (1Hz sine)
-        unsigned long duration = 3000;
+        // Parse optional period: Sw<amplitude>,<period_ms>  (default 1000ms = 1Hz)
         float amplitude = value;  // max velocity in rad/s
-        float freq_hz = 1.0f;
+        float period_ms = 1000.0f;
+        char *comma = strchr(&cmd[1], ',');
+        if (comma) period_ms = atof(comma + 1);
+        if (period_ms < 50) period_ms = 50;  // clamp minimum
+        float freq_hz = 1000.0f / period_ms;
+        unsigned long duration = (unsigned long)(period_ms * 3);  // 3 full cycles
 
         motor->target = 0;
         unsigned long t0 = millis();
@@ -548,7 +746,11 @@ void doStep(char *cmd) {
     while (millis() - t0 < duration) {
         // Instrument first 10 iterations: print angle, alpha/beta, dq before PID
         if (iter_count < 10 && (mode == 'q' || mode == 'Q')) {
+#if MOTOR_CONFIG == MOTOR_MT6701
             encoder->update();
+#elif MOTOR_CONFIG == MOTOR_HALLS
+            hall_sensor->update();
+#endif
             float el_angle = motor->electricalAngle();
             PhaseCurrent_s raw_phase = current_sense->getPhaseCurrents();
             ABCurrent_s ab = current_sense->getABCurrents(raw_phase);
@@ -692,7 +894,7 @@ void doReport(char *cmd) {
     SERIAL_PORT.print(eng->getRawChannel(2));
     SERIAL_PORT.print(" raw6=");
     SERIAL_PORT.print(eng->getRawChannel(6));
-    // Encoder diagnostics
+#if MOTOR_CONFIG == MOTOR_MT6701
     SERIAL_PORT.print(" enc=");
     switch(encoder->chip_type) {
         case CHIP_MT6835: SERIAL_PORT.print("MT6835"); break;
@@ -705,6 +907,11 @@ void doReport(char *cmd) {
     SERIAL_PORT.print(encoder->read_count);
     SERIAL_PORT.print(" enc_status=0x");
     SERIAL_PORT.println(encoder->last_status, HEX);
+#elif MOTOR_CONFIG == MOTOR_HALLS
+    SERIAL_PORT.print(" sensor=halls");
+    SERIAL_PORT.print(" hall_state=");
+    SERIAL_PORT.println(hall_sensor->electric_sector);
+#endif
 }
 
 // ADC diagnostic: compare raw readings in disabled vs switching states
@@ -761,7 +968,7 @@ void doAdcTest(char *cmd) {
 
 // --- Calibration save/load (LittleFS on SPI flash) ---
 // Saves motor sensor alignment AND current sense driver alignment results.
-// Format: offset,direction,gain_a,gain_b,gain_c
+// Format: offset,direction,gain_a,gain_b,gain_c[,hall_a,hall_b,hall_c]
 void save_calibration() {
     LittleFS.begin();
     File file = LittleFS.open("calibration.txt", "w");
@@ -780,6 +987,14 @@ void save_calibration() {
     file.print(current_sense->gain_b, 6);
     file.print(",");
     file.print(current_sense->gain_c, 6);
+#if MOTOR_CONFIG == MOTOR_HALLS
+    file.print(",");
+    file.print(hall_sensor->pinA);
+    file.print(",");
+    file.print(hall_sensor->pinB);
+    file.print(",");
+    file.print(hall_sensor->pinC);
+#endif
     file.close();
     LittleFS.end();
     SERIAL_PORT.println("Saved calibration:");
@@ -793,6 +1008,14 @@ void save_calibration() {
     SERIAL_PORT.println(current_sense->gain_b, 5);
     SERIAL_PORT.print("  gain_c=");
     SERIAL_PORT.println(current_sense->gain_c, 5);
+#if MOTOR_CONFIG == MOTOR_HALLS
+    SERIAL_PORT.print("  hall_pins: A=");
+    SERIAL_PORT.print(hall_sensor->pinA);
+    SERIAL_PORT.print(" B=");
+    SERIAL_PORT.print(hall_sensor->pinB);
+    SERIAL_PORT.print(" C=");
+    SERIAL_PORT.println(hall_sensor->pinC);
+#endif
 }
 
 void load_calibration_and_init() {
@@ -807,7 +1030,7 @@ void load_calibration_and_init() {
     file.close();
     LittleFS.end();
 
-    // Parse: offset,direction,gain_a,gain_b,gain_c
+    // Parse: offset,direction,gain_a,gain_b,gain_c[,hall_a,hall_b,hall_c]
     int p1 = line.indexOf(',');
     int p2 = line.indexOf(',', p1 + 1);
     int p3 = line.indexOf(',', p2 + 1);
@@ -833,6 +1056,40 @@ void load_calibration_and_init() {
     SERIAL_PORT.println(gain_b, 5);
     SERIAL_PORT.print("  gain_c=");
     SERIAL_PORT.println(gain_c, 5);
+
+#if MOTOR_CONFIG == MOTOR_HALLS
+    // Parse optional hall pin order: ...,hall_a,hall_b,hall_c
+    int p5 = line.indexOf(',', p4 + 1);
+    int p6 = (p5 >= 0) ? line.indexOf(',', p5 + 1) : -1;
+    int p7 = (p6 >= 0) ? line.indexOf(',', p6 + 1) : -1;
+    if (p5 >= 0 && p6 >= 0 && p7 >= 0) {
+        int hall_a = line.substring(p5 + 1, p6).toInt();
+        int hall_b = line.substring(p6 + 1, p7).toInt();
+        int hall_c = line.substring(p7 + 1).toInt();
+        SERIAL_PORT.print("  hall_pins: A=");
+        SERIAL_PORT.print(hall_a);
+        SERIAL_PORT.print(" B=");
+        SERIAL_PORT.print(hall_b);
+        SERIAL_PORT.print(" C=");
+        SERIAL_PORT.println(hall_c);
+
+        // Reconfigure hall sensor if pin order differs from default
+        if (hall_a != hall_sensor->pinA || hall_b != hall_sensor->pinB || hall_c != hall_sensor->pinC) {
+            SERIAL_PORT.println("  Reconfiguring hall sensor pins...");
+            detachInterrupt(digitalPinToInterrupt(hall_sensor->pinA));
+            detachInterrupt(digitalPinToInterrupt(hall_sensor->pinB));
+            detachInterrupt(digitalPinToInterrupt(hall_sensor->pinC));
+            delete hall_sensor;
+            hall_sensor = new HallSensor(hall_a, hall_b, hall_c, motor->pole_pairs);
+            hall_sensor->init();
+            hall_sensor->enableInterrupts(hallA_ISR, hallB_ISR, hallC_ISR);
+            motor->linkSensor(hall_sensor);
+        }
+        hall_order_determined = true;
+    } else {
+        SERIAL_PORT.println("  WARN: No hall pin data — will need hall scan on next align");
+    }
+#endif
 
     // Restore sensor alignment — initFOC() skips physical alignment when set.
     motor->zero_electric_angle = offset;
@@ -924,6 +1181,470 @@ void doPD(char *cmd) {
 #endif
 }
 
+// Auto hall scan: drive motor open-loop, record transitions, determine correct pin order
+void doHallScan(char *cmd) {
+#if MOTOR_CONFIG != MOTOR_HALLS
+    SERIAL_PORT.println("ERR: Hall scan only available in MOTOR_HALLS config");
+    SERIAL_PORT.println("DONE");
+    return;
+#else
+    initHardware();
+
+    float vmot = readVMOT();
+    if (vmot < 10.0f) {
+        SERIAL_PORT.print("ERR: VMOT=");
+        SERIAL_PORT.print(vmot, 1);
+        SERIAL_PORT.println("V, need >10V");
+        SERIAL_PORT.println("DONE");
+        return;
+    }
+
+    float v_align = motor->voltage_sensor_align;
+    SERIAL_PORT.println("Auto hall scan: driving motor open-loop...");
+
+    // Enable driver and settle at angle 0
+    driver->setPhaseState(PhaseState::PHASE_ON, PhaseState::PHASE_ON, PhaseState::PHASE_ON);
+    float Ua, Ub, Uc;
+    Ua = v_align;  // angle=0: cos(0)=1, cos(-2π/3)=-0.5, cos(2π/3)=-0.5
+    Ub = v_align * cosf(-_2PI / 3.0f);
+    Uc = v_align * cosf(_2PI / 3.0f);
+    driver->setPwm((Ua + v_align) * 0.5f, (Ub + v_align) * 0.5f, (Uc + v_align) * 0.5f);
+    delay(500);
+
+    // Record raw GPIO values at each hall transition
+    const int MAX_TRANS = 256;
+    int raw[3][MAX_TRANS];  // [gpio_index][transition]
+    int transitions = 0;
+    int prev_state = -1;
+
+    // Sweep 12 electrical revolutions slowly (3ms/step, 200 steps/rev ≈ 7s)
+    int e_revs = 12;
+    int steps = 200 * e_revs;
+    for (int i = 0; i <= steps; i++) {
+        float angle = (float)i / steps * _2PI * e_revs;
+        Ua = v_align * cosf(angle);
+        Ub = v_align * cosf(angle - _2PI / 3.0f);
+        Uc = v_align * cosf(angle + _2PI / 3.0f);
+        driver->setPwm((Ua + v_align) * 0.5f, (Ub + v_align) * 0.5f, (Uc + v_align) * 0.5f);
+        delay(3);
+
+        int a = digitalRead(PIN_HALL_A);
+        int b = digitalRead(PIN_HALL_B);
+        int c = digitalRead(PIN_HALL_C);
+        int state = (c << 2) | (b << 1) | a;
+
+        if (state != prev_state && transitions < MAX_TRANS) {
+            raw[0][transitions] = a;
+            raw[1][transitions] = b;
+            raw[2][transitions] = c;
+            transitions++;
+            prev_state = state;
+        }
+    }
+
+    // Brake motor to a full stop before disabling
+    driver->setPwm(0, 0, 0);  // duty=0 → low-sides on → regenerative brake
+    delay(1000);
+    driver->setPhaseState(PhaseState::PHASE_OFF, PhaseState::PHASE_OFF, PhaseState::PHASE_OFF);
+
+    SERIAL_PORT.print("Recorded ");
+    SERIAL_PORT.print(transitions);
+    SERIAL_PORT.println(" hall transitions");
+
+    if (transitions < 12) {
+        SERIAL_PORT.println("ERR: Too few transitions — motor may not be following open-loop drive.");
+        SERIAL_PORT.println("DONE");
+        return;
+    }
+
+    // Try all 6 permutations of (GPIO31, GPIO32, GPIO33) → (hallA, hallB, hallC)
+    // Score each by net monotonic transitions (tolerates bouncing at sector boundaries)
+    // SimpleFOC sector table: hall_state → sector
+    //   state = (C<<2)|(B<<1)|A    sectors: {-1, 0, 4, 5, 2, 1, 3, -1}
+    int perms[6][3] = {
+        {0, 1, 2}, {0, 2, 1}, {1, 0, 2},
+        {1, 2, 0}, {2, 0, 1}, {2, 1, 0}
+    };
+    int gpio_pins[3] = {PIN_HALL_A, PIN_HALL_B, PIN_HALL_C};
+    int sector_table[] = {-1, 0, 4, 5, 2, 1, 3, -1};
+
+    int best_perm = -1;
+    int best_net = 0;
+    bool best_fwd = true;
+
+    for (int p = 0; p < 6; p++) {
+        int fwd = 0, rev = 0, invalid = 0, bad_states = 0;
+        int prev_sector = -1;
+
+        for (int i = 0; i < transitions; i++) {
+            int a = raw[perms[p][0]][i];
+            int b = raw[perms[p][1]][i];
+            int c = raw[perms[p][2]][i];
+            int state = (c << 2) | (b << 1) | a;
+            int sector = sector_table[state];
+
+            if (sector == -1) { bad_states++; continue; }  // skip glitch, don't break
+            if (prev_sector >= 0) {
+                int diff = (sector - prev_sector + 6) % 6;
+                if (diff == 1) fwd++;
+                else if (diff == 5) rev++;  // -1 mod 6 = 5
+                else invalid++;
+            }
+            prev_sector = sector;
+        }
+
+        int net = fwd > rev ? fwd - rev : rev - fwd;
+        SERIAL_PORT.print("  perm ");
+        SERIAL_PORT.print(p);
+        SERIAL_PORT.print(": A=GPIO");
+        SERIAL_PORT.print(gpio_pins[perms[p][0]]);
+        SERIAL_PORT.print(" B=GPIO");
+        SERIAL_PORT.print(gpio_pins[perms[p][1]]);
+        SERIAL_PORT.print(" C=GPIO");
+        SERIAL_PORT.print(gpio_pins[perms[p][2]]);
+        SERIAL_PORT.print(" fwd=");
+        SERIAL_PORT.print(fwd);
+        SERIAL_PORT.print(" rev=");
+        SERIAL_PORT.print(rev);
+        SERIAL_PORT.print(" bad=");
+        SERIAL_PORT.print(invalid);
+        SERIAL_PORT.print(" glitch=");
+        SERIAL_PORT.print(bad_states);
+        SERIAL_PORT.print(" net=");
+        SERIAL_PORT.println(net);
+
+        if (net > best_net) {
+            best_net = net;
+            best_perm = p;
+            best_fwd = fwd > rev;
+        }
+    }
+
+    // Accept if net monotonic count is at least 80% of total transitions
+    int min_net = (transitions - 1) * 80 / 100;  // 80% of transition pairs
+    if (best_perm < 0 || best_net < min_net) {
+        SERIAL_PORT.print("ERR: No valid hall pin permutation found (best_net=");
+        SERIAL_PORT.print(best_net);
+        SERIAL_PORT.print(" need>=");
+        SERIAL_PORT.print(min_net);
+        SERIAL_PORT.println(")");
+        SERIAL_PORT.println("Check hall sensor wiring and motor phase connections.");
+        SERIAL_PORT.println("DONE");
+        return;
+    }
+
+    SERIAL_PORT.print("Winner: perm ");
+    SERIAL_PORT.print(best_perm);
+    SERIAL_PORT.print(" A=GPIO");
+    SERIAL_PORT.print(gpio_pins[perms[best_perm][0]]);
+    SERIAL_PORT.print(" B=GPIO");
+    SERIAL_PORT.print(gpio_pins[perms[best_perm][1]]);
+    SERIAL_PORT.print(" C=GPIO");
+    SERIAL_PORT.print(gpio_pins[perms[best_perm][2]]);
+    SERIAL_PORT.println(best_fwd ? " (fwd)" : " (rev)");
+
+    if (best_perm != 0) {
+        SERIAL_PORT.println("Reconfiguring hall sensor pins...");
+        // Detach interrupts from all three GPIOs
+        detachInterrupt(digitalPinToInterrupt(PIN_HALL_A));
+        detachInterrupt(digitalPinToInterrupt(PIN_HALL_B));
+        detachInterrupt(digitalPinToInterrupt(PIN_HALL_C));
+        delete hall_sensor;
+        hall_sensor = new HallSensor(
+            gpio_pins[perms[best_perm][0]],
+            gpio_pins[perms[best_perm][1]],
+            gpio_pins[perms[best_perm][2]],
+            motor->pole_pairs
+        );
+        hall_sensor->init();
+        hall_sensor->enableInterrupts(hallA_ISR, hallB_ISR, hallC_ISR);
+        motor->linkSensor(hall_sensor);
+        SERIAL_PORT.println("Hall sensor reconfigured.");
+        SERIAL_PORT.print("To make permanent, update firmware defines to: "
+                          "PIN_HALL_A=");
+        SERIAL_PORT.print(gpio_pins[perms[best_perm][0]]);
+        SERIAL_PORT.print(" PIN_HALL_B=");
+        SERIAL_PORT.print(gpio_pins[perms[best_perm][1]]);
+        SERIAL_PORT.print(" PIN_HALL_C=");
+        SERIAL_PORT.println(gpio_pins[perms[best_perm][2]]);
+    } else {
+        SERIAL_PORT.println("Current hall pin order is correct.");
+    }
+
+    hall_order_determined = true;
+    SERIAL_PORT.println("DONE");
+#endif
+}
+
+// Winding resistance measurement: ramp voltage A→B, measure current
+void doWindingResistance(char *cmd) {
+    initHardware();
+
+    float vmot = readVMOT();
+    if (vmot < 10.0f) {
+        SERIAL_PORT.print("ERR: VMOT=");
+        SERIAL_PORT.print(vmot, 1);
+        SERIAL_PORT.println("V, need >10V");
+        SERIAL_PORT.println("DONE");
+        return;
+    }
+
+    SERIAL_PORT.println("Measuring winding resistance (A-B)...");
+    SERIAL_PORT.println("V_applied,Ia,Ib,R_ab");
+
+    float vs2 = driver->voltage_power_supply / 2.0f;
+    driver->setPhaseState(PhaseState::PHASE_ON, PhaseState::PHASE_ON, PhaseState::PHASE_ON);
+    // Start at neutral
+    driver->setPwm(vs2, vs2, vs2);
+    delay(50);
+
+    float last_r = 0;
+    float last_v = 0;
+    float last_i = 0;
+
+    // Ramp from 100mV to 1V in 25mV steps
+    for (float v = 0.1f; v <= 1.0f; v += 0.025f) {
+        // Drive current A→B: A = Vs/2 + v/2, B = Vs/2 - v/2, C = neutral
+        driver->setPwm(vs2 + v / 2.0f, vs2 - v / 2.0f, vs2);
+        delay(50);  // settle (>> L/R time constant)
+
+        // Average a few readings
+        float sum_a = 0, sum_b = 0;
+        int n = 10;
+        for (int i = 0; i < n; i++) {
+            PhaseCurrent_s p = current_sense->getPhaseCurrents();
+            sum_a += p.a;
+            sum_b += p.b;
+            delayMicroseconds(200);
+        }
+        float ia = sum_a / n;
+        float ib = sum_b / n;
+        float i_meas = (fabsf(ia) + fabsf(ib)) / 2.0f;
+        float r = (i_meas > 0.01f) ? v / i_meas : 0;
+        last_r = r;
+        last_v = v;
+        last_i = i_meas;
+
+        SERIAL_PORT.print(v, 4);
+        SERIAL_PORT.print(',');
+        SERIAL_PORT.print(ia, 4);
+        SERIAL_PORT.print(',');
+        SERIAL_PORT.print(ib, 4);
+        SERIAL_PORT.print(',');
+        SERIAL_PORT.println(r, 4);
+
+        if (fabsf(ia) > 1.0f || fabsf(ib) > 1.0f) {
+            SERIAL_PORT.println("Current limit (1A) reached.");
+            break;
+        }
+    }
+
+    // Return to neutral and disable
+    driver->setPwm(vs2, vs2, vs2);
+    delay(5);
+    driver->setPhaseState(PhaseState::PHASE_OFF, PhaseState::PHASE_OFF, PhaseState::PHASE_OFF);
+    driver->setPwm(0, 0, 0);
+
+    SERIAL_PORT.print("R_ab=");
+    SERIAL_PORT.print(last_r, 4);
+    SERIAL_PORT.print(" ohm  R_phase=");
+    SERIAL_PORT.print(last_r / 2.0f, 4);
+    SERIAL_PORT.print(" ohm  (at V=");
+    SERIAL_PORT.print(last_v, 3);
+    SERIAL_PORT.print(" I=");
+    SERIAL_PORT.print(last_i, 3);
+    SERIAL_PORT.println("A)");
+    SERIAL_PORT.println("DONE");
+}
+
+// CS alignment diagnostic: replicate what driverAlign does and print all values
+void doCSDebug(char *cmd) {
+    initHardware();
+
+    float vmot = readVMOT();
+    if (vmot < 10.0f) {
+        SERIAL_PORT.print("ERR: VMOT=");
+        SERIAL_PORT.print(vmot, 1);
+        SERIAL_PORT.println("V, need >10V");
+        SERIAL_PORT.println("DONE");
+        return;
+    }
+
+    float voltage = motor->voltage_sensor_align;
+    // Same logic as driverAlign: modulation_centered=1 by default
+    float zero = 0;
+    if (motor->modulation_centered) zero = driver->voltage_limit / 2.0f;
+
+    SERIAL_PORT.println("=== CS driverAlign diagnostic ===");
+    SERIAL_PORT.print("voltage_sensor_align=");
+    SERIAL_PORT.println(voltage, 2);
+    SERIAL_PORT.print("driver->voltage_limit=");
+    SERIAL_PORT.println(driver->voltage_limit, 2);
+    SERIAL_PORT.print("driver->voltage_power_supply=");
+    SERIAL_PORT.println(driver->voltage_power_supply, 2);
+    SERIAL_PORT.print("modulation_centered=");
+    SERIAL_PORT.println(motor->modulation_centered);
+    SERIAL_PORT.print("zero=");
+    SERIAL_PORT.println(zero, 2);
+    SERIAL_PORT.print("Phase A final PWM value=");
+    SERIAL_PORT.println(voltage + zero, 2);
+    SERIAL_PORT.print("Phase B/C PWM value=");
+    SERIAL_PORT.println(zero, 2);
+    float dc_a_expected = (voltage + zero) / driver->voltage_power_supply;
+    float dc_bc_expected = zero / driver->voltage_power_supply;
+    SERIAL_PORT.print("Expected duty: A=");
+    SERIAL_PORT.print(dc_a_expected * 100, 1);
+    SERIAL_PORT.print("% B/C=");
+    SERIAL_PORT.print(dc_bc_expected * 100, 1);
+    SERIAL_PORT.println("%");
+
+    // Read baseline with all phases at neutral (zero)
+    driver->setPhaseState(PhaseState::PHASE_ON, PhaseState::PHASE_ON, PhaseState::PHASE_ON);
+    driver->setPwm(zero, zero, zero);
+    delay(500);
+    PhaseCurrent_s baseline = current_sense->readAverageCurrents();
+    SERIAL_PORT.print("Baseline (neutral): a=");
+    SERIAL_PORT.print(baseline.a, 4);
+    SERIAL_PORT.print(" b=");
+    SERIAL_PORT.print(baseline.b, 4);
+    SERIAL_PORT.print(" c=");
+    SERIAL_PORT.println(baseline.c, 4);
+
+    // Ramp phase A exactly like driverAlign does (100 steps × 3ms = 300ms)
+    SERIAL_PORT.println("Ramping phase A...");
+    for (int i = 0; i < 100; i++) {
+        driver->setPwm(voltage / 100.0f * ((float)i) + zero, zero, zero);
+        delay(3);
+    }
+    delay(500);
+
+    // Read currents same way driverAlign does (readAverageCurrents: 100 readings × 3ms)
+    PhaseCurrent_s c_a = current_sense->readAverageCurrents();
+    SERIAL_PORT.print("Phase A test: a=");
+    SERIAL_PORT.print(c_a.a, 4);
+    SERIAL_PORT.print(" b=");
+    SERIAL_PORT.print(c_a.b, 4);
+    SERIAL_PORT.print(" c=");
+    SERIAL_PORT.println(c_a.c, 4);
+
+    // Compute ratios same way driverAlign does
+    float ca[3] = {fabsf(c_a.a), fabsf(c_a.b), fabsf(c_a.c)};
+    SERIAL_PORT.print("Magnitudes: |a|=");
+    SERIAL_PORT.print(ca[0], 4);
+    SERIAL_PORT.print(" |b|=");
+    SERIAL_PORT.print(ca[1], 4);
+    SERIAL_PORT.print(" |c|=");
+    SERIAL_PORT.println(ca[2], 4);
+
+    // Find max and compute ratio (same algorithm as driverAlign)
+    uint8_t max_i = 0;
+    float max_c = 0;
+    float max_c_ratio = 0;
+    for (int i = 0; i < 3; i++) {
+        if (!ca[i]) continue;
+        if (ca[i] > max_c) {
+            max_c = ca[i];
+            max_i = i;
+            for (int j = 0; j < 3; j++) {
+                if (i == j) continue;
+                if (!ca[j]) continue;
+                float ratio = max_c / ca[j];
+                if (ratio > max_c_ratio) max_c_ratio = ratio;
+            }
+        }
+    }
+    const char *phase_names[] = {"a", "b", "c"};
+    SERIAL_PORT.print("Max current on phase ");
+    SERIAL_PORT.print(phase_names[max_i]);
+    SERIAL_PORT.print("=");
+    SERIAL_PORT.print(max_c, 4);
+    SERIAL_PORT.print("  max_ratio=");
+    SERIAL_PORT.print(max_c_ratio, 4);
+    SERIAL_PORT.println(max_c_ratio >= 1.5f ? " (PASS >= 1.5)" : " (FAIL < 1.5)");
+
+    // Print individual ratios for clarity
+    for (int i = 0; i < 3; i++) {
+        if (i == max_i) continue;
+        if (ca[i] > 0.001f) {
+            SERIAL_PORT.print("  |");
+            SERIAL_PORT.print(phase_names[max_i]);
+            SERIAL_PORT.print("|/|");
+            SERIAL_PORT.print(phase_names[i]);
+            SERIAL_PORT.print("| = ");
+            SERIAL_PORT.println(max_c / ca[i], 4);
+        }
+    }
+
+    // Also read raw ADC for reference
+    RP2040ADCEngine *eng = getADCEngine();
+    SERIAL_PORT.print("Raw ADC (during phase A drive): ch0=");
+    SERIAL_PORT.print(eng->getRawChannel(0));
+    SERIAL_PORT.print(" ch1=");
+    SERIAL_PORT.print(eng->getRawChannel(1));
+    SERIAL_PORT.print(" ch2=");
+    SERIAL_PORT.println(eng->getRawChannel(2));
+
+    // Return to neutral and phase B test
+    driver->setPwm(zero, zero, zero);
+    delay(300);
+
+    // Phase B test (same as driverAlign phase B)
+    SERIAL_PORT.println("Ramping phase B...");
+    for (int i = 0; i < 100; i++) {
+        driver->setPwm(zero, voltage / 100.0f * ((float)i) + zero, zero);
+        delay(3);
+    }
+    delay(500);
+
+    PhaseCurrent_s c_b = current_sense->readAverageCurrents();
+    SERIAL_PORT.print("Phase B test: a=");
+    SERIAL_PORT.print(c_b.a, 4);
+    SERIAL_PORT.print(" b=");
+    SERIAL_PORT.print(c_b.b, 4);
+    SERIAL_PORT.print(" c=");
+    SERIAL_PORT.println(c_b.c, 4);
+
+    // Phase C test too
+    driver->setPwm(zero, zero, zero);
+    delay(300);
+
+    SERIAL_PORT.println("Ramping phase C...");
+    for (int i = 0; i < 100; i++) {
+        driver->setPwm(zero, zero, voltage / 100.0f * ((float)i) + zero);
+        delay(3);
+    }
+    delay(500);
+
+    PhaseCurrent_s c_c = current_sense->readAverageCurrents();
+    SERIAL_PORT.print("Phase C test: a=");
+    SERIAL_PORT.print(c_c.a, 4);
+    SERIAL_PORT.print(" b=");
+    SERIAL_PORT.print(c_c.b, 4);
+    SERIAL_PORT.print(" c=");
+    SERIAL_PORT.println(c_c.c, 4);
+
+    // Clean up
+    driver->setPwm(zero, zero, zero);
+    delay(100);
+    driver->setPhaseState(PhaseState::PHASE_OFF, PhaseState::PHASE_OFF, PhaseState::PHASE_OFF);
+    driver->setPwm(0, 0, 0);
+
+    SERIAL_PORT.println("=== CS offsets ===");
+    SERIAL_PORT.print("offset_ia=");
+    SERIAL_PORT.print(current_sense->offset_ia, 4);
+    SERIAL_PORT.print(" offset_ib=");
+    SERIAL_PORT.print(current_sense->offset_ib, 4);
+    SERIAL_PORT.print(" offset_ic=");
+    SERIAL_PORT.println(current_sense->offset_ic, 4);
+    SERIAL_PORT.print("gain_a=");
+    SERIAL_PORT.print(current_sense->gain_a, 5);
+    SERIAL_PORT.print(" gain_b=");
+    SERIAL_PORT.print(current_sense->gain_b, 5);
+    SERIAL_PORT.print(" gain_c=");
+    SERIAL_PORT.println(current_sense->gain_c, 5);
+    SERIAL_PORT.println("DONE");
+}
+
 // Pole pair detection: sweep through electrical angles and count
 void doPoleFind(char *cmd) {
     float align_voltage = 4.0;
@@ -936,8 +1657,13 @@ void doPoleFind(char *cmd) {
     // Move to electrical angle 0 and let it settle
     driver->setPwm(align_voltage, 0, 0);
     delay(1000);
+#if MOTOR_CONFIG == MOTOR_MT6701
     encoder->update();
     float start_angle = encoder->getAngle();
+#elif MOTOR_CONFIG == MOTOR_HALLS
+    hall_sensor->update();
+    float start_angle = hall_sensor->getAngle();
+#endif
     SERIAL_PORT.print("Start sensor angle: ");
     SERIAL_PORT.println(start_angle, 4);
 
@@ -958,8 +1684,13 @@ void doPoleFind(char *cmd) {
     }
 
     delay(500);
+#if MOTOR_CONFIG == MOTOR_MT6701
     encoder->update();
     float end_angle = encoder->getAngle();
+#elif MOTOR_CONFIG == MOTOR_HALLS
+    hall_sensor->update();
+    float end_angle = hall_sensor->getAngle();
+#endif
     SERIAL_PORT.print("End sensor angle: ");
     SERIAL_PORT.println(end_angle, 4);
 
@@ -981,8 +1712,13 @@ void setup() {
     led.begin();
     setLED(255, 0, 0);  // Red at boot
 
-    SERIAL_PORT.begin(115200);
-    delay(2000);
+    // UART via debug probe (reliable, no USB CDC issues)
+    Serial1.setTX(PIN_UART_TX);
+    Serial1.setRX(PIN_UART_RX);
+    Serial1.begin(115200);
+    // Also init USB CDC in case someone connects directly
+    Serial.begin(115200);
+    delay(500);
 
     // Construct SimpleFOC objects here (NOT as globals) to avoid static
     // initializers that corrupt RP2350 USB CDC before main() runs.
@@ -994,7 +1730,11 @@ void setup() {
     delay(1);
     motor = new BLDCMotor(POLE_PAIRS);
     delay(1);
+#if MOTOR_CONFIG == MOTOR_MT6701
     encoder = new MagneticSensorMT6835(PIN_ENC_CS);
+#elif MOTOR_CONFIG == MOTOR_HALLS
+    hall_sensor = new HallSensor(PIN_HALL_A, PIN_HALL_B, PIN_HALL_C, POLE_PAIRS);
+#endif
     delay(1);
     commander = new Commander();
     commander->com_port = &SERIAL_PORT;
@@ -1009,7 +1749,11 @@ void setup() {
 #endif
 
     SERIAL_PORT.println("FW:simplefoc");
-    SERIAL_PORT.println("=== Motor Controller ===");
+#if MOTOR_CONFIG == MOTOR_MT6701
+    SERIAL_PORT.println("=== Motor Controller (MT6701) ===");
+#elif MOTOR_CONFIG == MOTOR_HALLS
+    SERIAL_PORT.println("=== Motor Controller (Halls) ===");
+#endif
     SERIAL_PORT.println("Ready (send A to align).");
 
     foc_ready = false;
@@ -1020,6 +1764,7 @@ void setup() {
     commander->add('H', doHwInit, "hw_init");
     commander->add('M', doMotor, "motor");
     commander->add('T', doTarget, "target");
+    commander->add('B', doRun, "run");
     commander->add('A', doAlign, "align");
     commander->add('N', doPolePairs, "pole_pairs");
     commander->add('P', doPoleFind, "polefind");
@@ -1028,6 +1773,9 @@ void setup() {
     commander->add('D', doAdcTest, "adc_diag");
     commander->add('C', doCalibration, "cal_save_load");
     commander->add('U', doPD, "usb_pd");
+    commander->add('W', doWindingResistance, "winding_R");
+    commander->add('F', doHallScan, "hall_scan");
+    commander->add('G', doCSDebug, "cs_debug");
 
     // Auto-init disabled: stale calibration from flash (wrong shunt config)
     // can corrupt state and prevent align from working.
@@ -1118,6 +1866,14 @@ void loop() {
         motor->loopFOC();
         motor->move();
     }
+#if MOTOR_CONFIG == MOTOR_HALLS
+    else if (foc_ready && motor->enabled) {
+        // Continuous FOC loop for hall sensor motor
+        motor->loopFOC();
+        motor->move();
+        yield();  // Keep USB CDC alive during continuous FOC
+    }
+#endif
 
     commander->run();
 }
