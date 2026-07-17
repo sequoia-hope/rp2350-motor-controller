@@ -1054,13 +1054,13 @@ select { background: var(--surface); color: var(--text); border: 1px solid var(-
             <div class="section-header" onclick="toggleSection('sec-limits')">Limits</div>
             <div class="section-body">
                 <div class="param-row"><span class="param-label">Voltage</span>
-                    <input type="number" id="MLU" step="0.5" value="4.0">
+                    <input type="number" id="MLU" step="0.5" value="8.0">
                     <button onclick="setParam('MLU')">Set</button><button onclick="readParam('MLU')">?</button></div>
                 <div class="param-row"><span class="param-label">Current</span>
-                    <input type="number" id="MLC" step="0.1" value="5.0">
+                    <input type="number" id="MLC" step="0.1" value="3.9">
                     <button onclick="setParam('MLC')">Set</button><button onclick="readParam('MLC')">?</button></div>
                 <div class="param-row"><span class="param-label">Velocity</span>
-                    <input type="number" id="MLV" step="1" value="20">
+                    <input type="number" id="MLV" step="1" value="50">
                     <button onclick="setParam('MLV')">Set</button><button onclick="readParam('MLV')">?</button></div>
             </div>
         </div>
