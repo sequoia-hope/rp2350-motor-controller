@@ -73,6 +73,41 @@
 #define PIN_VMOT 46
 #define VMOT_DIVIDER_RATIO (105.1f / 5.1f)  // Vmot = Vadc * ratio
 
+// --- Bus overvoltage guard + optional brake chopper (findings F-28) ---------
+// The D half-bridge is dual-role by design: 4th motor leg (stepper / second
+// brushed motor builds) OR a brake chopper for BLDC builds with a power
+// resistor from the "D" terminal (J2 pin 2) to GND (J10 pin 1).
+//
+// Chopper topology: resistor to GND, HIGH side chopped. At reset/crash the
+// gate-driver input pulls turn the low FET on, which shorts the chopper
+// harmlessly (both resistor ends grounded) while plug-braking the motor —
+// fail-safe with no firmware alive. The bootstrap recharges through the
+// resistor each off-period, so duty is capped below 100%.
+//
+// GPIO9 is D_PWM_L\ (ACTIVE LOW): its 10k pull-down holds the low FET ON.
+// It must be driven HIGH before the first chop or CH2 vs CL2 shoot through
+// (EG3113 has no interlock). Without BRAKE_CHOPPER the D leg is left on its
+// pulls: high FET off, low FET on, node grounded — safest unused state.
+//
+// The voltage guard itself (current_limit foldback) runs on every build:
+// 310uF between 60V and the 71V TVS breakdown is only ~0.22J, and a 4A
+// braking event slews the bus at ~13V/ms.
+#ifndef BRAKE_CHOPPER
+#define BRAKE_CHOPPER 0            // build with -DBRAKE_CHOPPER=1 + fit the resistor
+#endif
+#define PIN_BRAKE_H       8        // D_PWM_H, CH2 gate (active high)
+#define PIN_BRAKE_L       9        // D_PWM_L\, CL2 gate (ACTIVE LOW)
+#define VBUS_GUARD_V      63.0f    // start folding back current_limit
+#define VBUS_GUARD_FULL_V 66.0f    // torque ~zero here
+#define BRAKE_ON_V        64.0f    // chopper starts
+#define BRAKE_FULL_V      66.0f    // chopper at max duty
+#define BRAKE_MAX_DUTY    0.95f    // preserve bootstrap refresh
+#define BRAKE_PWM_HZ      20000
+#define BRAKE_PWM_RANGE   1000
+#define BRAKE_R_OHMS      15.0f    // fitted resistor (4A-class build)
+#define BRAKE_R_WATTS     100.0f   // its continuous rating (I2t leak rate)
+#define BRAKE_R_JOULES    300.0f   // pulse budget before duty is cut
+
 // Motor configuration
 #if MOTOR_CONFIG == MOTOR_MT6701
 #define POLE_PAIRS 11
@@ -332,6 +367,63 @@ static void clampCurrentLimit() {
         motor->PID_velocity.limit = CURRENT_LIMIT_MAX_A;
 }
 
+// --- Bus overvoltage guard (+ chopper when BRAKE_CHOPPER) -------------------
+// Called from every loop() pass and inside the step-test spin loops. Self-
+// throttled: with the DMA ADC engine up a VMOT sample is a RAM read, so it
+// runs near the FOC rate; before that it drops to 500Hz to avoid slow
+// one-shot analogReads. Folds motor->current_limit toward zero across the
+// guard band (less braking torque = less regen) and restores the user's
+// limit once the bus recovers. Chopper duty is proportional across its band
+// with an I2t accumulator standing in for the resistor's thermal mass.
+static float guard_base_limit = 0;
+static bool guard_active = false;
+static float brake_duty_now = 0;
+static float brake_energy_j = 0;
+static uint32_t guard_last_us = 0;
+
+static void busGuard() {
+    if (!motor) return;
+    uint32_t now_us = micros();
+    uint32_t dt_us = now_us - guard_last_us;
+    if (!hw_initialized && dt_us < 2000) return;
+    if (dt_us < 45) return;
+    guard_last_us = now_us;
+    float dt = dt_us * 1e-6f;
+    if (dt > 0.01f) dt = 0.01f;
+    float v = readVMOT();
+
+    float scale = 1.0f;
+    if (v > VBUS_GUARD_V)
+        scale = 1.0f - constrain((v - VBUS_GUARD_V) / (VBUS_GUARD_FULL_V - VBUS_GUARD_V), 0.0f, 1.0f);
+    if (scale >= 1.0f) {
+        if (guard_active) {
+            motor->updateCurrentLimit(guard_base_limit);
+            clampCurrentLimit();
+            guard_active = false;
+        }
+        // track dashboard/tuning changes while the guard is idle
+        guard_base_limit = motor->current_limit;
+    } else {
+        if (!guard_active) {
+            guard_base_limit = motor->current_limit;
+            guard_active = true;
+        }
+        float lim = guard_base_limit * scale;
+        if (lim < 0.05f) lim = 0.05f;
+        motor->updateCurrentLimit(lim);
+    }
+
+#if BRAKE_CHOPPER
+    float duty = constrain((v - BRAKE_ON_V) / (BRAKE_FULL_V - BRAKE_ON_V), 0.0f, 1.0f) * BRAKE_MAX_DUTY;
+    brake_energy_j += (duty * v * v / BRAKE_R_OHMS - BRAKE_R_WATTS) * dt;
+    if (brake_energy_j < 0) brake_energy_j = 0;
+    if (brake_energy_j > BRAKE_R_JOULES) duty = 0;  // thermal budget spent; guard above still acts
+    analogWrite(PIN_BRAKE_H, (int)(duty * BRAKE_PWM_RANGE));
+    brake_duty_now = duty;
+#endif
+    (void)brake_duty_now;
+}
+
 // MLC from the dashboard calls updateCurrentLimit() with whatever is typed, so
 // re-clamp after every motor command.
 void doMotor(char *cmd) {
@@ -484,6 +576,14 @@ static void initSwitchGpios() {
         digitalWrite(p, LOW);
         pinMode(p, OUTPUT);
     }
+#if BRAKE_CHOPPER
+    // Chopper owns the D leg: low FET held OFF (D_PWM_L\ is ACTIVE LOW —
+    // floating means ON), high FET low until busGuard() chops it.
+    digitalWrite(PIN_BRAKE_L, HIGH);
+    pinMode(PIN_BRAKE_L, OUTPUT);
+    digitalWrite(PIN_BRAKE_H, LOW);
+    pinMode(PIN_BRAKE_H, OUTPUT);
+#endif
 }
 
 static void initHardware() {
@@ -849,7 +949,8 @@ void doStep(char *cmd) {
         logBegin("t_ms,vel_target,vel,Iq", 3, duration);
         unsigned long t0 = millis();
         while (millis() - t0 < duration) {
-            if (!focLoopDue()) continue;
+            busGuard();
+        if (!focLoopDue()) continue;
 
             unsigned long t_ms = millis() - t0;
             float t_sec = t_ms * 0.001f;
@@ -949,6 +1050,7 @@ void doStep(char *cmd) {
     logBegin(hdr, ncols, duration);
     unsigned long t0 = millis();
     while (millis() - t0 < duration) {
+        busGuard();
         if (!focLoopDue()) continue;
 
         // Instrument first 10 iterations: print angle, alpha/beta, dq before PID
@@ -1917,6 +2019,13 @@ void setup() {
     // These control lines float from power-on until now (no pull-downs on
     // rev A), so e.g. the encoder supply could sit at 5V with a 3.3V sensor.
     initSwitchGpios();
+#if BRAKE_CHOPPER
+    // Hardware PWM for the chopper high side. Nothing else uses analogWrite,
+    // so the global freq/range setting is safe to claim here.
+    analogWriteFreq(BRAKE_PWM_HZ);
+    analogWriteRange(BRAKE_PWM_RANGE);
+    analogWrite(PIN_BRAKE_H, 0);
+#endif
 
     led.begin();
     setLED(255, 0, 0);  // Red at boot
@@ -2098,6 +2207,8 @@ void loop() {
         foc_run_count = 0;
         loop_freq_t0 = now;
     }
+
+    busGuard();  // bus overvoltage foldback (+ brake chopper when built in)
 
 #ifdef HAS_USB_PD
     pd_ufp->run();
