@@ -313,6 +313,28 @@ Orphan-via cleanup + the seam drags remain on the worklist alongside the 189 air
 (≈165 corner + 24 new-part nets that never had copper).
 </div>
 
+<h2 id="jiggle2b">8b · Control experiment: no new parts, referee-only iterations (2026-08-09)</h2>
+
+<p>To isolate variables we re-ran the pipeline with the 28 rev-B footprints removed everywhere
+(<code>JIGGLE2_VARIANT=nonew</code>: obstacles, base board, and DRC baseline all computed without
+them). Two findings. First, <strong>the new parts are most of the problem</strong>: the baseline
+board without them has only 46 violations / 149 airwires (vs 130 / 214), and the solver's residual
+drops from 485 to 269 — the rest of the contested copper is the moved parts' own pad fields.
+Second, <strong>emitting <em>all</em> relaxed copper recovers nearly everything</strong>
+(149&nbsp;→&nbsp;18 airwires) at the cost of 283 real violations — and the real DRC count almost
+exactly matches the solver's internal residual, so the model is calibrated.</p>
+
+<p><strong>The iteration question — answered.</strong> With PathFinder-style minimal withdrawal
+(one most-implicated object per violation per round, referee veto separate from the classifier's
+opinion), the loop converges monotonically and never breaks the board:
+285&nbsp;→&nbsp;15&nbsp;→&nbsp;3&nbsp;→&nbsp;2&nbsp;→&nbsp;0 new violations over five rounds, ending at
+<strong>45 violations (one better than baseline) and 124 airwires</strong> (25 recovered net of
+withdrawals). The board-edge clamp added this round eliminated the copper-edge violation class the
+first run suffered. The gap between 18 airwires (emit-everything) and 124 (DRC-neutral) is the
+honest measure of what still needs a real router: ~270 copper objects, concentrated where the
+49 moved parts' pad fields overlap old approach traces — the homotopic-reroute lever from
+<a href="research.html">the research page</a>, not more force iterations.</p>
+
 <footer style="margin-top:4rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:1rem">
   Analysis: exact courtyard polygons via pcbnew 9.0.8; relaxation: 400-iteration constrained field,
   target 0.25 mm, connectors/holes/power-copper pinned; solver + data in <code>review/tools/</code>

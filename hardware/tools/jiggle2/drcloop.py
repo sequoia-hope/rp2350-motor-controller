@@ -6,7 +6,7 @@ introduces zero new violations or nothing more can be withdrawn."""
 import json, math, subprocess, sys, os
 from common import DATA, load_json, save_json
 
-MAX_ROUNDS = 6
+MAX_ROUNDS = 14
 NEAR = 0.6      # mm: violation-to-copper attribution radius
 
 
@@ -47,22 +47,29 @@ for rnd in range(1, MAX_ROUNDS + 1):
     withdrew = 0
     unattributed = []
     for v in new:
-        hit = False
+        # withdraw only the single most-implicated object (PathFinder-style
+        # minimal escalation) — bystanders keep their copper
+        best = None   # (dist, kind, obj)
         for it in v['items']:
             if 'pos' not in it:
                 continue
             x, y = it['pos']['x'], it['pos']['y']
             for e in sol['edges']:
-                if e['clean'] and pt_polyline_dist(x, y, e['pts']) < NEAR + e['w']/2:
-                    e['clean'] = False
-                    withdrew += 1
-                    hit = True
+                if e.get('withdrawn'):
+                    continue
+                d = pt_polyline_dist(x, y, e['pts']) - e['w']/2
+                if d < NEAR and (best is None or d < best[0]):
+                    best = (d, e)
             for w in sol['vias']:
-                if w['clean'] and math.hypot(x - w['x'], y - w['y']) < NEAR + w['dia']/2:
-                    w['clean'] = False
-                    withdrew += 1
-                    hit = True
-        if not hit:
+                if w.get('withdrawn'):
+                    continue
+                d = math.hypot(x - w['x'], y - w['y']) - w['dia']/2
+                if d < NEAR and (best is None or d < best[0]):
+                    best = (d, w)
+        if best is not None:
+            best[1]['withdrawn'] = True
+            withdrew += 1
+        else:
             unattributed.append((v['type'], v['description'][:70]))
     print(f'  withdrew {withdrew} copper objects; {len(unattributed)} violations unattributed')
     for t, d in unattributed[:8]:
@@ -72,8 +79,9 @@ for rnd in range(1, MAX_ROUNDS + 1):
               'or need hand attention. stopping.')
         break
     save_json('solution.json', sol)
-    r = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'emit.py')],
-                       capture_output=True, text=True)
+    cmd = [sys.executable, os.path.join(os.path.dirname(__file__), 'emit.py')]
+    cmd += [a for a in sys.argv[1:] if a == '--all']
+    r = subprocess.run(cmd, capture_output=True, text=True)
     tail = [l for l in r.stdout.splitlines() if l.strip()][-9:]
     print('  ' + '\n  '.join(tail))
     if r.returncode != 0:

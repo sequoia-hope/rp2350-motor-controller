@@ -18,6 +18,8 @@ F_CU, B_CU = G['F'], G['B']
 
 CLR = O['clearance']            # copper-copper, mm
 HOLE_CLR = O['hole_clearance']  # hole-copper, mm
+EDGE = O.get('board_edge')      # [x0,y0,x1,y1] real outline bbox
+ECLR = O.get('edge_clearance', 0.3)
 SUB = 0.8                       # max sub-segment length
 STEPS = int(sys.argv[sys.argv.index('--steps')+1]) if '--steps' in sys.argv else 60
 SWEEPS = 3
@@ -153,6 +155,12 @@ for ei, e in enumerate(edges):
 nbr = defaultdict(list)
 for s in segs:
     nbr[s['a']].append(s['b']); nbr[s['b']].append(s['a'])
+
+# per-node copper half-width, for the board-edge clamp
+node_hw = [via_dia[i]/2 if is_via[i] else 0.0 for i in range(len(P))]
+for s in segs:
+    for nid in (s['a'], s['b']):
+        node_hw[nid] = max(node_hw[nid], s['w']/2)
 print(f'{len(P)} solver nodes, {len(segs)} dyn sub-segments')
 
 def resubdivide():
@@ -170,6 +178,7 @@ def resubdivide():
         P.append([(x1+x2)/2, (y1+y2)/2])
         is_via.append(False); via_dia.append(0); via_drill.append(0)
         node_net.append(s['net'])
+        node_hw.append(s['w']/2)
         old_b = s['b']
         s['b'] = nid
         segs.append(dict(a=nid, b=old_b, layer=s['layer'], w=s['w'],
@@ -564,6 +573,7 @@ def wrap_pass():
                 P.append([q[0], q[1]])
                 is_via.append(False); via_dia.append(0); via_drill.append(0)
                 node_net.append(e['net'])
+                node_hw.append(e['w']/2)
                 no_smooth.add(nid)
                 interior.append(nid)
             chain_ids = [keep_a] + interior + [keep_b]
@@ -700,6 +710,17 @@ def sweep():
     for nid in range(len(nodes)):
         if is_via[nid]:
             project_via_node(nid)
+    # 6. board edge clamp (hard constraint, not counted as violation)
+    if EDGE:
+        ex0, ey0, ex1, ey1 = EDGE
+        for nid in range(len(P)):
+            if nid in anchor:
+                continue
+            m = ECLR + node_hw[nid] + EXTRA
+            if P[nid][0] < ex0 + m: P[nid][0] = ex0 + m
+            elif P[nid][0] > ex1 - m: P[nid][0] = ex1 - m
+            if P[nid][1] < ey0 + m: P[nid][1] = ey0 + m
+            elif P[nid][1] > ey1 - m: P[nid][1] = ey1 - m
     return violations
 
 # Wraps are opt-in: in a dense field a single-obstacle detour tends to plow

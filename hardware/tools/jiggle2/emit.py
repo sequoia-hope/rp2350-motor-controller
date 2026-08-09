@@ -3,10 +3,10 @@
 real KiCad DRC referee the result. Never touches rp2350_driver.kicad_pcb."""
 import json, math, subprocess, sys
 import pcbnew
-from common import NM, BOARD_CUR, BOARD_OUT, DATA, load_board, load_json
+from common import NM, BOARD_BASE, BOARD_OUT, DATA, load_board, load_json
 
 sol = load_json('solution.json')
-board = load_board(BOARD_CUR)
+board = load_board(BOARD_BASE)
 
 def rdp(pts, eps=0.01):
     """Simplify polyline; keeps endpoints."""
@@ -35,9 +35,13 @@ def find_net(name):
     n = nets.find(name)
     return None if n == nets.end() else n.value()[1]
 
-added_t = added_v = skipped_dirty_t = skipped_dirty_v = no_net = 0
+EMIT_ALL = '--all' in sys.argv   # trust the DRC referee, not the classifier
+added_t = added_v = skipped_dirty_t = skipped_dirty_v = withdrawn = no_net = 0
 for e in sol['edges']:
-    if not e['clean']:
+    if e.get('withdrawn'):       # referee veto always wins
+        withdrawn += 1
+        continue
+    if not e['clean'] and not EMIT_ALL:
         skipped_dirty_t += 1
         continue
     net = find_net(e['net'])
@@ -57,7 +61,10 @@ for e in sol['edges']:
         board.Add(t)
         added_t += 1
 for v in sol['vias']:
-    if not v['clean']:
+    if v.get('withdrawn'):
+        withdrawn += 1
+        continue
+    if not v['clean'] and not EMIT_ALL:
         skipped_dirty_v += 1
         continue
     net = find_net(v['net'])
@@ -79,7 +86,7 @@ for v in sol['vias']:
 
 print(f'emitted {added_t} track segments, {added_v} vias '
       f'(withheld: {skipped_dirty_t} dirty chains, {skipped_dirty_v} dirty vias, '
-      f'{no_net} net lookup failures)')
+      f'{withdrawn} referee-withdrawn, {no_net} net lookup failures)')
 
 filler = pcbnew.ZONE_FILLER(board)
 filler.Fill(board.Zones())
@@ -98,7 +105,7 @@ def drc(path, out):
             Counter(v['type'] for v in d.get('violations', [])))
 
 if '--no-drc' not in sys.argv:
-    u0, t0 = drc(BOARD_CUR, f'{DATA}/drc_baseline.json')
+    u0, t0 = drc(BOARD_BASE, f'{DATA}/drc_baseline.json')
     u1, t1 = drc(BOARD_OUT, f'{DATA}/drc_jiggle2.json')
     print(f'\nDRC referee:')
     print(f'  unconnected: {u0} -> {u1}')

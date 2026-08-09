@@ -5,8 +5,8 @@ static obstacle set. Outputs data/graph.json + data/obstacles.json."""
 import math, json
 from collections import defaultdict
 import pcbnew
-from common import (NM, BOARD_CUR, BOARD_PRE, REGION, in_region,
-                    load_board, tsig, vsig, save_json)
+from common import (NM, BOARD_CUR, BOARD_PRE, BOARD_BASE, VARIANT, REGION,
+                    in_region, load_board, tsig, vsig, save_json, quiet_stderr)
 
 pre = load_board(BOARD_PRE)
 cur = load_board(BOARD_CUR)
@@ -142,10 +142,33 @@ cur_nets = {str(k) for k in cur_nets}
 missing_nets = sorted({e['net'] for e in edges} - cur_nets)
 print('nets not present in current board:', missing_nets or 'none')
 
+# ---- variant: rebuild the base board without the rev-B footprints -----------
+# (all reads from the original board are done; a fresh load avoids touching
+# live swig wrappers with Remove())
+if VARIANT == 'nonew':
+    import subprocess, sys as _sys
+    new_refs = sorted(set(cf) - set(pf))
+    strip = (
+        "import pcbnew, sys\n"
+        "b = pcbnew.LoadBoard(sys.argv[1])\n"
+        "refs = set(sys.argv[3].split(','))\n"
+        "for f in list(b.GetFootprints()):\n"
+        "    if f.GetReference() in refs:\n"
+        "        b.Remove(f)\n"
+        "pcbnew.SaveBoard(sys.argv[2], b)\n"
+    )
+    subprocess.run([_sys.executable, '-c', strip, BOARD_CUR, BOARD_BASE,
+                    ','.join(new_refs)], check=True, capture_output=True)
+    cur = load_board(BOARD_BASE)   # obstacles come from the variant board
+    print(f'variant nonew: removed {len(new_refs)} rev-B footprints, '
+          f'base board saved to data_nonew/')
+
 # ---- static obstacles in region ---------------------------------------------
 F, B = int(pcbnew.F_Cu), int(pcbnew.B_Cu)
+bb = cur.GetBoardEdgesBoundingBox()
 obst = dict(pads=[], tracks=[], vias=[], clearance=None, hole_clearance=0.254,
-            edge=[REGION['x0'], REGION['y0'], REGION['x1'], REGION['y1']])
+            board_edge=[bb.GetLeft()*NM, bb.GetTop()*NM, bb.GetRight()*NM, bb.GetBottom()*NM],
+            edge_clearance=0.3)
 obst['clearance'] = 0.18  # netclass 'Default' clearance per DRC reports
 try:
     nc = cur.GetDesignSettings().m_NetSettings.GetDefaultNetclass()

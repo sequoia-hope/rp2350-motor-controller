@@ -5,8 +5,15 @@ import os, sys, math, json, contextlib
 HW = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BOARD_CUR = os.path.join(HW, 'rp2350_driver.kicad_pcb')
 BOARD_PRE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'board_prerip_2238aca.kicad_pcb')
-BOARD_OUT = os.path.join(HW, 'rp2350_driver_jiggle2.kicad_pcb')
-DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+
+# Variants (JIGGLE2_VARIANT env): '' = full board; 'nonew' = the 28 rev-B
+# footprints removed everywhere (obstacles, base board, referee baseline).
+VARIANT = os.environ.get('JIGGLE2_VARIANT', '')
+_sfx = f'_{VARIANT}' if VARIANT else ''
+BOARD_OUT = os.path.join(HW, f'rp2350_driver_jiggle2{_sfx}.kicad_pcb')
+DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), f'data{_sfx}')
+# The board the work copy is built from and DRC-baselined against.
+BOARD_BASE = os.path.join(DATA, 'board_base.kicad_pcb') if VARIANT else BOARD_CUR
 os.makedirs(DATA, exist_ok=True)
 
 NM = 1e-6  # pcbnew nm -> mm
