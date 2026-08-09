@@ -28035,7 +28035,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "TMG08N10SI"
 			(at 110.998 426.974 0)
 			(effects
 				(font
@@ -28072,7 +28072,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C501507"
+		(property "LCSC" "C7422896"
 			(at 119.38 420.37 0)
 			(effects
 				(font
@@ -30977,7 +30977,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SMAJ51A"
+		(property "Value" "SMAJ64A"
 			(at 325.755 447.675 90)
 			(effects
 				(font
@@ -31013,7 +31013,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C366557"
+		(property "LCSC" "LCSC-TBD-SMAJ64A"
 			(at 323.85 441.96 90)
 			(effects
 				(font
@@ -31925,7 +31925,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "TMG08N10SI"
 			(at 488.188 480.314 0)
 			(effects
 				(font
@@ -31962,7 +31962,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C501507"
+		(property "LCSC" "C7422896"
 			(at 496.57 473.71 0)
 			(effects
 				(font
@@ -34555,7 +34555,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "TMG08N10SI"
 			(at 224.028 508.254 0)
 			(effects
 				(font
@@ -34592,7 +34592,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C501507"
+		(property "LCSC" "C7422896"
 			(at 232.41 501.65 0)
 			(effects
 				(font
@@ -35121,7 +35121,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "TMG08N10SI"
 			(at 224.028 493.014 0)
 			(effects
 				(font
@@ -35158,7 +35158,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C501507"
+		(property "LCSC" "C7422896"
 			(at 232.41 486.41 0)
 			(effects
 				(font
@@ -35730,7 +35730,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "TMG08N10SI"
 			(at 292.608 428.244 0)
 			(effects
 				(font
@@ -35767,7 +35767,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C501507"
+		(property "LCSC" "C7422896"
 			(at 300.99 421.64 0)
 			(effects
 				(font
@@ -38103,7 +38103,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SMAJ51A"
+		(property "Value" "SMAJ64A"
 			(at 511.175 484.505 90)
 			(effects
 				(font
@@ -38139,7 +38139,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C366557"
+		(property "LCSC" "LCSC-TBD-SMAJ64A"
 			(at 509.27 478.79 90)
 			(effects
 				(font
@@ -42880,7 +42880,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "TMG08N10SI"
 			(at 119.888 442.214 0)
 			(effects
 				(font
@@ -42917,7 +42917,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C501507"
+		(property "LCSC" "C7422896"
 			(at 128.27 435.61 0)
 			(effects
 				(font
@@ -44063,7 +44063,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SMAJ51A"
+		(property "Value" "SMAJ64A"
 			(at 144.78 445.77 90)
 			(effects
 				(font
@@ -44099,7 +44099,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C366557"
+		(property "LCSC" "LCSC-TBD-SMAJ64A"
 			(at 143.51 439.42 90)
 			(effects
 				(font
@@ -46050,7 +46050,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "TMG08N10SI"
 			(at 478.028 465.074 0)
 			(effects
 				(font
@@ -46087,7 +46087,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C501507"
+		(property "LCSC" "C7422896"
 			(at 486.41 458.47 0)
 			(effects
 				(font
@@ -46263,7 +46263,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SMAJ51A"
+		(property "Value" "SMAJ64A"
 			(at 248.285 509.27 90)
 			(effects
 				(font
@@ -46299,7 +46299,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C366557"
+		(property "LCSC" "LCSC-TBD-SMAJ64A"
 			(at 246.38 506.73 90)
 			(effects
 				(font
@@ -48325,7 +48325,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SMDJ85A"
+		(property "Value" "SMDJ60A"
 			(at 101.6 485.775 90)
 			(effects
 				(font
@@ -48361,7 +48361,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2990214"
+		(property "LCSC" "LCSC-TBD-SMDJ60A"
 			(at 99.06 483.87 90)
 			(effects
 				(font
@@ -49188,7 +49188,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "TMG08N10SI"
 			(at 302.768 443.484 0)
 			(effects
 				(font
@@ -49225,7 +49225,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C501507"
+		(property "LCSC" "C7422896"
 			(at 311.15 436.88 0)
 			(effects
 				(font
