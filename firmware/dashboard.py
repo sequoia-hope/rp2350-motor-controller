@@ -731,8 +731,11 @@ def main():
     print("Generating HTML...")
     html = generate_html(regs, cpu_regs, sections, raw_dump, picotool_info, flash_hex)
 
-    # Write HTML to file for reference
-    out_path = "/home/sequoia/Software/motor-firmware/dashboard.html"
+    # Write HTML to file for reference, next to this script. This used to be an
+    # absolute path into ~/Software/motor-firmware, which stopped existing when
+    # the firmware moved into this repo — and since the write happens before the
+    # server starts, the stale path took the whole dashboard down with it.
+    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dashboard.html")
     with open(out_path, "w") as f:
         f.write(html)
     print(f"  Saved to {out_path}")
@@ -748,7 +751,13 @@ def main():
         def log_message(self, format, *args):
             pass  # quiet
 
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+    # socketserver.TCPServer leaves allow_reuse_address False (unlike
+    # http.server.HTTPServer), so after the dashboard is stopped the port sits
+    # in TIME_WAIT and an immediate restart dies with "Address already in use".
+    class Server(socketserver.TCPServer):
+        allow_reuse_address = True
+
+    with Server(("", PORT), Handler) as httpd:
         print(f"\n  Serving on http://localhost:{PORT}")
         print(f"  Press Ctrl+C to stop\n")
         try:
