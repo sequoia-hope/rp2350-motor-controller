@@ -3,3 +3,5 @@ rp2350_driver-backups
 tmp/
 __pycache__/
 rp2350_driver_jiggle2*
+hardware/rp2350_driver_morph.kicad_pcb
+hardware/rp2350_driver_morph.kicad_pro
