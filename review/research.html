@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Routing Research — Rubber-Band, Homotopy & Force Fields</title>
+<style>
+  :root {
+    --bg: #f7f6f3; --panel: #ffffff; --ink: #1e2126; --muted: #5b6470;
+    --line: #d9d5cc; --accent: #6b4fa0; --good: #2c7a4b; --warn: #a05a00;
+    --bad: #b03434; --code-bg: #efede8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d; --panel: #1e2128; --ink: #e8e6e1; --muted: #9aa3af;
+      --line: #343945; --accent: #a98fd8; --good: #5cb884; --warn: #e0a44c;
+      --bad: #e06c6c; --code-bg: #262a33;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+  header.masthead { border-bottom: 3px solid var(--accent); padding: 2.2rem 0 1rem; margin-bottom: 1.5rem; }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 .4rem; }
+  .subtitle { color: var(--muted); margin: 0; }
+  h2 { font-size: 1.3rem; margin: 2.4rem 0 .8rem; }
+  a { color: var(--accent); }
+  code { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .92em; background: var(--code-bg); padding: .08em .35em; border-radius: 4px; }
+  .crumb { font-size: .85rem; margin-bottom: .5rem; }
+  .paper { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.4rem; margin: 1rem 0; }
+  .paper h3 { margin: 0 0 .25rem; font-size: 1.08rem; }
+  .paper .meta { font-size: .85rem; color: var(--muted); margin: 0 0 .5rem; }
+  .paper p { margin: .4rem 0; font-size: .95rem; }
+  .steal { border-left: 3px solid var(--good); padding: .1rem 0 .1rem .8rem; margin-top: .6rem; font-size: .93rem; }
+  .steal b { color: var(--good); }
+  .tag { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; padding: .12em .55em; border-radius: 99px; white-space: nowrap; margin-left: .4rem; vertical-align: middle; }
+  .tag.pdf { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+  .tag.link { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+  .tag.idea { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+  .note { background: color-mix(in srgb, var(--accent) 8%, var(--panel)); border: 1px solid var(--accent); border-radius: 12px; padding: 1rem 1.4rem; margin: 1.2rem 0; }
+  footer { margin-top: 3rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+</style>
+</head>
+<body>
+<main>
+
+<header class="masthead">
+  <p class="crumb"><a href="index.html">← Review Hub</a></p>
+  <h1>Routing Research — Rubber-Band, Homotopy &amp; Force Fields</h1>
+  <p class="subtitle">Literature behind "jiggle v2": relaxing traces and vias along with parts, instead of
+  rip-up-and-reroute · pulled 2026-08-09 · PDFs live in <code>review/research/</code></p>
+</header>
+
+<p>Context: the rev-B corner rework left 214 airwires because the relaxation moved parts and we ripped the
+copper. The proposal on the table is a connectivity-preserving field — pads anchor trace endpoints, vias
+and segment nodes are free bodies, clearance is enforced as a constraint each pass, and full DRC runs
+periodically as ground truth. None of this is a new idea in isolation; below is who did each piece, and
+what's worth stealing from each.</p>
+
+<h2>1 · The direct ancestors: rubber-band &amp; topological routing</h2>
+
+<div class="paper">
+  <h3>Topological Routing in SURF: Generating a Rubber-Band Sketch <span class="tag link">LINK ONLY</span></h3>
+  <p class="meta">Dai, Dayan &amp; Staepelaere · UC Santa Cruz · DAC 1991 ·
+    <a href="https://dl.acm.org/doi/pdf/10.1145/127601.127622">ACM (paywalled)</a> ·
+    <a href="https://www.semanticscholar.org/paper/10b78bda6ccfccf178737bafac91ae80766a4ecf">Semantic Scholar</a></p>
+  <p>The founding paper for exactly our approach: wires modeled as elastic rubber bands stretched between
+  pins, routed topologically first (which side of what does each wire pass) with geometry deferred.
+  Naturally any-angle. The "sketch" is a canonical minimal-length embedding of a fixed topology — which is
+  precisely what our relaxed copper should converge to.</p>
+  <p class="steal"><b>Steal:</b> the two-level split. Topology (crossing order) is data; geometry is just the
+  relaxed embedding of it. Our field only ever changes geometry — that's why it's stable and why it can't fix
+  a bad topology. Companion pieces: <a href="https://www.semanticscholar.org/paper/7273698fc78f7e26a3a0bebf8438130e42623a3f">SURF system paper (1993)</a>,
+  Dayan's thesis <a href="https://www.semanticscholar.org/paper/91ce7726d0b103db47ab5db433ed75b538e6e7f8">"Rubber-Band Based Topological Router" (1997)</a>,
+  and tech report UCSC-CRL-92-50 on layer assignment for rubber-band routing.</p>
+</div>
+
+<div class="paper">
+  <h3>TopoR — the commercial proof it works <span class="tag link">LINK ONLY</span></h3>
+  <p class="meta">Eremex (Luzin et al.), lineage from 1988 ·
+    <a href="https://en.wikipedia.org/wiki/TopoR">Wikipedia</a> ·
+    <a href="https://www.edn.com/speed-and-improve-pcb-routing/">EDN overview</a></p>
+  <p>A shipping PCB router with no preferred directions: traces are flexible objects that continuously
+  redistribute as parts move, geometry finalized late as arcs and free angles. Known for shortening total
+  wire length and cutting via count vs. grid routers. The Luzin papers are in Russian-language journals and
+  not freely available, but the product documentation describes the behavior well.</p>
+  <p class="steal"><b>Steal:</b> the workflow insight — in TopoR you can drag a component <em>after</em> routing
+  and the copper follows. That is exactly the "replay placement moves, drag copper" plan for the corner.</p>
+</div>
+
+<h2>2 · The math that says when it's possible: homotopy</h2>
+
+<div class="paper">
+  <h3>Single-Layer Wire Routing and Compaction <span class="tag link">BOOK</span></h3>
+  <p class="meta">F. Miller Maley · MIT Press 1990 ·
+    <a href="https://mitpress.mit.edu/books/single-layer-wire-routing-and-compaction">MIT Press</a></p>
+  <p>The rigorous treatment of our regime: wires as flexible connections with <em>fixed topology</em>, layouts
+  legalized by continuous deformation (homotopy). Maley's key result: a homotopic routing is realizable iff
+  every "cut" between obstacles has enough capacity for the wires that must cross it — checkable without
+  actually drawing the geometry.</p>
+  <p class="steal"><b>Steal:</b> cut capacity as a fast feasibility oracle. Before iterating 400 passes, check
+  the pinch points (e.g. between a pad field and the board edge): if width-needed exceeds width-available, no
+  amount of jiggling converges — that spot needs a topology change (via hop) up front, not relaxation.</p>
+</div>
+
+<div class="paper">
+  <h3>Testing Homotopy for Paths in the Plane <span class="tag pdf">PDF</span></h3>
+  <p class="meta">Cabello, Liu, Mantler &amp; Snoeyink · SoCG 2002 ·
+    <a href="research/homotopy-paths-plane-cabello.pdf">local PDF</a></p>
+  <p>Efficient algorithms to decide whether two paths are homotopic (deformable into each other without
+  crossing obstacles).</p>
+  <p class="steal"><b>Steal:</b> a post-run invariant check. After relaxation, verify each dragged trace is
+  homotopic to its pre-rip original relative to pinned obstacles — i.e. prove the field never changed
+  topology, only shape. Cheap insurance that "keeps traces connected" also means "kept them equivalent."</p>
+</div>
+
+<h2>3 · Solver machinery: constraints &amp; negotiation</h2>
+
+<div class="paper">
+  <h3>Position Based Dynamics <span class="tag pdf">PDF</span></h3>
+  <p class="meta">Müller, Heidelberger, Hennix &amp; Ratcliff · J. Vis. Commun. 2007 ·
+    <a href="research/position-based-dynamics-2007.pdf">local PDF</a></p>
+  <p>The games/graphics standard for simulating constrained systems (cloth, ropes) without force blow-ups:
+  skip forces for hard limits, move positions directly, then run Gauss–Seidel projection over all constraints
+  each step. Unconditionally stable, handles inequality constraints (≥ clearance) natively.</p>
+  <p class="steal"><b>Steal:</b> the whole solver core. Traces = PBD ropes (distance constraints along the
+  segment chain), clearance = inequality constraints projected every pass, pad attachments = infinite-mass
+  anchors. This is the "enforce basic DRC concepts at every pass" mechanism, and it's why v2 shouldn't be
+  springs-only like v1.</p>
+</div>
+
+<div class="paper">
+  <h3>PathFinder: A Negotiation-Based Performance-Driven Router <span class="tag pdf">PDF</span></h3>
+  <p class="meta">McMurchie &amp; Ebeling · FPGA 1995 ·
+    <a href="research/pathfinder-negotiated-routing-1995.pdf">local PDF</a></p>
+  <p>The classic iterative scheme behind most modern routers: let nets share resources illegally at first,
+  then raise the cost of each contested resource every iteration until congestion resolves itself. Signals
+  that have alternatives yield; the one that needs the resource most keeps it.</p>
+  <p class="steal"><b>Steal:</b> escalating penalties for the DRC-in-the-loop pass. When full DRC keeps
+  flagging the same clearance violation across runs, don't push harder uniformly — raise that <em>specific</em>
+  constraint's weight each round so the loser reroutes around it. Negotiation, not brute force.</p>
+</div>
+
+<h2>4 · The learning-based corner</h2>
+
+<div class="note">
+  <b>Idea noted (2026-08-09):</b> Sequoia wants to see what a <b>fresh placement</b> of this board looks like
+  under <b>diffusion-based placement</b> (paper below) — generate placements by iterative denoising with
+  legality + wirelength guidance, as a comparison point against the incremental jiggle approach.
+  Practical route: their guidance potentials (overlap, HPWL) are exactly our courtyard-gap and airwire-length
+  terms, so we could also just run our own field from random initialization as a poor-man's version, then
+  compare. <span class="tag idea">FUTURE EXPERIMENT</span>
+</div>
+
+<div class="paper">
+  <h3>Chip Placement with Diffusion <span class="tag pdf">PDF</span></h3>
+  <p class="meta">Lee, Deng, Elzeiny, Abbeel &amp; Wawrzynek · UC Berkeley · arXiv 2407.12282 (2024) ·
+    <a href="research/diffusion-placement-2024.pdf">local PDF</a> ·
+    <a href="https://arxiv.org/abs/2407.12282">arXiv</a></p>
+  <p>Places all components simultaneously by denoising, rather than sequentially (RL) or by force
+  minimization alone. GNN + attention over the netlist; trained on synthetic data generated by inverting the
+  problem (make a netlist for which a known placement is near-optimal). Guidance potentials for legality and
+  wirelength steer sampling without retraining.</p>
+  <p class="steal"><b>Steal:</b> the guided-sampling framing. Their "universal guidance" potentials are
+  differentiable versions of our constraints — a shared vocabulary between jiggle v2 and a possible future
+  learned placer. Also the synthetic-data trick if we ever train anything.</p>
+</div>
+
+<div class="paper">
+  <h3>FanoutNet: Neuralized PCB Fanout via Deep RL <span class="tag pdf">PDF</span></h3>
+  <p class="meta">AAAI 2023 · <a href="research/fanoutnet-rl-fanout-2023.pdf">local PDF</a></p>
+  <p>RL (PPO, CNN + attention) for the fanout/escape-routing stage of dense PCBs — the first automation paper
+  aimed specifically at PCB fanout rather than IC routing.</p>
+  <p class="steal"><b>Steal:</b> problem decomposition. Escape/fanout (getting from a pad field to open board)
+  is a separate, harder subproblem than open-field routing — matches our observation that the encoder-corner
+  pad fields are where relaxation alone will leave a residue.</p>
+</div>
+
+<div class="paper">
+  <h3>A Deep Reinforcement Learning Approach for Global Routing <span class="tag pdf">PDF</span></h3>
+  <p class="meta">Liao et al. · arXiv 1906.08809 (2019) · <a href="research/drl-global-routing-2019.pdf">local PDF</a></p>
+  <p>DQN over a grid-graph global-routing environment; jointly optimizes net order and paths. More IC-flavored,
+  but a clean reference for formulating routing as sequential decisions with capacity costs.</p>
+  <p class="steal"><b>Steal:</b> mostly context — shows where the RL literature sits vs. our deterministic
+  deformation approach (they solve topology, we solve geometry).</p>
+</div>
+
+<div class="paper">
+  <h3>PCBWorld: A Benchmark Environment for Engine-Grounded PCB Design Automation <span class="tag pdf">PDF</span></h3>
+  <p class="meta">arXiv 2607.05915 (2026) · <a href="research/pcbworld-benchmark-2026.pdf">local PDF</a></p>
+  <p>Recent benchmark environment coupling PCB automation agents to a real design-rule engine — the "ground
+  truth DRC in the loop" philosophy, institutionalized.</p>
+  <p class="steal"><b>Steal:</b> validation of the architecture choice: keep the fast approximate model inside
+  the loop, but let the real engine (for us, <code>pcbnew</code> 9.0.8 DRC) be the referee, periodically.</p>
+</div>
+
+<h2>5 · Nearest in-tool relative</h2>
+
+<div class="paper">
+  <h3>KiCad's push-and-shove router <span class="tag link">DOCS</span></h3>
+  <p class="meta">Wlostowski &amp; Suminski (CERN) ·
+    <a href="https://docs.kicad.org/9.0/en/pcbnew/pcbnew.html#interactive-router">KiCad docs</a></p>
+  <p>Already implements local copper deformation: dragging a trace shoves neighbors while maintaining
+  clearance and connectivity — but only interactively, one object at a time, driven by the mouse.</p>
+  <p class="steal"><b>Steal:</b> the honest benchmark. Jiggle v2 is "push-and-shove where the mouse is a
+  400-iteration global field." If a corner case resists the field, P&amp;S drag in the GUI is the manual
+  fallback — same physics, human topology decisions.</p>
+</div>
+
+<h2>What this means for jiggle v2</h2>
+<p>The literature cleanly endorses the plan and sharpens it in four places:</p>
+<ul>
+  <li><b>PBD, not springs,</b> for clearance and pad-attachment (Müller) — v1's spring/push model stays only
+  for the long-range spreading term.</li>
+  <li><b>Check cut capacity first</b> (Maley) at the corner pinch points, so we pre-place the few unavoidable
+  via hops instead of asking gradient descent to invent them.</li>
+  <li><b>Escalate per-violation costs</b> across DRC rounds (PathFinder) instead of raising global stiffness.</li>
+  <li><b>Verify homotopy after</b> (Cabello) — machine-check that every dragged trace kept its topology.</li>
+</ul>
+
+<footer>
+  Pulled 2026-08-09 · 7 PDFs in <code>review/research/</code> · paywalled items kept as links ·
+  part of the <a href="index.html">rp2350-motor-controller review hub</a>
+</footer>
+
+</main>
+</body>
+</html>
