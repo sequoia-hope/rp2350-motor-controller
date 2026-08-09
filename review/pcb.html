@@ -249,6 +249,31 @@ one 0.16 mm track on B.Cu.</p>
   and the silk overlaps. Then "does it breathe" becomes a checkbox instead of an investigation.</li>
 </ul>
 
+
+<h2 id="revb">7 · Applied: rev-B changes (2026-08-08, branch rev-b-fixes)</h2>
+
+<p>Everything above was subsequently <strong>applied</strong>. On branch <code>rev-b-fixes</code>
+(seven commits from the <code>main</code> baseline): TVS/FET voltage-rating fixes, the switched
+termination + pull-ups, boot-state pull-downs, WS2812 supply diode, DNP hardware E-stop, the
+board-side net changes, all 28 new footprints placed, and the encoder-corner cluster shake (49 parts
+moved per the relaxation). Firmware drives every mux control to safe defaults at boot and closes the
+termination for differential encoders (<code>TERM_EN</code> = GPIO38).</p>
+
+<figure>
+  <img src="img/pcb_bottom_revb.png" alt="Rev-B board, bottom side, after cluster shake and new part placement">
+  <figcaption>Bottom side after the shake: termination switches and pull-ups in the encoder corner,
+  support parts tucked into real gaps board-wide. Corner routing removed pending re-route.</figcaption>
+</figure>
+
+<div class="callout warn">
+<strong>Open in KiCad before ordering — this is a mid-rework state.</strong> The re-route worklist:
+214 airwires (the corner signal routing was deliberately removed), 22 sub-mm placement seams flagged
+as shorts/courtyard overlaps in the relaxed corner (drag-to-fix), 5 proximity items against protected
+phase/VMOT copper (left untouched on purpose), U31 parked at (149.5, 119.75) pending a better home
+near R83, and the silk/mask cosmetic pass. LCSC numbers marked <code>LCSC-TBD</code> (SMAJ64A,
+SMDJ60A, BSC040N10NS5, 100k 0402, Q6) need picking at order time.
+</div>
+
 <footer style="margin-top:4rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:1rem">
   Analysis: exact courtyard polygons via pcbnew 9.0.8; relaxation: 400-iteration constrained field,
   target 0.25 mm, connectors/holes/power-copper pinned; solver + data in <code>review/tools/</code>
