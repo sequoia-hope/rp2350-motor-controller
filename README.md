@@ -50,6 +50,11 @@ Board features:
  - All configuration happens in software, no jumpers needed. 
  - Expandable emergency stop circuit
 
+
+ - Phase and encoder leads on one side of the board, data connectors on the other
+    - It is possible to design a PCB which mates to both the phase and encoder leads, to make connector adapter PCBs to your preferred motor and encoder PCBs.
+ - Boards can be daisy-chained side to side, passing motor power and data via serial.
+ 
 Current sensing (INA240A1D, 20x gain, mid-rail reference):
 --
 The measurable range is set by the phase shunt value. Keep the firmware
@@ -75,10 +80,6 @@ termination) single-ended signals cannot cross the receiver threshold on the
 transceiver path: use the hall path (pins 11/9/7) for single-ended
 quadrature, or swap the bias resistors R86–R93 to 560Ω for push-pull
 single-ended signals. GPIO38 reaches test point TP20 on rev A for bodges.
- - Phase and encoder leads on one side of the board, data connectors on the other
-    - It is possible to design a PCB which mates to both the phase and encoder leads, to make connector adapter PCBs to your preferred motor and encoder PCBs.
- - Boards can be daisy-chained side to side, passing motor power and data via serial.
- 
 Additionally:
  ---
  - No special programmer is required, no bootloader needs to be flashed.
