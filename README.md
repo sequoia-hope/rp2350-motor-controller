@@ -31,6 +31,8 @@ Board features:
  - Maximum 60 volts on 80V silicon (FETs, buck), with TVS breakdown set just
    below the FET rating so surges hit the TVS first (SMAJ64A phases, SMDJ64A
    bus). Rev A boards are limited to ~48V by their 51V-standoff phase TVS.
+   A 72V-bus variant needs six BOM changes (100V FETs, 78A-grade TVS, 100V
+   buck, 4.3k divider bottoms, no LM74700) — see review/power.html.
  - Current range set by the phase shunts — see the table below
  - Phase voltage sensing for three phases
  - Phase current sensing for three phases

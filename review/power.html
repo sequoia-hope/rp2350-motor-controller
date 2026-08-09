@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Power Supply Review — RP2350 Motor Controller</title>
+<style>
+  :root {
+    --bg: #f7f6f3; --panel: #ffffff; --ink: #1e2126; --muted: #5b6470;
+    --line: #d9d5cc; --accent: #6b4fa0; --good: #2c7a4b; --warn: #a05a00;
+    --bad: #b03434; --code-bg: #efede8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d; --panel: #1e2128; --ink: #e8e6e1; --muted: #9aa3af;
+      --line: #343945; --accent: #a98fd8; --good: #5cb884; --warn: #e0a44c;
+      --bad: #e06c6c; --code-bg: #262a33;
+    }
+    img.schcrop { filter: invert(0.92) hue-rotate(180deg); }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+  header.masthead { border-bottom: 3px solid var(--accent); padding: 2.2rem 0 1rem; margin-bottom: 1.5rem; }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 .4rem; }
+  .subtitle { color: var(--muted); margin: 0; }
+  h2 { font-size: 1.45rem; margin: 2.8rem 0 .8rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.12rem; margin: 1.8rem 0 .5rem; }
+  p { margin: .6rem 0; }
+  a { color: var(--accent); }
+  code, .mono { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .92em; background: var(--code-bg); padding: .08em .35em; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
+  th, td { text-align: left; padding: .45rem .65rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .tablewrap { overflow-x: auto; }
+  .sev { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; padding: .12em .55em; border-radius: 99px; white-space: nowrap; }
+  .sev.high { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); }
+  .sev.med  { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+  .sev.low  { background: color-mix(in srgb, var(--muted) 18%, transparent); color: var(--muted); }
+  .sev.good { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+  figure { margin: 1.2rem 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; }
+  figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 4px; }
+  figcaption { color: var(--muted); font-size: .88rem; margin-top: .6rem; text-align: center; }
+  .callout { border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 8px 8px 0; padding: .8rem 1rem; margin: 1rem 0; }
+  .callout.bad { border-left-color: var(--bad); }
+  .callout.good { border-left-color: var(--good); }
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 760px) { .cols2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+
+<header class="masthead">
+  <p style="margin:0 0 .4rem"><a href="index.html" style="text-decoration:none">← project hub</a></p>
+  <h1>Power Supply Review</h1>
+  <p class="subtitle">VMOT → XL7005A buck → 5&nbsp;V "Vdrive" → SPX3819 → 3.3&nbsp;V → RP2350 VREG · USB-PD input via LM74700 · 2026-08-08</p>
+</header>
+
+<h2 id="arch">1 · Architecture &amp; what checks out</h2>
+
+<p>Two power entries: the battery bus (VMOT, XT30 pass-through, 3×100&nbsp;µF/100&nbsp;V bulk + 100&nbsp;V
+ceramics + SMDJ64A TVS) and USB-C (FUSB302 PD sink negotiation, VBUS → LM74700+Q5 ideal diode → VMOT).
+One buck makes 5&nbsp;V, one LDO makes 3.3&nbsp;V, the RP2350's internal switcher makes its own 1.1&nbsp;V
+core, and U17 picks 3.3&nbsp;V/5&nbsp;V for the encoder supply. The isolated CAN side is bus-powered from
+the CAN harness. Per the design intent, everything in the power path is 80&nbsp;V silicon with TVS
+breakdown (71–79&nbsp;V) just below it, so surges hit the TVS before any FET avalanches.</p>
+
+<ul>
+  <li><span class="sev good">OK</span> <strong>Buck feedback math:</strong> R5/R6 = 10k/3.3k on the
+  XL7005A's 1.25&nbsp;V reference → V<sub>drive</sub> = 5.04&nbsp;V, with C3 33&nbsp;n feed-forward. ✓</li>
+  <li><span class="sev good">OK</span> <strong>Freewheel:</strong> D4 SS210 (100&nbsp;V, 2&nbsp;A) — right rating for an 80&nbsp;V-max input rail. ✓</li>
+  <li><span class="sev good">OK</span> <strong>Input capacitance:</strong> C81 1&nbsp;µF local, with the sheet
+  note that the buck sits under the motor bulk caps — that adjacency is real on the layout, so no extra bulk needed. ✓</li>
+  <li><span class="sev good">OK</span> <strong>RP2350 core supply:</strong> 3.3&nbsp;µH + 4.7&nbsp;µF on the
+  internal VREG, 33&nbsp;Ω + 4.7&nbsp;µF filter on VREG_AVDD — textbook hardware-design-guide. ✓</li>
+  <li><span class="sev good">OK</span> <strong>PD-side ratings:</strong> VBUS caps 50&nbsp;V for 20&nbsp;V PD,
+  USBLC6 on data, CC caps per FUSB302 app note. ✓</li>
+</ul>
+
+<div class="cols2">
+<figure>
+  <img class="schcrop" src="img/power_buck-1.png" alt="XL7005A buck schematic">
+  <figcaption>The Vdrive buck: XL7005A, 47&nbsp;µH/1&nbsp;A, SS210, 10k/3.3k feedback → 5.04&nbsp;V.</figcaption>
+</figure>
+<figure>
+  <img class="schcrop" src="img/power_ideal_diode-1.png" alt="LM74700 ideal diode schematic">
+  <figcaption>USB power path: VBUS → LM74700-controlled Q5 → JP1 → VMOT.</figcaption>
+</figure>
+</div>
+
+<h2 id="findings">2 · Findings</h2>
+
+<h3><span class="sev high">HIGH</span> The USB backfeed blocker is 65&nbsp;V silicon on an 80&nbsp;V-philosophy bus</h3>
+<p>LM74700's absolute maximum on ANODE/CATHODE is <strong>65&nbsp;V</strong>, and its CATHODE pin sits
+directly on VMOT (through bridged JP1). At 48&nbsp;V nominal that's fine; at a 60&nbsp;V bus there is
+5&nbsp;V of margin against a rail that regen events actively pump upward, on a board whose other
+protection is sized to let the bus ride to 71&nbsp;V+ before the TVS conducts. The failure chain is the
+bad part: if the LM74700 dies with Q5's gate enhanced, <strong>the motor bus connects to your
+laptop's USB port</strong>.</p>
+<p>Options, cheapest first: (a) replace LM74700+Q5 with a single <strong>SS210 Schottky</strong>
+(100&nbsp;V, already in the BOM) — you lose ~0.4&nbsp;V on the USB-power path only, which the buck
+doesn't care about, and the blocking junction is then rated like everything else on the bus;
+(b) keep the ideal diode but move it behind its own clamp (65&nbsp;V-safe node); (c) a
+back-to-back-FET ideal diode controller rated 80&nbsp;V+. I'd take (a) — bench convenience doesn't
+justify a 65&nbsp;V part as the only thing between a 60&nbsp;V bus and a USB host.</p>
+
+<h3><span class="sev med">MED</span> Regen has nowhere to go — and the 4th half-bridge could fix that</h3>
+<p>Headroom between 60&nbsp;V operating and the ~71&nbsp;V TVS breakdown stores only
+½·310&nbsp;µF·(71²−60²) ≈ <strong>0.22&nbsp;J</strong> in the bulk caps. Any real deceleration dumps far
+more than that, and both the reset-brake behavior (all low-sides on) and E-stop-to-RUN make hard braking
+events likely. Two mitigations that cost nothing on this board: firmware bus-voltage guard using the
+existing VMOT sense on ADC6 (fold back braking above ~66&nbsp;V), and — the elegant one — <strong>use the
+spare D half-bridge as a brake chopper</strong>: a power resistor from the D phase output to GND, PWM'd
+by the already-routed D bridge when the bus rises. That turns the "4th half-bridge" feature into
+overvoltage protection for free.</p>
+
+<h3><span class="sev med">MED</span> Vdrive budget is tight against the XL7005A's 0.4&nbsp;A rating</h3>
+<div class="tablewrap">
+<table>
+  <tr><th>Vdrive load</th><th>Typical</th><th>Worst case</th></tr>
+  <tr><td>3.3&nbsp;V rail via LDO (MCU ~80&nbsp;mA, 4× SIT3088 with 2 drivers into 50–100&nbsp;Ω ~60&nbsp;mA, INA240s, FUSB302, flash)</td><td>~150&nbsp;mA</td><td>~250&nbsp;mA</td></tr>
+  <tr><td>Encoder supply V_ENC (breakout: MT6701 + 3 transceivers, one driving)</td><td>~50&nbsp;mA</td><td>~120&nbsp;mA (5&nbsp;V third-party encoder)</td></tr>
+  <tr><td>WS2812 (via D30 on rev B)</td><td>~15&nbsp;mA</td><td>60&nbsp;mA</td></tr>
+  <tr><td>4× EG3113 gate drive @ 25&nbsp;kHz (8 × ~38&nbsp;nC)</td><td>~10&nbsp;mA</td><td>~25&nbsp;mA (50&nbsp;kHz)</td></tr>
+  <tr><td><strong>Total</strong></td><td><strong>~0.23&nbsp;A</strong></td><td><strong>~0.45&nbsp;A</strong></td></tr>
+</table>
+</div>
+<p>Typical use fits; a 5&nbsp;V hungry encoder plus heavy transceiver traffic doesn't. The clean fix is
+<strong>XL7015</strong> (same family/footprint, 0.8&nbsp;A) at the next order. Related: at
+60&nbsp;V→5&nbsp;V/150&nbsp;kHz the 47&nbsp;µH inductor ripples ≈ 0.65&nbsp;A peak-to-peak, so peak inductor
+current at 0.4&nbsp;A load is ~0.7&nbsp;A against a 1&nbsp;A-saturation part — functional, but
+<strong>100–220&nbsp;µH</strong> would cut ripple 2–5× and stop flirting with saturation at current-limit.</p>
+
+<h3><span class="sev med">MED</span> SPX3819 in SOT-23-5 runs hot when the transceivers work</h3>
+<p>(5.04&nbsp;V − 3.3&nbsp;V) × 210&nbsp;mA ≈ 0.37&nbsp;W across θ<sub>JA</sub> ≈ 230&nbsp;°C/W ≈
+<strong>+85&nbsp;°C junction rise</strong> — fine on a bench at 25&nbsp;°C, at the 125&nbsp;°C limit in a
+40&nbsp;°C enclosure bolted to a warm motor. Same-function LDOs in SOT-89/SOT-223 (or AP7361C-class)
+drop θ<sub>JA</sub> ~3×. Worth a footprint change at the next spin; no action needed for bench work.</p>
+
+<h3><span class="sev low">LOW</span> Smaller items</h3>
+<ul>
+  <li><strong>V_ENC pin is bare:</strong> J12 pin 4 has no local capacitance, no ESD clamp, and no
+  current limit — the TS5A3159 (U17, ~300&nbsp;mA max) is the only thing between a shorted encoder
+  cable and the 3.3&nbsp;V/5&nbsp;V rails. Rev C: 1&nbsp;µF + a 5&nbsp;V TVS at the pin and a polyfuse
+  (or a current-limited switch instead of U17).</li>
+  <li><strong>Hot-plug inrush:</strong> 60&nbsp;V into ~310&nbsp;µF through an XT30 makes a real spark
+  and erodes contacts. Anti-spark connector on the harness side, or a precharge note in the docs.</li>
+  <li><strong>XL7005A EN is tied to GND</strong> — active-low enable on XLSEMI parts, consistent with
+  boards that boot, but worth one datasheet check; also means Vdrive can never be sequenced/disabled.</li>
+  <li><strong>Battery reverse polarity:</strong> nothing blocks it (XT30 keying is the protection).
+  Standard for hobby drives — worth one README sentence.</li>
+  <li><strong>USB-only operation:</strong> 5&nbsp;V VBUS → ideal diode → buck at ~max duty leaves
+  Vdrive ≈ 4.3–4.6&nbsp;V. 3.3&nbsp;V is unaffected; 5&nbsp;V encoders and the LED dim slightly.
+  Negotiating 9–20&nbsp;V PD restores full Vdrive — worth doing by default in firmware since the
+  FUSB302 is already driven.</li>
+</ul>
+
+
+<h2 id="voltage">3 · What bus voltage can this design actually run? (the 72&nbsp;V question)</h2>
+
+<p>60&nbsp;V turns out to be the honest continuous rating for the 80&nbsp;V-silicon stack — not because of
+any one forgotten part, but because five margins interlock. Here's the full dependency table, with what a
+72&nbsp;V bus would require:</p>
+
+<div class="tablewrap">
+<table>
+  <tr><th>Constraint</th><th>Today (80&nbsp;V stack)</th><th>At 60&nbsp;V bus</th><th>At 72&nbsp;V bus</th></tr>
+  <tr><td>Bridge FETs</td><td>BSC030N08NS5, 80&nbsp;V</td><td>25% margin ✓</td>
+      <td class="mono" style="color:var(--bad)">11% margin — switching overshoot (10–20% of bus) reaches
+      80–86&nbsp;V, FETs avalanche every edge → needs 100&nbsp;V (BSC040N10NS5-class)</td></tr>
+  <tr><td>TVS window</td><td>SMAJ64A / SMDJ64A (br 71–79&nbsp;V)</td><td>conducts before FETs ✓</td>
+      <td class="mono" style="color:var(--bad)">no window exists: a ≥72&nbsp;V-standoff TVS breaks down
+      above 80&nbsp;V. With 100&nbsp;V FETs use SMAJ78A/SMDJ78A (br 87–96&nbsp;V) ✓</td></tr>
+  <tr><td>Buck (XL7005A)</td><td>80&nbsp;V abs max</td><td>25% ✓</td>
+      <td class="mono" style="color:var(--bad)">at abs max before any spike → needs a 100&nbsp;V buck
+      (e.g. LM5164, 100&nbsp;V/1&nbsp;A — also solves the 0.4&nbsp;A budget) </td></tr>
+  <tr><td>INA240 common mode</td><td>spec'd to 80&nbsp;V CM</td><td>20&nbsp;V margin ✓</td>
+      <td class="mono" style="color:var(--warn)">72&nbsp;V CM is inside spec but spikes eat the 8&nbsp;V;
+      survivable (90&nbsp;V abs max), accuracy at the edge</td></tr>
+  <tr><td>Phase/VMOT dividers</td><td>100k/5.1k → 3.3&nbsp;V at 68&nbsp;V</td><td>✓</td>
+      <td class="mono" style="color:var(--bad)">72&nbsp;V → 3.49&nbsp;V at the ADC pin (abs max 3.6);
+      an 84&nbsp;V spike → 4.1&nbsp;V, damage. Rescale bottom legs 5.1k → 4.3k (FS ≈ 80&nbsp;V) + firmware
+      <code>VMOT_DIVIDER_RATIO</code></td></tr>
+  <tr><td>USB backfeed (LM74700)</td><td>65&nbsp;V abs max</td><td class="mono" style="color:var(--bad)">already the weak link (§2)</td>
+      <td class="mono" style="color:var(--bad)">must go regardless — SS210 is 100&nbsp;V ✓</td></tr>
+  <tr><td>Bulk caps / ceramics</td><td>100&nbsp;V</td><td>✓</td><td>✓ (electrolytic derating at 72&nbsp;V is acceptable but watch ripple current)</td></tr>
+  <tr><td>Battery reality</td><td>—</td><td>14S li-ion (58.8&nbsp;V) / 16S LiFePO₄ (58.4&nbsp;V) fit ✓</td>
+      <td class="mono" style="color:var(--warn)">a "72&nbsp;V" (20S) li-ion pack charges to <strong>84&nbsp;V</strong> —
+      that's a 100&nbsp;V-stack design full stop; regulated/LiFePO₄ 72&nbsp;V is the only way it stays "72"</td></tr>
+</table>
+</div>
+
+<div class="callout good">
+<strong>Recommendation:</strong> your instinct is right — 72&nbsp;V on the 80&nbsp;V stack is pushing it
+past what switching transients allow. Two coherent builds exist:
+<strong>(A) as committed:</strong> 80&nbsp;V silicon, SMAJ64A/SMDJ64A, 60&nbsp;V max continuous — done.
+<strong>(B) 72&nbsp;V variant:</strong> swap FETs to 100&nbsp;V, TVS to 78A grade, buck to a 100&nbsp;V part,
+divider bottoms to 4.3k, drop LM74700 — about six BOM lines, no layout change except the buck footprint.
+If 72&nbsp;V matters, (B) is a clean respin target; mixing the two halfway is where boards die.
+</div>
+
+<h2 id="verdict">4 · Actions</h2>
+<ul>
+  <li>Next rev BOM: LM74700+Q5 → SS210 (or equivalent 100&nbsp;V blocking), XL7005A → XL7015,
+  L3 → 100–220&nbsp;µH / ≥1.5&nbsp;A, LDO → SOT-89/223 package, V_ENC protection trio.</li>
+  <li>Firmware (any time): VMOT overvoltage guard + optional D-bridge brake chopper; default PD
+  request ≥ 9&nbsp;V when a PD source is present.</li>
+  <li>Docs: precharge/anti-spark note, reverse-polarity note.</li>
+</ul>
+
+<footer style="margin-top:4rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:1rem">
+  Numbers from the netlist at rev-b-fixes @bdab81e and datasheet values (LM74700 abs max, XL7005A/XL7015
+  family ratings, SPX3819 θJA ≈ 230°C/W) — re-verify part-by-part before a respin. Load currents are
+  engineering estimates, not measurements.
+</footer>
+
+</main>
+</body>
+</html>

@@ -493,6 +493,10 @@ can even ship as the "bias" default in an Option-A layout if you want belt and s
 <h2 id="board">3 · Rest-of-board findings</h2>
 
 <h3 id="tvs">3.1 · Protection vs the "60 V" rating <span class="sev high">HIGH</span></h3>
+<div class="callout good"><strong>Resolved (rev-b-fixes):</strong> phase TVS → SMAJ64A, bus TVS → SMDJ64A,
+FETs stay BSC030N08NS5 per the design philosophy: 80&nbsp;V silicon with TVS breakdown just below it,
+60&nbsp;V max continuous bus. The original analysis below is kept for the record; for the 72&nbsp;V-bus
+variant BOM see the <a href="power.html#voltage">power review's decision table</a>.</div>
 <ul>
   <li><strong>Phase TVS (D9/D13/D17/D21, SMAJ51A):</strong> standoff 51&nbsp;V, breakdown 56.7–62.7&nbsp;V.
   Phase outputs sit at full bus voltage every high-side on-time. Above ~51&nbsp;V bus these parts leak and
