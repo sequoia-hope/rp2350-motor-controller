@@ -112,6 +112,17 @@
 #define PIN_HALL_B 32
 #define PIN_HALL_C 33
 
+// Remaining signal-path switches
+#define PIN_ENC_D_SW      29  // channel D transceiver direction
+#define PIN_I2C_SW        15  // U27: ENC_B_N pin -> I2C SDA (HIGH = I2C mode)
+#define PIN_EXT_ANALOG_SW 37  // U13/U14/U24/U25: ADC4/5 <- phase sense (LOW) / encoder analog (HIGH)
+#define PIN_TH_SW         30  // U15: ADC7 <- board NTC (LOW) / motor thermistor (HIGH)
+// Rev B: TS5A3159 in series with each 100R encoder termination (U30-U33).
+// HIGH = termination in circuit (differential encoders); LOW = open, so
+// single-ended signals see the 10k/10k bias as a 1.65V threshold.
+// On rev A boards GPIO38 only reaches test point TP20 - driving it is harmless.
+#define PIN_TERM_EN       38
+
 // USB PD controller (FUSB302BMPX on I2C1)
 #define PIN_PD_SDA  22
 #define PIN_PD_SCL  23
@@ -459,17 +470,27 @@ static void applyMotorTuning() {
     clampCurrentLimit();  // backstop: never configure past the sense range
 }
 
+// Drive every signal-path switch control to a safe, defined level. Called
+// first thing in setup(): until firmware runs these lines float (rev A has
+// no pull-downs), so the mux states -- including the 3.3V/5V encoder supply
+// select -- are undefined from power-on until this runs. Safe defaults:
+// V_ENC = 3.3V, transceivers receiving, hall/I2C/analog paths off,
+// motor thermistor off, termination open.
+static void initSwitchGpios() {
+    const uint8_t sw_pins[] = {PIN_V_SW, PIN_ENC_A_SW, PIN_ENC_B_SW, PIN_ENC_C_SW,
+                               PIN_ENC_D_SW, PIN_H1_SW, PIN_H2_SW, PIN_H3_SW,
+                               PIN_I2C_SW, PIN_EXT_ANALOG_SW, PIN_TH_SW, PIN_TERM_EN};
+    for (uint8_t p : sw_pins) {
+        digitalWrite(p, LOW);
+        pinMode(p, OUTPUT);
+    }
+}
+
 static void initHardware() {
     if (hw_initialized) return;
 
     SERIAL_PORT.println("GPIO init...");
-    pinMode(PIN_V_SW, OUTPUT);
-    pinMode(PIN_ENC_A_SW, OUTPUT);
-    pinMode(PIN_ENC_B_SW, OUTPUT);
-    pinMode(PIN_ENC_C_SW, OUTPUT);
-    pinMode(PIN_H1_SW, OUTPUT);
-    pinMode(PIN_H2_SW, OUTPUT);
-    pinMode(PIN_H3_SW, OUTPUT);
+    initSwitchGpios();
 #if MOTOR_CONFIG == MOTOR_MT6701
     // Encoder 3.3V supply
     digitalWrite(PIN_V_SW, LOW);
@@ -481,6 +502,8 @@ static void initHardware() {
     digitalWrite(PIN_H1_SW, LOW);
     digitalWrite(PIN_H2_SW, LOW);
     digitalWrite(PIN_H3_SW, LOW);
+    // Differential encoder attached: termination in circuit (rev B)
+    digitalWrite(PIN_TERM_EN, HIGH);
 #elif MOTOR_CONFIG == MOTOR_HALLS
     // Hall sensor Vdrive supply
     digitalWrite(PIN_V_SW, HIGH);
@@ -492,6 +515,8 @@ static void initHardware() {
     digitalWrite(PIN_H1_SW, HIGH);
     digitalWrite(PIN_H2_SW, HIGH);
     digitalWrite(PIN_H3_SW, HIGH);
+    // Single-ended halls: termination stays open
+    digitalWrite(PIN_TERM_EN, LOW);
 #endif
 
 #if MOTOR_CONFIG == MOTOR_MT6701
@@ -1888,6 +1913,11 @@ void doPoleFind(char *cmd) {
 
 // --- Setup ---
 void setup() {
+    // Before anything else: put every signal-path mux into a defined state.
+    // These control lines float from power-on until now (no pull-downs on
+    // rev A), so e.g. the encoder supply could sit at 5V with a 3.3V sensor.
+    initSwitchGpios();
+
     led.begin();
     setLED(255, 0, 0);  // Red at boot
 
