@@ -28,8 +28,9 @@ Board features:
  - Four independent software-controlled half-h bridges
  - Supports brushless motors, stepper motors, or two brushed motors.
  - SimpleFOC firmware support
- - Maximum 60 volts (rev B parts; rev A boards are limited to ~48V by their
-   51V-standoff phase TVS diodes and 80V FETs)
+ - Maximum 60 volts on 80V silicon (FETs, buck), with TVS breakdown set just
+   below the FET rating so surges hit the TVS first (SMAJ64A phases, SMDJ64A
+   bus). Rev A boards are limited to ~48V by their 51V-standoff phase TVS.
  - Current range set by the phase shunts — see the table below
  - Phase voltage sensing for three phases
  - Phase current sensing for three phases
