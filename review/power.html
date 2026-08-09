@@ -106,7 +106,68 @@ doesn't care about, and the blocking junction is then rated like everything else
 back-to-back-FET ideal diode controller rated 80&nbsp;V+. I'd take (a) — bench convenience doesn't
 justify a 65&nbsp;V part as the only thing between a 60&nbsp;V bus and a USB host.</p>
 
-<h3><span class="sev med">MED</span> Regen has nowhere to go — and the 4th half-bridge could fix that</h3>
+<h3 id="brake"><span class="sev med">MED</span> Regen has nowhere to go — worked design: the D leg as a brake chopper (F-28)</h3>
+
+<p><strong>Why it's needed:</strong> headroom between 60&nbsp;V operating and the ~71&nbsp;V TVS breakdown
+stores only ½·310&nbsp;µF·(71²−60²) ≈ <strong>0.22&nbsp;J</strong>. A 4&nbsp;A braking event pumps the bus at
+I/C = 4/310&nbsp;µ ≈ <strong>13&nbsp;V/ms</strong> — from 63&nbsp;V to TVS breakdown in ~600&nbsp;µs. The
+reset-brake behavior and E-stop→RUN make hard braking events routine, and the TVS is a surge part, not a
+power dump.</p>
+
+<p><strong>The D leg is free and wired for this.</strong> Net <code>/D</code> runs from CH2/CL2's switch
+node straight to J2 pin 2 with <em>no series shunt</em> (only A/B/C are current-sensed) — which is exactly
+right for a chopper: current is deterministic (V/R), nothing to measure, no shunt loss. The node already
+has its snubber (R81/C53/C55) and SMAJ64A. Firmware doesn't drive GPIO8/9 today in the BLDC configs.</p>
+
+<p><strong>Topology — resistor to GND, chop the high side:</strong> one power resistor from the
+<strong>"D" terminal (J2.2)</strong> to <strong>GND (J10 pin 1)</strong> — an external harness part, zero
+board changes. PWM CH2 (GPIO8, <code>D_PWM_H</code>, active-high) while holding CL2 off (GPIO9,
+<code>D_PWM_L̄</code>, <em>driven HIGH</em> — its 10&nbsp;k pull-down turns the low FET ON if left
+floating). On-state: bus → CH2 → R → GND. Off-state: the resistor's parasitic µH discharges through CL2's
+body diode in ~0.1&nbsp;µs.</p>
+
+<div class="callout good">
+<strong>Why resistor-to-GND and not resistor-to-VMOT:</strong> at reset or CPU crash, the input pulls turn
+every low-side ON and high-side OFF. With R to GND, that state <em>shorts the chopper harmlessly</em>
+(both resistor ends at ground) while the low-side brake holds the motor — fail-safe with no firmware
+alive. The mirror topology (R to VMOT, chop the low side) leaves the resistor across the full bus whenever
+the CPU dies: a several-hundred-watt heater with nobody watching. The bootstrap still works in the chosen
+topology — with CH2 off, the node rests at GND through R, recharging the boot cap every cycle; cap duty
+at ~95%.</div>
+
+<div class="tablewrap">
+<table>
+  <tr><th>Parameter</th><th>Value</th><th>Basis</th></tr>
+  <tr><td>Chopper band</td><td>ON above ~64&nbsp;V, full duty by 66&nbsp;V, release below 62&nbsp;V</td>
+      <td>above 60&nbsp;V operating, below 71&nbsp;V TVS breakdown; D21 (64&nbsp;V standoff) leaks µA–mA
+      during events — fine for ms-scale bursts</td></tr>
+  <tr><td>Resistor value</td><td>R ≤ V<sub>on</sub> / I<sub>regen,max</sub></td>
+      <td>4&nbsp;A build: 15&nbsp;Ω → 4.3&nbsp;A, ~285&nbsp;W pulse; 20&nbsp;A build: 3.3–4.7&nbsp;Ω,
+      ~1&nbsp;kW pulse — FET is fine (50&nbsp;A-class, I²R<sub>ds</sub> ~60&nbsp;mW), size the resistor
+      for pulse energy</td></tr>
+  <tr><td>Resistor type</td><td>aluminum-shell wirewound, 100&nbsp;W-class</td>
+      <td>braking is pulse duty; these take 5–10× overload for seconds; firmware adds an I²t accumulator
+      as the thermal guard</td></tr>
+  <tr><td>Control rate</td><td>≥5&nbsp;kHz, ideally in the ~20&nbsp;kHz FOC loop</td>
+      <td>13&nbsp;V/ms slew: a 1&nbsp;kHz loop overshoots the band; VMOT is already on ADC6</td></tr>
+  <tr><td>PWM</td><td>RP2350 slice 4 (GPIO8), 20&nbsp;kHz, duty = clamp((V−64)/(66−64))·0.95</td>
+      <td>proportional band avoids hysteretic bus ripple; 95% cap preserves bootstrap refresh</td></tr>
+</table>
+</div>
+
+<p><strong>Firmware shape:</strong> in the fast loop — read VMOT, map to duty, write the slice compare;
+plus an I²t accumulator that folds duty back if a long descent exceeds the resistor's thermal budget, and
+a backstop that reduces <code>motor.current_limit</code> when the chopper saturates at full duty (the bus
+keeps rising → the only remaining lever is less braking torque). Boot code must claim GPIO9 HIGH before
+the first chop — extend <code>initSwitchGpios()</code>-style init for chopper builds.</p>
+
+<p><strong>Trade-offs:</strong> configured as a chopper, the D leg gives up its stepper/second-brushed-motor
+role (software choice per build, not permanent); D21 sits just above standoff during events (acceptable);
+and this remains open-loop on current — deliberately, since V²/R needs no sensing. If no resistor is
+fitted, the same firmware guard should simply fold back <code>current_limit</code> on overvoltage — that
+part costs nothing and should ship regardless.</p>
+
+<h3 style="display:none">Regen has nowhere to go — and the 4th half-bridge could fix that</h3>
 <p>Headroom between 60&nbsp;V operating and the ~71&nbsp;V TVS breakdown stores only
 ½·310&nbsp;µF·(71²−60²) ≈ <strong>0.22&nbsp;J</strong> in the bulk caps. Any real deceleration dumps far
 more than that, and both the reset-brake behavior (all low-sides on) and E-stop-to-RUN make hard braking

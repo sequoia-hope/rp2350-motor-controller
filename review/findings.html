@@ -209,7 +209,7 @@
 <tr><td class="id">F-28</td><td><span class="sev med">MED</span></td>
   <td>Regen headroom is only ~0.22&nbsp;J (310&nbsp;µF between 60&nbsp;V and TVS breakdown); reset-brake (F-12) makes hard events likely; no chopper</td>
   <td><span class="st open">OPEN</span></td>
-  <td>Firmware backlog: VMOT overvoltage guard on ADC6; option: D half-bridge as brake chopper with one external resistor</td></tr>
+  <td>Firmware backlog: VMOT overvoltage guard on ADC6. Worked chopper design (D leg, R-to-GND, HS-chopped, reset-safe) recorded in <a href="power.html#brake">power review §2</a> — zero board changes, resistor plugs J2 "D" → J10 GND</td></tr>
 <tr><td class="id">F-29</td><td><span class="sev med">MED</span></td>
   <td>Vdrive budget ~0.45&nbsp;A worst case vs XL7005A 0.4&nbsp;A; 47&nbsp;µH ripple 0.65&nbsp;A p-p at 60&nbsp;V puts peaks near the 1&nbsp;A-sat inductor</td>
   <td><span class="st revc">REV C</span></td>
