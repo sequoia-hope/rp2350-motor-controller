@@ -59,10 +59,10 @@
 
 <div class="summary">
   <div><strong>38</strong>findings recorded</div>
-  <div><strong>13</strong>fixed on rev-b-fixes</div>
+  <div><strong>14</strong>fixed on rev-b-fixes</div>
   <div><strong>10</strong>rev-C candidates</div>
   <div><strong>1</strong>re-route session (board)</div>
-  <div><strong>3</strong>firmware backlog</div>
+  <div><strong>2</strong>firmware backlog</div>
   <div><strong>11</strong>documented / verify / decided</div>
 </div>
 
@@ -208,8 +208,8 @@
   <td>Replace LM74700+Q5 with SS210 (100&nbsp;V, in BOM); ~0.4&nbsp;V loss on USB-power path only. Until then: caution with USB attached above ~48&nbsp;V bus</td></tr>
 <tr><td class="id">F-28</td><td><span class="sev med">MED</span></td>
   <td>Regen headroom is only ~0.22&nbsp;J (310&nbsp;µF between 60&nbsp;V and TVS breakdown); reset-brake (F-12) makes hard events likely; no chopper</td>
-  <td><span class="st open">OPEN</span></td>
-  <td>Firmware backlog: VMOT overvoltage guard on ADC6. Worked chopper design (D leg, R-to-GND, HS-chopped, reset-safe) recorded in <a href="power.html#brake">power review §2</a> — zero board changes, resistor plugs J2 "D" → J10 GND</td></tr>
+  <td><span class="st fixed">FIXED</span></td>
+  <td>Firmware: <code>busGuard()</code> folds current_limit across 63–66&nbsp;V on every build; chopper implemented behind <code>-DBRAKE_CHOPPER=1</code> (D leg confirmed dual-role by design: steppers use it as a phase, BLDC builds fit the resistor J2&nbsp;"D"&nbsp;→&nbsp;J10&nbsp;GND). Design: <a href="power.html#brake">power §2</a>. Commit on rev-b-fixes</td></tr>
 <tr><td class="id">F-29</td><td><span class="sev med">MED</span></td>
   <td>Vdrive budget ~0.45&nbsp;A worst case vs XL7005A 0.4&nbsp;A; 47&nbsp;µH ripple 0.65&nbsp;A p-p at 60&nbsp;V puts peaks near the 1&nbsp;A-sat inductor</td>
   <td><span class="st revc">REV C</span></td>

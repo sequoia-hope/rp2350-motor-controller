@@ -155,6 +155,10 @@ at ~95%.</div>
 </table>
 </div>
 
+<div class="callout good"><strong>Implemented</strong> on <code>rev-b-fixes</code>: <code>busGuard()</code>
+runs the current_limit foldback on every build; the chopper compiles with <code>-DBRAKE_CHOPPER=1</code>
+when the resistor is fitted. Confirmed design intent: the D leg is dual-role — all four legs for
+steppers, or three legs + chopper for BLDC.</div>
 <p><strong>Firmware shape:</strong> in the fast loop — read VMOT, map to duty, write the slice compare;
 plus an I²t accumulator that folds duty back if a long descent exceeds the resistor's thermal budget, and
 a backstop that reduces <code>motor.current_limit</code> when the chopper saturates at full duty (the bus
