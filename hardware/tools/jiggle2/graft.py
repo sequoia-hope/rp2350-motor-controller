@@ -27,6 +27,81 @@ miss_t = [t for t in pre.GetTracks() if t.GetClass() == 'PCB_TRACK' and tsig(t) 
 miss_v = [v for v in pre.GetTracks() if v.GetClass() == 'PCB_VIA' and vsig(v) not in cur_sigs]
 print(f'missing copper: {len(miss_t)} segments, {len(miss_v)} vias')
 
+# ---- morph variant: trajectory semantics ------------------------------------
+# The rip set is chosen for END-state compatibility; a continuously valid
+# trajectory must also drag the KEPT copper attached to moving pads (mid-
+# flight, a pad slides off its kept trace otherwise), pin drag endpoints that
+# junction into static copper, and take obstacles from the SHIPPED board with
+# per-ref motion deltas so the field is where the parts actually are.
+MORPH = VARIANT == 'morph'
+if MORPH:
+    moved_refs = {r for r, (dx, dy) in delta.items() if math.hypot(dx, dy) > 0.005}
+    moved_pads = [pad for fp in pre.GetFootprints()
+                  if fp.GetReference() in moved_refs for pad in fp.Pads()]
+    drag_sigs = {tsig(t) for t in miss_t} | {vsig(v) for v in miss_v}
+
+    def on_moved_pad(x, y, layer=None):
+        for pad in moved_pads:
+            pp = pad.GetPosition()
+            if abs(pp.x - x) > int(3 / NM) or abs(pp.y - y) > int(3 / NM):
+                continue
+            if layer is not None and not pad.IsOnLayer(layer):
+                continue
+            if pad.HitTest(pcbnew.VECTOR2I(x, y)):
+                return True
+        return False
+
+    ext_t = ext_v = 0
+    for t in pre.GetTracks():
+        if t.GetClass() == 'PCB_TRACK':
+            if tsig(t) in drag_sigs:
+                continue
+            s_, e_ = t.GetStart(), t.GetEnd()
+            if on_moved_pad(s_.x, s_.y, t.GetLayer()) or \
+               on_moved_pad(e_.x, e_.y, t.GetLayer()):
+                miss_t.append(t); drag_sigs.add(tsig(t)); ext_t += 1
+        else:
+            if vsig(t) in drag_sigs:
+                continue
+            p = t.GetPosition()
+            if on_moved_pad(p.x, p.y):
+                miss_v.append(t); drag_sigs.add(vsig(t)); ext_v += 1
+    print(f'morph: drag set extended by {ext_t} kept segments, {ext_v} kept vias '
+          f'attached to {len(moved_refs)} moving parts')
+
+    # everything a moving pad sweeps past must be free to flow out of its way:
+    # copper inside any pad's swept corridor becomes dynamic too
+    from common import seg_seg_dist
+    corridors = []                   # (a, b, radius) swept pad path, inflated
+    for pad in moved_pads:
+        ref = pad.GetParentFootprint().GetReference()
+        dx, dy = delta[ref]
+        p = pad.GetPosition()
+        bb = pad.GetBoundingBox()
+        pr = max(bb.GetWidth(), bb.GetHeight()) * NM / 2
+        corridors.append(((p.x * NM, p.y * NM),
+                          (p.x * NM + dx, p.y * NM + dy), pr + 0.45))
+    cor_t = cor_v = 0
+    for t in pre.GetTracks():
+        if t.GetClass() == 'PCB_TRACK':
+            if tsig(t) in drag_sigs:
+                continue
+            s_, e_ = t.GetStart(), t.GetEnd()
+            a = (s_.x * NM, s_.y * NM); b = (e_.x * NM, e_.y * NM)
+            hw = t.GetWidth() * NM / 2
+            if any(seg_seg_dist(a, b, ca, cb) < r + hw for ca, cb, r in corridors):
+                miss_t.append(t); drag_sigs.add(tsig(t)); cor_t += 1
+        else:
+            if vsig(t) in drag_sigs:
+                continue
+            p = t.GetPosition()
+            c = (p.x * NM, p.y * NM)
+            hw = t.GetWidth(pcbnew.PADSTACK.ALL_LAYERS) * NM / 2
+            if any(seg_seg_dist(c, c, ca, cb) < r + hw for ca, cb, r in corridors):
+                miss_v.append(t); drag_sigs.add(vsig(t)); cor_v += 1
+    print(f'morph: corridor capture made {cor_t} more segments, {cor_v} more vias '
+          f'dynamic ({len(corridors)} swept pad corridors)')
+
 # ---- pad lookup in the PRE board (who owned each endpoint) ------------------
 # and the same pad's position in the CURRENT board (the anchor target).
 def pad_index(board):
@@ -136,6 +211,52 @@ moved_bound = sum(1 for n in nodes if n['bind'] and
 print(f'nodes {len(nodes)} (vias {len(miss_v)}), edges {len(edges)}, '
       f'pad-bound {bound} (of which actually moving {moved_bound})')
 
+if MORPH:
+    # pin unbound drag endpoints that junction into static copper: they must
+    # stay put or the junction opens mid-flight
+    static_ends = set()
+    static_segs = defaultdict(list)          # coarse cell -> (ax,ay,bx,by,w,layer)
+    SC = 2.0
+    for t in pre.GetTracks():
+        if t.GetClass() == 'PCB_TRACK':
+            if tsig(t) in drag_sigs:
+                continue
+            s_, e_ = t.GetStart(), t.GetEnd()
+            static_ends.add((s_.x, s_.y)); static_ends.add((e_.x, e_.y))
+            ax, ay, bx, by = s_.x*NM, s_.y*NM, e_.x*NM, e_.y*NM
+            for cx in range(int(min(ax, bx)//SC)-1, int(max(ax, bx)//SC)+2):
+                for cy in range(int(min(ay, by)//SC)-1, int(max(ay, by)//SC)+2):
+                    static_segs[(cx, cy)].append((ax, ay, bx, by,
+                                                  t.GetWidth()*NM, int(t.GetLayer())))
+        elif vsig(t) not in drag_sigs:
+            p = t.GetPosition()
+            static_ends.add((p.x, p.y))
+
+    def pt_seg_d(px, py, ax, ay, bx, by):
+        dx, dy = bx-ax, by-ay
+        L2 = dx*dx + dy*dy
+        u = 0.0 if L2 < 1e-18 else max(0.0, min(1.0, ((px-ax)*dx + (py-ay)*dy)/L2))
+        return math.hypot(px-ax-u*dx, py-ay-u*dy)
+
+    pinned_n = 0
+    for nid, n in enumerate(nodes):
+        if n['bind']:
+            continue
+        key = (int(round(n['x']/NM)), int(round(n['y']/NM)))
+        pin = key in static_ends
+        if not pin:
+            lays = node_layers[nid]
+            for ax, ay, bx, by, w_, lay in static_segs.get(
+                    (int(n['x']//SC), int(n['y']//SC)), ()):
+                if (n['kind'] == 'via' or lay in lays) and \
+                        pt_seg_d(n['x'], n['y'], ax, ay, bx, by) < w_/2:
+                    pin = True
+                    break
+        if pin:
+            n['pin'] = True
+            pinned_n += 1
+    print(f'morph: {pinned_n} junction endpoints pinned to static copper')
+
 # net availability in current board
 cur_nets = set(cur.GetNetsByName().keys()) if hasattr(cur, 'GetNetsByName') else set()
 cur_nets = {str(k) for k in cur_nets}
@@ -162,6 +283,17 @@ if VARIANT == 'nonew':
     cur = load_board(BOARD_BASE)   # obstacles come from the variant board
     print(f'variant nonew: removed {len(new_refs)} rev-B footprints, '
           f'base board saved to data_nonew/')
+
+if MORPH:
+    # the shipped board IS the base; obstacles are where parts actually are,
+    # animated by solve.py via per-ref deltas. No rev-B ghosts.
+    import shutil as _sh
+    _sh.copy(BOARD_PRE, BOARD_BASE)
+    _sh.copy(BOARD_CUR.replace('.kicad_pcb', '.kicad_pro'),
+             BOARD_BASE.replace('.kicad_pcb', '.kicad_pro'))
+    cur = pre
+    print('variant morph: obstacles from the shipped board, '
+          f'{len(moved_refs)} refs carry motion deltas')
 
 # ---- static obstacles in region ---------------------------------------------
 F, B = int(pcbnew.F_Cu), int(pcbnew.B_Cu)
@@ -197,6 +329,8 @@ for fp in cur.GetFootprints():
                                  drill=drill))
 
 for t in cur.GetTracks():
+    if MORPH and (tsig(t) if t.GetClass() == 'PCB_TRACK' else vsig(t)) in drag_sigs:
+        continue                     # dragged copper is dynamic, not an obstacle
     if t.GetClass() == 'PCB_TRACK':
         s, e = t.GetStart(), t.GetEnd()
         if not (in_region(s.x*NM, s.y*NM, m=2) or in_region(e.x*NM, e.y*NM, m=2)):
@@ -211,6 +345,9 @@ for t in cur.GetTracks():
         dia = t.GetWidth(pcbnew.PADSTACK.ALL_LAYERS) * NM
         obst['vias'].append(dict(net=t.GetNetname(), x=p.x*NM, y=p.y*NM,
                                  dia=dia, drill=t.GetDrill()*NM))
+
+if MORPH:
+    obst['moved'] = {r: list(delta[r]) for r in moved_refs}
 
 print(f"obstacles: {len(obst['pads'])} pads, {len(obst['tracks'])} kept segs, "
       f"{len(obst['vias'])} kept vias, clearance {obst['clearance']:.3f}mm")

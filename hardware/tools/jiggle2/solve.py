@@ -22,6 +22,10 @@ EDGE = O.get('board_edge')      # [x0,y0,x1,y1] real outline bbox
 ECLR = O.get('edge_clearance', 0.3)
 SUB = 0.8                       # max sub-segment length
 STEPS = int(sys.argv[sys.argv.index('--steps')+1]) if '--steps' in sys.argv else 60
+# --snapshots N: morph mode — capture N settled trajectory checkpoints
+# (each mini-polished to zero model violations) for morph.py to emit as
+# DRC-gated intermediate boards. See morph.py.
+MORPH_N = int(sys.argv[sys.argv.index('--snapshots')+1]) if '--snapshots' in sys.argv else 0
 SWEEPS = 3
 RELAX = 0.6                     # projection under-relaxation
 ETA = 0.15                      # rubber-band smoothing weight (drops in polish)
@@ -126,6 +130,8 @@ anchor = {}                                    # nid -> (ox,oy,tx,ty)
 for i, n in enumerate(nodes):
     if n['bind'] and n['target']:
         anchor[i] = (n['x'], n['y'], n['target'][0], n['target'][1])
+    elif n.get('pin'):                         # morph: junction into static copper
+        anchor[i] = (n['x'], n['y'], n['x'], n['y'])
 is_via = [n['kind'] == 'via' for n in nodes]
 via_dia = [n['dia'] or 0 for n in nodes]
 via_drill = [n['drill'] or 0 for n in nodes]
@@ -198,22 +204,82 @@ def cells_for_seg(ax, ay, bx, by, r):
         for cy in range(int((y0-r)//CELL), int((y1+r)//CELL)+1):
             yield (cx, cy)
 
+# morph: moved parts' pads are obstacles at their CURRENT position along the
+# trajectory, not their destination — the field must be where the parts are
+MOVED = O.get('moved') or {}
+for p in O['pads']:
+    d = MOVED.get(p['ref'])
+    if d:
+        p['base_pts'] = [q[:] for q in p['pts']]
+        p['bx'], p['by'] = p['x'], p['y']
+        p['d'] = d
+
+# morph: the shipped board is routed AT the clearance limit, and the model
+# carries ~10um biases (pad polygonization, hole-rule approximation). Pairs
+# the shipped board already holds at distance d0 are legal at >= d0 by proof
+# of shipping: a measure pass at s=0 grandfathers them, and the projector
+# engages only below min(rule, d0) - deadband.
+MTOL = 0.005 if MOVED else 0.0
+gf = {}              # pair key -> shipped distance d0
+MEASURE = False
+if MOVED:
+    # morph nudges minimally: no rubber-band beautification — smoothing
+    # straightens shipped geometry into violations. Projection only.
+    ETA = 0.0
+    eta_now = 0.0
+
+def rule_thresholds(rule, key=None):
+    """(engage_below, push_target, truth_below) for a pair rule.
+
+    Grandfathered pairs HOLD their shipped model-distance d0: the model
+    carries ~10um per-pair bias, so d0 is the only trustworthy proxy for
+    "legal like it shipped" — as a prescribed pad advances, the copper must
+    retreat to keep the pair at d0, not merely stay above d0 - tol."""
+    if MOVED:
+        if key is not None and key in gf:
+            base = min(rule + MTOL, gf[key])
+        else:
+            base = rule - MTOL
+        return base, base + 0.001, base - MTOL
+    return rule + EXTRA, rule + EXTRA, rule
+
+def gf_note(key, d, rule):
+    """Measure pass: remember the shipped distance of any pair at/below rule."""
+    if d < rule + 0.02:
+        gf[key] = min(d, gf.get(key, 1e9))
+
 static_grid = defaultdict(list)   # cell -> list of (kind, idx)
 pad_edges = []                    # flattened pad outline segments
-for pi, p in enumerate(O['pads']):
-    pts = p['pts']
-    for i in range(len(pts)):
-        a, b = pts[i], pts[(i+1) % len(pts)]
-        pad_edges.append((a[0], a[1], b[0], b[1], pi))
-for i, (ax, ay, bx, by, pi) in enumerate(pad_edges):
-    for c in cells_for_seg(ax, ay, bx, by, 1.0):
-        static_grid[c].append(('PE', i))
-for ti, t in enumerate(O['tracks']):
-    for c in cells_for_seg(t['a'][0], t['a'][1], t['b'][0], t['b'][1], 1.0):
-        static_grid[c].append(('T', ti))
-for vi, v in enumerate(O['vias']):
-    for c in cells_for_seg(v['x'], v['y'], v['x'], v['y'], 1.0):
-        static_grid[c].append(('V', vi))
+
+def build_static_grid():
+    global static_grid, pad_edges
+    static_grid = defaultdict(list)
+    pad_edges = []
+    for pi, p in enumerate(O['pads']):
+        pts = p['pts']
+        for i in range(len(pts)):
+            a, b = pts[i], pts[(i+1) % len(pts)]
+            pad_edges.append((a[0], a[1], b[0], b[1], pi))
+    for i, (ax, ay, bx, by, pi) in enumerate(pad_edges):
+        for c in cells_for_seg(ax, ay, bx, by, 1.0):
+            static_grid[c].append(('PE', i))
+    for ti, t in enumerate(O['tracks']):
+        for c in cells_for_seg(t['a'][0], t['a'][1], t['b'][0], t['b'][1], 1.0):
+            static_grid[c].append(('T', ti))
+    for vi, v in enumerate(O['vias']):
+        for c in cells_for_seg(v['x'], v['y'], v['x'], v['y'], 1.0):
+            static_grid[c].append(('V', vi))
+
+def set_obstacle_progress(s):
+    for p in O['pads']:
+        if 'd' not in p:
+            continue
+        dx, dy = p['d'][0] * s, p['d'][1] * s
+        p['pts'] = [[q[0] + dx, q[1] + dy] for q in p['base_pts']]
+        p['x'], p['y'] = p['bx'] + dx, p['by'] + dy
+    build_static_grid()
+
+build_static_grid()
 
 def pad_covers_layer(p, layer):
     return layer in p['layers']
@@ -275,9 +341,13 @@ def project_pair_dyn_static(sidx, kind, idx):
             return
         d = seg_seg_dist(p1, p2, tuple(t['a']), tuple(t['b']))
         rule = CLR + (t['w'] + s['w'])/2
-        if d < rule + EXTRA:
+        key = ('S', s['edge'], 'T', idx)
+        if MEASURE:
+            gf_note(key, d, rule); return
+        eng, tgt, tru = rule_thresholds(rule, key)
+        if d < eng:
             ux, uy = closest_dir(p1, p2, tuple(t['a']), tuple(t['b']))
-            bump(sidx, ux, uy, rule + EXTRA - d, d - rule)
+            bump(sidx, ux, uy, tgt - d, d - tru)
     elif kind == 'V':
         v = O['vias'][idx]
         c = (v['x'], v['y'])
@@ -286,9 +356,13 @@ def project_pair_dyn_static(sidx, kind, idx):
         d = seg_seg_dist(p1, p2, c, c)
         rule = max(CLR + v['dia']/2 + s['w']/2,
                    HOLE_CLR + v['drill']/2 + s['w']/2)
-        if d < rule + EXTRA:
+        key = ('S', s['edge'], 'V', idx)
+        if MEASURE:
+            gf_note(key, d, rule); return
+        eng, tgt, tru = rule_thresholds(rule, key)
+        if d < eng:
             ux, uy = closest_dir(p1, p2, c, c)
-            bump(sidx, ux, uy, rule + EXTRA - d, d - rule)
+            bump(sidx, ux, uy, tgt - d, d - tru)
     elif kind == 'PE':
         ax, ay, bx, by, pi = pad_edges[idx]
         p = O['pads'][pi]
@@ -300,16 +374,26 @@ def project_pair_dyn_static(sidx, kind, idx):
             if point_in_poly((p1[0]+p2[0])/2, (p1[1]+p2[1])/2, p['pts']):
                 d = 0.0
             rule = CLR + s['w']/2
-            if d < rule + EXTRA:
-                ux, uy = closest_dir(p1, p2, (p['x'], p['y']), (p['x'], p['y']))
-                bump(sidx, ux, uy, rule + EXTRA - d, d - rule)
+            key = ('S', s['edge'], 'P', pi)
+            if MEASURE:
+                gf_note(key, d, rule)
+            else:
+                eng, tgt, tru = rule_thresholds(rule, key)
+                if d < eng:
+                    ux, uy = closest_dir(p1, p2, (p['x'], p['y']), (p['x'], p['y']))
+                    bump(sidx, ux, uy, tgt - d, d - tru)
         if p['drill']:
             # hole edge to track edge, any layer
             dh = seg_seg_dist(p1, p2, (p['x'], p['y']), (p['x'], p['y']))
             rule = HOLE_CLR + p['drill']/2 + s['w']/2
-            if dh < rule + EXTRA:
-                ux, uy = closest_dir(p1, p2, (p['x'], p['y']), (p['x'], p['y']))
-                bump(sidx, ux, uy, rule + EXTRA - dh, dh - rule)
+            key = ('S', s['edge'], 'PH', pi)
+            if MEASURE:
+                gf_note(key, dh, rule)
+            else:
+                eng, tgt, tru = rule_thresholds(rule, key)
+                if dh < eng:
+                    ux, uy = closest_dir(p1, p2, (p['x'], p['y']), (p['x'], p['y']))
+                    bump(sidx, ux, uy, tgt - dh, dh - tru)
 
 def bump_node(nid, ux, uy, need, rule_gap):
     global violations, true_viol
@@ -340,18 +424,26 @@ def project_via_node(nid):
                     rule = max(rule, CLR + r_cu + t['w']/2)
                 if t['net'] == net:
                     continue  # same-net track may touch via copper; hole ok by construction
-                if d < rule + EXTRA:
+                key = ('N', nid, 'T', idx)
+                if MEASURE:
+                    gf_note(key, d, rule); continue
+                eng, tgt, tru = rule_thresholds(rule, key)
+                if d < eng:
                     ux, uy = closest_dir((x, y), (x, y), tuple(t['a']), tuple(t['b']))
-                    bump_node(nid, ux, uy, rule + EXTRA - d, d - rule)
+                    bump_node(nid, ux, uy, tgt - d, d - tru)
             elif kind == 'V':
                 v = O['vias'][idx]
                 d = math.hypot(x-v['x'], y-v['y'])
                 rule = HOLE_CLR + r_hole + v['drill']/2   # hole-hole regardless of net
                 if v['net'] != net:
                     rule = max(rule, CLR + r_cu + v['dia']/2)
-                if d < rule + EXTRA:
+                key = ('N', nid, 'V', idx)
+                if MEASURE:
+                    gf_note(key, d, rule); continue
+                eng, tgt, tru = rule_thresholds(rule, key)
+                if d < eng:
                     ux, uy = closest_dir((x, y), (x, y), (v['x'], v['y']), (v['x'], v['y']))
-                    bump_node(nid, ux, uy, rule + EXTRA - d, d - rule)
+                    bump_node(nid, ux, uy, tgt - d, d - tru)
             elif kind == 'PE':
                 ax, ay, bx, by, pi = pad_edges[idx]
                 p = O['pads'][pi]
@@ -364,13 +456,22 @@ def project_via_node(nid):
                 if p['drill']:
                     dh = math.hypot(x - p['x'], y - p['y'])
                     hr = HOLE_CLR + r_hole + p['drill']/2
-                    if dh < hr + EXTRA:
-                        ux, uy = closest_dir((x, y), (x, y), (p['x'], p['y']), (p['x'], p['y']))
-                        bump_node(nid, ux, uy, hr + EXTRA - dh, dh - hr)
-                        continue
-                if d < rule + EXTRA:
+                    hkey = ('N', nid, 'PH', pi)
+                    if MEASURE:
+                        gf_note(hkey, dh, hr)
+                    else:
+                        heng, htgt, htru = rule_thresholds(hr, hkey)
+                        if dh < heng:
+                            ux, uy = closest_dir((x, y), (x, y), (p['x'], p['y']), (p['x'], p['y']))
+                            bump_node(nid, ux, uy, htgt - dh, dh - htru)
+                            continue
+                key = ('N', nid, 'P', pi)
+                if MEASURE:
+                    gf_note(key, d, rule); continue
+                eng, tgt, tru = rule_thresholds(rule, key)
+                if d < eng:
                     ux, uy = closest_dir((x, y), (x, y), (p['x'], p['y']), (p['x'], p['y']))
-                    bump_node(nid, ux, uy, rule + EXTRA - d, d - rule)
+                    bump_node(nid, ux, uy, tgt - d, d - tru)
 
 # ---- wrap pass: exact homotopic detours around penetrated pads ------------------
 def convex_hull_pts(pts):
@@ -646,6 +747,40 @@ def sweep():
     global violations, true_viol
     violations = 0
     true_viol = 0
+    if MEASURE:
+        for si in range(len(segs)):
+            (x1, y1), (x2, y2) = seg_pts(segs[si])
+            seen = set()
+            for c in cells_for_seg(x1, y1, x2, y2, 0.6):
+                for kind, idx in static_grid.get(c, ()):
+                    if (kind, idx) not in seen:
+                        seen.add((kind, idx))
+                        project_pair_dyn_static(si, kind, idx)
+        dyn_grid_m = defaultdict(list)
+        for si, sg in enumerate(segs):
+            (x1, y1), (x2, y2) = seg_pts(sg)
+            for c in cells_for_seg(x1, y1, x2, y2, 0.6):
+                dyn_grid_m[c].append(si)
+        done_m = set()
+        for c, slist in dyn_grid_m.items():
+            for i in slist:
+                p1, p2 = seg_pts(segs[i])
+                for j in slist:
+                    if j <= i or (i, j) in done_m:
+                        continue
+                    done_m.add((i, j))
+                    si_, sj = segs[i], segs[j]
+                    if si_['layer'] != sj['layer'] or si_['net'] == sj['net'] \
+                            or si_['edge'] == sj['edge']:
+                        continue
+                    d = seg_seg_dist(p1, p2, *seg_pts(sj))
+                    rule = CLR + (si_['w'] + sj['w'])/2
+                    key = ('D', min(si_['edge'], sj['edge']), max(si_['edge'], sj['edge']))
+                    gf_note(key, d, rule)
+        for nid in range(len(nodes)):
+            if is_via[nid]:
+                project_via_node(nid)
+        return 0
     # 1. rubber-band smoothing on free degree-2 nodes
     for nid, ns in nbr.items():
         if nid in anchor or is_via[nid] or len(ns) != 2 or nid in no_smooth:
@@ -689,12 +824,17 @@ def sweep():
                 q1, q2 = seg_pts(sj)
                 d = seg_seg_dist(p1, p2, q1, q2)
                 rule = CLR + (si['w'] + sj['w'])/2
-                if d < rule + EXTRA:
+                key = ('D', min(si['edge'], sj['edge']), max(si['edge'], sj['edge']))
+                if MEASURE:
+                    gf_note(key, d, rule)
+                    continue
+                eng, tgt, tru = rule_thresholds(rule, key)
+                if d < eng:
                     ux, uy = closest_dir(p1, p2, q1, q2)
-                    push_nodes(i, ux, uy, (rule + EXTRA - d) * RELAX / 2)
-                    push_nodes(j, -ux, -uy, (rule + EXTRA - d) * RELAX / 2)
+                    push_nodes(i, ux, uy, (tgt - d) * RELAX / 2)
+                    push_nodes(j, -ux, -uy, (tgt - d) * RELAX / 2)
                     violations += 1
-                    if d < rule:
+                    if d < tru:
                         globals()['true_viol'] += 1
     # 4. dyn vs static
     for si, s in enumerate(segs):
@@ -726,11 +866,41 @@ def sweep():
 # Wraps are opt-in: in a dense field a single-obstacle detour tends to plow
 # into the neighboring pads. Default mode is gentle PBD + selective emission.
 WRAP = '--wrap' in sys.argv
+if WRAP and MORPH_N:
+    sys.exit('--snapshots requires static chain topology; do not combine with --wrap')
 if WRAP:
     print(f'initial wrap pass: {wrap_pass()} chains detoured around pads')
 
+checkpoints = []
+def capture(s):
+    """Settle with pure constraint projection (no smoothing — it would
+    straighten legal corners into violations), then record the state.
+    s=0 records the pristine input: it is legal by construction."""
+    global eta_now
+    if s > 0:
+        eta_now = 0.0
+        for _ in range(60):
+            sweep()
+            if true_viol == 0:
+                break
+        eta_now = ETA
+    checkpoints.append(dict(s=s, P=[p[:] for p in P]))
+    print(f'  checkpoint {len(checkpoints)}: s={s:.3f} '
+          f'residual true_violations={0 if s == 0 else true_viol}')
+
+if MORPH_N:
+    if MOVED:
+        MEASURE = True
+        sweep()
+        MEASURE = False
+        print(f'grandfathered {len(gf)} shipped at/below-rule pairs')
+    capture(0.0)
+snap_every = max(1, STEPS // MORPH_N) if MORPH_N else 0
+
 for step in range(STEPS):
     a = smoothstep((step + 1) / STEPS)
+    if MOVED:
+        set_obstacle_progress(a)     # obstacles ride the same schedule as anchors
     for nid, (ox, oy, tx, ty) in anchor.items():
         P[nid][0] = ox + (tx - ox) * a
         P[nid][1] = oy + (ty - oy) * a
@@ -739,18 +909,49 @@ for step in range(STEPS):
     if WRAP and step % 10 == 9:
         wrap_pass()
         resubdivide()
+    if MORPH_N and (step + 1) % snap_every == 0 and step != STEPS - 1:
+        capture(a)
     if step % 10 == 0 or step == STEPS - 1:
         print(f'step {step+1}/{STEPS} alpha={a:.2f} pushes={v} '
               f'true_violations={true_viol} nodes={len(P)}')
 
 print('polish...')
-eta_now = 0.06
+eta_now = 0.0 if MOVED else 0.06
 for k in range(POLISH):
     v = sweep()
     if k % 10 == 0 or true_viol == 0:
         print(f'polish {k}: pushes={v} true_violations={true_viol} nodes={len(P)}')
     if true_viol == 0:
         break
+
+if MORPH_N:
+    checkpoints.append(dict(s=1.0, P=[p[:] for p in P]))
+    # ordered node-id chain per edge (same connectivity walk as the emitter)
+    by_edge_m = defaultdict(list)
+    for s_ in segs:
+        by_edge_m[s_['edge']].append(s_)
+    chains = []
+    for ei, e in enumerate(edges):
+        ss = by_edge_m[ei]
+        nxt = defaultdict(list)
+        for s_ in ss:
+            nxt[s_['a']].append(s_); nxt[s_['b']].append(s_)
+        cur = e['a']
+        ids = [cur]
+        used = set()
+        while len(used) < len(ss):
+            cand = [s_ for s_ in nxt[cur] if id(s_) not in used]
+            if not cand:
+                break
+            s_ = cand[0]
+            used.add(id(s_))
+            cur = s_['b'] if s_['a'] == cur else s_['a']
+            ids.append(cur)
+        chains.append(ids)
+    save_json('morph.json', dict(checkpoints=checkpoints, chains=chains))
+    print(f'wrote morph.json: {len(checkpoints)} checkpoints, '
+          f'{len(chains)} chains — run morph.py')
+    sys.exit(0)
 
 # ---- final classification: which chains/vias are actually clean? ---------------
 TOL = 1e-4

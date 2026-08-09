@@ -379,6 +379,40 @@ the 71: sixteen clusters with fewer than two reachable terminals, 37 terminals A
 rule clearance, and 5 vias with no legal spot within 2&nbsp;mm — the honest residual that needs
 topology changes (new via hops) or a human, not a better field.</p>
 
+<h2 id="morph">9 · The morph: rework without the rip (2026-08-09)</h2>
+
+<p>Sequoia's reframe: the shipped board (<code>2238aca</code>) is <strong>0 violations / 0 airwires</strong>
+under its own project rules — every airwire in sections 8–8d was a wound inflicted by the rip-based
+rework, not ground truth. The right process is a <em>morph</em>: start from the shipped board and
+nudge toward the rev-B placement, every checkpoint fully routed and no worse than shipped. Pipeline:
+<code>JIGGLE2_VARIANT=morph graft.py &rarr; solve.py --snapshots 12 &rarr; morph.py</code> — thirteen
+DRC-gated boards in <code>data_morph/morph/</code>, parts and copper riding the same smoothstep.</p>
+
+<p><strong>Six artifact classes had to die before the physics was visible</strong>, each caught by the
+kicad DRC gate: (1) the obstacle field must be time-dependent — parts at their lerped positions, no
+rev-B ghosts (ghost fields deformed even the s=0 state); (2) the drag set must include kept copper on
+moving pads <em>and</em> everything in the pads' swept corridors, so copper flows around parts
+(+163 objects); (3) drag endpoints junctioning into static copper get pinned (53); (4) shipped boards
+are routed <em>at</em> the clearance limit and the model carries ~10&nbsp;&micro;m biases — 446 pairs are
+grandfathered at their shipped distance, later corrected to <em>hold</em> that distance as prescribed
+motion approaches; (5) checkpoint s=0 is captured pristine; (6) rubber-band smoothing is off in morph
+mode — beautification straightens shipped geometry into violations (this one artifact accounted for
+149 of 168 early-step violations). First-step violations fell 517 &rarr; 168 &rarr; 19 &rarr; 7 across
+these fixes; the s=0 roundtrip is identity up to zone-refill drift (8 NPTH/pour artifacts, 1 pour
+island, all baselined).</p>
+
+<p><strong>The honest frontier:</strong> connectivity never breaks along the trajectory, but
+violations grow smoothly — 7 at s=0.02 (four of them courtyard contacts between parts that ship
+abutting: any simultaneous straight-line motion overlaps them), 42 at s=0.26, 109 at s=0.50, 209 at
+s=1. The corner is at-limit dense: moving a pad 40&nbsp;&micro;m wedges copper whose retreat side is
+itself at-limit. Deformation alone cannot make this trajectory green — which is the literature's
+prediction, not a defeat: the next levers are <em>scheduled</em> part motion (stagger the abutting
+pairs instead of one global alpha) and <em>atomic mid-flight reroutes</em> where a cut saturates —
+Maley's cut-capacity oracle, the research page's open item, now with an exact worklist. The rip-based
+recovery chain (§8–8d) remains the calibrated fallback, and its nudge stage
+(<code>nudge.py</code>: additive batches, component-granular, never worse than baseline at any
+checkpoint) is the machinery the morph's final new-parts phase will reuse.</p>
+
 <footer style="margin-top:4rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:1rem">
   Analysis: exact courtyard polygons via pcbnew 9.0.8; relaxation: 400-iteration constrained field,
   target 0.25 mm, connectors/holes/power-copper pinned; solver + data in <code>review/tools/</code>

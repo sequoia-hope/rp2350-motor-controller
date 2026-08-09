@@ -36,12 +36,17 @@ def find_net(name):
     return None if n == nets.end() else n.value()[1]
 
 EMIT_ALL = '--all' in sys.argv   # trust the DRC referee, not the classifier
+EMIT_SEL = '--sel' in sys.argv   # nudge.py mode: emit exactly the sel-flagged set
 added_t = added_v = skipped_dirty_t = skipped_dirty_v = withdrawn = no_net = 0
 for e in sol['edges']:
-    if e.get('withdrawn'):       # referee veto always wins
+    if EMIT_SEL:
+        if not e.get('sel'):
+            skipped_dirty_t += 1
+            continue
+    elif e.get('withdrawn'):     # referee veto always wins
         withdrawn += 1
         continue
-    if not e['clean'] and not EMIT_ALL:
+    elif not e['clean'] and not EMIT_ALL:
         skipped_dirty_t += 1
         continue
     net = find_net(e['net'])
@@ -61,10 +66,14 @@ for e in sol['edges']:
         board.Add(t)
         added_t += 1
 for v in sol['vias']:
-    if v.get('withdrawn'):
+    if EMIT_SEL:
+        if not v.get('sel'):
+            skipped_dirty_v += 1
+            continue
+    elif v.get('withdrawn'):
         withdrawn += 1
         continue
-    if not v['clean'] and not EMIT_ALL:
+    elif not v['clean'] and not EMIT_ALL:
         skipped_dirty_v += 1
         continue
     net = find_net(v['net'])
