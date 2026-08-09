@@ -26945,7 +26945,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Small")
-		(at 618.49 313.69 180)
+		(at 742.95 516.89 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -26953,7 +26953,7 @@
 		(dnp no)
 		(uuid "0120db63-dfe7-482f-812e-6a483404a6a0")
 		(property "Reference" "R83"
-			(at 619.76 312.4199 0)
+			(at 744.855 513.715 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26962,7 +26962,7 @@
 			)
 		)
 		(property "Value" "100R 0402"
-			(at 613.41 308.6099 0)
+			(at 744.855 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26971,7 +26971,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 618.49 313.69 0)
+			(at 742.95 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26980,7 +26980,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 618.49 313.69 0)
+			(at 742.95 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26989,7 +26989,7 @@
 			)
 		)
 		(property "Description" "Resistor, small symbol"
-			(at 618.49 313.69 0)
+			(at 742.95 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26998,7 +26998,7 @@
 			)
 		)
 		(property "LCSC" "C106232"
-			(at 618.49 313.69 0)
+			(at 742.95 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28528,7 +28528,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Small")
-		(at 617.22 407.67 180)
+		(at 811.5300000000001 516.89 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -28536,7 +28536,7 @@
 		(dnp no)
 		(uuid "0847bdd4-3fab-4645-bc57-fef0fa78a77e")
 		(property "Reference" "R85"
-			(at 618.49 406.3999 0)
+			(at 813.4350000000001 513.715 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28545,7 +28545,7 @@
 			)
 		)
 		(property "Value" "100R 0402"
-			(at 614.172 403.3519 0)
+			(at 813.4350000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28554,7 +28554,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 617.22 407.67 0)
+			(at 811.5300000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28563,7 +28563,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 617.22 407.67 0)
+			(at 811.5300000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28572,7 +28572,7 @@
 			)
 		)
 		(property "Description" "Resistor, small symbol"
-			(at 617.22 407.67 0)
+			(at 811.5300000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28581,7 +28581,7 @@
 			)
 		)
 		(property "LCSC" "C106232"
-			(at 617.22 407.67 0)
+			(at 811.5300000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -36498,7 +36498,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Small")
-		(at 617.22 361.95 180)
+		(at 777.2400000000001 516.89 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -36506,7 +36506,7 @@
 		(dnp no)
 		(uuid "434a975b-0c48-4f88-b3eb-ee448a316f63")
 		(property "Reference" "R84"
-			(at 618.49 360.6799 0)
+			(at 779.1450000000001 513.715 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -36515,7 +36515,7 @@
 			)
 		)
 		(property "Value" "100R 0402"
-			(at 614.172 357.3779 0)
+			(at 779.1450000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -36524,7 +36524,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 617.22 361.95 0)
+			(at 777.2400000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -36533,7 +36533,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 617.22 361.95 0)
+			(at 777.2400000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -36542,7 +36542,7 @@
 			)
 		)
 		(property "Description" "Resistor, small symbol"
-			(at 617.22 361.95 0)
+			(at 777.2400000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -36551,7 +36551,7 @@
 			)
 		)
 		(property "LCSC" "C106232"
-			(at 617.22 361.95 0)
+			(at 777.2400000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49410,7 +49410,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Small")
-		(at 618.49 267.97 180)
+		(at 708.6600000000001 516.89 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -49418,7 +49418,7 @@
 		(dnp no)
 		(uuid "a115579d-193b-4150-b67d-21f4b7bdcc98")
 		(property "Reference" "R82"
-			(at 619.76 266.9539 0)
+			(at 710.565 513.715 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49427,7 +49427,7 @@
 			)
 		)
 		(property "Value" "100R"
-			(at 619.76 268.9859 0)
+			(at 710.565 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49436,7 +49436,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 618.49 267.97 0)
+			(at 708.6600000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49445,7 +49445,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 618.49 267.97 0)
+			(at 708.6600000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49454,7 +49454,7 @@
 			)
 		)
 		(property "Description" "Resistor, small symbol"
-			(at 618.49 267.97 0)
+			(at 708.6600000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49463,7 +49463,7 @@
 			)
 		)
 		(property "LCSC" "C106232"
-			(at 618.49 267.97 0)
+			(at 708.6600000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -63571,4 +63571,3054 @@
 		)
 	)
 	(embedded_fonts no)
+
+	(label "ENC_A_TRX_A"
+		(at 614.68 265.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1a82ca4c-9199-4c8f-8305-c6cd6e7a9469")
+	)
+	(label "ENC_A_TRX_B"
+		(at 614.68 270.51 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "3ec0d001-a35d-4bf0-af6d-fcf2bcfc4581")
+	)
+	(label "ENC_B_TRX_A"
+		(at 614.68 311.15 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "04908fe2-ef08-48a8-aae9-d45c5eb58528")
+	)
+	(label "ENC_B_TRX_B"
+		(at 614.68 316.23 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "99953d95-592c-4255-9761-596ad158c259")
+	)
+	(label "ENC_C_TRX_A"
+		(at 613.41 359.41 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "e64b671e-3f11-4811-857c-a7c3b261bd65")
+	)
+	(label "ENC_C_TRX_B"
+		(at 613.41 364.49 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "337d889d-bd36-4acb-b7f2-98e423f59681")
+	)
+	(label "ENC_D_TRX_A"
+		(at 613.41 405.13 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "3421b631-9b13-4379-92a1-32a251ce14d3")
+	)
+	(label "ENC_D_TRX_B"
+		(at 613.41 410.21 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "dbab4cf9-8dbd-4487-9cb9-5929f43e14aa")
+	)
+	(label "TERM_SW"
+		(at 340.36 285.75 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "31ce75fe-bb29-4eaa-b72a-1efdcd07db91")
+	)
+(symbol
+		(lib_id "integrated:TS5A3159")
+		(at 694.69 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "9308dbd5-7361-4e3f-bf68-7f1b7c4d7481")
+		(property "Reference" "U30"
+			(at 695.96 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TS5A3159DCK"
+			(at 695.96 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+			(at 694.69 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 694.69 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 694.69 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C46388"
+			(at 694.69 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "5"
+			(uuid "14217469-e402-4470-806f-23c9cef021fc")
+		)
+		(pin "4"
+			(uuid "ffa3790a-cd2f-4c89-a300-85c221a51724")
+		)
+		(pin "6"
+			(uuid "31fbc769-a6ce-4bda-83b1-08e4827708c3")
+		)
+		(pin "3"
+			(uuid "98fcac0c-c599-40ce-be34-10dc4293a32c")
+		)
+		(pin "1"
+			(uuid "0ff67028-c4a9-435b-ab04-702839640da3")
+		)
+		(pin "2"
+			(uuid "d4e25a6b-2d92-4c71-8c9e-6ab4b60680d6")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "U30")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 685.8000000000001 515.62) (xy 688.34 515.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d9e7f1fc-49d0-47e7-bba6-8f8200ba05ee")
+	)
+	(label "ENC_A_TRX_A"
+		(at 685.8000000000001 515.62 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "686812f3-fa16-4343-ae88-5add12332b72")
+	)
+	(wire
+		(pts
+			(xy 701.0400000000001 518.16) (xy 703.58 518.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "edc31e90-6ee5-4485-8ccf-5536d83b380f")
+	)
+	(label "TERM_A_R"
+		(at 703.58 518.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a3656fd3-6da6-4c88-aa17-ce8587190170")
+	)
+	(no_connect
+		(at 701.0400000000001 515.62)
+		(uuid "d418d021-2c97-4f33-a71f-26d90448fa0d")
+	)
+	(wire
+		(pts
+			(xy 685.8000000000001 519.43) (xy 688.34 519.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1da018b0-74a6-4a9f-8008-fd9740c86f77")
+	)
+	(label "TERM_SW"
+		(at 685.8000000000001 519.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "41356bd9-654c-4a7d-be32-f17004caad43")
+	)
+	(wire
+		(pts
+			(xy 697.23 506.72999999999996) (xy 697.23 509.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "182e53b8-2e4f-4f67-aa09-f24f41735079")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 697.23 506.72999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7e2f741d-40ae-4ba5-bf5a-7bce7041ac5d")
+		(property "Reference" "#PWR0300"
+			(at 698.5 500.37999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 698.5 513.0799999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 697.23 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 697.23 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9e1f1e1e-ec98-4a0f-8622-948cd4d11454")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0300")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 695.96 524.51) (xy 695.96 527.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8bfdc06d-d28b-4b52-8a20-1a0408130056")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 695.96 527.05 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ffa66d9c-bf32-4285-8605-ad3d596f9dda")
+		(property "Reference" "#PWR0310"
+			(at 697.23 520.6999999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 697.23 533.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 695.96 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 695.96 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 695.96 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fe03efac-2d7b-452a-81d0-ee7a7862e094")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0310")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 708.6600000000001 514.35) (xy 708.6600000000001 511.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "90d0559d-ffd2-475e-80f2-7bbf0801b967")
+	)
+	(label "TERM_A_R"
+		(at 708.6600000000001 511.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b6ec3bd9-cc2d-4018-a051-55be0da4d34f")
+	)
+	(wire
+		(pts
+			(xy 708.6600000000001 519.43) (xy 708.6600000000001 521.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7cb439f5-c261-4e59-9a45-913cab54da0d")
+	)
+	(label "ENC_A_TRX_B"
+		(at 708.6600000000001 521.97 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1e479651-a59d-4a4d-9ffa-6cad4ce3aaed")
+	)
+(symbol
+		(lib_id "Device:C")
+		(at 716.2800000000001 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "3b25c94a-7ef1-4147-a8b4-0b3bebe84926")
+		(property "Reference" "C110"
+			(at 717.5500000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100n"
+			(at 717.5500000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 716.2800000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 716.2800000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 716.2800000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C131394"
+			(at 716.2800000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bb25a2c1-23c0-496d-82ee-8312d96ce6d7")
+		)
+		(pin "2"
+			(uuid "9a5ef44d-be74-43d6-bfb5-fc65e7b7c558")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "C110")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 716.2800000000001 513.08) (xy 716.2800000000001 510.53999999999996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ed0428ac-8f29-41de-b0cc-fcf52f9b9d03")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 716.2800000000001 510.53999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6cbb2139-701b-46f2-8ed2-98e41533da74")
+		(property "Reference" "#PWR0320"
+			(at 717.5500000000001 504.18999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 717.5500000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 716.2800000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 716.2800000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fe7ed7e9-5ebd-4c7c-af9a-1fbdf9f48b0c")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0320")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 716.2800000000001 520.6999999999999) (xy 716.2800000000001 523.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "006a344f-25c3-44be-a322-f4c3c165ffbe")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 716.2800000000001 523.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b771a2ec-c06e-4a29-ae87-d9a845b7c3ae")
+		(property "Reference" "#PWR0330"
+			(at 717.5500000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 717.5500000000001 529.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 716.2800000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 716.2800000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 716.2800000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9bb4ce58-b327-44e0-a1de-64553eec06c8")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0330")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 694.69 541.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0f32a2c0-aea4-48b4-b82e-66dae4a5ff92")
+		(property "Reference" "R97"
+			(at 695.96 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 695.96 547.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 694.69 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 694.69 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 694.69 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C60490"
+			(at 694.69 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "91321f57-896d-4fc7-8ca7-ed5a41139092")
+		)
+		(pin "2"
+			(uuid "37420c4f-5020-4200-8d57-ab2080a38a1f")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R97")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 694.69 537.21) (xy 694.69 534.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "688e41d7-a5ca-411a-b13e-2af4ab8bb31b")
+	)
+(symbol
+		(lib_id "power:+3V3")
+		(at 694.69 534.67 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "965af872-a6db-4a2b-813f-619f7cfaea74")
+		(property "Reference" "#PWR0340"
+			(at 695.96 528.3199999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 695.96 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 694.69 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 694.69 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 694.69 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1fb98d1f-d68c-455b-84e3-d32d1e5f607b")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0340")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 694.69 544.8299999999999) (xy 694.69 547.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8a2303a1-8f90-4205-86ed-d01e1f3c10c3")
+	)
+	(label "ENC_A_P_SW"
+		(at 694.69 547.37 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "90405c47-6a57-4420-b06d-8994d402022e")
+	)
+(symbol
+		(lib_id "integrated:TS5A3159")
+		(at 728.98 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e4054711-6f39-497e-84ac-41859c2a609c")
+		(property "Reference" "U31"
+			(at 730.25 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TS5A3159DCK"
+			(at 730.25 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+			(at 728.98 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 728.98 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 728.98 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C46388"
+			(at 728.98 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "5"
+			(uuid "bbc3e66b-8f4b-41fc-ac3f-8c247de63001")
+		)
+		(pin "4"
+			(uuid "04a9ac75-ef1e-469f-989c-35dd1c22cdd9")
+		)
+		(pin "6"
+			(uuid "e287b8b8-d8f5-4c0d-91b2-8b1874b8b55a")
+		)
+		(pin "3"
+			(uuid "9c1d38e9-d006-42ad-9dbd-21e7744db722")
+		)
+		(pin "1"
+			(uuid "48163861-17bd-4df3-8bb2-c7c583f74017")
+		)
+		(pin "2"
+			(uuid "2cdb52c7-f3a1-49d3-9a66-2ecba47b1188")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "U31")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 720.09 515.62) (xy 722.63 515.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "118c2d30-1a60-468a-8812-fbb7944fa524")
+	)
+	(label "ENC_B_TRX_A"
+		(at 720.09 515.62 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "84c95d7e-8e6a-4353-807f-a134bc28b995")
+	)
+	(wire
+		(pts
+			(xy 735.33 518.16) (xy 737.87 518.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cd1eecc6-2842-4fa6-87b2-9b13bb113645")
+	)
+	(label "TERM_B_R"
+		(at 737.87 518.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "45005954-3229-4bef-9108-523cc86476a7")
+	)
+	(no_connect
+		(at 735.33 515.62)
+		(uuid "f8edf7f5-1f91-4236-bb30-ab48552ce76a")
+	)
+	(wire
+		(pts
+			(xy 720.09 519.43) (xy 722.63 519.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3bbe1b3f-c7a0-4937-b203-396b10226cb0")
+	)
+	(label "TERM_SW"
+		(at 720.09 519.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "190fca2b-bf66-41ec-886e-f399ebb77ea7")
+	)
+	(wire
+		(pts
+			(xy 731.52 506.72999999999996) (xy 731.52 509.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1e468606-75f2-4471-8a6a-fa2d1db191cb")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 731.52 506.72999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "5f97b037-e0b0-487c-a9eb-ff6c036a990e")
+		(property "Reference" "#PWR0301"
+			(at 732.79 500.37999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 732.79 513.0799999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 731.52 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 731.52 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bea18de7-c56d-457e-b0f6-c59a172bd0dd")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0301")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 730.25 524.51) (xy 730.25 527.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "00a98d73-6c8b-49b4-984a-d65498ed1f40")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 730.25 527.05 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "87e55bdb-bb4c-4304-b067-5f60543e7df6")
+		(property "Reference" "#PWR0311"
+			(at 731.52 520.6999999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 731.52 533.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 730.25 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 730.25 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 730.25 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "75599a64-255e-4f1c-943d-8ccf5b12acf2")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0311")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 742.95 514.35) (xy 742.95 511.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "12509377-e705-493e-ae01-1c8df939ca95")
+	)
+	(label "TERM_B_R"
+		(at 742.95 511.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "2085e331-5282-4a58-b4b7-2b5bc22648c2")
+	)
+	(wire
+		(pts
+			(xy 742.95 519.43) (xy 742.95 521.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ac3e68e7-9639-476f-ab20-1b5885937a51")
+	)
+	(label "ENC_B_TRX_B"
+		(at 742.95 521.97 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b0615131-41c8-4adf-99eb-587d8eaaa020")
+	)
+(symbol
+		(lib_id "Device:C")
+		(at 750.57 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0e059c07-0279-4e4d-9329-2b9ff67596ac")
+		(property "Reference" "C111"
+			(at 751.84 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100n"
+			(at 751.84 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 750.57 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 750.57 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 750.57 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C131394"
+			(at 750.57 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bff88e8b-8b6f-49db-91d7-6f6d3557a579")
+		)
+		(pin "2"
+			(uuid "c485a2dd-a5ae-4e4e-8031-73b83d7bde6a")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "C111")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 750.57 513.08) (xy 750.57 510.53999999999996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6adf5c23-251c-43fe-b1aa-92905e22c5b1")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 750.57 510.53999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "74f67011-197c-45ac-ac9e-43dcbd4ff052")
+		(property "Reference" "#PWR0321"
+			(at 751.84 504.18999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 751.84 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 750.57 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 750.57 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "95185fad-9a0a-4954-8e2f-4783c1c18ff7")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0321")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 750.57 520.6999999999999) (xy 750.57 523.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "70b5f2c3-1785-4a38-86dc-5010098ce967")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 750.57 523.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "29d44e64-1f71-4bc2-9a1b-6371d7f63801")
+		(property "Reference" "#PWR0331"
+			(at 751.84 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 751.84 529.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 750.57 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 750.57 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 750.57 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1755a933-cdf3-42f0-96ad-01d0501fcabd")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0331")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 728.98 541.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "31f9cdd9-2eff-4862-8759-16741d4bc8a8")
+		(property "Reference" "R98"
+			(at 730.25 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 730.25 547.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 728.98 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 728.98 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 728.98 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C60490"
+			(at 728.98 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9f8b69db-6789-46ac-b240-e156e5cbb5d5")
+		)
+		(pin "2"
+			(uuid "b864a68f-5fe1-45dd-b0a1-3b956c90cc95")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R98")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 728.98 537.21) (xy 728.98 534.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a1c04df3-49a1-43ef-a8fc-078b6c257bad")
+	)
+(symbol
+		(lib_id "power:+3V3")
+		(at 728.98 534.67 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b0d71f8f-804c-4b23-8398-f591a18256e4")
+		(property "Reference" "#PWR0341"
+			(at 730.25 528.3199999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 730.25 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 728.98 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 728.98 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 728.98 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "57d7f14b-fbda-44ce-a2ed-9b59befd27ce")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0341")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 728.98 544.8299999999999) (xy 728.98 547.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "89e2ef9c-2f4c-422d-8f7a-17af4f236594")
+	)
+	(label "ENC_B_P_SW"
+		(at 728.98 547.37 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b4f43c7b-e6e0-4ab3-a301-9ef6e8cdecaa")
+	)
+(symbol
+		(lib_id "integrated:TS5A3159")
+		(at 763.2700000000001 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "86814508-b9ac-4bc5-a6b5-c5846d40fb32")
+		(property "Reference" "U32"
+			(at 764.5400000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TS5A3159DCK"
+			(at 764.5400000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+			(at 763.2700000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 763.2700000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 763.2700000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C46388"
+			(at 763.2700000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "5"
+			(uuid "ea235847-65b1-4bcf-bbcf-92f5c80a8b33")
+		)
+		(pin "4"
+			(uuid "c4f62f40-a78e-4ded-8130-220d1c14321a")
+		)
+		(pin "6"
+			(uuid "006e33a7-a8e5-4c72-af64-57cc3340b305")
+		)
+		(pin "3"
+			(uuid "1f4cf6c8-c235-4943-8d79-fdf45f1a63bd")
+		)
+		(pin "1"
+			(uuid "138def39-4c56-4b2b-b1eb-5299d1f4cefb")
+		)
+		(pin "2"
+			(uuid "c7323490-abe2-47d8-9402-6804d5f350d8")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "U32")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 754.3800000000001 515.62) (xy 756.9200000000001 515.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c3887ae9-5465-4bcc-8244-9e0003e44743")
+	)
+	(label "ENC_C_TRX_A"
+		(at 754.3800000000001 515.62 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "9c1bfb89-990c-4239-b9d5-fff52466bd27")
+	)
+	(wire
+		(pts
+			(xy 769.6200000000001 518.16) (xy 772.1600000000001 518.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c3d90c7d-7043-4898-b8ad-4080971f33c7")
+	)
+	(label "TERM_C_R"
+		(at 772.1600000000001 518.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "e3520b4e-1af5-4d02-82ca-385c6fa395fe")
+	)
+	(no_connect
+		(at 769.6200000000001 515.62)
+		(uuid "8be788b1-92d9-40ee-9b6e-db00a23e2f01")
+	)
+	(wire
+		(pts
+			(xy 754.3800000000001 519.43) (xy 756.9200000000001 519.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dc78d74d-5333-4eb5-b3d6-66c298a5c3a7")
+	)
+	(label "TERM_SW"
+		(at 754.3800000000001 519.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "f2c963d3-c3c1-411d-bf5d-01b0587445e3")
+	)
+	(wire
+		(pts
+			(xy 765.8100000000001 506.72999999999996) (xy 765.8100000000001 509.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ecf89509-e700-4adc-827c-8d9f6496c136")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 765.8100000000001 506.72999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b4019219-f4fe-45c6-919d-27cca6cb1394")
+		(property "Reference" "#PWR0302"
+			(at 767.08 500.37999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 767.08 513.0799999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 765.8100000000001 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 765.8100000000001 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f69961fc-7509-493c-a80c-ae22971d1eef")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0302")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 764.5400000000001 524.51) (xy 764.5400000000001 527.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ee3eccec-9fe8-4a47-a111-2a23ebae9393")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 764.5400000000001 527.05 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8c3246d5-a1d0-4f6d-b4ba-ce56200aa977")
+		(property "Reference" "#PWR0312"
+			(at 765.8100000000001 520.6999999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 765.8100000000001 533.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 764.5400000000001 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 764.5400000000001 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 764.5400000000001 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e97d6e91-3cf0-4f03-ac79-e493120d8314")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0312")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 777.2400000000001 514.35) (xy 777.2400000000001 511.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c0a0de75-6bf3-4f97-b27f-f075afd4594f")
+	)
+	(label "TERM_C_R"
+		(at 777.2400000000001 511.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "90fd230f-2c09-492e-a981-378ff5098403")
+	)
+	(wire
+		(pts
+			(xy 777.2400000000001 519.43) (xy 777.2400000000001 521.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0d5ae300-016b-4c02-b06b-4918e180b9ca")
+	)
+	(label "ENC_C_TRX_B"
+		(at 777.2400000000001 521.97 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "6e2a315b-b72f-4415-873a-bd25af2d6491")
+	)
+(symbol
+		(lib_id "Device:C")
+		(at 784.8600000000001 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1079096e-df07-407e-b7eb-c197b4351672")
+		(property "Reference" "C112"
+			(at 786.1300000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100n"
+			(at 786.1300000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 784.8600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 784.8600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 784.8600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C131394"
+			(at 784.8600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bea1ea9f-7805-4b41-a0a6-949e77a224cc")
+		)
+		(pin "2"
+			(uuid "4a8ab56e-a977-4787-8b75-ad8c0931c2dc")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "C112")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 784.8600000000001 513.08) (xy 784.8600000000001 510.53999999999996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ae821df9-ba00-40e6-9ba0-daacd677ba83")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 784.8600000000001 510.53999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "3bd039d0-e041-4372-a7d6-40a362ba2fa8")
+		(property "Reference" "#PWR0322"
+			(at 786.1300000000001 504.18999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 786.1300000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 784.8600000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 784.8600000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8089bb89-f22b-4d51-9721-4963b4374e6c")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0322")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 784.8600000000001 520.6999999999999) (xy 784.8600000000001 523.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6fe8091f-8e04-47c9-bc2b-bdc0ea418d23")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 784.8600000000001 523.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "f46f5bc8-cfba-4363-ba95-04894e97e862")
+		(property "Reference" "#PWR0332"
+			(at 786.1300000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 786.1300000000001 529.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 784.8600000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 784.8600000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 784.8600000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ac3d9ba5-5bb4-4be8-b4b1-1e17d57a1fca")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0332")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 763.2700000000001 541.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "66ac1a7c-71ec-499c-9e01-71b8e50c6372")
+		(property "Reference" "R99"
+			(at 764.5400000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 764.5400000000001 547.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 763.2700000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 763.2700000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 763.2700000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C60490"
+			(at 763.2700000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "87a62c80-1418-4fe8-ba8c-e23862c74ff0")
+		)
+		(pin "2"
+			(uuid "e94b803b-a123-46e7-ae54-5101d45aac88")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R99")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 763.2700000000001 537.21) (xy 763.2700000000001 534.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c514ae73-2757-4c10-ab16-cb5ad30cbc38")
+	)
+(symbol
+		(lib_id "power:+3V3")
+		(at 763.2700000000001 534.67 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "fdf8c355-aaa0-418d-b4b8-896a726f7f64")
+		(property "Reference" "#PWR0342"
+			(at 764.5400000000001 528.3199999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 764.5400000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 763.2700000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 763.2700000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 763.2700000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3058129c-62fa-4d81-88a1-075fcbd8056d")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0342")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 763.2700000000001 544.8299999999999) (xy 763.2700000000001 547.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8f7f01b6-a628-4f60-83f0-e0bae963acf2")
+	)
+	(label "ENC_C_P_SW"
+		(at 763.2700000000001 547.37 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "088d5ec2-ba12-45b2-a75d-3d6228a3311a")
+	)
+(symbol
+		(lib_id "integrated:TS5A3159")
+		(at 797.5600000000001 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4c470b3b-ab80-493f-bf47-9b1c834db82a")
+		(property "Reference" "U33"
+			(at 798.83 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TS5A3159DCK"
+			(at 798.83 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+			(at 797.5600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 797.5600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 797.5600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C46388"
+			(at 797.5600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "5"
+			(uuid "fbb8ff62-ff55-41b6-8da4-48bbb11ee782")
+		)
+		(pin "4"
+			(uuid "021c777c-719d-4e2e-bc89-15e434d74078")
+		)
+		(pin "6"
+			(uuid "889ed577-0241-4533-8581-365aab40fed6")
+		)
+		(pin "3"
+			(uuid "005a2017-676b-4d6f-9bfe-6ee0f0a84587")
+		)
+		(pin "1"
+			(uuid "e6782ba2-f002-4b0a-8581-00548b5cc636")
+		)
+		(pin "2"
+			(uuid "f667c081-ded6-42e6-940a-a45927ebe719")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "U33")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 788.6700000000001 515.62) (xy 791.21 515.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "21ab473b-43cc-4de8-a1a7-f8da9095671a")
+	)
+	(label "ENC_D_TRX_A"
+		(at 788.6700000000001 515.62 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "fb2e4219-7303-4dfb-9f58-a40bf131685f")
+	)
+	(wire
+		(pts
+			(xy 803.9100000000001 518.16) (xy 806.45 518.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c17e8b17-8275-4855-83dc-5c67abd2a99a")
+	)
+	(label "TERM_D_R"
+		(at 806.45 518.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "67d624d7-595e-4713-87e5-d5d4eb27085e")
+	)
+	(no_connect
+		(at 803.9100000000001 515.62)
+		(uuid "0999205f-32a7-435b-b983-15d3e7869320")
+	)
+	(wire
+		(pts
+			(xy 788.6700000000001 519.43) (xy 791.21 519.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "809d3832-be0e-4e3b-89af-fc0ec39128ef")
+	)
+	(label "TERM_SW"
+		(at 788.6700000000001 519.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "df0daa56-45e1-4d7c-b887-5fbdf904b2ca")
+	)
+	(wire
+		(pts
+			(xy 800.1 506.72999999999996) (xy 800.1 509.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5b010381-b5a1-49e0-a5e6-121281f63d13")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 800.1 506.72999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "47879b65-242c-4b47-b1ef-5476c0aecca7")
+		(property "Reference" "#PWR0303"
+			(at 801.37 500.37999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 801.37 513.0799999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 800.1 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 800.1 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "986dcc9c-a2af-41be-9b29-4e496f0d8e10")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0303")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 798.83 524.51) (xy 798.83 527.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8cc76c69-5b00-49c7-ae74-86963adcbc6b")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 798.83 527.05 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4b755067-3876-4d9b-9ecc-7b6601e7e674")
+		(property "Reference" "#PWR0313"
+			(at 800.1 520.6999999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 800.1 533.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 798.83 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 798.83 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 798.83 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c83770da-9872-4935-8f8b-e5aaaeaae8e0")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0313")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 811.5300000000001 514.35) (xy 811.5300000000001 511.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6548f82e-e57e-41e5-adc6-522b63b4dc6e")
+	)
+	(label "TERM_D_R"
+		(at 811.5300000000001 511.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "15ebc7c5-be71-4940-b7c4-32beb0b7286a")
+	)
+	(wire
+		(pts
+			(xy 811.5300000000001 519.43) (xy 811.5300000000001 521.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "08ba2c20-5d7d-4df7-a33e-c3e66aa23c05")
+	)
+	(label "ENC_D_TRX_B"
+		(at 811.5300000000001 521.97 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "d2a7a641-f5c3-4180-9818-26552bc187c8")
+	)
+(symbol
+		(lib_id "Device:C")
+		(at 819.1500000000001 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ff2e699b-64b8-41f2-bc99-6de0cd3569de")
+		(property "Reference" "C113"
+			(at 820.4200000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100n"
+			(at 820.4200000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 819.1500000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 819.1500000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 819.1500000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C131394"
+			(at 819.1500000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "efc76353-a618-4de9-bbb6-c3c8b8690b7f")
+		)
+		(pin "2"
+			(uuid "b71f0fbc-5daf-462f-9473-ae4dc869d5c5")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "C113")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 819.1500000000001 513.08) (xy 819.1500000000001 510.53999999999996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bcbd8e21-bb06-429d-a802-b92677b8260f")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 819.1500000000001 510.53999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "aba30159-78ed-4378-bcee-f585222ff842")
+		(property "Reference" "#PWR0323"
+			(at 820.4200000000001 504.18999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 820.4200000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 819.1500000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 819.1500000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e8df7774-9947-4a25-8b86-d29bf74ac536")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0323")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 819.1500000000001 520.6999999999999) (xy 819.1500000000001 523.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "61b0e11b-a8bc-4f1c-afbe-d827de6d9e26")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 819.1500000000001 523.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a1350271-0c49-4c00-aec1-d874f34b579c")
+		(property "Reference" "#PWR0333"
+			(at 820.4200000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 820.4200000000001 529.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 819.1500000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 819.1500000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 819.1500000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e152b084-0fe1-47df-8858-f6dda45242ff")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0333")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 797.5600000000001 541.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1a189fb1-0d50-4657-86a5-b3936c3a0f61")
+		(property "Reference" "R100"
+			(at 798.83 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 798.83 547.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 797.5600000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 797.5600000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 797.5600000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C60490"
+			(at 797.5600000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1950bf62-d2fb-4069-8a32-4273aea22ea2")
+		)
+		(pin "2"
+			(uuid "0d79d03b-b17f-41a6-8cad-5688e7325fb7")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R100")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 797.5600000000001 537.21) (xy 797.5600000000001 534.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "79bdb658-8918-43a7-8b55-77e8ece4880f")
+	)
+(symbol
+		(lib_id "power:+3V3")
+		(at 797.5600000000001 534.67 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7d3d1a17-8fe7-43cc-83f4-b473c5773fdd")
+		(property "Reference" "#PWR0343"
+			(at 798.83 528.3199999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 798.83 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 797.5600000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 797.5600000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 797.5600000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e0d1cdf4-a793-4751-8072-ab3aa0cac6aa")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0343")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 797.5600000000001 544.8299999999999) (xy 797.5600000000001 547.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "db8fb90e-7721-4c1d-855c-e100572fa564")
+	)
+	(label "ENC_D_P"
+		(at 797.5600000000001 547.37 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "820de9c2-6e47-4916-b7e9-bac0fff6662b")
+	)
+	(text "Rev B: switchable RS-485 termination.\nTERM_SW (GPIO38/TP20) high = 100R termination in circuit (differential encoders).\nLow/boot default = termination open: single-ended signals see the 10k/10k bias\nas a 1.65V threshold. R97-R100 pull P lines up for open-collector encoders."
+		(exclude_from_sim no)
+		(at 690.8800000000001 497.84 0)
+		(effects
+			(font
+				(size 1.6 1.6)
+			)
+			(justify left)
+		)
+		(uuid "f2dd6885-91b5-45e3-8077-b5b0c3afba02")
+	)
 )
