@@ -4820,7 +4820,7 @@
 				)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 0 3.5 90)
 			(layer "F.Fab")
 			(uuid "15b85e88-52b4-4520-bd59-d45874069127")
@@ -4857,7 +4857,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -7249,7 +7249,7 @@
 				)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 0 3.5 90)
 			(layer "F.Fab")
 			(uuid "a1ea7aeb-f764-4929-9020-6210b63438cb")
@@ -7286,7 +7286,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -8459,7 +8459,7 @@
 				)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 0 3.5 0)
 			(layer "F.Fab")
 			(uuid "29740c38-2c02-4e07-b708-6b9e31db9e88")
@@ -8496,7 +8496,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -9404,7 +9404,7 @@
 				)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 0 3.5 0)
 			(layer "F.Fab")
 			(uuid "baa3f2be-333b-4eb5-8aa0-74cd5c0d09f6")
@@ -9441,7 +9441,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -10004,7 +10004,7 @@
 				)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 0 3.5 90)
 			(layer "F.Fab")
 			(uuid "e01ff210-3102-44ff-8ef9-412919f1437c")
@@ -10041,7 +10041,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -14303,7 +14303,7 @@
 				)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 0 3.5 0)
 			(layer "F.Fab")
 			(uuid "60093081-6b44-463f-a976-f53ecf723a03")
@@ -14340,7 +14340,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -19424,7 +19424,7 @@
 				)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 0 3.5 90)
 			(layer "F.Fab")
 			(uuid "71cab966-0d58-4546-a286-3b7bb7b9018b")
@@ -19459,7 +19459,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -29601,7 +29601,7 @@
 				)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 0 3.5 180)
 			(layer "F.Fab")
 			(uuid "9318b1e3-0b0b-4efd-b8a8-712029908d06")
@@ -29636,7 +29636,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)

@@ -28026,7 +28026,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 110.998 426.974 0)
 			(effects
 				(font
@@ -28063,7 +28063,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 119.38 420.37 0)
 			(effects
 				(font
@@ -31916,7 +31916,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 488.188 480.314 0)
 			(effects
 				(font
@@ -31953,7 +31953,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 496.57 473.71 0)
 			(effects
 				(font
@@ -34546,7 +34546,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 224.028 508.254 0)
 			(effects
 				(font
@@ -34583,7 +34583,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 232.41 501.65 0)
 			(effects
 				(font
@@ -35112,7 +35112,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 224.028 493.014 0)
 			(effects
 				(font
@@ -35149,7 +35149,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 232.41 486.41 0)
 			(effects
 				(font
@@ -35721,7 +35721,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 292.608 428.244 0)
 			(effects
 				(font
@@ -35758,7 +35758,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 300.99 421.64 0)
 			(effects
 				(font
@@ -42871,7 +42871,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 119.888 442.214 0)
 			(effects
 				(font
@@ -42908,7 +42908,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 128.27 435.61 0)
 			(effects
 				(font
@@ -45976,7 +45976,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 478.028 465.074 0)
 			(effects
 				(font
@@ -46013,7 +46013,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 486.41 458.47 0)
 			(effects
 				(font
@@ -49114,7 +49114,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "TMG08N10SI"
+		(property "Value" "BSC040N10NS5"
 			(at 302.768 443.484 0)
 			(effects
 				(font
@@ -49151,7 +49151,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "LCSC-TBD-BSC040N10NS5"
 			(at 311.15 436.88 0)
 			(effects
 				(font
@@ -63900,7 +63900,7 @@
 		)
 		(uuid "90d0559d-ffd2-475e-80f2-7bbf0801b967")
 	)
-	(label "TERM_A_R"
+	(label "ENC_A_TRX_B"
 		(at 708.6600000000001 511.81 0)
 		(effects
 			(font
@@ -63920,7 +63920,7 @@
 		)
 		(uuid "7cb439f5-c261-4e59-9a45-913cab54da0d")
 	)
-	(label "ENC_A_TRX_B"
+	(label "TERM_A_R"
 		(at 708.6600000000001 521.97 0)
 		(effects
 			(font
@@ -64637,7 +64637,7 @@
 		)
 		(uuid "12509377-e705-493e-ae01-1c8df939ca95")
 	)
-	(label "TERM_B_R"
+	(label "ENC_B_TRX_B"
 		(at 742.95 511.81 0)
 		(effects
 			(font
@@ -64657,7 +64657,7 @@
 		)
 		(uuid "ac3e68e7-9639-476f-ab20-1b5885937a51")
 	)
-	(label "ENC_B_TRX_B"
+	(label "TERM_B_R"
 		(at 742.95 521.97 0)
 		(effects
 			(font
@@ -65374,7 +65374,7 @@
 		)
 		(uuid "c0a0de75-6bf3-4f97-b27f-f075afd4594f")
 	)
-	(label "TERM_C_R"
+	(label "ENC_C_TRX_B"
 		(at 777.2400000000001 511.81 0)
 		(effects
 			(font
@@ -65394,7 +65394,7 @@
 		)
 		(uuid "0d5ae300-016b-4c02-b06b-4918e180b9ca")
 	)
-	(label "ENC_C_TRX_B"
+	(label "TERM_C_R"
 		(at 777.2400000000001 521.97 0)
 		(effects
 			(font
@@ -66111,7 +66111,7 @@
 		)
 		(uuid "6548f82e-e57e-41e5-adc6-522b63b4dc6e")
 	)
-	(label "TERM_D_R"
+	(label "ENC_D_TRX_B"
 		(at 811.5300000000001 511.81 0)
 		(effects
 			(font
@@ -66131,7 +66131,7 @@
 		)
 		(uuid "08ba2c20-5d7d-4df7-a33e-c3e66aa23c05")
 	)
-	(label "ENC_D_TRX_B"
+	(label "TERM_D_R"
 		(at 811.5300000000001 521.97 0)
 		(effects
 			(font
