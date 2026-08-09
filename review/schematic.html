@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schematic Review — RP2350 Motor Controller</title>
+<style>
+  :root {
+    --bg: #f7f6f3;
+    --panel: #ffffff;
+    --ink: #1e2126;
+    --muted: #5b6470;
+    --line: #d9d5cc;
+    --accent: #6b4fa0;
+    --accent-ink: #ffffff;
+    --good: #2c7a4b;
+    --warn: #a05a00;
+    --bad: #b03434;
+    --code-bg: #efede8;
+    --sig-p: #1a6fb5;
+    --sig-n: #c26a1f;
+    --sig-misc: #2c7a4b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d;
+      --panel: #1e2128;
+      --ink: #e8e6e1;
+      --muted: #9aa3af;
+      --line: #343945;
+      --accent: #a98fd8;
+      --accent-ink: #16181d;
+      --good: #5cb884;
+      --warn: #e0a44c;
+      --bad: #e06c6c;
+      --code-bg: #262a33;
+      --sig-p: #6fb3e8;
+      --sig-n: #e8a86f;
+      --sig-misc: #79c99a;
+    }
+    img.schcrop { filter: invert(0.92) hue-rotate(180deg); }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+  header.masthead { border-bottom: 3px solid var(--accent); padding: 2.2rem 0 1rem; margin-bottom: 1.5rem; }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 .4rem; }
+  .subtitle { color: var(--muted); margin: 0; }
+  h2 { font-size: 1.45rem; margin: 2.8rem 0 .8rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.12rem; margin: 1.8rem 0 .5rem; }
+  h4 { font-size: 1rem; margin: 1.4rem 0 .4rem; }
+  p { margin: .6rem 0; }
+  a { color: var(--accent); }
+  code, .mono { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .92em; background: var(--code-bg); padding: .08em .35em; border-radius: 4px; }
+  pre { background: var(--code-bg); padding: .9rem 1rem; border-radius: 8px; overflow-x: auto; line-height: 1.45; }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
+  th, td { text-align: left; padding: .45rem .65rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .tablewrap { overflow-x: auto; }
+  .sev { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; padding: .12em .55em; border-radius: 99px; white-space: nowrap; }
+  .sev.high { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); }
+  .sev.med  { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+  .sev.low  { background: color-mix(in srgb, var(--muted) 18%, transparent); color: var(--muted); }
+  .sev.good { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+  figure { margin: 1.2rem 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; }
+  figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 4px; }
+  figcaption { color: var(--muted); font-size: .88rem; margin-top: .6rem; text-align: center; }
+  .diagram { overflow-x: auto; }
+  .diagram svg { display: block; margin: 0 auto; min-width: 640px; }
+  .callout { border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 8px 8px 0; padding: .8rem 1rem; margin: 1rem 0; }
+  .callout.warn { border-left-color: var(--warn); }
+  .callout.bad { border-left-color: var(--bad); }
+  .callout.good { border-left-color: var(--good); }
+  .toc { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.4rem; }
+  .toc ol { margin: .3rem 0; padding-left: 1.2rem; }
+  .toc a { text-decoration: none; }
+  .kbd-note { color: var(--muted); font-size: .85rem; }
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 760px) { .cols2 { grid-template-columns: 1fr; } }
+  .svg-label { font: 12px ui-monospace, monospace; fill: var(--ink); }
+  .svg-label.small { font-size: 10.5px; fill: var(--muted); }
+  .svg-net { font: 11px ui-monospace, monospace; fill: var(--muted); }
+  .svg-title { font: 600 13px system-ui, sans-serif; fill: var(--ink); }
+  footer { margin-top: 4rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+</style>
+</head>
+<body>
+<main>
+
+<header class="masthead">
+  <p style="margin:0 0 .4rem"><a href="index.html" style="text-decoration:none">← project hub</a></p>
+  <h1>Schematic Review</h1>
+  <p class="subtitle">Focus: encoder port single-ended / differential support &nbsp;·&nbsp; full schematic + firmware pass &nbsp;·&nbsp; 2026-08-08</p>
+</header>
+
+<nav class="toc">
+  <strong>Contents</strong>
+  <ol>
+    <li><a href="#summary">Executive summary</a></li>
+    <li><a href="#encoder">Encoder port deep-dive</a> — architecture, why single-ended fails, three fixes</li>
+    <li><a href="#board">Rest-of-board findings</a> — protection, power, gate drive, sensing, comms</li>
+    <li><a href="#firmware">Firmware &amp; repository</a></li>
+    <li><a href="#good">What's done well</a></li>
+  </ol>
+</nav>
+
+<h2 id="summary">1 · Executive summary</h2>
+
+<p>This is a genuinely impressive board — inline INA240 phase current sensing, a software-reconfigurable
+12-pin encoder port with differential transceivers, USB-PD input through an ideal diode, isolated CAN,
+and careful adherence to the RP2350 minimal design guide. The encoder port concept (analog switches that
+re-route physical pins between transceivers, hall filters, ADC, and I2C) is sound. One specific component
+— the always-connected 100&nbsp;Ω differential termination — is what breaks single-ended mode, and it is
+fixable three different ways, including one that works on boards you already have.</p>
+
+<div class="tablewrap">
+<table>
+  <tr><th>#</th><th>Severity</th><th>Finding</th><th>Where</th></tr>
+  <tr><td>1</td><td><span class="sev high">HIGH</span></td>
+      <td>Single-ended encoder signals can't cross the receiver threshold: the 100&nbsp;Ω termination (R82–R85) shorts the driven line to the undriven line, and the 10k/10k bias can only develop ±32&nbsp;mV of differential — the SIT3088 needs to see below −100&nbsp;mV to switch. <a href="#encoder">Fixes in §2.4</a>.</td>
+      <td>Encoder port</td></tr>
+  <tr><td>2</td><td><span class="sev high">HIGH</span></td>
+      <td>Phase-output TVS diodes D9/D13/D17/D21 are SMAJ51A (51&nbsp;V standoff, breakdown from 56.7&nbsp;V). Any bus above ~51&nbsp;V parks them in leakage/breakdown whenever a high-side FET is on. The "60&nbsp;V max" claim is not compatible with these parts. <a href="#tvs">§3.1</a>.</td>
+      <td>Power stage</td></tr>
+  <tr><td>3</td><td><span class="sev med">MED</span></td>
+      <td>Every TS5A3159 control line (V_SW, H1–H3_SW, I2C_SW, EXT_ANALOG_SW, TH_SW) and every SIT3088 DE/RE̅ line floats until firmware boots — switch states and driver enables are undefined at power-up. V_SW floating can momentarily put 5&nbsp;V on a 3.3&nbsp;V encoder; a floating DE can fight the encoder breakout's always-on driver. Add 100k pull-downs. <a href="#floats">§2.5</a>.</td>
+      <td>Encoder port</td></tr>
+  <tr><td>4</td><td><span class="sev med">MED</span></td>
+      <td>Bus TVS D5 is SMDJ85A (85&nbsp;V standoff, clamps ~137&nbsp;V) — it cannot protect 80&nbsp;V FETs. Protection margins are inverted: the TVS tolerates more than the FETs do. <a href="#tvs">§3.1</a>.</td>
+      <td>Power stage</td></tr>
+  <tr><td>5</td><td><span class="sev med">MED</span></td>
+      <td>E-stop is a plain GPIO input — a crashed CPU can't be stopped, and DEMO_MODE self-spins the motor at power-up. WS2812B data (3.3&nbsp;V) is below spec V<sub>IH</sub> (3.5&nbsp;V) at its 5&nbsp;V supply. <a href="#estop">§3.3</a>.</td>
+      <td>Safety / misc</td></tr>
+  <tr><td>6</td><td><span class="sev low">LOW</span></td>
+      <td>Documentation drift: schematic shunts are 2×8&nbsp;mΩ (±20.6&nbsp;A range) but the built board has 20&nbsp;mΩ (±4.1&nbsp;A, hence the firmware's 4&nbsp;A clamp); board silk A/C phase labels are swapped vs schematic (handled in firmware); README's 60&nbsp;V / 20&nbsp;A headline doesn't match the current build. <a href="#sensing">§3.2</a>.</td>
+      <td>Docs</td></tr>
+</table>
+</div>
+
+<h2 id="encoder">2 · Encoder port deep-dive</h2>
+
+<h3 id="arch">2.1 · How the port works today</h3>
+
+<p>J12 is a 12-pin Molex connector. The odd row carries four differential pairs (A–D);
+the even row carries GND, switchable encoder power, channel-D pair, I2C SCL, and a motor-thermistor line.
+Channels A–C pass through TS5A3159 SPDT analog switches that select between the differential-transceiver
+path and a single-ended path (hall filters on A+/A−/B+, SDA on B−, ADC on C+/C−). Channel D is hardwired
+to its transceiver.</p>
+
+<div class="tablewrap">
+<table>
+  <tr><th>Pin</th><th>Net</th><th>Alternate role (via switch)</th>
+      <th>Pin</th><th>Net</th><th>Alternate role (via switch)</th></tr>
+  <tr><td>1</td><td class="mono">ENC_C_N</td><td>ADC5 (GPIO45), shared with C-phase V sense</td>
+      <td>2</td><td class="mono">GND</td><td>—</td></tr>
+  <tr><td>3</td><td class="mono">ENC_C_P</td><td>ADC4 (GPIO44), shared with B-phase V sense</td>
+      <td>4</td><td class="mono">V_ENC</td><td>3.3&nbsp;V (default) or 5&nbsp;V via U17</td></tr>
+  <tr><td>5</td><td class="mono">ENC_B_N</td><td>I2C SDA via U27</td>
+      <td>6</td><td class="mono">ENC_D_P</td><td>— (transceiver only)</td></tr>
+  <tr><td>7</td><td class="mono">ENC_B_P</td><td>HALL3 → GPIO33</td>
+      <td>8</td><td class="mono">ENC_D_N</td><td>— (transceiver only)</td></tr>
+  <tr><td>9</td><td class="mono">ENC_A_N</td><td>HALL2 → GPIO32</td>
+      <td>10</td><td class="mono">I2C_SCL</td><td>hardwired; shared with FUSB302</td></tr>
+  <tr><td>11</td><td class="mono">ENC_A_P</td><td>HALL1 → GPIO31</td>
+      <td>12</td><td class="mono">MOT_TH</td><td>ADC7 via U15, shared with FET NTC</td></tr>
+</table>
+</div>
+
+<figure class="diagram">
+<svg viewBox="0 0 940 430" width="940" height="430" role="img" aria-label="Per-channel signal path diagram">
+  <text x="16" y="24" class="svg-title">One channel (A shown) — as designed today</text>
+
+  <!-- connector -->
+  <rect x="16" y="120" width="60" height="150" rx="6" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
+  <text x="46" y="110" text-anchor="middle" class="svg-label">J12</text>
+  <text x="46" y="160" text-anchor="middle" class="svg-label small">pin 11</text>
+  <text x="46" y="245" text-anchor="middle" class="svg-label small">pin 9</text>
+
+  <!-- P line -->
+  <line x1="76" y1="170" x2="196" y2="170" stroke="var(--sig-p)" stroke-width="2"/>
+  <text x="120" y="162" class="svg-net" fill="var(--sig-p)">ENC_A_P</text>
+  <!-- N line -->
+  <line x1="76" y1="255" x2="196" y2="255" stroke="var(--sig-n)" stroke-width="2"/>
+  <text x="120" y="247" class="svg-net" fill="var(--sig-n)">ENC_A_N</text>
+
+  <!-- TVS -->
+  <line x1="110" y1="170" x2="110" y2="205" stroke="var(--muted)" stroke-width="1"/>
+  <line x1="110" y1="255" x2="110" y2="222" stroke="var(--muted)" stroke-width="1"/>
+  <rect x="99" y="205" width="22" height="17" fill="none" stroke="var(--muted)"/>
+  <text x="128" y="218" class="svg-label small">D23 5V TVS</text>
+
+  <!-- switch U22 -->
+  <rect x="196" y="140" width="96" height="60" rx="6" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+  <text x="244" y="133" text-anchor="middle" class="svg-label">U22 · SPDT</text>
+  <circle cx="212" cy="170" r="3" fill="var(--sig-p)"/>
+  <line x1="212" y1="170" x2="270" y2="156" stroke="var(--ink)" stroke-width="1.5"/>
+  <circle cx="274" cy="156" r="3" fill="none" stroke="var(--ink)"/>
+  <circle cx="274" cy="186" r="3" fill="none" stroke="var(--ink)"/>
+  <text x="280" y="152" class="svg-label small">NC</text>
+  <text x="280" y="196" class="svg-label small">NO</text>
+  <text x="244" y="214" text-anchor="middle" class="svg-net">H1_SW (GPIO34)</text>
+
+  <!-- switch U26 -->
+  <rect x="196" y="226" width="96" height="60" rx="6" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+  <text x="244" y="300" text-anchor="middle" class="svg-label">U26 · SPDT</text>
+  <circle cx="212" cy="255" r="3" fill="var(--sig-n)"/>
+  <line x1="212" y1="255" x2="270" y2="242" stroke="var(--ink)" stroke-width="1.5"/>
+  <circle cx="274" cy="242" r="3" fill="none" stroke="var(--ink)"/>
+  <circle cx="274" cy="272" r="3" fill="none" stroke="var(--ink)"/>
+  <text x="280" y="238" class="svg-label small">NC</text>
+  <text x="280" y="282" class="svg-label small">NO</text>
+
+  <!-- NC branch to choke: P -->
+  <line x1="277" y1="156" x2="420" y2="156" stroke="var(--sig-p)" stroke-width="2"/>
+  <text x="318" y="148" class="svg-net" fill="var(--sig-p)">ENC_A_P_SW</text>
+  <line x1="277" y1="242" x2="420" y2="242" stroke="var(--sig-n)" stroke-width="2"/>
+  <text x="318" y="234" class="svg-net" fill="var(--sig-n)">ENC_A_N_SW</text>
+
+  <!-- bias divider on N_SW -->
+  <line x1="392" y1="242" x2="392" y2="210" stroke="var(--sig-n)" stroke-width="1.5"/>
+  <rect x="384" y="184" width="16" height="26" fill="none" stroke="var(--ink)"/>
+  <line x1="392" y1="184" x2="392" y2="174" stroke="var(--ink)"/>
+  <text x="404" y="200" class="svg-label small">R88 10k → 3V3</text>
+  <line x1="392" y1="242" x2="392" y2="274" stroke="var(--sig-n)" stroke-width="1.5"/>
+  <rect x="384" y="274" width="16" height="26" fill="none" stroke="var(--ink)"/>
+  <line x1="392" y1="300" x2="392" y2="310" stroke="var(--ink)"/>
+  <text x="404" y="292" class="svg-label small">R89 10k → GND</text>
+
+  <!-- choke -->
+  <rect x="420" y="138" width="64" height="118" rx="6" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+  <text x="452" y="131" text-anchor="middle" class="svg-label">FL2 CM choke</text>
+  <path d="M428 156 q8 -12 16 0 q8 -12 16 0 q8 -12 16 0" fill="none" stroke="var(--sig-p)" stroke-width="1.6"/>
+  <path d="M428 242 q8 12 16 0 q8 12 16 0 q8 12 16 0" fill="none" stroke="var(--sig-n)" stroke-width="1.6"/>
+
+  <!-- A/B nodes + termination -->
+  <line x1="484" y1="156" x2="620" y2="156" stroke="var(--sig-p)" stroke-width="2"/>
+  <line x1="484" y1="242" x2="620" y2="242" stroke="var(--sig-n)" stroke-width="2"/>
+  <rect x="540" y="176" width="18" height="46" fill="none" stroke="var(--bad)" stroke-width="2"/>
+  <line x1="549" y1="156" x2="549" y2="176" stroke="var(--bad)" stroke-width="2"/>
+  <line x1="549" y1="222" x2="549" y2="242" stroke="var(--bad)" stroke-width="2"/>
+  <text x="564" y="203" class="svg-label" fill="var(--bad)">R82 100Ω</text>
+  <text x="564" y="218" class="svg-label small" fill="var(--bad)">always connected</text>
+
+  <!-- transceiver -->
+  <rect x="620" y="120" width="150" height="150" rx="8" fill="none" stroke="var(--ink)" stroke-width="1.8"/>
+  <text x="695" y="112" text-anchor="middle" class="svg-label">U18 · SIT3088 (14 Mbps RS-485)</text>
+  <text x="632" y="160" class="svg-label">A</text>
+  <text x="632" y="246" class="svg-label">B</text>
+  <line x1="770" y1="160" x2="850" y2="160" stroke="var(--sig-misc)" stroke-width="1.6"/>
+  <text x="776" y="152" class="svg-net">RO+DI → GPIO16</text>
+  <line x1="770" y1="230" x2="850" y2="230" stroke="var(--sig-misc)" stroke-width="1.6"/>
+  <text x="776" y="222" class="svg-net">DE·RE̅ → GPIO26</text>
+
+  <!-- hall branch -->
+  <line x1="277" y1="186" x2="330" y2="186" stroke="var(--sig-misc)" stroke-width="1.6"/>
+  <line x1="330" y1="186" x2="330" y2="360" stroke="var(--sig-misc)" stroke-width="1.6"/>
+  <line x1="330" y1="360" x2="720" y2="360" stroke="var(--sig-misc)" stroke-width="1.6"/>
+  <text x="340" y="352" class="svg-net" fill="var(--sig-misc)">HALL1 · 10k pull-up to 3V3 · 47 pF to GND · (DNP extra C)</text>
+  <text x="726" y="364" class="svg-net">→ GPIO31</text>
+  <line x1="277" y1="272" x2="316" y2="272" stroke="var(--sig-misc)" stroke-width="1.6"/>
+  <line x1="316" y1="272" x2="316" y2="392" stroke="var(--sig-misc)" stroke-width="1.6"/>
+  <line x1="316" y1="392" x2="720" y2="392" stroke="var(--sig-misc)" stroke-width="1.6"/>
+  <text x="340" y="384" class="svg-net" fill="var(--sig-misc)">HALL2 (same filter)</text>
+  <text x="726" y="396" class="svg-net">→ GPIO32</text>
+</svg>
+<figcaption>Channel A signal path as designed. Channels B and C are identical (B− routes to SDA, C± route
+to ADC4/5 instead of hall filters). Channel D omits the switches — its bias divider sits directly on the
+connector nets.</figcaption>
+</figure>
+
+<figure>
+  <img class="schcrop" src="img/enc_chanA-1.png" alt="Schematic crop: SIT3088 transceiver channel A with 100R termination, common-mode choke, and 10k/10k bias divider">
+  <figcaption>Schematic as drawn: R82 (100&nbsp;Ω) across A/B at the transceiver, FL2 common-mode choke,
+  R88/R89 10k bias on the N line only, hall filter networks at right.</figcaption>
+</figure>
+
+<h3 id="why">2.2 · Why differential works</h3>
+<p>A differential driver (the encoder breakout's CA-IF4820HD, or any RS-422 line driver) actively drives
+<em>both</em> lines and is designed to develop ≥1.5&nbsp;V across a 54&nbsp;Ω load. The 100&nbsp;Ω
+termination is its intended load, and the 5&nbsp;kΩ Thevenin bias on the B line is invisible next to it.
+The receiver sees ±1.5&nbsp;V — more than 10× its threshold. Everything works.</p>
+
+<p>Your encoder breakout is also terminated correctly for this: 100&nbsp;Ω at each <em>receiving</em> end
+(R82 on the controller for the data channel; R83/R84 on the breakout for CS/SCK). The controller's own
+R83–R85 on its transmitting channels make those pairs double-terminated (50&nbsp;Ω load) — within RS-485
+drive spec, so fine.</p>
+
+<h3 id="fails">2.3 · Why single-ended fails — the numbers</h3>
+
+<p>A single-ended encoder drives only the P pin; the N pin is left floating at the connector. But N is
+<em>not</em> floating at the receiver — R82 ties it to the driven line through just 100&nbsp;Ω, while the
+bias divider tries to hold it at 1.65&nbsp;V through a 5&nbsp;kΩ Thevenin resistance. The 100&nbsp;Ω leg
+wins, 50:1.</p>
+
+<figure class="diagram">
+<svg viewBox="0 0 940 330" width="940" height="330" role="img" aria-label="Single-ended failure equivalent circuit">
+  <text x="16" y="24" class="svg-title">Single-ended equivalent circuit — the termination swamps the bias</text>
+
+  <!-- source -->
+  <circle cx="70" cy="140" r="20" fill="none" stroke="var(--ink)" stroke-width="1.8"/>
+  <text x="70" y="145" text-anchor="middle" class="svg-label">~</text>
+  <text x="70" y="185" text-anchor="middle" class="svg-label small">encoder output</text>
+  <text x="70" y="200" text-anchor="middle" class="svg-label small">0 → 3.3 V</text>
+  <line x1="90" y1="140" x2="330" y2="140" stroke="var(--sig-p)" stroke-width="2"/>
+  <circle cx="330" cy="140" r="4" fill="var(--sig-p)"/>
+  <text x="330" y="128" text-anchor="middle" class="svg-label" fill="var(--sig-p)">A</text>
+
+  <!-- termination -->
+  <rect x="321" y="160" width="18" height="50" fill="none" stroke="var(--bad)" stroke-width="2"/>
+  <line x1="330" y1="144" x2="330" y2="160" stroke="var(--bad)" stroke-width="2"/>
+  <line x1="330" y1="210" x2="330" y2="230" stroke="var(--bad)" stroke-width="2"/>
+  <text x="348" y="190" class="svg-label" fill="var(--bad)">100 Ω</text>
+  <circle cx="330" cy="230" r="4" fill="var(--sig-n)"/>
+  <text x="330" y="252" text-anchor="middle" class="svg-label" fill="var(--sig-n)">B</text>
+
+  <!-- bias -->
+  <line x1="334" y1="230" x2="470" y2="230" stroke="var(--sig-n)" stroke-width="2"/>
+  <rect x="470" y="221" width="50" height="18" fill="none" stroke="var(--ink)" stroke-width="1.6"/>
+  <text x="495" y="215" text-anchor="middle" class="svg-label">5 kΩ</text>
+  <line x1="520" y1="230" x2="560" y2="230" stroke="var(--ink)" stroke-width="1.6"/>
+  <text x="588" y="235" class="svg-label">1.65 V</text>
+  <text x="495" y="256" text-anchor="middle" class="svg-label small">Thevenin of R88/R89 (10k/10k)</text>
+
+  <!-- receiver -->
+  <path d="M640 110 L640 190 L720 150 Z" fill="none" stroke="var(--ink)" stroke-width="1.8"/>
+  <line x1="334" y1="140" x2="640" y2="127" stroke="var(--sig-p)" stroke-width="1.6"/>
+  <line x1="560" y1="230" x2="600" y2="230" stroke="var(--sig-n)" stroke-width="0"/>
+  <line x1="334" y1="230" x2="612" y2="230" stroke="var(--sig-n)" stroke-width="0"/>
+  <line x1="330" y1="230" x2="622" y2="173" stroke="var(--sig-n)" stroke-width="1.6" opacity="0.7"/>
+  <text x="676" y="145" class="svg-label small">RX</text>
+  <line x1="720" y1="150" x2="760" y2="150" stroke="var(--sig-misc)" stroke-width="1.6"/>
+  <text x="742" y="140" class="svg-net">RO</text>
+
+  <!-- result math -->
+  <text x="90" y="290" class="svg-label">V(B) ≈ 0.98 · V(A) + 32 mV   →   V(A) − V(B) swings only −32 mV … +32 mV</text>
+  <text x="90" y="312" class="svg-label" fill="var(--bad)">SIT3088 switches between VIT− ≈ −200 mV and VIT+ ≈ −100 mV → RO never toggles (stuck high)</text>
+
+  <!-- threshold scale -->
+  <line x1="820" y1="60" x2="820" y2="260" stroke="var(--muted)" stroke-width="1"/>
+  <rect x="806" y="150" width="28" height="24" fill="color-mix(in srgb, var(--bad) 25%, transparent)"/>
+  <text x="840" y="158" class="svg-label small">−100 mV (VIT+)</text>
+  <text x="840" y="176" class="svg-label small">−200 mV (VIT−)</text>
+  <rect x="812" y="128" width="16" height="16" fill="color-mix(in srgb, var(--sig-p) 45%, transparent)"/>
+  <text x="840" y="140" class="svg-label small">±32 mV — actual signal</text>
+  <text x="820" y="52" text-anchor="middle" class="svg-label small">ΔV = A−B</text>
+</svg>
+<figcaption>With 100&nbsp;Ω from A to B and 5&nbsp;kΩ to the bias point, only ~2% of the single-ended
+swing appears as differential voltage. The receiver's fail-safe threshold band (−200…−100&nbsp;mV) is
+never crossed, so RO sits at its fail-safe high state regardless of what the encoder does.</figcaption>
+</figure>
+
+<div class="callout">
+<strong>Sanity check against your symptom:</strong> differential works (driver forces ±1.5&nbsp;V across
+the termination), single-ended doesn't (bias can't fight the termination). The bias resistors were never
+the real problem — no resistor pair on the N line alone fixes this while 100&nbsp;Ω couples N to P.
+</div>
+
+<h3 id="fixes">2.4 · How to support both — three options</h3>
+
+<h4>Option A (recommended for next rev): switch the termination</h4>
+<p>Put each 100&nbsp;Ω termination behind one more TS5A3159 (same part you already use ten of), all four
+controlled by one GPIO. <strong>GPIO38 is free and already routed to test point TP20</strong> — it exists
+on fabricated boards, which also makes a bodge feasible on the current rev.</p>
+
+<figure class="diagram">
+<svg viewBox="0 0 940 300" width="940" height="300" role="img" aria-label="Proposed fix: switched termination plus optional pull-up">
+  <text x="16" y="24" class="svg-title">Option A — termination behind an analog switch, optional P pull-up for open-collector encoders</text>
+
+  <line x1="40" y1="110" x2="470" y2="110" stroke="var(--sig-p)" stroke-width="2"/>
+  <text x="46" y="100" class="svg-net" fill="var(--sig-p)">A (from choke)</text>
+  <line x1="40" y1="220" x2="470" y2="220" stroke="var(--sig-n)" stroke-width="2"/>
+  <text x="46" y="240" class="svg-net" fill="var(--sig-n)">B (from choke)</text>
+
+  <!-- new pull-up on P -->
+  <rect x="92" y="52" width="16" height="30" fill="none" stroke="var(--good)" stroke-width="1.8"/>
+  <line x1="100" y1="82" x2="100" y2="110" stroke="var(--good)" stroke-width="1.8"/>
+  <line x1="100" y1="52" x2="100" y2="40" stroke="var(--good)" stroke-width="1.8"/>
+  <text x="114" y="60" class="svg-label" fill="var(--good)">NEW: 10k → 3V3</text>
+  <text x="114" y="76" class="svg-label small">(open-collector support</text>
+  <text x="114" y="90" class="svg-label small">+ defined idle)</text>
+
+  <!-- termination + switch -->
+  <line x1="300" y1="110" x2="300" y2="128" stroke="var(--bad)" stroke-width="2"/>
+  <rect x="291" y="128" width="18" height="36" fill="none" stroke="var(--bad)" stroke-width="2"/>
+  <text x="316" y="150" class="svg-label" fill="var(--bad)">100 Ω</text>
+  <rect x="272" y="170" width="56" height="34" rx="6" fill="none" stroke="var(--good)" stroke-width="2"/>
+  <line x1="300" y1="164" x2="300" y2="170" stroke="var(--bad)" stroke-width="2"/>
+  <line x1="300" y1="204" x2="300" y2="220" stroke="var(--bad)" stroke-width="2"/>
+  <text x="336" y="186" class="svg-label" fill="var(--good)">NEW: TS5A3159</text>
+  <text x="336" y="202" class="svg-label small">all 4 ch ← one GPIO (38 / TP20)</text>
+
+  <!-- bias unchanged -->
+  <line x1="440" y1="220" x2="440" y2="196" stroke="var(--sig-n)" stroke-width="1.5"/>
+  <text x="452" y="200" class="svg-label small">R88/R89 10k/10k unchanged</text>
+
+  <!-- receiver -->
+  <path d="M520 80 L520 160 L600 120 Z" fill="none" stroke="var(--ink)" stroke-width="1.8"/>
+  <line x1="470" y1="110" x2="520" y2="98" stroke="var(--sig-p)" stroke-width="1.6"/>
+  <line x1="470" y1="220" x2="520" y2="143" stroke="var(--sig-n)" stroke-width="1.6" opacity="0.7"/>
+  <line x1="600" y1="120" x2="640" y2="120" stroke="var(--sig-misc)" stroke-width="1.6"/>
+  <text x="622" y="110" class="svg-net">RO</text>
+
+  <!-- mode table -->
+  <text x="660" y="80" class="svg-label">Differential: TERM on  → ±1.5 V across 100 Ω ✓</text>
+  <text x="660" y="104" class="svg-label">Single-ended: TERM off → B rests at 1.65 V,</text>
+  <text x="660" y="122" class="svg-label">A swings 0–3.3 V → ΔV = ±1.65 V ✓</text>
+  <text x="660" y="146" class="svg-label small">(5 V push-pull encoder: −1.65 / +3.35 V ✓)</text>
+  <text x="660" y="170" class="svg-label small">Margin: >8× receiver threshold, both rails,</text>
+  <text x="660" y="186" class="svg-label small">works for quadrature, index, SPI, SSI, BiSS</text>
+</svg>
+<figcaption>Termination participates only in differential mode. With it out of circuit, the existing
+10k/10k bias holds B at mid-rail and the receiver compares the single-ended signal against 1.65&nbsp;V —
+exactly the "comparator with a threshold" behavior you wanted from the bias resistors.</figcaption>
+</figure>
+
+<ul>
+  <li><strong>BOM:</strong> +4× TS5A3159 (SC-70-6, already in your JLC BOM) or 2× TS5A23159 (dual). Wire NO→R82, COM→A-line (or the reverse), ENB bussed to GPIO38. Default open = single-ended-safe.</li>
+  <li><strong>Also add:</strong> 10&nbsp;k pull-up to 3V3 on each P_SW line (and on ENC_D_P for channel D). Without it, open-collector encoders — most cheap optical quads and hall-based ABZ sensors — have nothing to pull the line high. In differential mode 10&nbsp;k is invisible; in analog/hall modes the switch disconnects it (channel D has no analog mode, so a resistor on the connector net is fine there).</li>
+  <li><strong>Current-rev bodge:</strong> R82–R85 are 0402s at the transceivers. Lift one end, dead-bug a SOT-23 switch or just leave lifted for single-ended-only use. TP20/GPIO38 gives you the control line without touching the CPU fanout.</li>
+</ul>
+
+<h4>Option B (zero new parts, resistor swap only): stiffen the bias</h4>
+<p>Keep the termination permanently connected but change R86–R93 from 10&nbsp;k to <strong>560&nbsp;Ω</strong>
+(Thevenin 280&nbsp;Ω @ 1.65&nbsp;V). The divider then wins enough of the fight with the 100&nbsp;Ω coupling:</p>
+
+<div class="tablewrap">
+<table>
+  <tr><th>Bias resistors (each)</th><th>ΔV at V<sub>A</sub>=3.3 V</th><th>ΔV at V<sub>A</sub>=0 V</th><th>Verdict vs −200…−100 mV threshold</th></tr>
+  <tr><td>10 kΩ (today)</td><td>+32 mV</td><td>−32 mV</td><td class="mono" style="color:var(--bad)">never crosses — broken</td></tr>
+  <tr><td>560 Ω</td><td>+434 mV</td><td>−434 mV</td><td class="mono" style="color:var(--good)">works, ~2–4× margin</td></tr>
+  <tr><td>470 Ω</td><td>+493 mV</td><td>−493 mV</td><td class="mono" style="color:var(--good)">works, slightly better</td></tr>
+</table>
+</div>
+
+<p>Trade-offs: ~3&nbsp;mA static per channel; margins are workmanlike rather than generous; the stiff
+divider slightly loads differential drivers (still within RS-485 spec, which assumes exactly this kind of
+fail-safe biasing); and <em>open-collector single-ended encoders remain marginal</em> — with the
+termination still in circuit, even a 2.2&nbsp;k pull-up on P only develops ≈+60&nbsp;mV of high-state
+differential. Option B is for push-pull single-ended outputs. This is, however, the easiest field fix for
+boards already built: eight 0402 swaps.</p>
+
+<h4>Option C (works today, firmware only): use the hall path for single-ended quadrature</h4>
+<p>Single-ended A/B/Z at 3.3&nbsp;V or 5&nbsp;V open-collector can go in on pins 11/9/7 right now: flip
+H1–H3_SW and read GPIO31–33, which already have 10&nbsp;k pull-ups, 47&nbsp;pF filters, and RP2350 PIO
+quadrature decode available. Limits: three lines only (no channel D), so no single-ended SPI, and the
+transceiver path is unused. Good escape hatch; not the general answer.</p>
+
+<div class="callout good">
+<strong>Recommendation:</strong> next rev gets Option A (+ the P-side pull-ups), keeping the 10k/10k
+divider exactly as-is. Existing boards: Option C for quadrature/halls today, or the Option B resistor swap
+if you need single-ended push-pull on the transceiver path. The three options are compatible — B's values
+can even ship as the "bias" default in an Option-A layout if you want belt and suspenders.
+</div>
+
+<h3 id="floats">2.5 · Other encoder-port findings</h3>
+<ul>
+  <li><span class="sev med">MED</span> <strong>Floating control lines at boot.</strong> None of the
+  TS5A3159 <code>ENB</code> pins nor the SIT3088 <code>DE/RE̅</code> pins have pull resistors; between
+  power-up and firmware init (and during SWD reflash / RUN-button reset) every mux state and driver enable
+  is undefined. Two concrete hazards: U17 can select 5&nbsp;V onto <code>V_ENC</code> with a 3.3&nbsp;V-only
+  encoder attached, and a floating <code>DE</code> can enable a controller-side driver against the encoder
+  breakout's always-transmitting data channel (driver contention — current-limited, but sustained). Add
+  100&nbsp;k pull-downs on all switch/enable control nets (pull-down = 3.3&nbsp;V encoder power, receive
+  mode, hall/transceiver default of your choice).</li>
+  <li><span class="sev low">LOW</span> <strong>I2C_SCL is hardwired to pin 10</strong> and shared with the
+  FUSB302 PD controller. A non-I2C encoder whose cable drives pin 10 will corrupt PD negotiation; encoder
+  cable noise couples into the PD bus even when unused. SDA already goes through switch U27 — SCL is the
+  asymmetric one. Consider a second half of a TS5A23159 for it in the next rev, or document "pin 10 must
+  float in non-I2C modes".</li>
+  <li><span class="sev low">LOW</span> <strong>Channel D asymmetry</strong> — bias divider sits on the
+  connector side of the choke (A–C have it behind the switch) and D has no hall/analog alternate. Fine
+  electrically; just worth documenting so users know single-ended SPI needs the transceiver-path fix.</li>
+  <li><span class="sev good">OK</span> <strong>Speed budget:</strong> SIT3088 is 14&nbsp;Mbps, the
+  DLW21SN900SQ2L choke and TS5A3159 are fine at SSI/SPI rates; the known "2 bytes early, 1 bit right" MT6701
+  shift is consistent with ~4 transceiver propagation delays in the clock→data round trip and is already
+  compensated in firmware. Consider documenting a max SPI clock (~2–4&nbsp;MHz round-trip-limited).</li>
+  <li><span class="sev good">OK</span> <strong>Encoder breakout</strong> (MT6701 + 3× CA-IF4820HD) is
+  correctly terminated at receiving ends only, always-on data driver, CS/SCK receivers, thermistor on
+  pin 12. Clean.</li>
+</ul>
+
+<figure>
+  <img class="schcrop" src="img/enc_switches-1.png" alt="Schematic crop: TS5A3159 switch network and J12 connector pinout">
+  <figcaption>The switch fabric: U22/U26/U23 route A+/A−/B+ between transceivers and hall filters;
+  U17 selects V_ENC between 3.3&nbsp;V (NC, default) and 5&nbsp;V; J12 pinout at lower right.</figcaption>
+</figure>
+
+<h2 id="board">3 · Rest-of-board findings</h2>
+
+<h3 id="tvs">3.1 · Protection vs the "60 V" rating <span class="sev high">HIGH</span></h3>
+<ul>
+  <li><strong>Phase TVS (D9/D13/D17/D21, SMAJ51A):</strong> standoff 51&nbsp;V, breakdown 56.7–62.7&nbsp;V.
+  Phase outputs sit at full bus voltage every high-side on-time. Above ~51&nbsp;V bus these parts leak and
+  heat; at 60&nbsp;V they are at/inside breakdown with a high-side FET on — they will fail (likely short,
+  taking the phase with them). Even a 12S pack (50.4&nbsp;V full) leaves zero margin. Fix: SMAJ58A at
+  minimum for 48&nbsp;V systems, SMAJ70A-class for true 60&nbsp;V operation — or delete them and rely on
+  the FET body diodes + bus TVS, which is common on drives.</li>
+  <li><strong>Bus TVS (D5, SMDJ85A):</strong> standoff 85&nbsp;V, clamping ~137&nbsp;V at rated pulse
+  current — but the FETs are 80&nbsp;V (BSC030N08NS5 per the JLC cart; if you've moved to the 100&nbsp;V
+  TMG08N10SI also in the cart, this improves). As-is the TVS cannot act before the FETs avalanche. For a
+  60&nbsp;V board you need 100&nbsp;V FETs and a TVS that stands off &gt;60&nbsp;V but clamps &lt;100&nbsp;V
+  (e.g. SMDJ70A, clamps ~113&nbsp;V — still tight; two SMCJ33A in series, or accept FET avalanche rating
+  as the real clamp). For a 48&nbsp;V board the existing FETs are fine and D5 should drop to ~SMDJ58A.</li>
+  <li><strong>Related:</strong> regen events are real on this board — the boot/reset default (below) brakes
+  the motor, and XL7005A's 80&nbsp;V absolute max is also in the spike path. Decide the honest bus rating
+  (48&nbsp;V nominal is defensible today; 60&nbsp;V needs the part changes above) and align README + TVS +
+  FETs to it.</li>
+</ul>
+
+<h3 id="sensing">3.2 · Power stage &amp; sensing</h3>
+<ul>
+  <li><span class="sev good">OK</span> <strong>Gate drive:</strong> EG3113 half-bridge drivers, bootstrap
+  DSS110 + 4.7&nbsp;Ω, 10.2&nbsp;Ω gate resistors, 10&nbsp;k pulls on every input giving a defined boot
+  state: HIN low (high-side off), LIN̄ low → <em>low-side ON</em>. All four low sides on at reset = brake
+  + bootstrap precharge. Reasonable choice, but verify it's intentional: a reset at speed hard-brakes the
+  motor and regens into the bus (see TVS finding). EG3113 has no shoot-through protection — firmware
+  dead-time is load-bearing (SimpleFOC 6-PWM dead zone covers this).</li>
+  <li><span class="sev low">LOW</span> <strong>Shunt discrepancy:</strong> schematic says 2×8&nbsp;mΩ
+  per phase (4&nbsp;mΩ → 0.08&nbsp;V/A → ±20.6&nbsp;A, neatly filling the INA240A1's output range — good
+  design point); the built board has 20&nbsp;mΩ (±4.1&nbsp;A, hence firmware's
+  <code>CURRENT_LIMIT_MAX_A</code> clamp). Nothing wrong electrically, but README's "20&nbsp;A" and the
+  schematic values describe a board that isn't the one on the bench. Suggest a variants table
+  (shunt ↔ range ↔ firmware <code>SHUNT_RESISTOR</code>) in the README; the firmware comment block
+  already has the right numbers.</li>
+  <li><span class="sev good">OK</span> <strong>Sense chains:</strong> INA240 (−4…80&nbsp;V CM) inline on
+  the phase outputs is the right architecture; REF at mid-rail for bidirectional current ✓. Phase/bus
+  voltage dividers 100&nbsp;k/5.1&nbsp;k (0.1%) → 3.3&nbsp;V at 68&nbsp;V ✓ headroom even for 60&nbsp;V.
+  VMOT on ADC6, thermistors muxed on ADC7 ✓.</li>
+  <li><span class="sev low">LOW</span> <strong>Phase naming swap:</strong> bridge A's output exits on the
+  connector net named <code>C_N</code> and vice versa; firmware documents and compensates ("board A =
+  schematic C"). Consider renaming nets/silk next rev so schematic, silk, and firmware agree — this is the
+  kind of quirk that bites a year from now.</li>
+  <li><span class="sev good">OK</span> <strong>Power tree:</strong> VMOT → XL7005A (80&nbsp;V buck) →
+  5&nbsp;V "Vdrive" → SPX3819 → 3.3&nbsp;V. USB VBUS (PD-negotiable via FUSB302) feeds VMOT through an
+  LM74700 ideal diode — nice: one power tree, no backfeed into USB. Note on USB-only power the buck runs
+  at ~100% duty from ~5&nbsp;V in, so Vdrive sags to ~4.3–4.6&nbsp;V; 3.3&nbsp;V is fine but 5&nbsp;V
+  V_ENC and the LED dim slightly. Worth one README line.</li>
+</ul>
+
+<h3 id="estop">3.3 · Safety &amp; misc</h3>
+<ul>
+  <li><span class="sev med">MED</span> <strong>E-stop is software-only:</strong> J5 pin 1 → GPIO10, period.
+  A wedged CPU (§firmware notes show you've already met a few lockup modes) cannot be stopped by it. The
+  gate drivers have no enable pin, but the low-side-brake-on-reset behavior means a hardware E-stop could
+  simply assert the RP2350 <code>RUN</code> line (already broken out on SW2) — motor brakes, CPU resets.
+  Consider routing the E-stop connector to RUN (or an AND of both) instead of a GPIO alone, plus firmware
+  watchdog.</li>
+  <li><span class="sev med">MED</span> <strong>DEMO_MODE self-starts the motor at power-up</strong>
+  (commit 781a033 re-enabled it, 4&nbsp;A limit). For a board marketed for robotics, an unexpected spin on
+  power-up is a real hazard — gate it on a strap/button or leave it disabled at HEAD and document the flag.</li>
+  <li><span class="sev med">MED</span> <strong>WS2812B logic level:</strong> data is 3.3&nbsp;V from
+  GPIO11 but the LED runs on Vdrive = 5&nbsp;V; V<sub>IH</sub> = 0.7·VDD = 3.5&nbsp;V. It usually works
+  anyway (and Vdrive sag on USB power ironically helps), but it's out of spec at exactly the moment Vdrive
+  is a healthy 5.0&nbsp;V. Cheap fixes: a small Schottky (~0.3&nbsp;V) in the LED's VDD feed, or a
+  WS2812B-B/V5 variant, or one SOT-23 level shifter.</li>
+  <li><span class="sev low">LOW</span> <strong>Isolated CAN has no isolated supply:</strong> CA-IS3052
+  VCC2 comes from the CAN connector (+5V_ISO). Isolation only helps if the harness actually carries an
+  isolated 5&nbsp;V — document it, and note there's no on-board 120&nbsp;Ω split termination (fine for a
+  node, worth a silk note). CANH/L ESD part (ESDCAN24) ✓.</li>
+  <li><span class="sev good">OK</span> RP2350 hookup follows the design guide: ABM8-272 + 15&nbsp;pF, 33&nbsp;Ω
+  + 4.7&nbsp;µF VREG_AVDD filter, W25Q16 QSPI with 1&nbsp;k BOOTSEL button, USBLC6 + 27&nbsp;Ω on USB,
+  RUN button, SWD on JST-SH, debug UART on GPIO0/1 with 100&nbsp;Ω series, daisy-chain UARTs with TVS,
+  test points on all eight PWM nets. The uncommitted <code>rp2350_driver.kicad_pcb</code> change is pure
+  zone-refill coordinate churn — safe to commit or discard.</li>
+</ul>
+
+<div class="cols2">
+<figure>
+  <img class="schcrop" src="img/power_input-1.png" alt="Schematic crop: USB-C, FUSB302 PD controller, LM74700 ideal diode">
+  <figcaption>USB-C → FUSB302 PD sink → LM74700 + Q5 ideal diode into VMOT.</figcaption>
+</figure>
+<figure>
+  <img class="schcrop" src="img/power_stage-1.png" alt="Schematic crop: EG3113 gate driver, half bridge, shunts, INA240">
+  <figcaption>One half-bridge: EG3113, PowerPAK FET pair, 2×8&nbsp;mΩ inline shunt, INA240.</figcaption>
+</figure>
+</div>
+
+<h2 id="firmware">4 · Firmware &amp; repository</h2>
+<ul>
+  <li><span class="sev good">OK</span> The engineering notes in <code>firmware/CLAUDE.md</code> are
+  excellent — the serial-starvation analysis (407&nbsp;Hz FOC loop from per-iteration prints), the
+  FreeRTOS/LittleFS deadlock root-cause, and the USB CDC constructor bug are exactly the kind of
+  institutional memory that saves future-you. The <code>CURRENT_SENSE_SAT_A</code> derivation in
+  <code>main.cpp</code> is correct for the 20&nbsp;mΩ build.</li>
+  <li><span class="sev low">LOW</span> <code>POLE_PAIRS</code> for the hall config still carries a
+  <code>TODO</code>; <code>tuned_gains.txt</code> gains were tuned at the starved 407&nbsp;Hz loop era
+  (2026-05-15, pre-fix) — worth re-running <code>tune.py</code> now that the loop runs at ~20&nbsp;kHz.</li>
+  <li><span class="sev low">LOW</span> Repo hygiene: <code>tmp/</code> (a saved JLCPCB cart page + a
+  virtualenv, hundreds of files) and <code>firmware/__pycache__/</code> are untracked noise —
+  gitignore or delete; <code>launch.sh</code> is untracked and undocumented; <code>hardware/fp-info-cache</code>
+  (3.9&nbsp;MB) and <code>board.step</code> (4.7&nbsp;MB) are generated/binary artifacts worth
+  gitignore/LFS. A <code>hardware/README</code> mapping build variants (shunt value, FET choice, TVS
+  choice per bus voltage) would close the docs drift in one file.</li>
+</ul>
+
+<h2 id="good">5 · What's done well</h2>
+<ul>
+  <li>The reconfigurable encoder port concept — transceivers + mux fabric + switchable V_ENC — is genuinely
+  novel for an open-source drive; with the termination switch it delivers on "any sensor, no jumpers".</li>
+  <li>Inline INA240 sensing on every phase (not low-side) enables proper FOC current control at any duty.</li>
+  <li>USB-PD → ideal diode → single power tree is clean, and bench-powering a 48&nbsp;V-class drive from a
+  laptop is a great developer experience.</li>
+  <li>Defined gate-driver states via input pulls; bootstrap precharge at reset; test points everywhere;
+  TVS on every connector-facing signal; correct termination discipline on the encoder breakout.</li>
+  <li>RP2350B pinout is tidy: all four ADC-critical sense nets on ADC0–7, PWM on consecutive slice pairs
+  (GPIO2–9 = four PWM slices), peripherals grouped per function.</li>
+  <li>The firmware debugging documentation habit. Keep it.</li>
+</ul>
+
+<footer>
+  Review derived from <code>hardware/rp2350_driver.kicad_sch</code> (netlist export),
+  <code>hardware/encoder/rp2350_encoder.kicad_sch</code>, datasheets in <code>hardware/docs/</code>, and
+  <code>firmware/</code> at commit 781a033. Numbers worth re-verifying against datasheets before a respin:
+  SIT3088 VIT thresholds (−200/−100&nbsp;mV read from the LCSC datasheet), SMAJ/SMDJ breakdown ranges, and
+  the actual populated shunt/FET part numbers.
+</footer>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RP2350 Motor Controller — Review Hub</title>
+<style>
+  :root {
+    --bg: #f7f6f3; --panel: #ffffff; --ink: #1e2126; --muted: #5b6470;
+    --line: #d9d5cc; --accent: #6b4fa0; --good: #2c7a4b; --warn: #a05a00;
+    --bad: #b03434; --code-bg: #efede8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d; --panel: #1e2128; --ink: #e8e6e1; --muted: #9aa3af;
+      --line: #343945; --accent: #a98fd8; --good: #5cb884; --warn: #e0a44c;
+      --bad: #e06c6c; --code-bg: #262a33;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+  header.masthead { border-bottom: 3px solid var(--accent); padding: 2.2rem 0 1rem; margin-bottom: 1.5rem; }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 .4rem; }
+  .subtitle { color: var(--muted); margin: 0; }
+  h2 { font-size: 1.3rem; margin: 2.2rem 0 .8rem; }
+  a { color: var(--accent); }
+  code { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .92em; background: var(--code-bg); padding: .08em .35em; border-radius: 4px; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.5rem 0; }
+  @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
+  .card { display: block; background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+          padding: 1.2rem 1.4rem; text-decoration: none; color: var(--ink); transition: border-color .15s; }
+  .card:hover { border-color: var(--accent); }
+  .card h3 { margin: 0 0 .3rem; font-size: 1.15rem; color: var(--accent); }
+  .card p { margin: .3rem 0; font-size: .93rem; color: var(--muted); }
+  .card .date { font-size: .8rem; color: var(--muted); }
+  ul.digest { padding-left: 1.2rem; }
+  ul.digest li { margin: .45rem 0; }
+  .sev { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; padding: .12em .55em; border-radius: 99px; white-space: nowrap; }
+  .sev.high { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); }
+  .sev.med  { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+  .board { margin: 1.5rem 0; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 1rem; }
+  .board img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 6px; }
+  footer { margin-top: 3rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+</style>
+</head>
+<body>
+<main>
+
+<header class="masthead">
+  <h1>RP2350 Motor Controller — Review Hub</h1>
+  <p class="subtitle">Running design-review notes for the rp2350-motor-controller project · developer feedback, rich detail in the sub-pages</p>
+</header>
+
+<div class="board">
+  <img src="img/pcb_top.png" alt="3D render of the board, top side">
+</div>
+
+<div class="cards">
+  <a class="card" href="schematic.html">
+    <h3>Schematic Review →</h3>
+    <p>Encoder port deep-dive: why single-ended fails (termination vs bias, with the math), three fix
+    options incl. the switched-termination design; TVS voltage-rating findings; full board + firmware pass.</p>
+    <p class="date">2026-08-08</p>
+  </a>
+  <a class="card" href="pcb.html">
+    <h3>PCB Review &amp; "Energy Field" Spread →</h3>
+    <p>Layout vitals, courtyard clearance census (270 pairs under 0.25 mm), DRC truths, and a working
+    relaxation prototype that jiggles the board apart — with the four new termination switches placed.</p>
+    <p class="date">2026-08-08</p>
+  </a>
+</div>
+
+<h2>Current top items</h2>
+<ul class="digest">
+  <li><span class="sev high">HIGH</span> Encoder single-ended support: 100 Ω termination swamps the bias
+  divider (±32 mV vs −100 mV threshold). Fix: switched termination on GPIO38/TP20 + P-side pull-ups
+  (<a href="schematic.html#fixes">details</a>). Field fix for built boards: R86–R93 → 560 Ω.</li>
+  <li><span class="sev high">HIGH</span> Phase TVS (SMAJ51A, 51 V standoff) contradicts the 60 V rating;
+  bus TVS clamps above the 80 V FETs (<a href="schematic.html#tvs">details</a>).</li>
+  <li><span class="sev med">MED</span> All analog-switch / transceiver enable lines float at boot — add
+  pull-downs (<a href="schematic.html#floats">details</a>).</li>
+  <li><span class="sev med">MED</span> Whole-board jiggle = 61% of tracks re-routed; do cluster-scoped
+  shakes instead, starting with the encoder corner where the new switches land
+  (<a href="pcb.html#jiggle">details</a>).</li>
+</ul>
+
+<footer>
+  Lives in <code>review/</code> in the repo · registered as <code>rp2350-motor-controller</code> in the
+  project registry (<code>proj up rp2350-motor-controller</code>, hub on :8000) · sources: <code>hardware/rp2350_driver.kicad_sch</code>, <code>hardware/rp2350_driver.kicad_pcb</code>
+  (working tree), <code>firmware/</code> @ 781a033.
+</footer>
+
+</main>
+</body>
+</html>

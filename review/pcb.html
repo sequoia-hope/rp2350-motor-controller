@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PCB Review &amp; Spread Prototype — RP2350 Motor Controller</title>
+<style>
+  :root {
+    --bg: #f7f6f3; --panel: #ffffff; --ink: #1e2126; --muted: #5b6470;
+    --line: #d9d5cc; --accent: #6b4fa0; --good: #2c7a4b; --warn: #a05a00;
+    --bad: #b03434; --code-bg: #efede8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d; --panel: #1e2128; --ink: #e8e6e1; --muted: #9aa3af;
+      --line: #343945; --accent: #a98fd8; --good: #5cb884; --warn: #e0a44c;
+      --bad: #e06c6c; --code-bg: #262a33;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+  header.masthead { border-bottom: 3px solid var(--accent); padding: 2.2rem 0 1rem; margin-bottom: 1.5rem; }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 .4rem; }
+  .subtitle { color: var(--muted); margin: 0; }
+  h2 { font-size: 1.45rem; margin: 2.8rem 0 .8rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.12rem; margin: 1.8rem 0 .5rem; }
+  p { margin: .6rem 0; }
+  a { color: var(--accent); }
+  code, .mono { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .92em; background: var(--code-bg); padding: .08em .35em; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
+  th, td { text-align: left; padding: .45rem .65rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .tablewrap { overflow-x: auto; }
+  .sev { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; padding: .12em .55em; border-radius: 99px; white-space: nowrap; }
+  .sev.high { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); }
+  .sev.med  { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+  .sev.low  { background: color-mix(in srgb, var(--muted) 18%, transparent); color: var(--muted); }
+  .sev.good { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+  figure { margin: 1.2rem 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; }
+  figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 4px; }
+  figcaption { color: var(--muted); font-size: .88rem; margin-top: .6rem; text-align: center; }
+  .callout { border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 8px 8px 0; padding: .8rem 1rem; margin: 1rem 0; }
+  .callout.warn { border-left-color: var(--warn); }
+  .callout.good { border-left-color: var(--good); }
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 760px) { .cols2 { grid-template-columns: 1fr; } }
+  .legend { display: flex; flex-wrap: wrap; gap: .9rem; font-size: .85rem; color: var(--muted); margin: .5rem 0 0; }
+  .legend span::before { content: "■ "; }
+  .lg-moved::before  { color: #2e6e8e; }
+  .lg-pinned::before { color: #3d4653; }
+  .lg-new::before    { color: #7c5cbf; }
+  .lg-ghost::before  { color: #6b7280; }
+  .lg-arrow::before  { color: #e0a44c; }
+  .scrollfig { overflow-x: auto; }
+</style>
+</head>
+<body>
+<main>
+
+<header class="masthead">
+  <p style="margin:0 0 .4rem"><a href="index.html" style="text-decoration:none">← project hub</a></p>
+  <h1>PCB Review &amp; the "Energy Field" Spread</h1>
+  <p class="subtitle">Layout analysis · courtyard clearance census · relaxation prototype with the four new termination switches · 2026-08-08</p>
+</header>
+
+<h2 id="vitals">1 · Board vitals</h2>
+
+<div class="tablewrap">
+<table>
+  <tr><th>Metric</th><th>Value</th><th>Notes</th></tr>
+  <tr><td>Outline</td><td>76.0 × 46.4 mm</td><td>edge connectors on left (phases, encoder), right (USB, SWD, serial, CAN), vertical XT30 power pass-through top/bottom</td></tr>
+  <tr><td>Stackup</td><td>6 layers</td><td>F.Cu / In1 / In2 / In3 / In4 / B.Cu — In1 &amp; In4 carry no tracks (planes); In2: 596 segs, In3: 828 segs</td></tr>
+  <tr><td>Footprints</td><td>291</td><td>92 front / 199 back — the back is the dense side</td></tr>
+  <tr><td>Tracks</td><td>3,984 segments, 5.16 m</td><td>widths: 0.16 mm ×817, 0.2 ×2132, 0.3–0.4 ×464, 0.6 ×443, 0.8–1.5 ×128</td></tr>
+  <tr><td>Vias</td><td>493</td><td>0.5/0.25 ×259, 0.7/0.3 ×158, 0.8/0.4 ×58, plus a few others</td></tr>
+  <tr><td>Zones</td><td>34</td><td>power pours + planes</td></tr>
+</table>
+</div>
+
+<div class="cols2">
+<figure>
+  <img src="img/pcb_top.png" alt="3D render, top side">
+  <figcaption>Front: power stage column (FETs + shunts), bulk electrolytics center, RP2350 at 135° on the right.</figcaption>
+</figure>
+<figure>
+  <img src="img/pcb_bottom.png" alt="3D render, bottom side">
+  <figcaption>Back: encoder switch fabric (left, next to J12), gate drivers center columns, buck at 60°, CAN/PD right.</figcaption>
+</figure>
+</div>
+
+<h2 id="drc">2 · DRC &amp; hygiene</h2>
+<ul>
+  <li><span class="sev good">OK</span> <strong>Electrically clean:</strong> zero clearance violations, zero unconnected items across all 6 layers. Genuinely good state for a work-in-progress board.</li>
+  <li><span class="sev low">LOW</span> <strong>5 dangling track stubs</strong>, all on B.Cu: GND @(169.7, 112.1) and @(185.6, 127.0); Vdrive @(148.3, 105.5), @(156.1, 125.2), and a 1.2 mm stub @(149.2, 108.2). One-click cleanup (<code>Edit → Cleanup Tracks</code>).</li>
+  <li><span class="sev low">LOW</span> <strong>21 silk overlaps + 6 silk-over-copper</strong> — cosmetic; worth a pass before the next order so refdes stay legible.</li>
+  <li><span class="sev med">MED</span> <strong>Courtyard truth vs DRC:</strong> KiCad's DRC reports <em>zero</em> courtyard overlaps, but boolean-intersecting the actual courtyard polygons finds real ones — C80 sits 1.39 mm² inside J9's courtyard, and the encoder-port TVS diodes D23/D24 overlap switches U22/U26/U27 by 0.13–0.21 mm². Tucked-under-connector parts may be deliberate, but check whether these were DRC-excluded on purpose (the project file has an exclusions section) — silent exclusions rot. Also: 11 footprints have <em>no courtyard at all</em> (all test points + SW1/SW2), so DRC can't police their spacing; <code>missing_courtyard</code> is set to ignore.</li>
+</ul>
+
+<h2 id="census">3 · How tight is it, really — courtyard clearance census</h2>
+
+<p>Method: exact courtyard polygons pulled from KiCad via <code>pcbnew</code>, pairwise gaps computed
+for every same-side pair (courtyard-less test points modeled as pad envelope + 0.2 mm). This is the
+quantified version of your breathing-room instinct:</p>
+
+<div class="tablewrap">
+<table>
+  <tr><th>Courtyard-to-courtyard gap</th><th>Pairs</th><th>Reading</th></tr>
+  <tr><td>Overlapping (&lt; 0)</td><td>14</td><td>tucked TVS/switch pairs, C80 under J9, TP collisions</td></tr>
+  <tr><td>&lt; 0.05 mm (touching)</td><td>62</td><td>courtyards already include ~0.25 mm margin each, so "touching" ≈ bodies 0.5 mm apart — buildable, but zero slack for rework tweezers, probes, or silk</td></tr>
+  <tr><td>&lt; 0.10 mm</td><td>134</td><td></td></tr>
+  <tr><td>&lt; 0.25 mm</td><td>270</td><td>roughly half of all neighbor relationships on the board</td></tr>
+</table>
+</div>
+
+<p>The congestion is not uniform — it lives in five named clusters:</p>
+<ol>
+  <li><strong>Gate-driver passive columns</strong> (x≈135–148, both sides): gate resistors, bootstrap
+  diodes and test points woven between the FET rows — D15/TP5, R46/TP5, R31/TP3, TP10/U12 all at or
+  below zero gap.</li>
+  <li><strong>RP2350 halo</strong> (the 135° cluster, front right): decoupling ring and the
+  pull-resistor fans placed at 135° nearly body-to-body — R21/R22, R35/R36, R65/R66, C13/C14 vs Y1.</li>
+  <li><strong>Encoder corner</strong> (back left, next to J12): the switch fabric + TVS + chokes —
+  D23/D24 literally overlapping the TS5A3159s.</li>
+  <li><strong>USB / crystal / flash block</strong> (front, under the RP2350): R50/R51/C30/L2, C4/U3.</li>
+  <li><strong>Bottom-edge passive row</strong> (back, y≈127): C53/C54/R80/R81/R87 pressed against the
+  edge clearance.</li>
+</ol>
+
+<h2 id="jiggle">4 · The energy-field jiggle — prototype results</h2>
+
+<p>I implemented your idea as a constrained relaxation and ran it on the real geometry: every courtyard
+gets a repulsive field targeting a <strong>0.25 mm minimum gap</strong>, a weak spring pulls each part
+back toward its current position (so nothing wanders), and the shake runs for 400 iterations.
+<strong>Pinned and excluded from the field:</strong> every connector, the mounting holes, the eight FETs +
+six shunts + three bulk caps (their copper is the board's spine — moving them costs the most and gains the
+least). And per your ask, the <strong>four new TS5A3159 termination switches + four pull-up resistors are
+dropped in as new bodies</strong> near their transceivers, with no spring — they just hunt for space.</p>
+
+<figure class="scrollfig">
+  <img src="img/jiggle_back.svg" alt="Back side before/after relaxation preview">
+  <div class="legend">
+    <span class="lg-ghost">before (ghost outline)</span>
+    <span class="lg-moved">moved part (after)</span>
+    <span class="lg-pinned">pinned / unmoved</span>
+    <span class="lg-new">new termination switch / pull-up</span>
+    <span class="lg-arrow">displacement arrow</span>
+  </div>
+  <figcaption>Back side (viewed from the front, x-ray convention — mirror of the 3D render). The field
+  mostly breathes the passive columns apart and walks the bottom-edge row into line.</figcaption>
+</figure>
+
+<figure class="scrollfig">
+  <img src="img/jiggle_front.svg" alt="Front side before/after relaxation preview">
+  <figcaption>Front side. The power column (pinned, dark) doesn't move; the RP2350 halo and USB cluster
+  absorb most of the field.</figcaption>
+</figure>
+
+<h3>What the shake achieved</h3>
+<div class="tablewrap">
+<table>
+  <tr><th></th><th>Before</th><th>After</th></tr>
+  <tr><td>Overlapping courtyard pairs (movable)</td><td>14</td><td>2 real + a few new-part seams in the encoder corner</td></tr>
+  <tr><td>Pairs touching (&lt; 0.05 mm)</td><td>62</td><td>handful, mostly pinned-vs-pinned (intentional tuck-unders)</td></tr>
+  <tr><td>New parts placed</td><td>—</td><td>4 switches + 4 pull-ups, legal positions in the encoder corner</td></tr>
+  <tr><td>Parts moved &gt; 0.05 mm</td><td colspan="2">203 of 291 — mean 0.57 mm, max 5.6 mm (C44)</td></tr>
+  <tr><td>Track segments landing on a moved part</td><td colspan="2"><strong>2,412 of 3,984 (61%)</strong> — F.Cu 526, B.Cu 1135, In2 285, In3 466</td></tr>
+</table>
+</div>
+
+<div class="callout warn">
+<strong>The honest cost line:</strong> a whole-board jiggle at 0.25 mm target invalidates ~61% of routed
+segments. KiCad can't stretch tracks with the parts (there's no topological "move everything and keep
+copper attached" operation — dragging is per-part, and scripted moves orphan the routing). So the global
+version of this idea is a <em>re-layout with placement assist</em>, not a tweak. That can still be worth
+it before a big respin — the placement it produces is your placement, just aerated — but it's a week of
+re-routing, not an afternoon.
+</div>
+
+<h3>What I'd actually do — cluster-scoped shakes</h3>
+<p>The census says congestion lives in five clusters. Running the same field <em>one cluster at a time</em>
+(freeze the rest of the board, relax only the cluster, re-route just its local nets with the shove router)
+gets nearly all the benefit at a fraction of the re-route cost. Concretely, in priority order:</p>
+<ol>
+  <li><strong>Encoder corner</strong> — you're opening this area anyway to add the termination switches
+  (below). Shake radius ~15 mm, maybe 40 parts, mostly short 0.16/0.2 mm tracks on B.Cu. An evening.</li>
+  <li><strong>Gate-driver columns</strong> — moves are small (0.2–0.5 mm), tracks are short stubs between
+  driver, gate resistor, and FET. Do it per half-bridge.</li>
+  <li><strong>Bottom-edge passive row</strong> — five parts sliding along the edge; trivial re-route.</li>
+  <li><strong>RP2350 halo</strong> — leave it. The 135° packing is tight but electrically <em>good</em>
+  (short decoupling loops); extra gap here buys assembly comfort but costs impedance. Only touch the
+  R21/R22-style pull-resistor fans if the fab complains.</li>
+  <li><strong>USB/crystal cluster</strong> — leave unless you re-spin that region; crystal caps want to
+  stay hugged to Y1.</li>
+</ol>
+
+<h2 id="switches">5 · Where the four termination switches land</h2>
+
+<p>The relaxation placed the new parts in real gaps in the encoder corner (back side). Final positions
+from the run — treat as placement suggestions, not gospel:</p>
+
+<div class="tablewrap">
+<table>
+  <tr><th>Part</th><th>Position (mm)</th><th>Next to</th><th>Notes</th></tr>
+  <tr><td class="mono">SWT_A + RPU_A</td><td>(114.5, 110.5) / (118.6, 109.4)</td><td>U18, R88/R89</td><td>clean fit beside the channel-A transceiver</td></tr>
+  <tr><td class="mono">SWT_B + RPU_B</td><td>(121.4, 126.4) / (117.1, 126.4)</td><td>U19, FL1</td><td>slots into the row above J12</td></tr>
+  <tr><td class="mono">SWT_C + RPU_C</td><td>(123.8, 107.6) / (123.8, 105.6)</td><td>U20, R84</td><td>easiest corner — real free area here</td></tr>
+  <tr><td class="mono">SWT_D + RPU_D</td><td>(114.5, 103.8) / (114.5, 102.3)</td><td>U21, FL4, R90/R91</td><td><strong>tight</strong> — the solver left ~0.3 mm seams against R90 and the board-edge margin; this pocket needs the cluster shake (or push FL4/R92 right 1 mm) before it's comfortable</td></tr>
+</table>
+</div>
+
+<div class="cols2">
+<figure class="scrollfig">
+  <img src="img/jiggle_encoder_zoom.svg" alt="Encoder corner zoom with new switches placed">
+  <figcaption>Encoder corner after the shake, new parts in purple. Channel D's pocket (top left) is the
+  one that still needs a nudge.</figcaption>
+</figure>
+<figure>
+  <img src="img/pcb_encoder_corner.png" alt="3D render crop of encoder corner, bottom side">
+  <figcaption>The same corner on the current board (3D render, bottom side — mirrored relative to the
+  diagram at left).</figcaption>
+</figure>
+</div>
+
+<p>Routing note for the switches: the A–B pair stubs from choke to transceiver are short and already
+differential; inserting the switch in series with each 100 Ω keeps the stub geometry — place the switch
+so its COM/NO pins bridge the existing R82–R85 pads' net with minimal added stub length. TP20 (GPIO38)
+is at (129.5-ish, near the buck side of the encoder corner) and can pick up the shared TERM enable with
+one 0.16 mm track on B.Cu.</p>
+
+<h2 id="verdict">6 · Verdict on the concept</h2>
+<ul>
+  <li><span class="sev good">YES</span> The physics of your idea works, and the prototype proves it on
+  the real board: courtyard fields + position springs + pinned interfaces converge in a few hundred
+  iterations, resolve the genuine overlaps, and find legal homes for new parts. I kept the solver —
+  it reads the actual <code>.kicad_pcb</code> and can write moves back via <code>pcbnew</code> whenever
+  you want to apply a cluster.</li>
+  <li><span class="sev med">BUT</span> Globally it's a re-layout in disguise: 61% of segments would need
+  re-routing, and your edge interfaces (phase XT30s, encoder Molex, USB, SWD/serial, daisy-chain headers,
+  mounting holes) rightly can't move, so the field piles parts up against the pinned zones (the
+  bottom-edge row showed exactly this).</li>
+  <li><span class="sev good">DO</span> Cluster-scoped shakes, starting with the encoder corner since the
+  termination-switch rework opens it anyway. Say the word and I'll apply the encoder-corner moves to a
+  branch copy of the board file and leave the re-route to you (or take a swing at re-routing the 0.2 mm
+  stubs myself and let you review in KiCad).</li>
+  <li><span class="sev low">ALSO</span> Give DRC its teeth back while you're in here: add courtyards to
+  the 11 footprints missing them, resolve/annotate the courtyard exclusions, sweep the 5 dangling stubs
+  and the silk overlaps. Then "does it breathe" becomes a checkbox instead of an investigation.</li>
+</ul>
+
+<footer style="margin-top:4rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:1rem">
+  Analysis: exact courtyard polygons via pcbnew 9.0.8; relaxation: 400-iteration constrained field,
+  target 0.25 mm, connectors/holes/power-copper pinned; solver + data in <code>review/tools/</code>
+  (<code>jiggle_exact.py</code>, <code>jiggle_result.json</code>). Board file at working-tree state
+  (uncommitted zone-refill churn included).
+</footer>
+
+</main>
+</body>
+</html>
