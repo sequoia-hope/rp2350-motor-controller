@@ -216,7 +216,9 @@ what's worth stealing from each.</p>
   <li><b>Check cut capacity first</b> (Maley) at the corner pinch points, so we pre-place the few unavoidable
   via hops instead of asking gradient descent to invent them.</li>
   <li><b>Escalate per-violation costs</b> across DRC rounds (PathFinder) instead of raising global stiffness.</li>
-  <li><b>Verify homotopy after</b> (Cabello) — machine-check that every dragged trace kept its topology.</li>
+  <li><b>Verify homotopy after</b> (Cabello) — machine-check that every dragged trace kept its topology.
+  <em>Done 2026-08-09:</em> <code>jiggle2/homotopy.py</code>, 722/722 chains pass in both variants —
+  see <a href="pcb.html#jiggle2c">pcb review §8c</a>.</li>
 </ul>
 
 <footer>

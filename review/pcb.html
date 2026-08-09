@@ -335,6 +335,25 @@ honest measure of what still needs a real router: ~270 copper objects, concentra
 49 moved parts' pad fields overlap old approach traces — the homotopic-reroute lever from
 <a href="research.html">the research page</a>, not more force iterations.</p>
 
+<h2 id="jiggle2c">8c · Homotopy invariant: the field never changed topology (2026-08-09)</h2>
+
+<p>The Cabello check proposed on <a href="research.html">the research page</a> is now implemented
+(<code>hardware/tools/jiggle2/homotopy.py</code>). For each of the 722 solved chains it closes a loop —
+pre-rip segment, endpoint-drag connectors (exact for anchored nodes, which lerp on straight lines),
+reversed solved polyline — and reduces its crossing word against a system of disjoint vertical rays,
+one per <em>pinned</em> obstacle (452 punctures: other-net pads of the 242 unmoved parts, plus kept
+vias; drilled pads and vias puncture all four copper layers). Empty reduced word &hArr; the chain is
+homotopic to its original: shape changed, topology kept.</p>
+
+<p><strong>Result: 722/722 chains pass in both variants</strong> — the first-light run and the
+referee-iterated <code>nonew</code> run — despite genuine motion (max deflection 2.9&nbsp;mm from the
+original segment, ~685 chains moved &gt;0.1&nbsp;mm). The check is not vacuous: a synthetic selftest
+covers the crossing-word cases, and an end-to-end mutation (one chain lassoed around a pad field in
+<code>solution.json</code>) is flagged as exactly one topology change, naming the enclosed pads. So the
+PBD field deforms copper but provably never pulls a trace across a fixed obstacle — "keeps them
+connected" now also means "kept them equivalent." Withdrawn copper and moved-part pad fields remain
+outside the invariant's scope; those are the honest domain of the reroute lever, not relaxation.</p>
+
 <footer style="margin-top:4rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:1rem">
   Analysis: exact courtyard polygons via pcbnew 9.0.8; relaxation: 400-iteration constrained field,
   target 0.25 mm, connectors/holes/power-copper pinned; solver + data in <code>review/tools/</code>
