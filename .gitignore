@@ -2,3 +2,4 @@ production
 rp2350_driver-backups
 tmp/
 __pycache__/
+rp2350_driver_jiggle2.*

@@ -274,6 +274,45 @@ near R83, and the silk/mask cosmetic pass. LCSC numbers marked <code>LCSC-TBD</c
 SMDJ60A, BSC040N10NS5, 100k 0402, Q6) need picking at order time.
 </div>
 
+<h2 id="jiggle2">8 · Jiggle v2 first light: connectivity-preserving relaxation (2026-08-09)</h2>
+
+<p>Instead of hand-routing the 214 airwires, we built the tool proposed after the rip:
+recover the deleted corner copper from the pre-rip board (<code>git 2238aca</code>), bind
+trace endpoints to their pads, and drag them to the rev-B positions under constraint
+projection — traces and vias as elastic objects, per the <a href="research.html">routing
+research</a>. Pipeline in <code>hardware/tools/jiggle2/</code>:
+<code>graft.py</code> (diff pre-rip vs current copper → graph: 730 segments, 44 vias, 276
+pad-bound endpoints) → <code>solve.py</code> (PBD relaxation, 0.18&nbsp;mm rule model) →
+<code>emit.py</code> (writes <code>rp2350_driver_jiggle2.kicad_pcb</code>, refills zones)
+→ <code>drcloop.py</code> (real <code>kicad-cli</code> DRC as referee; withdraws any
+emitted copper implicated in a new violation, re-emits, repeats).</p>
+
+<p><strong>Result (work copy, never the real board):</strong> airwires
+<strong>214&nbsp;→&nbsp;189</strong>, violations <strong>130&nbsp;→&nbsp;130</strong> —
+strictly DRC-neutral by construction: the referee loop withdrew ~130 objects until zero
+introduced violations remained. 535 of 722 recovered chains survived the solver's own
+classifier; the referee then pruned to what real DRC accepts.</p>
+
+<p><strong>What we learned, honestly:</strong> the interesting findings were in the nets, not
+the geometry. The graft exposed that rev-B <em>split</em> four pre-rip nets
+(<code>Net-(U18…U21-A)</code>) into <code>/TERM_x_R</code>&nbsp;+&nbsp;<code>/ENC_x_TRX_A</code>
+— the termination switches sit where one net used to be — so the old direct copper is
+topologically obsolete there and the tool now cuts it at the split rather than re-shorting
+the switch. The dominant residue is real: new parts (R98/R100, C110/C113, the four switches,
+D23/D27) were placed <em>on top of</em> old routes; gentle deformation can't dig a trace out
+from under a pad field, and single-obstacle detours ("wrap") just plow into neighboring pads
+at this density. Those chains stay withheld as airwires. Next lever if we push further:
+shortest homotopic path through the <em>union</em> of inflated obstacles (visibility graph
+per contested chain, Maley-style), plus a board-edge constraint the first solver lacked, and
+layer-hopping for the under-part crossings.</p>
+
+<div class="callout warn">
+<strong>Still true:</strong> the original debris pass matters — e.g. the stale GND via at
+(121.8,&nbsp;105.1) under R84.2 shows up in every DRC run regardless of routing approach.
+Orphan-via cleanup + the seam drags remain on the worklist alongside the 189 airwires
+(≈165 corner + 24 new-part nets that never had copper).
+</div>
+
 <footer style="margin-top:4rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:1rem">
   Analysis: exact courtyard polygons via pcbnew 9.0.8; relaxation: 400-iteration constrained field,
   target 0.25 mm, connectors/holes/power-copper pinned; solver + data in <code>review/tools/</code>
