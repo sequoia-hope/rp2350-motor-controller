@@ -1,2 +1,4 @@
 production
 rp2350_driver-backups
+tmp/
+__pycache__/
