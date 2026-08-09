@@ -80,3 +80,128 @@ def save_json(name, obj):
 def load_json(name):
     with open(os.path.join(DATA, name)) as f:
         return json.load(f)
+
+# ---- shared by homotopy.py / reroute.py ------------------------------------
+
+def replay_drop(G, O):
+    """Replay solve.py's deterministic bridge-edge drop so solution.json's
+    first len(kept) edges map 1:1 onto graph edges. Returns (kept, drop):
+    kept = [(graph_edge_index, edge_dict), ...] in solution order."""
+    from collections import defaultdict
+    from heapq import heappush, heappop
+    nodes, edges = G['nodes'], G['edges']
+    adj = defaultdict(list)
+    for ei, e in enumerate(edges):
+        adj[e['a']].append(ei); adj[e['b']].append(ei)
+    comp_of, comps = {}, []
+    for start in range(len(nodes)):
+        if start in comp_of:
+            continue
+        stack, comp = [start], []
+        comp_of[start] = len(comps)
+        while stack:
+            n = stack.pop()
+            comp.append(n)
+            for ei in adj[n]:
+                for m in (edges[ei]['a'], edges[ei]['b']):
+                    if m not in comp_of:
+                        comp_of[m] = len(comps)
+                        stack.append(m)
+        comps.append(comp)
+    cur_pad_net = {(p['ref'], p['num']): p['net'] for p in O['pads']}
+    drop = set()
+    for comp in comps:
+        votes = defaultdict(int)
+        for n in comp:
+            b = nodes[n]['bind']
+            if b and cur_pad_net.get(tuple(b)):
+                votes[cur_pad_net[tuple(b)]] += 1
+        if len(votes) <= 1:
+            continue
+        dist, pq = {}, []
+        for n in comp:
+            b = nodes[n]['bind']
+            if b and cur_pad_net.get(tuple(b)):
+                dist[n] = (0.0, cur_pad_net[tuple(b)])
+                heappush(pq, (0.0, n))
+        while pq:
+            dn, n = heappop(pq)
+            if dist[n][0] < dn:
+                continue
+            for ei in adj[n]:
+                m = edges[ei]['b'] if edges[ei]['a'] == n else edges[ei]['a']
+                L = math.hypot(nodes[m]['x']-nodes[n]['x'],
+                               nodes[m]['y']-nodes[n]['y'])
+                if m not in dist or dist[m][0] > dn + L:
+                    dist[m] = (dn + L, dist[n][1])
+                    heappush(pq, (dn + L, m))
+        nnet = {n: dist.get(n, (0, ''))[1] for n in comp}
+        for n in comp:
+            for ei in adj[n]:
+                e = edges[ei]
+                na, nb = nnet[e['a']], nnet[e['b']]
+                if na and nb and na != nb:
+                    drop.add(ei)
+    return [(ei, e) for ei, e in enumerate(edges) if ei not in drop], drop
+
+def reduce_word(letters):
+    """Free-group reduction: cancel adjacent inverse pairs."""
+    st = []
+    for l in letters:
+        if st and st[-1] == -l:
+            st.pop()
+        else:
+            st.append(l)
+    return st
+
+def path_word(pts, cands, closed=False):
+    """Reduced crossing word of a polyline against downward vertical rays.
+    cands: [(puncture_index, (x_jittered, y, ...)), ...]. Letter +-(i+1)."""
+    letters = []
+    n = len(pts)
+    for k in range(n if closed else n - 1):
+        x1, y1 = pts[k][0], pts[k][1]
+        x2, y2 = pts[(k + 1) % n][0], pts[(k + 1) % n][1]
+        if x1 == x2:
+            continue
+        hits = []
+        for pi, p in cands:
+            px, py = p[0], p[1]
+            if (x1 < px) != (x2 < px):
+                t = (px - x1) / (x2 - x1)
+                if y1 + (y2 - y1) * t > py:
+                    hits.append((t, pi + 1 if x2 > x1 else -(pi + 1)))
+        hits.sort()
+        letters += [l for _, l in hits]
+    return reduce_word(letters)
+
+def pinned_parts(pre_board, base_board):
+    """(pinned, moved, appeared) reference sets between two boards."""
+    ppos = {f.GetReference(): f.GetPosition() for f in pre_board.GetFootprints()}
+    pinned, moved, appeared = set(), set(), set()
+    for f in base_board.GetFootprints():
+        r = f.GetReference()
+        if r not in ppos:
+            appeared.add(r)
+            continue
+        p = f.GetPosition()
+        d = math.hypot((p.x - ppos[r].x) * NM, (p.y - ppos[r].y) * NM)
+        (pinned if d < 0.005 else moved).add(r)
+    return pinned, moved, appeared
+
+def build_punctures(O, pinned, copper_layers):
+    """Vertical-ray puncture system from pinned other-net obstacles.
+    Returns [(x_jit, y, frozenset(layers), net, label), ...]; drilled pads
+    and vias puncture every copper layer, SMD pads only their own."""
+    punct = []
+    for p in O['pads']:
+        if p['ref'] not in pinned:
+            continue
+        lays = copper_layers if (p['drill'] or len(p['layers']) > 1) else p['layers']
+        punct.append((p['x'], p['y'], frozenset(lays), p['net'],
+                      f"{p['ref']}.{p['num']}"))
+    for v in O['vias']:
+        punct.append((v['x'], v['y'], frozenset(copper_layers), v['net'],
+                      f"via@{v['x']:.2f},{v['y']:.2f}"))
+    return [(x + 2.19e-8 + i * 1.37e-7, y, lays, net, lab)
+            for i, (x, y, lays, net, lab) in enumerate(punct)]

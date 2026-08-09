@@ -354,6 +354,31 @@ PBD field deforms copper but provably never pulls a trace across a fixed obstacl
 connected" now also means "kept them equivalent." Withdrawn copper and moved-part pad fields remain
 outside the invariant's scope; those are the honest domain of the reroute lever, not relaxation.</p>
 
+<h2 id="jiggle2d">8d · The homotopic reroute lever, pulled (2026-08-09)</h2>
+
+<p>Section 8b ended with ~270 referee-withdrawn objects that no amount of force iteration would fix —
+moved pad fields sitting on old routes need <em>new geometry</em>, not deformation. Stage 6
+(<code>hardware/tools/jiggle2/reroute.py</code>) is that re-plan, deliberately narrow: the withdrawn
+chains form 112 single-net clusters (max 11 edges, mostly encoder nets at the relaxed corner); each
+cluster's terminals — pad-bound anchors, junctions shared with kept copper, and its withdrawn vias
+after relocation to the nearest legal spot — are reconnected by grid A* (0.1&nbsp;mm, clearance + hole
++ board-edge model) over everything already on the board. Where the cluster's original path between
+two terminals is known and single-layer, the search runs <em>in the covering space</em>: the A* state
+carries the reduced crossing word rel the pinned punctures of §8c, so only a path in the same homotopy
+class as the pre-rip route is accepted — Maley's regime, fixed topology with new geometry. No new
+objects: vias may move, chains get new polylines, kicad DRC stays the referee.</p>
+
+<p><strong>Result: 149 baseline airwires &rarr; 71, DRC-neutral at 44 violations — two better than the
+46-violation baseline.</strong> The progression over the whole experiment: baseline 46/149 &rarr;
+relaxation alone 45/124 &rarr; relaxation + homotopic reroute 44/71. The router placed 87 paths (64
+class-constrained, 21 free-class attach paths, 2 class-changed fallbacks) and relocated 27 of 32
+withdrawn vias; the referee then withdrew 5 paths and 10 vias over ten monotone rounds, leaving 82
+rerouted chains — 62 provably in their original homotopy class, one surviving class change. The §8c
+invariant still holds: 722/722 relaxed chains homotopic to their pre-rip originals. What remains in
+the 71: sixteen clusters with fewer than two reachable terminals, 37 terminals A* couldn't reach at
+rule clearance, and 5 vias with no legal spot within 2&nbsp;mm — the honest residual that needs
+topology changes (new via hops) or a human, not a better field.</p>
+
 <footer style="margin-top:4rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:1rem">
   Analysis: exact courtyard polygons via pcbnew 9.0.8; relaxation: 400-iteration constrained field,
   target 0.25 mm, connectors/holes/power-copper pinned; solver + data in <code>review/tools/</code>
