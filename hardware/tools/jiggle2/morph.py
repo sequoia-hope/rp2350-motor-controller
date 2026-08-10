@@ -85,6 +85,7 @@ if '--emit-step' in sys.argv:
     k = int(sys.argv[sys.argv.index('--emit-step') + 1])
     ck = M['checkpoints'][k]
     s, P = ck['s'], ck['P']
+    sref = ck.get('sref') or {}       # per-part transit clock (convoy schedule)
     board = load_board(STRIPPED)
     cur = load_board(BOARD_CUR)
     removed = 'pre-stripped'
@@ -153,8 +154,9 @@ if '--emit-step' in sys.argv:
         dp, dc = pf[r].GetPosition(), f.GetPosition()
         if dp.x == dc.x and dp.y == dc.y:
             continue
-        pf[r].SetPosition(pcbnew.VECTOR2I(int(round(dp.x + (dc.x - dp.x) * s)),
-                                          int(round(dp.y + (dc.y - dp.y) * s))))
+        u = sref.get(r, s)
+        pf[r].SetPosition(pcbnew.VECTOR2I(int(round(dp.x + (dc.x - dp.x) * u)),
+                                          int(round(dp.y + (dc.y - dp.y) * u))))
         n_moved += 1
 
     with quiet_stderr():

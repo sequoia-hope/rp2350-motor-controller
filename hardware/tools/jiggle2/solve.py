@@ -127,9 +127,11 @@ for votes, enets in multi_net_comps[:6]:
 # ---- subdivide edges into chains --------------------------------------------
 P = [[n['x'], n['y']] for n in nodes]         # positions (mutable)
 anchor = {}                                    # nid -> (ox,oy,tx,ty)
+anchor_ref = {}                                # nid -> owning part ref (bind only)
 for i, n in enumerate(nodes):
     if n['bind'] and n['target']:
         anchor[i] = (n['x'], n['y'], n['target'][0], n['target'][1])
+        anchor_ref[i] = n['bind'][0]
     elif n.get('pin'):                         # morph: junction into static copper
         anchor[i] = (n['x'], n['y'], n['x'], n['y'])
 is_via = [n['kind'] == 'via' for n in nodes]
@@ -214,6 +216,36 @@ for p in O['pads']:
         p['bx'], p['by'] = p['x'], p['y']
         p['d'] = d
 
+# ---- per-part transit schedule (convoy order) --------------------------------
+# Simultaneous transit shears shipped at-limit pairs between parts with
+# different deltas. Stagger instead: parts at the front of the crowd (along
+# the mean motion direction) transit in the first window and vacate space,
+# the rest follow. Anchors, obstacle pads and the emitted footprints
+# (morph.py, via checkpoint 'sref') all ride the same per-ref clock.
+SCHED = {}
+if MORPH_N and MOVED:
+    _mdx = sum(d[0] for d in MOVED.values()) / len(MOVED)
+    _mdy = sum(d[1] for d in MOVED.values()) / len(MOVED)
+    _L = math.hypot(_mdx, _mdy) or 1.0
+    _ux, _uy = _mdx / _L, _mdy / _L
+    _cent = {}
+    for p in O['pads']:
+        if p['ref'] in MOVED:
+            _cent.setdefault(p['ref'], []).append((p['x'], p['y']))
+    _score = {r: (sum(x for x, _ in v) / len(v)) * _ux +
+                 (sum(y for _, y in v) / len(v)) * _uy
+              for r, v in _cent.items()}
+    _ranked = sorted(MOVED, key=lambda r: -_score.get(r, 0.0))
+    _half = len(_ranked) // 2
+    for _i, _r in enumerate(_ranked):
+        SCHED[_r] = (0.0, 0.55) if _i < _half else (0.45, 1.0)
+    print(f'schedule: convoy along ({_ux:+.2f},{_uy:+.2f}) — '
+          f'{_half} parts in [0,0.55], {len(_ranked)-_half} in [0.45,1]')
+
+def sched_u(ref, a):
+    t0, t1 = SCHED.get(ref, (0.0, 1.0))
+    return min(1.0, max(0.0, (a - t0) / (t1 - t0)))
+
 # morph: the shipped board is routed AT the clearance limit, and the model
 # carries ~10um biases (pad polygonization, hole-rule approximation). Pairs
 # the shipped board already holds at distance d0 are legal at >= d0 by proof
@@ -274,7 +306,8 @@ def set_obstacle_progress(s):
     for p in O['pads']:
         if 'd' not in p:
             continue
-        dx, dy = p['d'][0] * s, p['d'][1] * s
+        u = sched_u(p['ref'], s)
+        dx, dy = p['d'][0] * u, p['d'][1] * u
         p['pts'] = [[q[0] + dx, q[1] + dy] for q in p['base_pts']]
         p['x'], p['y'] = p['bx'] + dx, p['by'] + dy
     build_static_grid()
@@ -884,7 +917,8 @@ def capture(s):
             if true_viol == 0:
                 break
         eta_now = ETA
-    checkpoints.append(dict(s=s, P=[p[:] for p in P]))
+    checkpoints.append(dict(s=s, P=[p[:] for p in P],
+                            sref={r: sched_u(r, s) for r in MOVED}))
     print(f'  checkpoint {len(checkpoints)}: s={s:.3f} '
           f'residual true_violations={0 if s == 0 else true_viol}')
 
@@ -902,8 +936,9 @@ for step in range(STEPS):
     if MOVED:
         set_obstacle_progress(a)     # obstacles ride the same schedule as anchors
     for nid, (ox, oy, tx, ty) in anchor.items():
-        P[nid][0] = ox + (tx - ox) * a
-        P[nid][1] = oy + (ty - oy) * a
+        u = sched_u(anchor_ref.get(nid, ''), a)
+        P[nid][0] = ox + (tx - ox) * u
+        P[nid][1] = oy + (ty - oy) * u
     for _ in range(SWEEPS):
         v = sweep()
     if WRAP and step % 10 == 9:
@@ -925,7 +960,8 @@ for k in range(POLISH):
         break
 
 if MORPH_N:
-    checkpoints.append(dict(s=1.0, P=[p[:] for p in P]))
+    checkpoints.append(dict(s=1.0, P=[p[:] for p in P],
+                            sref={r: 1.0 for r in MOVED}))
     # ordered node-id chain per edge (same connectivity walk as the emitter)
     by_edge_m = defaultdict(list)
     for s_ in segs:
