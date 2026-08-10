@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Creep — Feasibility-Projected Morph Stepper · Diff Highlights</title>
+<title>Creep — Feasibility Morph Stepper · Visual Diff</title>
 <style>
   :root {
     --bg: #f7f6f3; --panel: #ffffff; --ink: #1e2126; --muted: #5b6470;
@@ -25,19 +25,10 @@
   h1 { font-size: 1.7rem; line-height: 1.25; margin: 0 0 .4rem; }
   .subtitle { color: var(--muted); margin: 0; }
   h2 { font-size: 1.3rem; margin: 2.6rem 0 .8rem; }
-  h3 { font-size: 1.05rem; margin: 1.8rem 0 .5rem; }
   a { color: var(--accent); }
   code { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .92em; background: var(--code-bg); padding: .08em .35em; border-radius: 4px; }
   .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.3rem; margin: 1.2rem 0; }
   .panel.good { border-left: 4px solid var(--good); }
-  .panel.warn { border-left: 4px solid var(--warn); }
-  pre.diff { background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
-             padding: .9rem 1.1rem; overflow-x: auto; font: 13px/1.5 ui-monospace, "SF Mono", Consolas, monospace; }
-  pre.diff .add { color: var(--good); }
-  pre.diff .del { color: var(--bad); }
-  pre.diff .ctx { color: var(--muted); }
-  pre.diff .cm  { color: var(--muted); font-style: italic; }
-  .filetag { font: 12px ui-monospace, Consolas, monospace; color: var(--muted); margin-bottom: -.6rem; }
   table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .92rem; }
   th, td { border: 1px solid var(--line); padding: .35rem .6rem; text-align: left; }
   th { background: var(--code-bg); }
@@ -46,6 +37,29 @@
   .no  { color: var(--bad);  font-weight: 600; }
   footer { margin-top: 3rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 1rem; }
   .crumb { font-size: .85rem; }
+
+  /* ---- visual diff blocks ---- */
+  .shot { background: #000; border: 1px solid var(--line); border-radius: 12px; padding: .6rem; margin: 1rem 0; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 6px; image-rendering: auto; }
+  .shot figcaption { color: #9aa3af; font-size: .82rem; padding: .45rem .3rem 0; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 720px) { .pair { grid-template-columns: 1fr; } }
+  .legend { display: flex; flex-wrap: wrap; gap: .5rem 1.1rem; margin: .6rem 0 1rem; font-size: .88rem; }
+  .legend span { display: inline-flex; align-items: center; gap: .45rem; }
+  .sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid var(--line); }
+  .sw.gray  { background: #8c8c8c; }
+  .sw.red   { background: #e01818; }
+  .sw.green { background: #12c412; }
+  .sw.black { background: #000; }
+
+  .scrub { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.2rem; margin: 1.2rem 0; }
+  .scrub .controls { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; margin-bottom: .8rem; }
+  .scrub button { font: inherit; font-size: .88rem; color: var(--ink); background: var(--code-bg);
+                  border: 1px solid var(--line); border-radius: 8px; padding: .3rem .8rem; cursor: pointer; }
+  .scrub button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .scrub input[type=range] { flex: 1; min-width: 160px; accent-color: var(--accent); }
+  .scrub .readout { font-family: ui-monospace, Consolas, monospace; font-size: .88rem; color: var(--muted); white-space: nowrap; }
+  .scrub .readout b { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -53,130 +67,104 @@
 
 <p class="crumb"><a href="index.html">← Review hub</a></p>
 <header class="masthead">
-  <h1>Creep: the morph stepper that moves by the DRC rules</h1>
-  <p class="subtitle">Diff highlights from <code>rev-b-fixes</code> commits <code>1dd84be</code> → <code>769af1c</code> ·
-  2026-08-09 · <code>hardware/tools/jiggle2/</code></p>
+  <h1>Creep: the morph, visually</h1>
+  <p class="subtitle">Shipped board → rev-B placement in DRC-clean checkpoints ·
+  <code>rev-b-fixes</code> commits <code>1dd84be</code> → <code>769af1c</code> · 2026-08-09 ·
+  <code>hardware/tools/jiggle2/</code></p>
 </header>
 
 <div class="panel good">
   <strong>Headline:</strong> every checkpoint the new stepper emits passes real KiCad DRC —
   <strong>6/6 clean, fully routed, zero airwires</strong>, out to 40% of the rev-B move. The old
-  projection solver managed 1/13, dirty from the very first 2% nudge. The gate stopped being a filter
-  and became an audit that passes. The design rule (Sequoia's): <em>move by the same rules that define
-  DRC — if there's no room to move, an item does not move.</em>
+  projection solver managed 1/13, dirty from the very first 2% nudge. The design rule (Sequoia's):
+  <em>move by the same rules that define DRC — if there's no room to move, an item does not move.</em>
 </div>
 
+<h2 id="morph">1 · Scrub the morph</h2>
+<p>Six checkpoints, every one gate-clean. <strong>Changes</strong> mode diffs each checkpoint against
+the shipped board: gray copper is unchanged, <span style="color:var(--bad);font-weight:600">red</span>
+is where copper was, <span style="color:var(--good);font-weight:600">green</span> is where it is now —
+motion reads red&nbsp;→&nbsp;green. <strong>Render</strong> mode shows the board itself
+(F.Cu red / B.Cu blue / silk yellow).</p>
+
+<div class="scrub">
+  <div class="controls">
+    <button id="m_diff" class="active">Changes vs shipped</button>
+    <button id="m_render">Render</button>
+    <button id="play" title="animate">▶</button>
+    <input type="range" id="k" min="0" max="5" step="1" value="5">
+    <span class="readout">checkpoint <b id="ck">5</b>/5 · s=<b id="cs">0.404</b> · gate <b class="ok">OK</b></span>
+  </div>
+  <figure class="shot" style="margin:0">
+    <img id="frame" src="img/morph/diff_05.png" alt="Morph checkpoint copper diff vs shipped board" width="1924" height="1378">
+    <figcaption id="cap">Copper (F+B union) changed vs shipped · red = shipped position · green = morphed position · gray = unchanged</figcaption>
+  </figure>
+</div>
+<div class="legend">
+  <span><i class="sw gray"></i> unchanged copper</span>
+  <span><i class="sw red"></i> withdrawn (shipped position)</span>
+  <span><i class="sw green"></i> placed (morphed position)</span>
+  <span><i class="sw black"></i> no copper</span>
+</div>
+<p class="subtitle">All motion concentrates in the encoder/termination corner (left edge) — the rest of
+the board is untouched gray, which is itself the point: creep moves nothing it doesn't have to.</p>
+
+<h2 id="layers">2 · Where copper moved, per layer (s=0 → 0.404)</h2>
+<div class="pair">
+  <figure class="shot">
+    <img src="img/morph/diff_fcu.png" alt="F.Cu copper diff, shipped vs s=0.404" loading="lazy" width="1924" height="1378">
+    <figcaption>F.Cu — mostly via annular rings towed with their parts</figcaption>
+  </figure>
+  <figure class="shot">
+    <img src="img/morph/diff_bcu.png" alt="B.Cu copper diff, shipped vs s=0.404" loading="lazy" width="1924" height="1378">
+    <figcaption>B.Cu — the termination cluster lives here: bodies, stubs, and stretched feeds</figcaption>
+  </figure>
+</div>
+
+<h2 id="zoom">3 · The encoder corner, up close</h2>
+<p>The moved cluster (R86–R93, U16–U20, C63, D24…) at 600 dpi. Red trailing edges / green leading
+edges show each part's actual travel; note the feed stubs that <em>stretch</em> rather than detach —
+that's the attachment constraint towing copper so no checkpoint ever goes unconnected.</p>
+<div class="pair">
+  <figure class="shot">
+    <img src="img/morph/zoom_bcu.png" alt="Encoder corner B.Cu diff zoom" loading="lazy" width="575" height="814">
+    <figcaption>B.Cu diff — part bodies creeping right/up, stubs stretching</figcaption>
+  </figure>
+  <figure class="shot">
+    <img src="img/morph/zoom_fcu.png" alt="Encoder corner F.Cu diff zoom" loading="lazy" width="575" height="814">
+    <figcaption>F.Cu diff — towed vias shifting with their parts</figcaption>
+  </figure>
+</div>
+<div class="pair">
+  <figure class="shot">
+    <img src="img/morph/zoom_render_00.png" alt="Encoder corner render, shipped board" loading="lazy" width="575" height="814">
+    <figcaption>Shipped (s=0)</figcaption>
+  </figure>
+  <figure class="shot">
+    <img src="img/morph/zoom_render_05.png" alt="Encoder corner render at s=0.404" loading="lazy" width="575" height="814">
+    <figcaption>Morphed (s=0.404) — same corner, still DRC-clean and fully routed</figcaption>
+  </figure>
+</div>
+
+<h2 id="how">4 · How it moves (one paragraph, no code)</h2>
+<p>Each unit — footprint assembly, trace node, via; copper is a first-class mover, in alternating
+passes with the parts — proposes a step toward its rev-B target, and a line search keeps the largest
+fraction that holds every DRC margin above its floor: rule + 15µm for new pairs, the shipped margin
+(held per polygon edge) for pairs the shipped board already packed tighter. <code>α = 0</code> is a
+legal answer: no room, no move. Blocked movers deposit pressure on the copper that clamped them, so
+packed corridors creep like a traffic jam instead of shearing; same-net contacts are constraints too,
+so parts tow their feed stubs instead of sliding off them. Details live in
+<code>creep.py</code>/<code>padgeom.py</code>/<code>courtyards.py</code> (commit
+<code>769af1c</code>).</p>
+
 <table>
-  <tr><th></th><th>solve.py projection (c1–c3)</th><th>creep.py feasibility (this diff)</th></tr>
+  <tr><th></th><th>solve.py projection (c1–c3)</th><th>creep.py feasibility</th></tr>
   <tr><td>Clean checkpoints</td><td class="no">1 / 13 (s=0 only)</td><td class="ok">6 / 6 (all emitted)</td></tr>
   <tr><td>First failure</td><td class="no">s=0.02 (3 violations)</td><td class="ok">none emitted</td></tr>
   <tr><td>Violations at last state</td><td class="no">251 (+1 airwire)</td><td class="ok">0, 0 airwires</td></tr>
   <tr><td>Depth reached</td><td>s=1.0 (dirty throughout)</td><td>s=0.404 (clean throughout, honest stall)</td></tr>
   <tr><td>What failure means</td><td>trajectory unusable</td><td>stall table = mid-flight reroute worklist</td></tr>
 </table>
-
-<h2 id="law">1 · The motion law: line search against per-pair floors</h2>
-<p>The old solver integrated a spring/projection field and asked DRC afterwards; any model error became
-a violation. Creep inverts the authority: a unit (footprint assembly, trace node, via — trace segments
-and vias are first-class movers, in alternating passes with the parts) proposes a step, and a line
-search keeps the largest fraction whose margins stay above per-pair floors. <code>α = 0</code> is a
-legal answer: no room, no move.</p>
-
-<div class="filetag">creep.py (new) — the whole architecture in three functions</div>
-<pre class="diff">
-<span class="add">+ def line_search(gen_at):</span>
-<span class="add">+     clamps = []</span>
-<span class="add">+     if feasible(gen_at(1.0), clamps):</span>
-<span class="add">+         return 1.0, []</span>
-<span class="add">+     lo, hi = 0.0, 1.0</span>
-<span class="add">+     for _ in range(6):                      <span class="cm"># bisect to the last feasible fraction</span></span>
-<span class="add">+         mid = (lo + hi) / 2</span>
-<span class="add">+         if feasible(gen_at(mid), None): lo = mid</span>
-<span class="add">+         else:                           hi = mid</span>
-<span class="add">+     return lo, clamps                       <span class="cm"># clamps = exactly which pairs blocked, for pressure + worklist</span></span>
-<span class="ctx">  </span>
-<span class="add">+ def floor_of(key):                          <span class="cm"># rule + 15µm for new pairs;</span></span>
-<span class="add">+     g = CRT_GUARD if key[0] == 'CY' else GUARD</span>
-<span class="add">+     f = gf.get(key)                         <span class="cm"># shipped margin for pairs the shipped board</span></span>
-<span class="add">+     return g if f is None else min(f, g)    <span class="cm"># held at/below rule+0.02 — legal by proof of shipping</span></span>
-</pre>
-
-<p>Blocked movers deposit <em>pressure</em> on the dynamic copper that clamped them; pressured copper
-yields in the copper passes as far as <em>its</em> floors allow. Packed corridors creep like a traffic
-jam instead of shearing — which is precisely what killed cycles 1–3 at the
-<code>Net-(U18-A)↔GND</code> cluster: the field sheared it 17µm past the rule at s=0.02. Creep's first
-checkpoint at s=0.106 is clean there.</p>
-
-<h2 id="edges">2 · Per-polygon-edge floors (the 1.2µm leak the gate caught)</h2>
-<p>Two gate rounds exposed a subtle unsoundness in margin grandfathering: R92's pad, pressed against
-two GND stubs and sliding past them, arrived 1.2µm under the rule while the model swore the margin was
-held. The contact point was <em>walking around the pad polygon</em> — and the polygonization bias jumps
-between edges, so one chain-level floor let it walk through the jumps for free. Within a single
-straight edge, line-to-line distance is exact; so the fix keys every copper margin by polygon edge:</p>
-
-<div class="filetag">creep.py — _c_margins()</div>
-<pre class="diff">
-<span class="add">+ def _c_margins(A, B, eff_c):</span>
-<span class="add">+     <span class="cm">"""Copper-copper margins. For pairs involving a polygon, PER-EDGE tags:</span></span>
-<span class="add">+     <span class="cm">within one straight edge the model is exact line-to-line distance, and</span></span>
-<span class="add">+     <span class="cm">the polygonization bias only jumps between edges — one aggregate floor</span></span>
-<span class="add">+     <span class="cm">lets a sliding contact walk the perimeter through the bias jumps (the</span></span>
-<span class="add">+     <span class="cm">R92 leak), per-edge floors re-guard every new edge it reaches."""</span></span>
-<span class="ctx">      ...</span>
-<span class="add">+         for j in range(n):</span>
-<span class="add">+             m = dj[j] - r - eff_c</span>
-<span class="add">+             if m &lt; H - eff_c:</span>
-<span class="add">+                 out.append((('c', j), m))   <span class="cm"># key ('SP', chain, pad, ('c', j)) — own floor per edge</span></span>
-</pre>
-
-<p>Feeding this are true pad shapes: graft's obstacle pads are 4-point bounding rects, up to ~0.4mm
-larger than the real copper with position-dependent bias. The new <code>padgeom.py</code> dumps
-KiCad's own effective polygons (inflated 5µm outward — they're inscribed), the per-pad local
-clearances (H3/H4 mounting holes carry a <strong>1.4mm</strong> override the model never knew — the
-gate caught <code>/I2C_SDA</code> drifting to 1.394mm from H4), and the NPTH flag (hole rules only, no
-phantom copper).</p>
-
-<h2 id="attach">3 · Attachment: connectivity as a constraint (the airwire leak)</h2>
-<p>The first clean-clearance run still went <em>unconnected</em> at s≈0.5: D24 slid off a same-net stub
-that ends exactly at its pad edge. Graft's drag set only catches copper whose <em>endpoint</em> lands
-on a moving pad; contacts that are purely geometric — T-junctions, stubs under pads — were invisible,
-and the model happily disconnected them. Now every same-net pair that touches on the shipped board is
-an <em>attachment</em>: it must keep ≥20µm of copper overlap, max-aggregated so one surviving contact
-point is enough. GND is exempt (the pour re-stitches it on refill).</p>
-
-<div class="filetag">creep.py — attachment + entrainment</div>
-<pre class="diff">
-<span class="add">+ def at_margin(A, B):</span>
-<span class="add">+     return -cu_dist(A, B) - OV              <span class="cm"># positive ⇔ ≥20µm overlap survives</span></span>
-<span class="ctx">  ...</span>
-<span class="add">+         if is_at and key[1] in ('SP', 'ST', 'SV'):</span>
-<span class="add">+             <span class="cm"># unmovable contact, but the contact-keeper is the mover's own</span></span>
-<span class="add">+             <span class="cm"># chain: glue its free nodes toward the contact — the trace</span></span>
-<span class="add">+             <span class="cm"># stays soldered and stretches while the part tows it</span></span>
-<span class="add">+             for si in chain_segs.get(ci, ()):</span>
-<span class="add">+                 ...</span>
-<span class="add">+                 _push(nid, bx, by, mag)     <span class="cm"># pull chain node toward the pad/via it feeds from</span></span>
-</pre>
-
-<p>The entrainment half matters as much as the constraint: without it, U19/U20/R88 sat pinned at
-u=0.00 by their own feed stubs. With it, a part <em>tows</em> its trace — the copper stays soldered to
-the static via and stretches — and the stall depth improved from s=0.30 to s=0.42 while staying
-connected everywhere.</p>
-
-<h2 id="sref">4 · morph.py: one small diff, per-part clocks</h2>
-<p>The emitter needed only three lines: checkpoints carry a per-part progress map <code>sref</code>
-(from the c3 convoy schedule, committed in <code>f8c31a3</code>), so creep's fully asynchronous
-per-part positions ride through the existing pipeline untouched.</p>
-
-<div class="filetag">hardware/tools/jiggle2/morph.py</div>
-<pre class="diff">
-<span class="ctx">      dp, dc = pf[r].GetPosition(), f.GetPosition()</span>
-<span class="del">-     pf[r].SetPosition(pcbnew.VECTOR2I(int(round(dp.x + (dc.x - dp.x) * s)),</span>
-<span class="del">-                                       int(round(dp.y + (dc.y - dp.y) * s))))</span>
-<span class="add">+     u = sref.get(r, s)                      <span class="cm"># per-part transit clock</span></span>
-<span class="add">+     pf[r].SetPosition(pcbnew.VECTOR2I(int(round(dp.x + (dc.x - dp.x) * u)),</span>
-<span class="add">+                                       int(round(dp.y + (dc.y - dp.y) * u))))</span>
-</pre>
 
 <h2 id="gate">5 · Gate evidence</h2>
 <table>
@@ -214,9 +202,57 @@ blocking chain in one checkpoint, both sides clean — then resume creeping.</p>
   schedule / sref · <code>769af1c</code> creep stepper (<code>creep.py</code>,
   <code>padgeom.py</code>, <code>courtyards.py</code>) · branch <code>rev-b-fixes</code> ·
   pipeline: <code>JIGGLE2_VARIANT=morph courtyards.py &amp;&amp; padgeom.py &amp;&amp; creep.py
-  &amp;&amp; morph.py</code>
+  &amp;&amp; morph.py</code> · images: <code>kicad-cli pcb export svg</code> of the archived
+  checkpoint boards, 600&nbsp;dpi, identical board-area framing
 </footer>
 
 </main>
+<script>
+(function () {
+  var S = ['0.000', '0.106', '0.169', '0.260', '0.339', '0.404'];
+  var frame = document.getElementById('frame');
+  var cap = document.getElementById('cap');
+  var slider = document.getElementById('k');
+  var ck = document.getElementById('ck'), cs = document.getElementById('cs');
+  var bDiff = document.getElementById('m_diff'), bRender = document.getElementById('m_render');
+  var bPlay = document.getElementById('play');
+  var mode = 'diff', timer = null;
+
+  var CAPS = {
+    diff: 'Copper (F+B union) changed vs shipped · red = shipped position · green = morphed position · gray = unchanged',
+    render: 'Board render · F.Cu red / B.Cu blue / F.Silk yellow'
+  };
+
+  // preload every frame so scrubbing is instant
+  for (var m of ['diff', 'render']) for (var i = 0; i < 6; i++) {
+    var im = new Image(); im.src = 'img/morph/' + m + '_0' + i + '.png';
+  }
+
+  function show() {
+    var k = +slider.value;
+    frame.src = 'img/morph/' + mode + '_0' + k + '.png';
+    cap.textContent = CAPS[mode];
+    ck.textContent = k; cs.textContent = S[k];
+    bDiff.classList.toggle('active', mode === 'diff');
+    bRender.classList.toggle('active', mode === 'render');
+  }
+  function stop() { if (timer) { clearInterval(timer); timer = null; bPlay.textContent = '▶'; } }
+
+  bDiff.onclick = function () { mode = 'diff'; show(); };
+  bRender.onclick = function () { mode = 'render'; show(); };
+  slider.oninput = function () { stop(); show(); };
+  bPlay.onclick = function () {
+    if (timer) { stop(); return; }
+    bPlay.textContent = '⏸';
+    slider.value = 0; show();
+    timer = setInterval(function () {
+      var k = (+slider.value + 1) % 6;
+      slider.value = k; show();
+      if (k === 5) { stop(); }
+    }, 700);
+  };
+  show();
+})();
+</script>
 </body>
 </html>
