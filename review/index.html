@@ -85,11 +85,18 @@
   </a>
   <a class="card" href="creep.html">
     <h3>Creep: Feasibility Morph Stepper →</h3>
-    <p>Visual diff of the morph: scrub the six DRC-clean checkpoints, red/green copper overlays of
-    shipped vs morphed positions, encoder-corner zooms showing parts towing their stubs. Gate result
-    6/6 clean (was 1/13), stall table = the mid-flight reroute worklist.</p>
+    <p>Visual diff of the morph: scrub 18 DRC-clean checkpoints — 12 of them atomic mid-flight
+    reroutes (68 chains ripped and re-added between boards) — plus red/green copper overlays and
+    encoder-corner zooms. Depth s=0.435, 9/49 arrived; the remaining wall is named per net.</p>
     <p class="date">2026-08-09</p>
   </a>
+</div>
+
+<div class="board" style="border-left:4px solid var(--good)">
+  <strong>Status 2026-08-09 (later):</strong> the reroute worklist is now consumed — at every stall
+  creep reroutes the blocking chains mid-flight (rip between checkpoints, never on a board) and
+  wedged convoy clusters step as groups. <strong>18/18 checkpoints DRC-clean</strong>, s=0.435,
+  9/49 arrived, 68 verified reroutes. <a href="creep.html">Visual diff</a> has the scrubber.
 </div>
 
 <div class="board" style="border-left:4px solid var(--good)">

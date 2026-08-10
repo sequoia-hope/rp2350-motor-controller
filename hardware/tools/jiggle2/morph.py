@@ -86,6 +86,8 @@ if '--emit-step' in sys.argv:
     ck = M['checkpoints'][k]
     s, P = ck['s'], ck['P']
     sref = ck.get('sref') or {}       # per-part transit clock (convoy schedule)
+    ck_chains = ck.get('chains') or M['chains']   # per-checkpoint topology
+    assert len(ck_chains) == len(kept), 'checkpoint chains misaligned'
     board = load_board(STRIPPED)
     cur = load_board(BOARD_CUR)
     removed = 'pre-stripped'
@@ -108,7 +110,7 @@ if '--emit-step' in sys.argv:
         return 1
 
     added = no_net = 0
-    for (ei, e), ids in zip(kept, M['chains']):
+    for (ei, e), ids in zip(kept, ck_chains):
         net = find_net(G['edges'][ei]['net'])     # shipped netlist names
         if net is None:
             no_net += 1

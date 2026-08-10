@@ -37,6 +37,9 @@
   .no  { color: var(--bad);  font-weight: 600; }
   footer { margin-top: 3rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 1rem; }
   .crumb { font-size: .85rem; }
+  .rrb { display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .04em;
+         padding: .1em .5em; border-radius: 99px; white-space: nowrap;
+         background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
 
   /* ---- visual diff blocks ---- */
   .shot { background: #000; border: 1px solid var(--line); border-radius: 12px; padding: .6rem; margin: 1rem 0; }
@@ -67,36 +70,44 @@
 
 <p class="crumb"><a href="index.html">← Review hub</a></p>
 <header class="masthead">
-  <h1>Creep: the morph, visually</h1>
-  <p class="subtitle">Shipped board → rev-B placement in DRC-clean checkpoints ·
-  <code>rev-b-fixes</code> commits <code>1dd84be</code> → <code>769af1c</code> · 2026-08-09 ·
+  <h1>Creep: the morph, visually — now with mid-flight reroutes</h1>
+  <p class="subtitle">Shipped board → rev-B placement in DRC-clean checkpoints, ripping and re-adding
+  blocking copper <em>between</em> boards · <code>rev-b-fixes</code> · 2026-08-09 ·
   <code>hardware/tools/jiggle2/</code></p>
 </header>
 
 <div class="panel good">
-  <strong>Headline:</strong> every checkpoint the new stepper emits passes real KiCad DRC —
-  <strong>6/6 clean, fully routed, zero airwires</strong>, out to 40% of the rev-B move. The old
-  projection solver managed 1/13, dirty from the very first 2% nudge. The design rule (Sequoia's):
-  <em>move by the same rules that define DRC — if there's no room to move, an item does not move.</em>
+  <strong>Headline:</strong> the stall worklist is now consumed, not just reported. At every stall the
+  stepper reroutes the blocking chains (grid A* in the live geometry, verified by the same feasibility
+  oracle, rolled back if it can't prove them) and resumes creeping —
+  <strong>18/18 checkpoints DRC-clean and fully routed</strong>, including 12 atomic topology-change
+  checkpoints carrying <strong>68 verified reroutes of 27 chains</strong>. Depth s=0.435, 9/49 parts
+  arrived (was s=0.404, 6/49 with reroutes as a report). Wedged convoy clusters now also move as
+  groups — the <code>/EXT_ANALOG_SW</code> daisy chain taught us that single-part line searches see a
+  neighbour as a wall even when the whole platoon could roll.
 </div>
 
 <h2 id="morph">1 · Scrub the morph</h2>
-<p>Six checkpoints, every one gate-clean. <strong>Changes</strong> mode diffs each checkpoint against
-the shipped board: gray copper is unchanged, <span style="color:var(--bad);font-weight:600">red</span>
-is where copper was, <span style="color:var(--good);font-weight:600">green</span> is where it is now —
-motion reads red&nbsp;→&nbsp;green. <strong>Render</strong> mode shows the board itself
-(F.Cu red / B.Cu blue / silk yellow).</p>
+<p>Eighteen checkpoints, every one gate-clean. Checkpoints 6–17 are <span class="rrb">RR</span>
+topology changes: between board k−1 and board k a few chains are ripped and re-added on new paths —
+both sides fully routed, so the rip never exists on any board. <strong>Changes</strong> mode diffs
+each checkpoint against the shipped board: gray copper is unchanged,
+<span style="color:var(--bad);font-weight:600">red</span> is where copper was,
+<span style="color:var(--good);font-weight:600">green</span> is where it is now — motion reads
+red&nbsp;→&nbsp;green, and the long green arcs appearing from checkpoint 6 on are the reroutes.
+<strong>Render</strong> mode shows the board itself.</p>
 
 <div class="scrub">
   <div class="controls">
     <button id="m_diff" class="active">Changes vs shipped</button>
     <button id="m_render">Render</button>
     <button id="play" title="animate">▶</button>
-    <input type="range" id="k" min="0" max="5" step="1" value="5">
-    <span class="readout">checkpoint <b id="ck">5</b>/5 · s=<b id="cs">0.404</b> · gate <b class="ok">OK</b></span>
+    <input type="range" id="k" min="0" max="17" step="1" value="17">
+    <span class="readout">checkpoint <b id="ck">17</b>/17 · s=<b id="cs">0.435</b> ·
+      <span id="rr" class="rrb" style="display:none">RR</span> gate <b class="ok">OK</b></span>
   </div>
   <figure class="shot" style="margin:0">
-    <img id="frame" src="img/morph/diff_05.png" alt="Morph checkpoint copper diff vs shipped board" width="1924" height="1378">
+    <img id="frame" src="img/morph/diff_17.png" alt="Morph checkpoint copper diff vs shipped board" width="1924" height="1378">
     <figcaption id="cap">Copper (F+B union) changed vs shipped · red = shipped position · green = morphed position · gray = unchanged</figcaption>
   </figure>
 </div>
@@ -106,33 +117,34 @@ motion reads red&nbsp;→&nbsp;green. <strong>Render</strong> mode shows the boa
   <span><i class="sw green"></i> placed (morphed position)</span>
   <span><i class="sw black"></i> no copper</span>
 </div>
-<p class="subtitle">All motion concentrates in the encoder/termination corner (left edge) — the rest of
-the board is untouched gray, which is itself the point: creep moves nothing it doesn't have to.</p>
+<p class="subtitle">All motion concentrates in the encoder/termination corner (left edge) — the rest
+of the board stays untouched gray. Creep moves nothing it doesn't have to, and reroutes nothing it
+can't prove.</p>
 
-<h2 id="layers">2 · Where copper moved, per layer (s=0 → 0.404)</h2>
+<h2 id="layers">2 · Where copper moved, per layer (s=0 → 0.435)</h2>
 <div class="pair">
   <figure class="shot">
-    <img src="img/morph/diff_fcu.png" alt="F.Cu copper diff, shipped vs s=0.404" loading="lazy" width="1924" height="1378">
-    <figcaption>F.Cu — mostly via annular rings towed with their parts</figcaption>
+    <img src="img/morph/diff_fcu.png" alt="F.Cu copper diff, shipped vs s=0.435" loading="lazy" width="1924" height="1378">
+    <figcaption>F.Cu — towed via rings plus rerouted front-layer stubs</figcaption>
   </figure>
   <figure class="shot">
-    <img src="img/morph/diff_bcu.png" alt="B.Cu copper diff, shipped vs s=0.404" loading="lazy" width="1924" height="1378">
-    <figcaption>B.Cu — the termination cluster lives here: bodies, stubs, and stretched feeds</figcaption>
+    <img src="img/morph/diff_bcu.png" alt="B.Cu copper diff, shipped vs s=0.435" loading="lazy" width="1924" height="1378">
+    <figcaption>B.Cu — the termination cluster: bodies, stretched feeds, and reroute detours</figcaption>
   </figure>
 </div>
 
 <h2 id="zoom">3 · The encoder corner, up close</h2>
-<p>The moved cluster (R86–R93, U16–U20, C63, D24…) at 600 dpi. Red trailing edges / green leading
-edges show each part's actual travel; note the feed stubs that <em>stretch</em> rather than detach —
-that's the attachment constraint towing copper so no checkpoint ever goes unconnected.</p>
+<p>The moved cluster at 600 dpi. Red trailing / green leading edges show part travel; feed stubs
+stretch rather than detach (attachments), and the green paths with no red twin nearby are mid-flight
+reroutes — chains that gave up their shipped corridor to let the convoy through.</p>
 <div class="pair">
   <figure class="shot">
     <img src="img/morph/zoom_bcu.png" alt="Encoder corner B.Cu diff zoom" loading="lazy" width="575" height="814">
-    <figcaption>B.Cu diff — part bodies creeping right/up, stubs stretching</figcaption>
+    <figcaption>B.Cu diff — creeping bodies, stretching stubs, detouring chains</figcaption>
   </figure>
   <figure class="shot">
     <img src="img/morph/zoom_fcu.png" alt="Encoder corner F.Cu diff zoom" loading="lazy" width="575" height="814">
-    <figcaption>F.Cu diff — towed vias shifting with their parts</figcaption>
+    <figcaption>F.Cu diff — towed vias and front-layer reroutes</figcaption>
   </figure>
 </div>
 <div class="pair">
@@ -141,79 +153,80 @@ that's the attachment constraint towing copper so no checkpoint ever goes unconn
     <figcaption>Shipped (s=0)</figcaption>
   </figure>
   <figure class="shot">
-    <img src="img/morph/zoom_render_05.png" alt="Encoder corner render at s=0.404" loading="lazy" width="575" height="814">
-    <figcaption>Morphed (s=0.404) — same corner, still DRC-clean and fully routed</figcaption>
+    <img src="img/morph/zoom_render_end.png" alt="Encoder corner render at s=0.435" loading="lazy" width="575" height="814">
+    <figcaption>Morphed (s=0.435) — same corner, still DRC-clean and fully routed</figcaption>
   </figure>
 </div>
 
-<h2 id="how">4 · How it moves (one paragraph, no code)</h2>
-<p>Each unit — footprint assembly, trace node, via; copper is a first-class mover, in alternating
-passes with the parts — proposes a step toward its rev-B target, and a line search keeps the largest
-fraction that holds every DRC margin above its floor: rule + 15µm for new pairs, the shipped margin
-(held per polygon edge) for pairs the shipped board already packed tighter. <code>α = 0</code> is a
-legal answer: no room, no move. Blocked movers deposit pressure on the copper that clamped them, so
-packed corridors creep like a traffic jam instead of shearing; same-net contacts are constraints too,
-so parts tow their feed stubs instead of sliding off them. Details live in
-<code>creep.py</code>/<code>padgeom.py</code>/<code>courtyards.py</code> (commit
-<code>769af1c</code>).</p>
+<h2 id="how">4 · How it moves (no code)</h2>
+<p>Every unit — footprint assembly, trace node, via — advances only as far as a line search against
+per-pair DRC floors allows; <code>α = 0</code> is a legal answer. Three escalations stack on top.
+<strong>Groups:</strong> mutually-wedged convoy clusters (built from each cycle's clamp graph) take a
+joint step with one shared progress increment, so intra-group pairs morph between two placements that
+are both DRC-legal while the floors referee everything external. <strong>Reroutes:</strong> at a
+stall, the clamp set names the copper wall; each blocking chain gets a grid-A* re-plan between its
+current endpoints in the current geometry, with other-net moving pads masked <em>swept to arrival</em>
+so the new corridor pre-clears the convoy. The result is re-verified by the same feasibility oracle
+(shipped floors, per-edge grandfathering, every recorded attachment pair-wide) and rolled back
+bit-perfectly if unprovable; a failed verify names its blockers, which get stamped wider for the
+retry. <strong>Hard walls:</strong> parts whose straight path is clamped by copper that never moves
+(J2's NPTH mounting holes) are excluded and reported — no mechanism in this phase can help them.</p>
 
 <table>
-  <tr><th></th><th>solve.py projection (c1–c3)</th><th>creep.py feasibility</th></tr>
-  <tr><td>Clean checkpoints</td><td class="no">1 / 13 (s=0 only)</td><td class="ok">6 / 6 (all emitted)</td></tr>
-  <tr><td>First failure</td><td class="no">s=0.02 (3 violations)</td><td class="ok">none emitted</td></tr>
-  <tr><td>Violations at last state</td><td class="no">251 (+1 airwire)</td><td class="ok">0, 0 airwires</td></tr>
-  <tr><td>Depth reached</td><td>s=1.0 (dirty throughout)</td><td>s=0.404 (clean throughout, honest stall)</td></tr>
-  <tr><td>What failure means</td><td>trajectory unusable</td><td>stall table = mid-flight reroute worklist</td></tr>
+  <tr><th></th><th>solve.py projection</th><th>creep (report-only)</th><th>creep + reroute</th></tr>
+  <tr><td>Clean checkpoints</td><td class="no">1 / 13</td><td class="ok">6 / 6</td><td class="ok">18 / 18</td></tr>
+  <tr><td>Depth / arrived</td><td>s=1.0, dirty</td><td>s=0.404 · 6/49</td><td class="ok">s=0.435 · 9/49</td></tr>
+  <tr><td>Topology changes</td><td>—</td><td>0 (stall = report)</td><td class="ok">68 reroutes, 27 chains, 12 checkpoints</td></tr>
+  <tr><td>Stall meaning</td><td class="no">trajectory unusable</td><td>reroute worklist</td><td>structural frontier (below)</td></tr>
 </table>
 
 <h2 id="gate">5 · Gate evidence</h2>
 <table>
-  <tr><th>checkpoint</th><th>s</th><th>airwires</th><th>new violations</th><th>verdict</th></tr>
-  <tr><td>0</td><td class="num">0.000</td><td class="num">0</td><td class="num">0</td><td class="ok">OK</td></tr>
-  <tr><td>1</td><td class="num">0.106</td><td class="num">0</td><td class="num">0</td><td class="ok">OK</td></tr>
-  <tr><td>2</td><td class="num">0.169</td><td class="num">0</td><td class="num">0</td><td class="ok">OK</td></tr>
-  <tr><td>3</td><td class="num">0.260</td><td class="num">0</td><td class="num">0</td><td class="ok">OK</td></tr>
-  <tr><td>4</td><td class="num">0.339</td><td class="num">0</td><td class="num">0</td><td class="ok">OK</td></tr>
-  <tr><td>5</td><td class="num">0.404</td><td class="num">0</td><td class="num">0</td><td class="ok">OK</td></tr>
+  <tr><th>checkpoints</th><th>s</th><th>kind</th><th>airwires</th><th>new violations</th><th>verdict</th></tr>
+  <tr><td>0–5</td><td class="num">0.000 → 0.417</td><td>creep progress</td><td class="num">0</td><td class="num">0</td><td class="ok">OK ×6</td></tr>
+  <tr><td>6–9</td><td class="num">0.425</td><td><span class="rrb">RR</span> rounds 1–4</td><td class="num">0</td><td class="num">0</td><td class="ok">OK ×4</td></tr>
+  <tr><td>10–12</td><td class="num">0.432</td><td><span class="rrb">RR</span> rounds 5–7</td><td class="num">0</td><td class="num">0</td><td class="ok">OK ×3</td></tr>
+  <tr><td>13–17</td><td class="num">0.435</td><td><span class="rrb">RR</span> rounds 8–12</td><td class="num">0</td><td class="num">0</td><td class="ok">OK ×5</td></tr>
 </table>
-<p class="subtitle">kicad-cli 9.0.8, severity-error, vs shipped baseline 0. For contrast, the c1
-projection run read 3 → 17 → 34 → 82 → … → 251 new violations across its 13 checkpoints.
-Runtime: 163 cycles ≈ 2min solve + 1min gate.</p>
+<p class="subtitle">kicad-cli 9.0.8, severity-error, vs shipped baseline 0. Dragged objects grow
+1768 → 1817 across the trajectory as rerouted chains re-subdivide — the rip-and-re-add is visible in
+the boards themselves. Runtime: 529 cycles ≈ 11min solve + 4min gate.</p>
 
-<h2 id="worklist">6 · What's honestly stuck: the reroute worklist</h2>
-<p>The stall is the deliverable, not the failure. 43 parts stopped short with, per part, the exact
-pair, margin, and blocker that clamped them (<code>data_morph/creep_report.json</code>). 125 of 271
-blocking margins sit on encoder/termination copper — the same attribution the three-cycle experiment
-made statistically, now computed per item:</p>
+<h2 id="worklist">6 · The frontier that remains</h2>
+<p>Reroutes cleared what a single-layer, same-net re-plan can clear (68 of them: GND 17, +3V3 12,
+Vdrive 11, /EXT_ANALOG_SW 7…). What's left is structural, and the stepper now names it precisely:</p>
 <table>
-  <tr><th>blocker</th><th>margins clamped</th><th>reading</th></tr>
-  <tr><td><code>Vdrive</code> dragged segs</td><td class="num">40</td><td>power corridor must be rerouted mid-flight, not dragged</td></tr>
-  <tr><td><code>/EXT_ANALOG_SW</code> segs</td><td class="num">32</td><td>same — U24/U25 lane</td></tr>
-  <tr><td>J2 NPTH pads</td><td class="num">24</td><td>hard wall: R91/C63/R90 paths cross the mounting keepout</td></tr>
-  <tr><td><code>GND</code> segs/vias</td><td class="num">27</td><td>stubs to tow or re-drop onto the pour</td></tr>
-  <tr><td><code>/ENC_*</code> + <code>*_SW</code> nets</td><td class="num">~60</td><td>the termination corridor rev-B's routing replaces anyway</td></tr>
+  <tr><th>wall</th><th>margins</th><th>why copper reroutes can't fix it</th></tr>
+  <tr><td><code>Vdrive</code> corridor</td><td class="num">59</td><td>wide power net wedged between its own static pads and the convoy — needs a layer switch or the rev-B net-split rip</td></tr>
+  <tr><td><code>GND</code> stub forest</td><td class="num">55</td><td>stubs and vias between group members; via relocation (not just chain reroute) would be next</td></tr>
+  <tr><td><code>/EXT_ANALOG_SW</code> daisy</td><td class="num">36</td><td>chain endpoints ride the very parts that block each other — needs the coupled part+copper jump (move group AND reroute its interconnect in one checkpoint)</td></tr>
+  <tr><td><code>/ENC_A_N_SW</code> lane</td><td class="num">25</td><td>same coupling, termination corridor</td></tr>
+  <tr><td>J2 NPTH holes</td><td class="num">24</td><td><strong>hard wall:</strong> C63 and R91 travel straight through the mounting keepout — only a curved part path helps, out of scope this phase</td></tr>
 </table>
-<p>Deepest stalls: R91 (1.36mm short), C63 (1.23), R88 (1.20), U18 (1.14). Next phase: feed these
-blockers to the <code>reroute.py</code> machinery as mid-flight atomic reroutes — rip and re-add a
-blocking chain in one checkpoint, both sides clean — then resume creeping.</p>
+<p>Next phase, if wanted: the atomic group jump — teleport a wedged group by one step <em>and</em>
+reroute its interconnect against the post-step geometry in the same checkpoint. The verify machinery
+for it already exists; only the coupling is new.</p>
 
 <footer>
-  Commits: <code>1dd84be</code> board prep + prerip project file · <code>f8c31a3</code> convoy
-  schedule / sref · <code>769af1c</code> creep stepper (<code>creep.py</code>,
-  <code>padgeom.py</code>, <code>courtyards.py</code>) · branch <code>rev-b-fixes</code> ·
-  pipeline: <code>JIGGLE2_VARIANT=morph courtyards.py &amp;&amp; padgeom.py &amp;&amp; creep.py
-  &amp;&amp; morph.py</code> · images: <code>kicad-cli pcb export svg</code> of the archived
-  checkpoint boards, 600&nbsp;dpi, identical board-area framing
+  Pipeline: <code>JIGGLE2_VARIANT=morph courtyards.py &amp;&amp; padgeom.py &amp;&amp; creep.py
+  &amp;&amp; morph.py</code> · reroute/group machinery in <code>creep.py</code>, per-checkpoint
+  topology in <code>morph.py</code> · branch <code>rev-b-fixes</code> · images:
+  <code>kicad-cli pcb export svg</code> of the archived checkpoint boards, 600&nbsp;dpi, identical
+  board-area framing
 </footer>
 
 </main>
 <script>
 (function () {
-  var S = ['0.000', '0.106', '0.169', '0.260', '0.339', '0.404'];
+  var S = ['0.000', '0.121', '0.196', '0.256', '0.339', '0.417',
+           '0.425', '0.425', '0.425', '0.425', '0.432', '0.432',
+           '0.432', '0.435', '0.435', '0.435', '0.435', '0.435'];
+  var N = S.length;
   var frame = document.getElementById('frame');
   var cap = document.getElementById('cap');
   var slider = document.getElementById('k');
   var ck = document.getElementById('ck'), cs = document.getElementById('cs');
+  var rrb = document.getElementById('rr');
   var bDiff = document.getElementById('m_diff'), bRender = document.getElementById('m_render');
   var bPlay = document.getElementById('play');
   var mode = 'diff', timer = null;
@@ -222,17 +235,19 @@ blocking chain in one checkpoint, both sides clean — then resume creeping.</p>
     diff: 'Copper (F+B union) changed vs shipped · red = shipped position · green = morphed position · gray = unchanged',
     render: 'Board render · F.Cu red / B.Cu blue / F.Silk yellow'
   };
+  function pad(k) { return (k < 10 ? '0' : '') + k; }
 
   // preload every frame so scrubbing is instant
-  for (var m of ['diff', 'render']) for (var i = 0; i < 6; i++) {
-    var im = new Image(); im.src = 'img/morph/' + m + '_0' + i + '.png';
+  for (var m of ['diff', 'render']) for (var i = 0; i < N; i++) {
+    var im = new Image(); im.src = 'img/morph/' + m + '_' + pad(i) + '.png';
   }
 
   function show() {
     var k = +slider.value;
-    frame.src = 'img/morph/' + mode + '_0' + k + '.png';
+    frame.src = 'img/morph/' + mode + '_' + pad(k) + '.png';
     cap.textContent = CAPS[mode];
     ck.textContent = k; cs.textContent = S[k];
+    rrb.style.display = k >= 6 ? '' : 'none';
     bDiff.classList.toggle('active', mode === 'diff');
     bRender.classList.toggle('active', mode === 'render');
   }
@@ -246,10 +261,10 @@ blocking chain in one checkpoint, both sides clean — then resume creeping.</p>
     bPlay.textContent = '⏸';
     slider.value = 0; show();
     timer = setInterval(function () {
-      var k = (+slider.value + 1) % 6;
+      var k = (+slider.value + 1) % N;
       slider.value = k; show();
-      if (k === 5) { stop(); }
-    }, 700);
+      if (k === N - 1) { stop(); }
+    }, 450);
   };
   show();
 })();

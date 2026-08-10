@@ -37,9 +37,9 @@ Usage:  courtyards.py && padgeom.py       (once, after board prep)
                  [--guard 0.015] [--copper-sweeps 6] [--measure-only]
         morph.py                          (emit + gate every checkpoint)
 """
-import math, sys, time
+import heapq, math, sys, time
 from collections import defaultdict
-from common import load_json, save_json, seg_seg_dist, replay_drop
+from common import REGION, load_json, save_json, seg_seg_dist, replay_drop
 
 
 def _arg(flag, default, cast=float):
@@ -291,6 +291,8 @@ def build_dyn_grids():
     seg_grid.clear()
     vgrid.clear()
     for si, s in enumerate(segs):
+        if s.get('dead'):
+            continue
         (ax, ay), (bx, by) = P[s['a']], P[s['b']]
         for c in cells_for_box(min(ax, bx), min(ay, by),
                                max(ax, bx), max(ay, by), QR):
@@ -773,7 +775,7 @@ def gen_part(ref, mvn, mvr, a):
     seen = set()
     for nid in part_anchors[ref]:
         for si in inc[nid]:
-            if si not in seen:
+            if si not in seen and not segs[si].get('dead'):
                 seen.add(si)
                 yield from gen_seg(si, mvn, mvr, a)
         if is_via[nid]:
@@ -783,7 +785,8 @@ def gen_part(ref, mvn, mvr, a):
 
 def gen_node(nid, mvn, a):
     for si in inc[nid]:
-        yield from gen_seg(si, mvn, {}, a)
+        if not segs[si].get('dead'):
+            yield from gen_seg(si, mvn, {}, a)
     if is_via[nid]:
         yield from gen_via(nid, mvn, {}, a)
 
@@ -946,6 +949,7 @@ def blk_info(blk):
     if k == 'S':
         s = segs[blk[1]]
         return dict(kind='dyn_seg', net=s['net'], layer=s['layer'],
+                    chain=s['c'],
                     pos=[round((P[s['a']][0] + P[s['b']][0]) / 2, 3),
                          round((P[s['a']][1] + P[s['b']][1]) / 2, 3)])
     if k == 'N':
@@ -1081,12 +1085,100 @@ def part_pass():
     return adv, nblk
 
 
+def hard_walled(ref):
+    """Clamped by copper that never moves on a path that never bends:
+    a static pad (incl. NPTH holes) or the board edge at the floor. No
+    reroute or group step helps — the part is out for this phase."""
+    for key, m, blk in blocked_log.get(ref, ()):
+        if key[0] == 'AT':
+            continue
+        if blk[0] == 'E' or (blk[0] == 'P' and pads[blk[1]]['ref'] not in MOVED):
+            return True
+    return False
+
+
+def group_pass():
+    """Joint step for mutually-wedged convoy clusters. Single-part line
+    searches see a neighbour's copper as a wall even when the whole cluster
+    could advance together (the /EXT_ANALOG_SW daisy chain: every stub
+    endpoint sits in the next part's way). Components are built from this
+    cycle's clamps among blocked parts; each moves with one shared progress
+    increment, so intra-group pairs morph between two placements that are
+    both DRC-legal while the floors referee everything external."""
+    refs = [r for r in order
+            if u[r] < 1.0 and r in blocked_log and not hard_walled(r)]
+    if len(refs) < 2:
+        return 0.0
+    rset = set(refs)
+    parent = {r: r for r in refs}
+
+    def find(r):
+        while parent[r] != r:
+            parent[r] = parent[parent[r]]
+            r = parent[r]
+        return r
+
+    def union(a, b):
+        if a in rset and b in rset:
+            ra, rb = find(a), find(b)
+            if ra != rb:
+                parent[ra] = rb
+    for r in refs:
+        for key, m, blk in blocked_log[r]:
+            if blk[0] == 'S':
+                ci = segs[blk[1]]['c']
+                if ci < NB:
+                    for nid in (chains[ci][0], chains[ci][-1]):
+                        r2 = part_of.get(nid)
+                        if r2:
+                            union(r, r2)
+            elif blk[0] == 'P':
+                union(r, pads[blk[1]]['ref'])
+            elif blk[0] == 'C':
+                union(r, blk[1])
+    comps = defaultdict(list)
+    for r in refs:
+        comps[find(r)].append(r)
+    adv = 0.0
+    for comp in comps.values():
+        if len(comp) < 2:
+            continue
+        du = min(min(1.0 - u[r] for r in comp),
+                 min(STEP / math.hypot(*MOVED[r]) for r in comp))
+        if du <= 0:
+            continue
+        mvn, mvr = {}, {}
+        for r in comp:
+            d = (MOVED[r][0] * du, MOVED[r][1] * du)
+            mvr[r] = d
+            for nid in part_anchors[r]:
+                mvn[nid] = d
+
+        def g(a, comp=comp, mvn=mvn, mvr=mvr):
+            for r in comp:
+                yield from gen_part(r, mvn, mvr, a)
+        al, clamps = line_search(g)
+        step_mm = du * sum(math.hypot(*MOVED[r]) for r in comp) / len(comp)
+        if al * step_mm > 5e-5:
+            for r in comp:
+                u[r] = min(1.0, u[r] + al * du)
+                set_part_geom(r)
+            adv += al * step_mm * len(comp)
+            build_dyn_grids()
+        if al < 1.0 and clamps:
+            xs = [part_mid(r) for r in comp]
+            mid = (sum(x for x, _ in xs) / len(xs),
+                   sum(y for _, y in xs) / len(xs))
+            deposit(clamps, mid, UX, UY, 'grp:' + comp[0])
+    return adv
+
+
 def stretch_vec(nid):
     vx = vy = 0.0
     cap = SUB * 1.6
     for si in inc[nid]:
         s = segs[si]
-        if s.get('bridge'):
+        if s.get('bridge') or s.get('dead'):
             continue
         o = s['b'] if s['a'] == nid else s['a']
         dx, dy = P[o][0] - P[nid][0], P[o][1] - P[nid][1]
@@ -1106,7 +1198,7 @@ def copper_pass():
         todo = sorted(press, key=lambda n: -(press[n][0] ** 2 + press[n][1] ** 2))
         in_todo = set(todo)
         for s in segs:
-            if s.get('bridge'):
+            if s.get('bridge') or s.get('dead'):
                 continue
             (ax, ay), (bx, by) = P[s['a']], P[s['b']]
             if math.hypot(bx - ax, by - ay) > cap:
@@ -1140,13 +1232,534 @@ def copper_pass():
                         f'node{nid}')
     return moved
 
+# ---- mid-flight atomic reroute (the stall worklist, consumed) ----------------
+# At stall the clamp set names the copper wall. Chains on that wall get an
+# atomic reroute: grid A* re-plans the chain between its CURRENT endpoints
+# through the CURRENT geometry (reroute.py's masking regime rebuilt over the
+# live model — same net, layer, width; other-net moved pads swept to their
+# ARRIVAL so the new corridor pre-clears the convoy), the chain is
+# re-subdivided along the new polyline, and the same feasibility oracle that
+# gates every step verifies the result. Floors stay untouched across the
+# teleport: seg-seg margins are distance-exact in-model and poly pairs are
+# per-edge keyed, so old grandfathered floors can't be abused at new
+# locations. Every recorded attachment of the chain is re-checked pair-wide
+# (connectivity survives or the reroute is rejected). Verified reroutes
+# become a topology-change checkpoint at unchanged s — both neighbouring
+# boards DRC-clean, the rip happens BETWEEN boards, never on one. Rejected
+# reroutes roll back bit-perfectly.
+RR_GRID = 0.10
+RR_M = GUARD + 0.008        # route margin over rule: slack over the verify floor
+RR_MAXPOP = 200000
+RR_PER_ROUND = _arg('--rr-per-round', 16, int)
+RR_ROUNDS = _arg('--rr-rounds', 12, int)
+RR_WIN = 25                 # stall window once reroutes have started
+RX0, RY0 = REGION['x0'], REGION['y0']
+RW = int((REGION['x1'] - RX0) / RR_GRID) + 1
+RH = int((REGION['y1'] - RY0) / RR_GRID) + 1
+
+
+def _rxy(idx):
+    return (RX0 + (idx % RW) * RR_GRID, RY0 + (idx // RW) * RR_GRID)
+
+
+def _rinb(i, j):
+    return 0 <= i < RW and 0 <= j < RH
+
+
+def _pt_seg(px, py, ax, ay, bx, by):
+    dx, dy = bx - ax, by - ay
+    L2 = dx * dx + dy * dy
+    t = 0.0 if L2 < 1e-18 else max(0.0, min(1.0, ((px - ax) * dx +
+                                                  (py - ay) * dy) / L2))
+    return math.hypot(px - ax - t * dx, py - ay - t * dy)
+
+
+def _stamp_disc(m, x, y, r):
+    i0 = max(0, int((x - r - RX0) / RR_GRID))
+    i1 = min(RW - 1, int((x + r - RX0) / RR_GRID) + 1)
+    j0 = max(0, int((y - r - RY0) / RR_GRID))
+    j1 = min(RH - 1, int((y + r - RY0) / RR_GRID) + 1)
+    r2 = r * r
+    for j in range(j0, j1 + 1):
+        cy_ = RY0 + j * RR_GRID
+        base = j * RW
+        for i in range(i0, i1 + 1):
+            if (RX0 + i * RR_GRID - x) ** 2 + (cy_ - y) ** 2 <= r2:
+                m[base + i] = 1
+
+
+def _stamp_seg(m, ax, ay, bx, by, r):
+    i0 = max(0, int((min(ax, bx) - r - RX0) / RR_GRID))
+    i1 = min(RW - 1, int((max(ax, bx) + r - RX0) / RR_GRID) + 1)
+    j0 = max(0, int((min(ay, by) - r - RY0) / RR_GRID))
+    j1 = min(RH - 1, int((max(ay, by) + r - RY0) / RR_GRID) + 1)
+    for j in range(j0, j1 + 1):
+        cy_ = RY0 + j * RR_GRID
+        base = j * RW
+        for i in range(i0, i1 + 1):
+            if _pt_seg(RX0 + i * RR_GRID, cy_, ax, ay, bx, by) <= r:
+                m[base + i] = 1
+
+
+def _stamp_poly(m, pts, r):
+    xs = [q[0] for q in pts]
+    ys = [q[1] for q in pts]
+    i0 = max(0, int((min(xs) - r - RX0) / RR_GRID))
+    i1 = min(RW - 1, int((max(xs) + r - RX0) / RR_GRID) + 1)
+    j0 = max(0, int((min(ys) - r - RY0) / RR_GRID))
+    j1 = min(RH - 1, int((max(ys) + r - RY0) / RR_GRID) + 1)
+    n = len(pts)
+    for j in range(j0, j1 + 1):
+        cy_ = RY0 + j * RR_GRID
+        base = j * RW
+        for i in range(i0, i1 + 1):
+            cx = RX0 + i * RR_GRID
+            if point_in_poly(cx, cy_, pts):
+                m[base + i] = 1
+                continue
+            for k in range(n):
+                a, b = pts[k], pts[(k + 1) % n]
+                if _pt_seg(cx, cy_, a[0], a[1], b[0], b[1]) <= r:
+                    m[base + i] = 1
+                    break
+
+_rr_masks = {}
+
+
+def rr_mask(lay, net, hw, mm):
+    key = (lay, net, round(hw, 4), round(mm, 4))
+    if key in _rr_masks:
+        return _rr_masks[key]
+    m = bytearray(RW * RH)
+    if EDGE:
+        em = ECLR + hw + mm
+        ex0, ey0, ex1, ey1 = EDGE
+        for j in range(RH):
+            cy_ = RY0 + j * RR_GRID
+            if cy_ < ey0 + em or cy_ > ey1 - em:
+                base = j * RW
+                for i in range(RW):
+                    m[base + i] = 1
+        for i in range(RW):
+            cx = RX0 + i * RR_GRID
+            if cx < ex0 + em or cx > ex1 - em:
+                for j in range(RH):
+                    m[j * RW + i] = 1
+    rc = CLR + mm + hw
+    for t in O['tracks']:
+        if t['layer'] != lay or t['net'] == net:
+            continue
+        _stamp_seg(m, t['a'][0], t['a'][1], t['b'][0], t['b'][1],
+                   rc + t['w'] / 2)
+    for v in O['vias']:
+        if v['net'] == net:
+            continue
+        _stamp_disc(m, v['x'], v['y'], rc + v['dia'] / 2)
+        _stamp_disc(m, v['x'], v['y'], HOLE_CLR + mm + hw + v['drill'] / 2)
+    for p in pads:
+        if p['net'] and p['net'] == net:
+            continue
+        d = MOVED.get(p['ref'])
+        sweep = [(0.0, 0.0)]
+        if d:                    # other-net moving pad: block clear to arrival
+            rem = 1.0 - u[p['ref']]
+            sweep = [(d[0] * rem * f, d[1] * rem * f) for f in (0.0, 0.5, 1.0)]
+        pc = max(CLR, p['lc']) + mm + hw
+        ph = max(HOLE_CLR, p['lc']) + mm + hw
+        for dx, dy in sweep:
+            if not p['npth'] and (p['drill'] or lay in p['layset']):
+                _stamp_poly(m, [[q[0] + dx, q[1] + dy] for q in p['pts']], pc)
+            if p['drill']:
+                _stamp_disc(m, p['x'] + dx, p['y'] + dy, ph + p['drill'] / 2)
+    for s in segs:
+        if s.get('dead') or s['layer'] != lay or s['net'] == net:
+            continue
+        (ax, ay), (bx, by) = P[s['a']], P[s['b']]
+        _stamp_seg(m, ax, ay, bx, by, rc + s['w'] / 2)
+    for nid in via_nids:
+        if node_net[nid] == net:
+            continue
+        x, y = P[nid]
+        _stamp_disc(m, x, y, rc + via_dia[nid] / 2)
+        _stamp_disc(m, x, y, HOLE_CLR + mm + hw + via_drill[nid] / 2)
+    _rr_masks[key] = m
+    return m
+
+
+def _clear_disc(m, x, y, r):
+    i0 = max(0, int((x - r - RX0) / RR_GRID))
+    i1 = min(RW - 1, int((x + r - RX0) / RR_GRID) + 1)
+    j0 = max(0, int((y - r - RY0) / RR_GRID))
+    j1 = min(RH - 1, int((y + r - RY0) / RR_GRID) + 1)
+    r2 = r * r
+    for j in range(j0, j1 + 1):
+        cy_ = RY0 + j * RR_GRID
+        base = j * RW
+        for i in range(i0, i1 + 1):
+            if (RX0 + i * RR_GRID - x) ** 2 + (cy_ - y) ** 2 <= r2:
+                m[base + i] = 0
+
+_DIRS = [(1, 0, 1.0), (-1, 0, 1.0), (0, 1, 1.0), (0, -1, 1.0),
+         (1, 1, 1.41421356), (1, -1, 1.41421356),
+         (-1, 1, 1.41421356), (-1, -1, 1.41421356)]
+
+
+def _rr_snap(m, x, y, rad=10):
+    ci0 = int(round((x - RX0) / RR_GRID))
+    cj0 = int(round((y - RY0) / RR_GRID))
+    for r in range(rad + 1):
+        best = None
+        for dj in range(-r, r + 1):
+            for di in range(-r, r + 1):
+                if max(abs(di), abs(dj)) != r:
+                    continue
+                i, j = ci0 + di, cj0 + dj
+                if _rinb(i, j) and not m[j * RW + i]:
+                    d = di * di + dj * dj
+                    if best is None or d < best[0]:
+                        best = (d, i, j)
+        if best:
+            return best[1], best[2]
+    return None
+
+
+def rr_astar(m, a, b):
+    sa = _rr_snap(m, a[0], a[1])
+    sb = _rr_snap(m, b[0], b[1])
+    if not sa or not sb:
+        return None
+    start = sa[1] * RW + sa[0]
+    goal = sb[1] * RW + sb[0]
+    gx, gy = _rxy(goal)
+
+    def h(idx):
+        x, y = _rxy(idx)
+        dx, dy = abs(x - gx), abs(y - gy)
+        return max(dx, dy) + 0.41421356 * min(dx, dy)
+    openq = [(h(start), 0.0, start)]
+    gbest = {start: 0.0}
+    par = {}
+    pops = 0
+    while openq and pops < RR_MAXPOP:
+        f, g, idx = heapq.heappop(openq)
+        pops += 1
+        if g > gbest.get(idx, 1e18) + 1e-12:
+            continue
+        if idx == goal:
+            path = [idx]
+            while path[-1] in par:
+                path.append(par[path[-1]])
+            return [_rxy(c) for c in reversed(path)]
+        i, j = idx % RW, idx // RW
+        for di, dj, c in _DIRS:
+            ni, nj = i + di, j + dj
+            if not _rinb(ni, nj):
+                continue
+            nidx = nj * RW + ni
+            if m[nidx]:
+                continue
+            if di and dj and (m[j * RW + ni] or m[nj * RW + i]):
+                continue
+            ng = g + c * RR_GRID
+            if ng < gbest.get(nidx, 1e18) - 1e-12:
+                gbest[nidx] = ng
+                par[nidx] = idx
+                heapq.heappush(openq, (ng + h(nidx), ng, nidx))
+    return None
+
+
+def rr_smooth(pts, m):
+    def ok(a, b):
+        L = math.hypot(b[0] - a[0], b[1] - a[1])
+        n = max(2, int(L / (RR_GRID * 0.4)))
+        for k in range(n + 1):
+            t = k / n
+            x = a[0] + (b[0] - a[0]) * t
+            y = a[1] + (b[1] - a[1]) * t
+            i = int(round((x - RX0) / RR_GRID))
+            j = int(round((y - RY0) / RR_GRID))
+            if not _rinb(i, j) or m[j * RW + i]:
+                return False
+        return True
+    out = [pts[0]]
+    i = 0
+    while i < len(pts) - 1:
+        j = len(pts) - 1
+        while j > i + 1 and not ok(pts[i], pts[j]):
+            j -= 1
+        out.append(pts[j])
+        i = j
+    return out
+
+
+def rr_apply(ci, mid_pts):
+    e = E[ci]
+    a_id, b_id = chains[ci][0], chains[ci][-1]
+    poly = [tuple(P[a_id])] + [tuple(q) for q in mid_pts] + [tuple(P[b_id])]
+    dense = [poly[0]]
+    for k in range(len(poly) - 1):
+        (x1, y1), (x2, y2) = poly[k], poly[k + 1]
+        L = math.hypot(x2 - x1, y2 - y1)
+        if L < 1e-6:
+            continue
+        n = max(1, int(math.ceil(L / SUB)))
+        for t in range(1, n + 1):
+            dense.append((x1 + (x2 - x1) * t / n, y1 + (y2 - y1) * t / n))
+    tx = dict(ci=ci, old_ids=chains[ci], old_sis=chain_segs[ci][:],
+              np0=len(P), ns0=len(segs))
+    ids = [a_id]
+    for x, y in dense[1:-1]:
+        ids.append(_new_node(x, y, e['net']))
+    ids.append(b_id)
+    for si in tx['old_sis']:
+        segs[si]['dead'] = True
+    new_sis = []
+    for k in range(len(ids) - 1):
+        si = len(segs)
+        segs.append(dict(a=ids[k], b=ids[k + 1], layer=e['layer'], w=e['w'],
+                         net=e['net'], c=ci))
+        inc[ids[k]].append(si)
+        inc[ids[k + 1]].append(si)
+        new_sis.append(si)
+    chains[ci] = ids
+    chain_segs[ci] = new_sis
+    for nid in tx['old_ids'][1:-1]:
+        press.pop(nid, None)
+    return tx
+
+
+def rr_rollback(tx):
+    ci = tx['ci']
+    for si in tx['old_sis']:
+        segs[si].pop('dead', None)
+    del segs[tx['ns0']:]
+    for arr in (P, is_via, via_dia, via_drill, node_net):
+        del arr[tx['np0']:]
+    for nid in (chains[ci][0], chains[ci][-1]):
+        inc[nid] = [si for si in inc[nid] if si < tx['ns0']]
+    for nid in chains[ci][1:-1]:
+        inc.pop(nid, None)
+        press.pop(nid, None)
+    chains[ci] = tx['old_ids']
+    chain_segs[ci] = tx['old_sis']
+
+
+def _at_pair_margin(key):
+    """Pair-wide attachment margin (max over all constituent contacts) —
+    the authoritative connectivity check after a teleport, independent of
+    grid locality."""
+    base = key[1:]
+    t = base[0]
+    best = -1e9
+    if t == 'SS':
+        for si in chain_segs[base[1]]:
+            if segs[si].get('dead'):
+                continue
+            A = seg_desc(si, {}, 0)
+            for sj in chain_segs[base[2]]:
+                if segs[sj].get('dead') or segs[si]['layer'] != segs[sj]['layer']:
+                    continue
+                best = max(best, at_margin(A, seg_desc(sj, {}, 0)))
+        return best
+    if t == 'SN':
+        B = via_desc(base[2], {}, 0)
+    elif t == 'ST':
+        B = track_desc[base[2]]
+    elif t == 'SV':
+        B = svia_desc[base[2]]
+    else:
+        B = pad_desc(base[2], {}, 0)
+    for si in chain_segs[base[1]]:
+        if segs[si].get('dead'):
+            continue
+        if t == 'ST' and segs[si]['layer'] != O['tracks'][base[2]]['layer']:
+            continue
+        best = max(best, at_margin(seg_desc(si, {}, 0), B))
+    return best
+
+
+def rr_verify(ci):
+    build_dyn_grids()
+    bad = []
+
+    def gen():
+        for si in chain_segs[ci]:
+            for key, mm, blk in gen_seg(si, {}, {}, 0.0):
+                if key[0] != 'AT':      # AT is pair-global: checked below
+                    yield key, mm, blk
+    if not feasible(gen(), bad):
+        return False, bad
+    for k in gf:
+        if k[0] != 'AT':
+            continue
+        t = k[1]
+        if not ((t == 'SS' and ci in (k[2], k[3])) or
+                (t in ('SN', 'ST', 'SV', 'SP') and k[2] == ci)):
+            continue
+        mm = _at_pair_margin(k)
+        if mm < floor_of(k) - EPS:
+            return False, [(k, mm, ('AT',))]
+    return True, []
+
+rr_events = []
+rr_ok_count = defaultdict(int)   # chain -> ok reroutes (treadmill cap)
+_absorb_seen = {}                # absorb snapshot at last round (delta scoring)
+RR_OK_CAP = 3
+
+
+def rr_candidates():
+    """Live clamps only. Cumulative absorb totals made stale chains eternal
+    candidates (the round-1..12 treadmill); deltas since the last round say
+    who is being pressed NOW."""
+    score = defaultdict(float)
+    for ref, clamps in blocked_log.items():
+        own = None
+        for key, mm, blk in clamps:
+            if blk[0] == 'S':
+                ci = segs[blk[1]]['c']
+                if ci < NB:
+                    score[ci] += 1000
+            elif blk[0] == 'N':
+                for si in inc[blk[1]]:
+                    s = segs[si]
+                    if not s.get('dead') and s['c'] < NB:
+                        score[s['c']] += 500
+            elif blk[0] in ('P', 'T', 'V'):
+                # static blocker: the clamped copper is the mover's own
+                # bound stub — reroute THAT around the wall
+                if own is None:
+                    own = set()
+                    for nid in part_anchors.get(ref, ()):
+                        for si in inc[nid]:
+                            s = segs[si]
+                            if not s.get('dead') and s['c'] < NB:
+                                own.add(s['c'])
+                for ci in own:
+                    score[ci] += 800
+    for k, n in absorb.items():
+        dn = n - _absorb_seen.get(k, 0)
+        mover = k[0]
+        if dn < 30 or not mover.startswith('node'):
+            continue
+        for si in inc.get(int(mover[4:]), ()):
+            s = segs[si]
+            if not s.get('dead') and s['c'] < NB:
+                score[s['c']] += dn / 10
+    _absorb_seen.update(absorb)
+    return [ci for ci, _ in sorted(score.items(), key=lambda kv: -kv[1])
+            if rr_ok_count[ci] < RR_OK_CAP]
+
+
+def rr_route(ci, avoid=None):
+    """Mask ladder: the guarded margin first; if walled, retry slim — tight
+    corridors past grandfathered statics are legal (the verify floors are
+    the referee, the mask is only guidance). Endpoints get a small carve:
+    the chain legally exists there now, and the stub back to the exact
+    endpoint is verified against the real (shipped) floors. `avoid` maps
+    blockers named by a failed verify to extra-margin stamps — the
+    reject's own evidence steers the retry."""
+    e = E[ci]
+    hw = e['w'] / 2
+    a, b = P[chains[ci][0]], P[chains[ci][-1]]
+    for mm in (RR_M, 0.004):
+        m = bytearray(rr_mask(e['layer'], e['net'], hw, mm))
+        _clear_disc(m, a[0], a[1], 0.35)
+        _clear_disc(m, b[0], b[1], 0.35)
+        for (kind, idx), bumps in (avoid or {}).items():
+            extra = CLR + hw + GUARD + 0.05 * bumps
+            if kind == 'P':
+                p = pads[idx]
+                d = MOVED.get(p['ref'])
+                sweep = [(0.0, 0.0)]
+                if d:
+                    rem = 1.0 - u[p['ref']]
+                    sweep = [(d[0] * rem * f, d[1] * rem * f)
+                             for f in (0.0, 0.5, 1.0)]
+                for dx, dy in sweep:
+                    _stamp_poly(m, [[q[0] + dx, q[1] + dy]
+                                    for q in p['pts']], extra)
+                    if p['drill']:
+                        _stamp_disc(m, p['x'] + dx, p['y'] + dy,
+                                    extra + p['drill'] / 2)
+            elif kind == 'T':
+                t = O['tracks'][idx]
+                _stamp_seg(m, t['a'][0], t['a'][1], t['b'][0], t['b'][1],
+                           extra + t['w'] / 2)
+            elif kind == 'V':
+                v = O['vias'][idx]
+                _stamp_disc(m, v['x'], v['y'], extra + v['dia'] / 2)
+            elif kind == 'N':
+                _stamp_disc(m, P[idx][0], P[idx][1],
+                            extra + via_dia[idx] / 2)
+            elif kind == 'S':
+                for si in chain_segs[idx]:
+                    s = segs[si]
+                    if s.get('dead'):
+                        continue
+                    (ax, ay), (bx, by) = P[s['a']], P[s['b']]
+                    _stamp_seg(m, ax, ay, bx, by, extra + s['w'] / 2)
+        path = rr_astar(m, a, b)
+        if path is not None:
+            return rr_smooth(path, m)
+    return None
+
+
+def reroute_round(rn):
+    _rr_masks.clear()
+    build_static_grid()
+    build_dyn_grids()
+    cands = rr_candidates()
+    nok = tried = 0
+    for ci in cands:
+        if tried >= RR_PER_ROUND:
+            break
+        tried += 1
+        e = E[ci]
+        ev = dict(round=rn, chain=ci, net=e['net'], layer=e['layer'])
+        avoid = {}
+        for attempt in range(3):
+            path = rr_route(ci, avoid)
+            if path is None:
+                ev['result'] = 'no_path'
+                break
+            tx = rr_apply(ci, path)
+            ok, bad = rr_verify(ci)
+            if ok:
+                nok += 1
+                rr_ok_count[ci] += 1
+                _rr_masks.clear()   # new geometry: masks stale
+                ev['result'] = 'ok'
+                ev['nodes'] = len(chains[ci])
+                ev.pop('why', None)
+                break
+            rr_rollback(tx)
+            build_dyn_grids()
+            ev['result'] = 'reject'
+            ev['why'] = str(bad[0][0])
+            # the reject names its blockers — stamp them wider and retry
+            fatal = False
+            for key, mv, blk in bad:
+                if key[0] == 'AT' or blk[0] == 'E':
+                    fatal = True    # connectivity/edge: no route fixes it
+                    break
+                tgt = (blk[0], segs[blk[1]]['c']) if blk[0] == 'S' \
+                    else (blk[0], blk[1])
+                avoid[tgt] = avoid.get(tgt, 0) + 1
+            if fatal:
+                break
+        rr_events.append(ev)
+    print(f'  reroute round {rn}: {nok}/{tried} chains rerouted '
+          f'({len(cands)} candidates)', flush=True)
+    return nok
+
 # ---- trajectory --------------------------------------------------------------
 cps = []
 
 
 def capture():
     s = sum(u.values()) / len(u)
-    cps.append(dict(s=s, P=[p[:] for p in P], sref={r: u[r] for r in u}))
+    cps.append(dict(s=s, P=[p[:] for p in P], sref={r: u[r] for r in u},
+                    chains=[ids[:] for ids in chains]))
     print(f'  checkpoint {len(cps)}: s={s:.3f}', flush=True)
 
 t0 = time.time()
@@ -1158,18 +1771,23 @@ capture()                                   # s=0: pristine roundtrip baseline
 hist = []
 idle = 0
 cyc = 0
+scount = 1
+win = STALL_WIN
+rounds = 0
 while cyc < CYCLES:
     cyc += 1
     build_static_grid()
     build_dyn_grids()
     adv, nblk = part_pass()
+    adv += group_pass()
     cu = copper_pass()
     mean_u = sum(u.values()) / len(u)
     arrived = sum(1 for r in u if u[r] >= 1.0)
     hist.append(dict(cycle=cyc, mean_u=round(mean_u, 4), arrived=arrived,
                      blocked=nblk, adv=round(adv, 4), copper=round(cu, 4)))
-    while len(cps) <= SNAPSHOTS and mean_u >= len(cps) / SNAPSHOTS - 1e-9:
+    while scount <= SNAPSHOTS and mean_u >= scount / SNAPSHOTS - 1e-9:
         capture()
+        scount += 1
     if cyc % 5 == 0 or cyc == 1:
         print(f'cycle {cyc}: mean_u={mean_u:.3f} arrived={arrived}/{len(u)} '
               f'blocked={nblk} adv={adv:.3f}mm copper={cu:.3f}mm '
@@ -1178,9 +1796,20 @@ while cyc < CYCLES:
         print(f'all {len(u)} parts arrived after {cyc} cycles')
         break
     idle = idle + 1 if adv < 5e-4 else 0
-    if idle >= STALL_WIN:
-        print(f'STALL after {cyc} cycles ({STALL_WIN} without part advance): '
-              f'mean_u={mean_u:.3f}, {len(u) - arrived} parts short of target')
+    if idle >= win:
+        # stall: consume the worklist — reroute the wall, then resume
+        if rounds < RR_ROUNDS:
+            print(f'stall at cycle {cyc} (mean_u={mean_u:.3f}): '
+                  f'reroute round {rounds + 1}', flush=True)
+            if reroute_round(rounds + 1):
+                rounds += 1
+                idle = 0
+                win = RR_WIN
+                capture()       # atomic topology change: same s, new copper
+                continue
+        print(f'STALL after {cyc} cycles ({win} without part advance, '
+              f'{rounds} reroute rounds): mean_u={mean_u:.3f}, '
+              f'{len(u) - arrived} parts short of target')
         break
 
 if not cps or cps[-1]['s'] < sum(u.values()) / len(u) - 1e-9:
@@ -1188,7 +1817,7 @@ if not cps or cps[-1]['s'] < sum(u.values()) / len(u) - 1e-9:
 
 save_json('morph.json', dict(checkpoints=cps, chains=chains))
 
-stalled = [dict(ref=r, u=round(u[r], 4),
+stalled = [dict(ref=r, u=round(u[r], 4), hard_walled=hard_walled(r),
                 rem_mm=round((1 - u[r]) * math.hypot(*MOVED[r]), 3),
                 blockers=[dict(key=str(k), margin=round(m, 4),
                                floor=round(floor_of(k), 4), **blk_info(b))
@@ -1198,6 +1827,7 @@ save_json('creep_report.json', dict(
     cycles=cyc, mean_u=round(sum(u.values()) / len(u), 4),
     arrived=sum(1 for r in u if u[r] >= 1.0), parts=len(u),
     u={r: round(u[r], 4) for r in order},
+    reroutes=rr_events, reroute_rounds=rounds,
     stalled=stalled,
     absorb=[dict(mover=a, blocker=b, what=c, hits=n)
             for (a, b, c), n in sorted(absorb.items(), key=lambda kv: -kv[1])],
