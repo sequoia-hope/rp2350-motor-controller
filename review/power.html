@@ -55,7 +55,7 @@
 <header class="masthead">
   <p style="margin:0 0 .4rem"><a href="index.html" style="text-decoration:none">← project hub</a></p>
   <h1>Power Supply Review</h1>
-  <p class="subtitle">VMOT → XL7005A buck → 5&nbsp;V "Vdrive" → SPX3819 → 3.3&nbsp;V → RP2350 VREG · USB-PD input via LM74700 · 2026-08-08</p>
+  <p class="subtitle">VMOT → XL7005A buck → 5&nbsp;V "Vdrive" → SPX3819 → 3.3&nbsp;V → RP2350 VREG · USB-PD input via LM74700 · 2026-08-08 · amended 2026-08-10 (F-27 adopted for rev-B, F-39 added)</p>
 </header>
 
 <h2 id="arch">1 · Architecture &amp; what checks out</h2>
@@ -76,7 +76,8 @@ breakdown (71–79&nbsp;V) just below it, so surges hit the TVS before any FET a
   <li><span class="sev good">OK</span> <strong>RP2350 core supply:</strong> 3.3&nbsp;µH + 4.7&nbsp;µF on the
   internal VREG, 33&nbsp;Ω + 4.7&nbsp;µF filter on VREG_AVDD — textbook hardware-design-guide. ✓</li>
   <li><span class="sev good">OK</span> <strong>PD-side ratings:</strong> VBUS caps 50&nbsp;V for 20&nbsp;V PD,
-  USBLC6 on data, CC caps per FUSB302 app note. ✓</li>
+  USBLC6 on data, CC caps per FUSB302 app note. ✓ <em>(amended 2026-08-10: the ✓ missed U11's
+  VBUS pin — 5&nbsp;V-class on the PD rail; see F-39 below)</em></li>
 </ul>
 
 <div class="cols2">
@@ -105,6 +106,32 @@ doesn't care about, and the blocking junction is then rated like everything else
 (b) keep the ideal diode but move it behind its own clamp (65&nbsp;V-safe node); (c) a
 back-to-back-FET ideal diode controller rated 80&nbsp;V+. I'd take (a) — bench convenience doesn't
 justify a 65&nbsp;V part as the only thing between a 60&nbsp;V bus and a USB host.</p>
+<div class="callout good" id="f27-adopted">
+<strong>Adopted for rev-B (2026-08-10) — option (c), plus a FET upgrade.</strong> The declared
+<strong>5&nbsp;A USB-PD capability</strong> (5&nbsp;A exists only in 20&nbsp;V/100&nbsp;W contracts —
+or PPS — with an e-marked cable) withdraws option (a): any Schottky at 5&nbsp;A burns
+I·V<sub>f</sub> ≈ 2.75&nbsp;W, and SS210 is a 2&nbsp;A part. It also exposed a latent thermal issue
+in the as-built path: Q5 (TMG08N10SI, 100&nbsp;mΩ, SOT-89) fully enhanced drops 0.5&nbsp;V at
+5&nbsp;A — <strong>2.5&nbsp;W in a SOT-89</strong> — the LM74700's 20&nbsp;mV regulation only holds
+below ~0.2&nbsp;A at that R<sub>DS(on)</sub>. Adopted: <strong>LTC4359CMS8#TRPBF</strong> (MSOP-8,
+4–80&nbsp;V operating, 100&nbsp;V abs-max pins; LCSC <code>C688235</code>, in stock) driving
+<strong>E100N4P0HL1</strong> (100&nbsp;V, 4&nbsp;mΩ, PDFN5×6; <code>C29781176</code>) → ~0.1&nbsp;W
+at 5&nbsp;A. Same anode→cathode single-FET topology, so it's a controller swap + FET footprint
+change near J3. Layout session: 5&nbsp;A ampacity check on JP1 and the VBUS→VMOT copper. Optional
+10&nbsp;k VBUS bleed for unplug discharge (FET blocking leaks µA, so it's hygiene, not protection).
+Companion: F-39 below must land before any &gt;5&nbsp;V contract.
+</div>
+
+<h3 id="f39"><span class="sev med">MED</span> U11's VBUS pin is 5&nbsp;V-class on a rail PD takes to 20&nbsp;V (F-39, found 2026-08-10)</h3>
+<p>The USBLC6-2P6 references its data steering diodes to pin&nbsp;5, which sits directly on VBUS with
+an internal ~6&nbsp;V zener to ground (abs max 5.5&nbsp;V). Today firmware never requests above
+5&nbsp;V, so it survives; the first 9&nbsp;V or 20&nbsp;V contract — the F-35 fix, and the
+20&nbsp;V/5&nbsp;A capability itself — puts that zener into continuous conduction and burns it.
+Fix (rev-B): <strong>move U11 pin&nbsp;5 to +3V3</strong> (data lines then clamp at ≈4&nbsp;V, right
+for USB&nbsp;2.0 signaling, and the rail is always up when USB is active) and give VBUS its own surge
+part at the connector: <strong>SMAJ24A</strong> (24&nbsp;V standoff clears a 21&nbsp;V contract max;
+Littelfuse, <code>C148222</code>). Datasheet-check FUSB302's VBUS abs max (~28&nbsp;V) against the
+SMAJ24A clamp — surge-duration excursions above it are the accepted norm for PD front ends.</p>
 
 <h3 id="brake"><span class="sev med">MED</span> Regen has nowhere to go — worked design: the D leg as a brake chopper (F-28)</h3>
 
@@ -249,7 +276,7 @@ any one forgotten part, but because five margins interlock. Here's the full depe
       an 84&nbsp;V spike → 4.1&nbsp;V, damage. Rescale bottom legs 5.1k → 4.3k (FS ≈ 80&nbsp;V) + firmware
       <code>VMOT_DIVIDER_RATIO</code></td></tr>
   <tr><td>USB backfeed (LM74700)</td><td>65&nbsp;V abs max</td><td class="mono" style="color:var(--bad)">already the weak link (§2)</td>
-      <td class="mono" style="color:var(--bad)">must go regardless — SS210 is 100&nbsp;V ✓</td></tr>
+      <td class="mono" style="color:var(--good)">resolved either way — LTC4359 (100&nbsp;V) + 4&nbsp;mΩ FET adopted for rev-B (§2)</td></tr>
   <tr><td>Bulk caps / ceramics</td><td>100&nbsp;V</td><td>✓</td><td>✓ (electrolytic derating at 72&nbsp;V is acceptable but watch ripple current)</td></tr>
   <tr><td>Battery reality</td><td>—</td><td>14S li-ion (58.8&nbsp;V) / 16S LiFePO₄ (58.4&nbsp;V) fit ✓</td>
       <td class="mono" style="color:var(--warn)">a "72&nbsp;V" (20S) li-ion pack charges to <strong>84&nbsp;V</strong> —
@@ -268,10 +295,15 @@ If 72&nbsp;V matters, (B) is a clean respin target; mixing the two halfway is wh
 
 <h2 id="verdict">4 · Actions</h2>
 <ul>
-  <li>Next rev BOM: LM74700+Q5 → SS210 (or equivalent 100&nbsp;V blocking), XL7005A → XL7015,
+  <li><strong>Rev-B (adopted 2026-08-10, F-27/F-39):</strong> LM74700 → LTC4359CMS8
+  (<code>C688235</code>), Q5 → E100N4P0HL1 100&nbsp;V/4&nbsp;mΩ (<code>C29781176</code>),
+  U11 pin&nbsp;5 → +3V3, SMAJ24A on VBUS (<code>C148222</code>); 5&nbsp;A ampacity check on
+  JP1 + VBUS copper in the layout session.</li>
+  <li>Next rev BOM: XL7005A → XL7015,
   L3 → 100–220&nbsp;µH / ≥1.5&nbsp;A, LDO → SOT-89/223 package, V_ENC protection trio.</li>
   <li>Firmware (any time): VMOT overvoltage guard + optional D-bridge brake chopper; default PD
-  request ≥ 9&nbsp;V when a PD source is present.</li>
+  request ≥ 9&nbsp;V when a PD source is present — <strong>gated on F-39</strong> (U11 rework)
+  for boards without the rev-B change.</li>
   <li>Docs: precharge/anti-spark note, reverse-polarity note.</li>
 </ul>
 

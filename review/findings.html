@@ -53,15 +53,16 @@
 <header class="masthead">
   <p style="margin:0 0 .4rem"><a href="index.html" style="text-decoration:none">← project hub</a></p>
   <h1>Findings Register</h1>
-  <p class="subtitle">Every finding from the 2026-08-08 reviews (schematic · PCB · power) with disposition.
-  Stable IDs for cross-reference. Branch <code>rev-b-fixes</code>.</p>
+  <p class="subtitle">Every finding from the 2026-08-08 reviews (schematic · PCB · power) with disposition,
+  plus dated amendments. Stable IDs for cross-reference. Branch <code>rev-b-fixes</code>.</p>
 </header>
 
 <div class="summary">
-  <div><strong>38</strong>findings recorded</div>
+  <div><strong>39</strong>findings recorded</div>
   <div><strong>14</strong>fixed on rev-b-fixes</div>
-  <div><strong>10</strong>rev-C candidates</div>
+  <div><strong>9</strong>rev-C candidates</div>
   <div><strong>1</strong>re-route session (board)</div>
+  <div><strong>2</strong>rev-B USB power path (F-27, F-39)</div>
   <div><strong>2</strong>firmware backlog</div>
   <div><strong>11</strong>documented / verify / decided</div>
 </div>
@@ -203,9 +204,9 @@
 <table>
 <tr><th>ID</th><th>Sev</th><th>Finding</th><th>Status</th><th>Disposition</th></tr>
 <tr><td class="id">F-27</td><td><span class="sev high">HIGH</span></td>
-  <td>LM74700 (USB backfeed blocker) abs max 65&nbsp;V with cathode on VMOT — the weakest silicon on the bus; failure with Q5 enhanced connects the motor bus to the USB host</td>
-  <td><span class="st revc">REV C</span></td>
-  <td>Replace LM74700+Q5 with SS210 (100&nbsp;V, in BOM); ~0.4&nbsp;V loss on USB-power path only. Until then: caution with USB attached above ~48&nbsp;V bus</td></tr>
+  <td>LM74700 (USB backfeed blocker) abs max 65&nbsp;V with cathode on VMOT — the weakest silicon on the bus; failure with Q5 enhanced connects the motor bus to the USB host. Amended 2026-08-10: the 5&nbsp;A USB-PD capability (20&nbsp;V/100&nbsp;W contract) also rules out any Schottky (~2.75&nbsp;W at 5&nbsp;A) <em>and</em> the existing Q5 (TMG08N10SI, 100&nbsp;mΩ → ~2.5&nbsp;W at 5&nbsp;A)</td>
+  <td><span class="st open">OPEN</span></td>
+  <td>Adopted for rev-B (2026-08-10): LTC4359CMS8 (MSOP-8, 100&nbsp;V abs-max pins, <code>C688235</code>) + Q5 → E100N4P0HL1 (100&nbsp;V/4&nbsp;mΩ PDFN5×6, <code>C29781176</code>, ~0.1&nbsp;W at 5&nbsp;A); 5&nbsp;A ampacity check on JP1 + VBUS copper in the layout session. SS210 option withdrawn. Detail: <a href="power.html#f27-adopted">power §2</a>. Until it lands: caution with USB attached above ~48&nbsp;V bus</td></tr>
 <tr><td class="id">F-28</td><td><span class="sev med">MED</span></td>
   <td>Regen headroom is only ~0.22&nbsp;J (310&nbsp;µF between 60&nbsp;V and TVS breakdown); reset-brake (F-12) makes hard events likely; no chopper</td>
   <td><span class="st fixed">FIXED</span></td>
@@ -237,11 +238,15 @@
 <tr><td class="id">F-35</td><td><span class="sev low">LOW</span></td>
   <td>USB-only power: buck at max duty from ~5&nbsp;V leaves Vdrive ≈ 4.3–4.6&nbsp;V (5&nbsp;V encoders and LED dim); FUSB302 could negotiate 9–20&nbsp;V by default</td>
   <td><span class="st open">OPEN</span></td>
-  <td>Firmware backlog: request ≥9&nbsp;V PD when available</td></tr>
+  <td>Firmware backlog: request ≥9&nbsp;V PD when available — hardware-gated on F-39 (U11 rework)</td></tr>
 <tr><td class="id">F-36</td><td><span class="sev info">INFO</span></td>
   <td>Verified good: buck FB = 5.04&nbsp;V (10k/3.3k + 33&nbsp;n FF), SS210 freewheel (100&nbsp;V), local input cap adjacency note true on layout, RP2350 VREG per guide, PD-side ratings</td>
   <td><span class="st doc">DOC</span></td>
-  <td>No action</td></tr>
+  <td>No action. Amended 2026-08-10: "PD-side ratings ✓" partially superseded — U11's VBUS pin missed, see F-39</td></tr>
+<tr><td class="id">F-39</td><td><span class="sev med">MED</span></td>
+  <td>U11 (USBLC6-2P6) VBUS pin sits on the PD rail — 5&nbsp;V-class clamp (abs max 5.5&nbsp;V, internal ~6&nbsp;V zener to GND). Any PD contract above 5&nbsp;V — the F-35 fix, or the declared 20&nbsp;V/5&nbsp;A capability — drives it into continuous zener conduction and burns it. Found 2026-08-10 while rescoping F-27 for 5&nbsp;A</td>
+  <td><span class="st open">OPEN</span></td>
+  <td>Rev-B: move U11 pin&nbsp;5 from VBUS to +3V3 (data clamps ≈4&nbsp;V — correct for USB&nbsp;2.0 signaling; rail always up when USB is active) + SMAJ24A VBUS→GND at J3 (Littelfuse, <code>C148222</code>). Do not enable &gt;5&nbsp;V PD requests before this lands. Detail: <a href="power.html#f39">power §2</a></td></tr>
 </table>
 </div>
 

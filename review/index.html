@@ -120,9 +120,10 @@
 </div>
 
 <div class="board" style="border-left:4px solid var(--accent)">
-  <strong><a href="findings.html">Findings Register</a></strong> — all 38 findings from the three
-  reviews with stable IDs (F-01…F-38), severity, and disposition. 13 fixed on
-  <code>rev-b-fixes</code>, 10 rev-C candidates, the re-route worklist, and the firmware backlog.
+  <strong><a href="findings.html">Findings Register</a></strong> — all 39 findings from the three
+  reviews plus dated amendments, with stable IDs (F-01…F-39), severity, and disposition. 14 fixed on
+  <code>rev-b-fixes</code>, 9 rev-C candidates, the rev-B USB power-path pair (F-27/F-39), the
+  re-route worklist, and the firmware backlog.
 </div>
 
 <h2>Current top items</h2>
@@ -134,6 +135,9 @@
   bus TVS clamps above the 80 V FETs (<a href="schematic.html#tvs">details</a>).</li>
   <li><span class="sev med">MED</span> All analog-switch / transceiver enable lines float at boot — add
   pull-downs (<a href="schematic.html#floats">details</a>).</li>
+  <li><span class="sev high">HIGH</span> USB power path rescoped to rev-B for 5 A PD: LTC4359 +
+  100 V/4 mΩ FET replace the 65 V LM74700 (+100 mΩ Q5), U11 VBUS-pin rework + SMAJ24A before any
+  &gt;5 V contract (<a href="power.html#f27-adopted">F-27/F-39</a>).</li>
   <li><span class="sev med">MED</span> Whole-board jiggle = 61% of tracks re-routed; do cluster-scoped
   shakes instead, starting with the encoder corner where the new switches land
   (<a href="pcb.html#jiggle">details</a>).</li>
