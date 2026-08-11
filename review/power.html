@@ -129,9 +129,21 @@ an internal ~6&nbsp;V zener to ground (abs max 5.5&nbsp;V). Today firmware never
 20&nbsp;V/5&nbsp;A capability itself — puts that zener into continuous conduction and burns it.
 Fix (rev-B): <strong>move U11 pin&nbsp;5 to +3V3</strong> (data lines then clamp at ≈4&nbsp;V, right
 for USB&nbsp;2.0 signaling, and the rail is always up when USB is active) and give VBUS its own surge
-part at the connector: <strong>SMAJ24A</strong> (24&nbsp;V standoff clears a 21&nbsp;V contract max;
-Littelfuse, <code>C148222</code>). Datasheet-check FUSB302's VBUS abs max (~28&nbsp;V) against the
-SMAJ24A clamp — surge-duration excursions above it are the accepted norm for PD front ends.</p>
+part at the connector. Datasheet-check FUSB302's VBUS abs max (~28&nbsp;V) against the chosen
+clamp — surge-duration excursions above it are the accepted norm for PD front ends.</p>
+
+<p><strong>Clamp part, settled on the board 2026-08-11.</strong> The first choice was an
+<strong>SMAJ24A</strong> (SMA, 400&nbsp;W, <code>C148222</code>), but it does not fit where it has to
+be. J3's own courtyard is 9.0×10.7&nbsp;mm, J6 overlaps it 0.9&nbsp;mm away, C105/C106 flank it and
+the board edge runs alongside; the nearest legal SMA pose is 10&nbsp;mm from the connector and needs
+11 signal segments ripped (/SWD, /RUN, /HALL1-2, USB_BOOT). Ten millimetres of loop inductance
+defeats the purpose of a connector clamp. Shipped instead: <strong>SMF24A</strong> — SOD-123FL,
+200&nbsp;W (10/1000&nbsp;µs), 24&nbsp;V standoff, 38.9&nbsp;V max clamp, <code>C169430</code> — at
+<code>183.725, 111.605</code> on F.Cu, <strong>5.15&nbsp;mm</strong> from J3, costing 2 ripped
+segments. The trade is explicit: half the peak pulse power in exchange for a clamp that is actually
+at the connector. A 24&nbsp;V SOD-323 part would fit 4.5&nbsp;mm out with one segment ripped, but
+parts in that package at this voltage are ESD-protection arrays rather than surge-rated TVS, so the
+SOD-123FL is the smallest package that still holds a real 10/1000&nbsp;µs rating.</p>
 
 <h3 id="brake"><span class="sev med">MED</span> Regen has nowhere to go — worked design: the D leg as a brake chopper (F-28)</h3>
 
@@ -295,10 +307,14 @@ If 72&nbsp;V matters, (B) is a clean respin target; mixing the two halfway is wh
 
 <h2 id="verdict">4 · Actions</h2>
 <ul>
-  <li><strong>Rev-B (adopted 2026-08-10, F-27/F-39):</strong> LM74700 → LTC4359CMS8
-  (<code>C688235</code>), Q5 → E100N4P0HL1 100&nbsp;V/4&nbsp;mΩ (<code>C29781176</code>),
-  U11 pin&nbsp;5 → +3V3, SMAJ24A on VBUS (<code>C148222</code>); 5&nbsp;A ampacity check on
-  JP1 + VBUS copper in the layout session.</li>
+  <li><strong>Rev-B (adopted 2026-08-10, F-27/F-39) — schematic and PCB placement done
+  2026-08-11:</strong> LM74700 → LTC4359CMS8 (<code>C688235</code>), Q5 → E100N4P0HL1
+  100&nbsp;V/4&nbsp;mΩ (<code>C29781176</code>), C79 removed, U11 pin&nbsp;5 → +3V3, and
+  SMF24A on VBUS at J3 (<code>C169430</code>, replacing the SMAJ24A that would not fit —
+  see §2). Board is verified in sync with the schematic. <strong>Still open:</strong> the
+  84 ripped segments need routing (VBUS&nbsp;+7 airwires, Net-(JP1-A)&nbsp;+3,
+  Net-(Q5-G)&nbsp;+1, 9 collateral nets), which is also when the 5&nbsp;A ampacity check on
+  JP1 + VBUS copper happens.</li>
   <li>Next rev BOM: XL7005A → XL7015,
   L3 → 100–220&nbsp;µH / ≥1.5&nbsp;A, LDO → SOT-89/223 package, V_ENC protection trio.</li>
   <li>Firmware (any time): VMOT overvoltage guard + optional D-bridge brake chopper; default PD

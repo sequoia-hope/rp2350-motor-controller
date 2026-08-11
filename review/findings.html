@@ -62,7 +62,7 @@
   <div><strong>14</strong>fixed on rev-b-fixes</div>
   <div><strong>9</strong>rev-C candidates</div>
   <div><strong>1</strong>re-route session (board)</div>
-  <div><strong>2</strong>rev-B USB power path (F-27, F-39)</div>
+  <div><strong>2</strong>rev-B USB power path — placed, routing due</div>
   <div><strong>2</strong>firmware backlog</div>
   <div><strong>11</strong>documented / verify / decided</div>
 </div>
@@ -206,7 +206,8 @@
 <tr><td class="id">F-27</td><td><span class="sev high">HIGH</span></td>
   <td>LM74700 (USB backfeed blocker) abs max 65&nbsp;V with cathode on VMOT — the weakest silicon on the bus; failure with Q5 enhanced connects the motor bus to the USB host. Amended 2026-08-10: the 5&nbsp;A USB-PD capability (20&nbsp;V/100&nbsp;W contract) also rules out any Schottky (~2.75&nbsp;W at 5&nbsp;A) <em>and</em> the existing Q5 (TMG08N10SI, 100&nbsp;mΩ → ~2.5&nbsp;W at 5&nbsp;A)</td>
   <td><span class="st open">OPEN</span></td>
-  <td>Adopted for rev-B (2026-08-10): LTC4359CMS8 (MSOP-8, 100&nbsp;V abs-max pins, <code>C688235</code>) + Q5 → E100N4P0HL1 (100&nbsp;V/4&nbsp;mΩ PDFN5×6, <code>C29781176</code>, ~0.1&nbsp;W at 5&nbsp;A); 5&nbsp;A ampacity check on JP1 + VBUS copper in the layout session. SS210 option withdrawn. Detail: <a href="power.html#f27-adopted">power §2</a>. Until it lands: caution with USB attached above ~48&nbsp;V bus</td></tr>
+  <td>Adopted for rev-B (2026-08-10): LTC4359CMS8 (MSOP-8, 100&nbsp;V abs-max pins, <code>C688235</code>) + Q5 → E100N4P0HL1 (100&nbsp;V/4&nbsp;mΩ PDFN5×6, <code>C29781176</code>, ~0.1&nbsp;W at 5&nbsp;A); 5&nbsp;A ampacity check on JP1 + VBUS copper in the layout session. SS210 option withdrawn. Detail: <a href="power.html#f27-adopted">power §2</a>. Until it lands: caution with USB attached above ~48&nbsp;V bus.
+  <br><strong>Amended 2026-08-11 — schematic and PCB placement landed, routing outstanding.</strong> The earlier "5 colliding neighbours each" read was wrong: it counted <em>opposite-side</em> courtyards. On B.Cu the MSOP-8 clears everything 1&nbsp;mm east of the old centroid at zero cost (<code>167.745, 95.825</code>, rotated to horizontal into the hole C79 vacated). Q5's PowerPAK sits at <code>170.400, 103.325</code> rot&nbsp;180 — source east toward J3, drain west toward JP1, matching the power flow — which costs shoving TP15/TP17 ~3&nbsp;mm; the nearest pose needing no test-point move was 11–13&nbsp;mm away and would have stretched the 5&nbsp;A path. Board verified against the schematic netlist by <code>hardware/tools/revb/check_sync.py</code>; no new clearance, courtyard, hole or solder-mask violation vs the pre-sync DRC baseline, and copper outside the work window is bit-identical. <strong>Not fabricable yet:</strong> 84 ripped segments await routing — VBUS&nbsp;+7 airwires, Net-(JP1-A)&nbsp;+3, Net-(Q5-G)&nbsp;+1 plus 9 collateral nets — and the 5&nbsp;A ampacity check on JP1/VBUS copper is part of that pass</td></tr>
 <tr><td class="id">F-28</td><td><span class="sev med">MED</span></td>
   <td>Regen headroom is only ~0.22&nbsp;J (310&nbsp;µF between 60&nbsp;V and TVS breakdown); reset-brake (F-12) makes hard events likely; no chopper</td>
   <td><span class="st fixed">FIXED</span></td>
@@ -246,7 +247,8 @@
 <tr><td class="id">F-39</td><td><span class="sev med">MED</span></td>
   <td>U11 (USBLC6-2P6) VBUS pin sits on the PD rail — 5&nbsp;V-class clamp (abs max 5.5&nbsp;V, internal ~6&nbsp;V zener to GND). Any PD contract above 5&nbsp;V — the F-35 fix, or the declared 20&nbsp;V/5&nbsp;A capability — drives it into continuous zener conduction and burns it. Found 2026-08-10 while rescoping F-27 for 5&nbsp;A</td>
   <td><span class="st open">OPEN</span></td>
-  <td>Rev-B: move U11 pin&nbsp;5 from VBUS to +3V3 (data clamps ≈4&nbsp;V — correct for USB&nbsp;2.0 signaling; rail always up when USB is active) + SMAJ24A VBUS→GND at J3 (Littelfuse, <code>C148222</code>). Do not enable &gt;5&nbsp;V PD requests before this lands. Detail: <a href="power.html#f39">power §2</a></td></tr>
+  <td>Rev-B: move U11 pin&nbsp;5 from VBUS to +3V3 (data clamps ≈4&nbsp;V — correct for USB&nbsp;2.0 signaling; rail always up when USB is active) + a TVS VBUS→GND at J3. Do not enable &gt;5&nbsp;V PD requests before this lands. Detail: <a href="power.html#f39">power §2</a>.
+  <br><strong>Amended 2026-08-11 — landed in schematic and PCB; clamp part changed.</strong> The SMAJ24A (SMA, 400&nbsp;W) has no legal placement near J3: J3's own 9.0×10.7&nbsp;mm courtyard, J6 overlapping it 0.9&nbsp;mm away, C105/C106 and the board edge leave nothing closer than 10&nbsp;mm, and that pose needs 11 signal segments ripped including /SWD, /RUN and /HALL1-2 — a clamp that far from the connector is not doing its job. Replaced with <strong>SMF24A</strong> (SOD-123FL, 200&nbsp;W 10/1000&nbsp;µs, 24&nbsp;V standoff, 38.9&nbsp;V clamp, <code>C169430</code>) at <code>183.725, 111.605</code> on F.Cu — 5.15&nbsp;mm from J3 and only 2 segments ripped. This halves the surge rating to keep the clamp where it works; a 24&nbsp;V SOD-323 part was considered and rejected because parts in that package are ESD-class arrays, not surge-rated TVS. U11 pin&nbsp;5 → +3V3 is done on both sides</td></tr>
 </table>
 </div>
 

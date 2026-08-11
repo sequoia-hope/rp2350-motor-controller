@@ -44982,7 +44982,7 @@
 				)
 			)
 		)
-		(property "Value" "SMAJ24A"
+		(property "Value" "SMF24A"
 			(at 93.98 104.14 90)
 			(effects
 				(font
@@ -44990,7 +44990,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SMA"
+		(property "Footprint" "Diode_SMD:D_SOD-123F"
 			(at 99.06 105.41 90)
 			(effects
 				(font
@@ -44999,7 +44999,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.littelfuse.com/media?resourcetype=datasheets&itemid=75e32973-b177-4ee3-a0ff-cedaf1abdb93&filename=smaj-datasheet"
+		(property "Datasheet" "https://www.littelfuse.com/assetdocs/tvs-diodes-smf-datasheet?assetguid=7eb8a5b6-bdd0-4561-8f19-0c3cc6f9b2af"
 			(at 99.06 105.41 0)
 			(effects
 				(font
@@ -45008,7 +45008,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "400W unidirectional TVS, 24 V standoff, SMA (DO-214AC) - VBUS surge clamp at J3"
+		(property "Description" "200W unidirectional TVS, 24 V standoff, SOD-123FL - VBUS surge clamp at J3"
 			(at 99.06 105.41 0)
 			(effects
 				(font
@@ -45017,7 +45017,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C148222"
+		(property "LCSC" "C169430"
 			(at 99.06 105.41 0)
 			(effects
 				(font
