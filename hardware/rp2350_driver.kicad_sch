@@ -4563,6 +4563,144 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Diode:SMAJ24A"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "D"
+				(at 0 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SMAJ24A"
+				(at 0 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Diode_SMD:D_SMA"
+				(at 0 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.littelfuse.com/media?resourcetype=datasheets&itemid=75e32973-b177-4ee3-a0ff-cedaf1abdb93&filename=smaj-datasheet"
+				(at -1.27 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "400W unidirectional Transient Voltage Suppressor, 24.0Vr, SMA(DO-214AC)"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "unidirectional diode TVS voltage suppressor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "D*SMA*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "SMAJ24A_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27) (xy -1.27 1.27) (xy -1.27 -1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 1.27) (xy 1.27 -1.27) (xy -1.27 0) (xy 1.27 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "SMAJ24A_1_1"
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "A1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 0 180)
+					(length 2.54)
+					(name "A2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Diode:SMF54A"
 			(pin_numbers
 				(hide yes)
@@ -8353,28 +8491,40 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Power_Management:LM74700"
+(symbol "Power_Management:LTC4359-MS8"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "U"
-				(at -9.525 -8.89 0)
+				(at -5.08 8.89 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Value" "LM74700"
-				(at 7.62 -8.89 0)
+			(property "Value" "LTC4359-MS8"
+				(at 6.35 -6.35 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
-				(at -9.525 -8.89 0)
+			(property "Footprint" "Package_SO:MSOP-8_3x3mm_P0.65mm"
+				(at 6.35 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.analog.com/media/en/technical-documentation/data-sheets/ltc4359.pdf"
+				(at 0 -6.35 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -8382,16 +8532,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "http://www.ti.com/lit/gpn/LM74700-Q1"
-				(at -9.525 -8.89 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Low Iq reverse battery protection ideal diode controller, SOT-23-6"
+			(property "Description" "Ideal diode controller with reverse input protection, MSOP-8"
 				(at 0 0 0)
 				(effects
 					(font
@@ -8400,7 +8541,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "ideal-diode or-ing"
+			(property "ki_keywords" "ideal-diode or-ing reverse-protection"
 				(at 0 0 0)
 				(effects
 					(font
@@ -8409,7 +8550,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_fp_filters" "SOT?23*"
+			(property "ki_fp_filters" "MSOP*3x3mm*P0.65mm*"
 				(at 0 0 0)
 				(effects
 					(font
@@ -8418,10 +8559,10 @@
 					(hide yes)
 				)
 			)
-			(symbol "LM74700_0_1"
+			(symbol "LTC4359-MS8_0_1"
 				(rectangle
-					(start -10.16 7.62)
-					(end 10.16 -7.62)
+					(start -5.08 7.62)
+					(end 5.08 -7.62)
 					(stroke
 						(width 0.254)
 						(type default)
@@ -8431,18 +8572,18 @@
 					)
 				)
 			)
-			(symbol "LM74700_1_1"
-				(pin passive line
-					(at -12.7 -2.54 0)
+			(symbol "LTC4359-MS8_1_1"
+				(pin power_in line
+					(at -7.62 0 0)
 					(length 2.54)
-					(name "VCAP"
+					(name "IN"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "1"
+					(number "4"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -8451,9 +8592,28 @@
 					)
 				)
 				(pin input line
-					(at -12.7 -5.08 0)
+					(at -7.62 -2.54 0)
 					(length 2.54)
-					(name "EN"
+					(name "~{SHDN}"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at -2.54 -7.62 90)
+					(length 2.54)
+					(hide yes)
+					(name "NC"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -8468,10 +8628,28 @@
 						)
 					)
 				)
-				(pin power_in line
-					(at -7.62 10.16 270)
+				(pin input line
+					(at 0 10.16 270)
 					(length 2.54)
-					(name "ANODE"
+					(name "SRC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -10.16 90)
+					(length 2.54)
+					(name "Vss"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -8487,7 +8665,7 @@
 					)
 				)
 				(pin output line
-					(at 0 10.16 270)
+					(at 2.54 10.16 270)
 					(length 2.54)
 					(name "GATE"
 						(effects
@@ -8496,7 +8674,7 @@
 							)
 						)
 					)
-					(number "5"
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -8504,17 +8682,18 @@
 						)
 					)
 				)
-				(pin power_in line
-					(at 0 -10.16 90)
+				(pin no_connect line
+					(at 2.54 -7.62 90)
 					(length 2.54)
-					(name "GND"
+					(hide yes)
+					(name "NC"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "2"
+					(number "7"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -8523,16 +8702,16 @@
 					)
 				)
 				(pin input line
-					(at 7.62 10.16 270)
+					(at 7.62 0 180)
 					(length 2.54)
-					(name "CATHODE"
+					(name "OUT"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "4"
+					(number "8"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -12264,12 +12443,6 @@
 		(uuid "023b88f6-5913-4e4a-902b-fbb9e2d774d5")
 	)
 	(junction
-		(at 193.04 86.36)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "02ac1167-a251-47d6-8dec-cb856abe91a2")
-	)
-	(junction
 		(at 226.06 86.36)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -12534,6 +12707,18 @@
 		(uuid "36134fec-81fd-4651-aac8-fb9eaebe0475")
 	)
 	(junction
+		(at 99.06 93.98)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "96c17c0f-4a88-4737-9f9c-47c239509cf4")
+	)
+	(junction
+		(at 106.68 118.11)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "09b3fd2e-411c-4e4d-be5f-d68c4d1807a6")
+	)
+	(junction
 		(at 129.54 96.52)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -12604,6 +12789,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3f462e67-3508-45ec-966b-1cead40e92e9")
+	)
+	(junction
+		(at 185.42 106.68)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6ee8e67d-8a70-4cf3-bfa1-c38c63b511e4")
 	)
 	(junction
 		(at 185.42 86.36)
@@ -15103,16 +15294,6 @@
 	)
 	(wire
 		(pts
-			(xy 194.31 109.22) (xy 193.04 109.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "20ac822b-3db8-4bf0-9d85-8191f163f748")
-	)
-	(wire
-		(pts
 			(xy 471.17 458.47) (xy 471.17 464.82)
 		)
 		(stroke
@@ -17154,6 +17335,46 @@
 	)
 	(wire
 		(pts
+			(xy 99.06 93.98) (xy 106.68 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cb2a5251-f294-4cde-afc4-94f54bef85a5")
+	)
+	(wire
+		(pts
+			(xy 99.06 93.98) (xy 99.06 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "458a4cae-e324-4eb5-b78f-f9f7fe34c910")
+	)
+	(wire
+		(pts
+			(xy 99.06 109.22) (xy 99.06 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ded87888-8212-4d30-9631-edcae727bd3b")
+	)
+	(wire
+		(pts
+			(xy 99.06 118.11) (xy 106.68 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bf1f8050-6e6d-46de-a5f9-5d9bdac314ae")
+	)
+	(wire
+		(pts
 			(xy 106.68 93.98) (xy 114.3 93.98)
 		)
 		(stroke
@@ -17784,7 +18005,7 @@
 	)
 	(wire
 		(pts
-			(xy 214.63 86.36) (xy 214.63 96.52)
+			(xy 214.63 86.36) (xy 214.63 106.68)
 		)
 		(stroke
 			(width 0)
@@ -20354,16 +20575,6 @@
 	)
 	(wire
 		(pts
-			(xy 193.04 86.36) (xy 193.04 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9f250205-f4f4-4dc4-95b0-446b7c50d7fe")
-	)
-	(wire
-		(pts
 			(xy 297.18 436.88) (xy 306.07 436.88)
 		)
 		(stroke
@@ -21834,16 +22045,6 @@
 	)
 	(wire
 		(pts
-			(xy 193.04 109.22) (xy 193.04 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c38e7c34-4d11-447b-a65b-46b7e19adac1")
-	)
-	(wire
-		(pts
 			(xy 415.29 154.94) (xy 415.29 153.67)
 		)
 		(stroke
@@ -23104,6 +23305,46 @@
 	)
 	(wire
 		(pts
+			(xy 199.39 96.52) (xy 204.47 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d0ae8f00-e86f-47f7-8872-3048e5765510")
+	)
+	(wire
+		(pts
+			(xy 214.63 106.68) (xy 212.09 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "39ca9546-189e-49c2-92fa-dd3e07f87e48")
+	)
+	(wire
+		(pts
+			(xy 185.42 106.68) (xy 185.42 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5c1f0b7a-9d24-4e8b-bd31-6f0a2c7e4419")
+	)
+	(wire
+		(pts
+			(xy 185.42 106.68) (xy 196.85 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c558a118-ea6e-4028-a6d5-b155ae5a3683")
+	)
+	(wire
+		(pts
 			(xy 383.54 306.07) (xy 383.54 306.705)
 		)
 		(stroke
@@ -23714,7 +23955,7 @@
 	)
 	(wire
 		(pts
-			(xy 185.42 111.76) (xy 185.42 86.36)
+			(xy 185.42 109.22) (xy 185.42 106.68)
 		)
 		(stroke
 			(width 0)
@@ -23924,7 +24165,7 @@
 	)
 	(wire
 		(pts
-			(xy 85.09 93.98) (xy 106.68 93.98)
+			(xy 85.09 93.98) (xy 99.06 93.98)
 		)
 		(stroke
 			(width 0)
@@ -24184,7 +24425,7 @@
 	)
 	(wire
 		(pts
-			(xy 194.31 111.76) (xy 185.42 111.76)
+			(xy 196.85 109.22) (xy 185.42 109.22)
 		)
 		(stroke
 			(width 0)
@@ -36066,84 +36307,6 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 193.04 95.25 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "3e224cbb-b4e5-472c-942f-2c1b38e7d21b")
-		(property "Reference" "C79"
-			(at 190.754 96.4184 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "100n"
-			(at 190.754 94.107 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 192.0748 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 193.04 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 193.04 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC" "C131394"
-			(at 193.04 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "747ae8d3-af9e-463e-bbf2-794f4a3e1ed1")
-		)
-		(pin "2"
-			(uuid "a663f80a-ccd1-44f4-8e85-5ffed6be8b7d")
-		)
-		(instances
-			(project "rp2350_driver"
-				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
-					(reference "C79")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
 		(at 238.76 509.27 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -44802,6 +44965,83 @@
 		)
 	)
 	(symbol
+		(lib_id "Diode:SMAJ24A")
+		(at 99.06 105.41 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e31b6abd-f854-4aba-a747-659f894b2820")
+		(property "Reference" "D31"
+			(at 93.98 101.6 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SMAJ24A"
+			(at 93.98 104.14 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SMA"
+			(at 99.06 105.41 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.littelfuse.com/media?resourcetype=datasheets&itemid=75e32973-b177-4ee3-a0ff-cedaf1abdb93&filename=smaj-datasheet"
+			(at 99.06 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "400W unidirectional TVS, 24 V standoff, SMA (DO-214AC) - VBUS surge clamp at J3"
+			(at 99.06 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C148222"
+			(at 99.06 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1bff0737-35d2-4632-8cc8-fee972461eba")
+		)
+		(pin "2"
+			(uuid "cd577859-ab6b-42f2-ae1d-f5670636c0cb")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "D31")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C")
 		(at 106.68 105.41 0)
 		(unit 1)
@@ -49413,7 +49653,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Transistor_FET:Q_NMOS_GDS")
+		(lib_id "Device:Q_NMOS_SGD")
 		(at 207.01 88.9 270)
 		(mirror x)
 		(unit 1)
@@ -49430,7 +49670,7 @@
 				)
 			)
 		)
-		(property "Value" "Q_NMOS_GDS"
+		(property "Value" "E100N4P0HL1"
 			(at 207.01 82.55 90)
 			(effects
 				(font
@@ -49438,7 +49678,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-89-3"
+		(property "Footprint" "parts:PowerPAK_SO-8_123"
 			(at 209.55 83.82 0)
 			(effects
 				(font
@@ -49447,7 +49687,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://datasheet.lcsc.com/lcsc/E100N4P0HL1.pdf"
 			(at 207.01 88.9 0)
 			(effects
 				(font
@@ -49456,7 +49696,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "N-MOSFET transistor, gate/drain/source"
+		(property "Description" "N-MOSFET 100V 4mOhm 83A, source/gate/drain, PDFN5x6"
 			(at 207.01 88.9 0)
 			(effects
 				(font
@@ -49465,7 +49705,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "C29781176"
 			(at 207.01 88.9 0)
 			(effects
 				(font
@@ -58544,7 +58784,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 207.01 116.84 0)
+		(at 204.47 116.84 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -58553,7 +58793,7 @@
 		(fields_autoplaced yes)
 		(uuid "dd8e89e0-2a19-474c-b3d4-0a066f5e5de0")
 		(property "Reference" "#PWR0202"
-			(at 207.01 123.19 0)
+			(at 204.47 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -58562,7 +58802,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 207.01 121.92 0)
+			(at 204.47 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -60164,8 +60404,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Power_Management:LM74700")
-		(at 207.01 106.68 0)
+		(lib_id "Power_Management:LTC4359-MS8")
+		(at 204.47 106.68 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -60174,7 +60414,7 @@
 		(fields_autoplaced yes)
 		(uuid "e8c314bd-ba6d-48af-af19-87af87553620")
 		(property "Reference" "U29"
-			(at 218.44 105.4099 0)
+			(at 215.9 105.4099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -60182,8 +60422,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "LM74700"
-			(at 218.44 107.9499 0)
+		(property "Value" "LTC4359CMS8"
+			(at 215.9 107.9499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -60191,8 +60431,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
-			(at 197.485 115.57 0)
+		(property "Footprint" "Package_SO:MSOP-8_3x3mm_P0.65mm"
+			(at 194.945 115.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -60200,8 +60440,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "http://www.ti.com/lit/gpn/LM74700-Q1"
-			(at 197.485 115.57 0)
+		(property "Datasheet" "https://www.analog.com/media/en/technical-documentation/data-sheets/ltc4359.pdf"
+			(at 194.945 115.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -60209,8 +60449,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Low Iq reverse battery protection ideal diode controller, SOT-23-6"
-			(at 207.01 106.68 0)
+		(property "Description" "Ideal diode controller with reverse input protection, 4V-80V, 100V abs max, MSOP-8"
+			(at 204.47 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -60218,32 +60458,38 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2941042"
-			(at 207.01 106.68 0)
+		(property "LCSC" "C688235"
+			(at 204.47 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
-		)
-		(pin "4"
-			(uuid "a9191d77-13e0-4b3f-bf55-693dfb5da3ff")
-		)
-		(pin "3"
-			(uuid "59526865-d7a7-403d-8933-33f7d6298403")
-		)
-		(pin "2"
-			(uuid "8eebb9bb-e39c-4dbe-87e0-56ee18c13ca3")
-		)
-		(pin "5"
-			(uuid "e001e957-9057-4e4a-884d-3777c39ba163")
 		)
 		(pin "1"
-			(uuid "1a24a3cd-99ba-45ef-8b6a-695d8e7debd2")
+			(uuid "7ca3f444-752a-4377-8aa9-ef33c192c860")
+		)
+		(pin "2"
+			(uuid "acd65d87-9a85-4772-bff3-908e4f8aa94a")
+		)
+		(pin "3"
+			(uuid "992ce891-37d6-47bf-838a-fb88cafad233")
+		)
+		(pin "4"
+			(uuid "3a037524-06f0-4b38-8e37-d9cf3dae8b46")
+		)
+		(pin "5"
+			(uuid "472c61be-b29e-4f86-a5fd-fe52f0aa6818")
 		)
 		(pin "6"
-			(uuid "aa8a572d-d5a2-44fc-ac75-c4b62a4059bc")
+			(uuid "fb7dd988-dbea-4001-b5e1-cf93911f9302")
+		)
+		(pin "7"
+			(uuid "be7da2be-4fc3-49ae-ba8e-87afe4893f6f")
+		)
+		(pin "8"
+			(uuid "47e5b34b-98d0-4383-9c86-b6f23a695a7d")
 		)
 		(instances
 			(project ""
@@ -62411,7 +62657,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:VBUS")
+		(lib_id "power:+3V3")
 		(at 365.76 175.26 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -62428,7 +62674,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "VBUS"
+		(property "Value" "+3V3"
 			(at 364.871 171.3738 0)
 			(effects
 				(font
