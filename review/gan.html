@@ -91,7 +91,7 @@ see <a href="#thermal">§4</a> for the number that actually applies to us.</p>
 <tr><td>Package</td><td>QFN-13, 3.5 × 5 mm, exposed top-side die, wettable flanks, MSL1</td><td>2× PowerPAK SO-8 (5 × 6) + SOIC-8 driver</td></tr>
 <tr><td>Bias supply</td><td><strong>5 V</strong> V<sub>DRV</sub> (4.75–5.5, abs max 6)</td><td>V<sub>drive</sub> = 5.04 V (XL7005A, 1.25 V ref, R5/R6 = 10k/3.3k)</td></tr>
 <tr><td>Logic</td><td>HS<sub>IN</sub>/LS<sub>IN</sub> both active-high, V<sub>IH</sub> 2.4 V, internal 5 kΩ pull-downs</td><td>HIN active-high, <span style="text-decoration:overline">LIN</span> active-low with 5 V pull-up</td></tr>
-<tr><td>Dead time</td><td><strong>None</strong> — only a 5 ns cross-conduction lockout</td><td>EG3113 interlock (firmware comment: "no interlock" in practice)</td></tr>
+<tr><td>Dead time</td><td><strong>None</strong> — only a 5 ns cross-conduction lockout</td><td>EG3113 interlock forces HO=LO=0 on overlap, <strong>plus 100 ns typ internal dead time</strong> (50/300 min/max)</td></tr>
 <tr><td>Bootstrap</td><td>Internal synchronous FET (1.7 Ω) — <strong>no external diode</strong></td><td>D3 DSS110 + R9 4.7 Ω + C10 10 µF</td></tr>
 <tr><td>Pulse width</td><td><strong>30 ns &lt; ON &lt; 200 µs</strong>, same for OFF, both sides</td><td>Unlimited DC on either side</td></tr>
 <tr><td>Thermal</td><td>Rθ<sub>JC_top</sub> <strong>0.4</strong> · Rθ<sub>JB</sub> 3 · Rθ<sub>JA</sub> 43 (JEDEC) / 25 (EVB) °C/W</td><td>Bottom drain pad only, ~40 °C/W each on good copper</td></tr>

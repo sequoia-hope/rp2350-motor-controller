@@ -522,8 +522,16 @@ variant BOM see the <a href="power.html#voltage">power review's decision table</
   DSS110 + 4.7&nbsp;Ω, 10.2&nbsp;Ω gate resistors, 10&nbsp;k pulls on every input giving a defined boot
   state: HIN low (high-side off), LIN̄ low → <em>low-side ON</em>. All four low sides on at reset = brake
   + bootstrap precharge. Reasonable choice, but verify it's intentional: a reset at speed hard-brakes the
-  motor and regens into the bus (see TVS finding). EG3113 has no shoot-through protection — firmware
-  dead-time is load-bearing (SimpleFOC 6-PWM dead zone covers this).</li>
+  motor and regens into the bus (see TVS finding). Note this is the board overriding the driver, not the
+  driver's own default — the EG3113 has an internal 200&nbsp;k pull-down on HIN and an internal pull-up on
+  LIN̄, so <em>floating</em> inputs park both FETs off; our external 10&nbsp;k pull-downs beat that pull-up.
+  <strong>Corrected 2026-08-12:</strong> this bullet previously claimed the EG3113 has no shoot-through
+  protection. It does. The datasheet (V1.2, <code>hardware/docs/EG-Micro-EG3113_C480666_V1.2.pdf</code>)
+  §8.2 truth table forces HO=0 <em>and</em> LO=0 when both sides are commanded on (HIN=1, LIN̄=0), and §7.2
+  specifies 50/100/300&nbsp;ns of internal dead time. Firmware dead-time (SimpleFOC 6-PWM dead zone, ~1&nbsp;µs
+  at 20&nbsp;kHz) is defence in depth rather than the sole barrier — but the DT figure is spec'd at
+  C<sub>L</sub>=0, and the interlock is logic-domain only: dV/dt-induced shoot-through through C<sub>gd</sub>
+  is untouched by it. See <a href="findings.html#f-13">F-13</a>.</li>
   <li><span class="sev low">LOW</span> <strong>Shunt discrepancy:</strong> schematic says 2×8&nbsp;mΩ
   per phase (4&nbsp;mΩ → 0.08&nbsp;V/A → ±20.6&nbsp;A, neatly filling the INA240A1's output range — good
   design point); the built board has 20&nbsp;mΩ (±4.1&nbsp;A, hence firmware's
