@@ -45,6 +45,14 @@
   .summary div { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: .7rem 1.1rem; }
   .summary strong { font-size: 1.3rem; display: block; }
   .id { font-family: ui-monospace, monospace; color: var(--muted); white-space: nowrap; }
+  .id a { color: inherit; text-decoration: none; border-bottom: 1px dotted transparent; }
+  .id a:hover, .id a:focus { color: var(--accent); border-bottom-color: currentColor; }
+  /* row permalinks: clear the sticky header on jump, then flag the landing row */
+  tr[id] { scroll-margin-top: 3.5rem; }
+  tr[id]:target > td { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  tr[id]:target > td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+  tr[id]:target .id a { color: var(--accent); font-weight: 700; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 </style>
 </head>
 <body>
@@ -77,39 +85,43 @@
 <span class="st doc">DOC</span> documented / accepted / needs verification only ·
 <span class="st dec">DECIDED</span> design decision recorded</p>
 
+<p style="color:var(--muted);font-size:.9em">Every row is a permalink — click its ID, or link straight to
+<code>findings.html#f-27</code> from a commit message, the other review pages, or a note. IDs are stable;
+rows are never renumbered.</p>
+
 <h2 id="encoder">Encoder port <span style="font-weight:400;color:var(--muted);font-size:.8em">(detail: <a href="schematic.html#encoder">schematic review §2</a>)</span></h2>
 <div class="tablewrap">
 <table>
 <tr><th>ID</th><th>Sev</th><th>Finding</th><th>Status</th><th>Disposition</th></tr>
-<tr><td class="id">F-01</td><td><span class="sev high">HIGH</span></td>
+<tr id="f-01"><td class="id"><a href="#f-01">F-01</a></td><td><span class="sev high">HIGH</span></td>
   <td>Single-ended signals can't cross the receiver threshold: fixed 100Ω termination (R82–R85) couples the undriven line to the driven one 50:1 vs the 10k/10k bias → ±32&nbsp;mV differential vs the SIT3088's −200…−100&nbsp;mV threshold</td>
   <td><span class="st fixed">FIXED</span></td>
   <td>Switched termination U30–U33 in series with R82–R85, bussed on TERM_SW = GPIO38 (TP20 on rev A); netlist-verified. <code>163479a</code>, <code>2238aca</code></td></tr>
-<tr><td class="id">F-02</td><td><span class="sev med">MED</span></td>
+<tr id="f-02"><td class="id"><a href="#f-02">F-02</a></td><td><span class="sev med">MED</span></td>
   <td>Every TS5A3159 ENB and SIT3088 DE/RE̅ line floats from power-on to firmware init — undefined mux states; V_SW float can put 5&nbsp;V on a 3.3&nbsp;V encoder; floating DE can fight the breakout's always-on driver</td>
   <td><span class="st fixed">FIXED</span></td>
   <td>R101–R112 100k pull-downs (safe defaults) + firmware <code>initSwitchGpios()</code> first thing in <code>setup()</code>. <code>ca239c8</code>, <code>7699135</code></td></tr>
-<tr><td class="id">F-03</td><td><span class="sev med">MED</span></td>
+<tr id="f-03"><td class="id"><a href="#f-03">F-03</a></td><td><span class="sev med">MED</span></td>
   <td>Open-collector single-ended encoders (most cheap quads / hall-ABZ) had nothing to pull the P line high on the transceiver path</td>
   <td><span class="st fixed">FIXED</span></td>
   <td>R97–R100 10k pull-ups to 3V3 on ENC_{A,B,C}_P_SW / ENC_D_P. <code>163479a</code></td></tr>
-<tr><td class="id">F-04</td><td><span class="sev low">LOW</span></td>
+<tr id="f-04"><td class="id"><a href="#f-04">F-04</a></td><td><span class="sev low">LOW</span></td>
   <td>I2C_SCL hardwired to J12 pin 10 and shared with the FUSB302 PD bus — contention if a non-I2C encoder drives pin 10; cable noise couples into PD comms</td>
   <td><span class="st revc">REV C</span></td>
   <td>Switch SCL like SDA (second half of a TS5A23159), or document "pin 10 must float in non-I2C modes"</td></tr>
-<tr><td class="id">F-05</td><td><span class="sev low">LOW</span></td>
+<tr id="f-05"><td class="id"><a href="#f-05">F-05</a></td><td><span class="sev low">LOW</span></td>
   <td>Channel D asymmetry: bias on connector side of the choke, no hall/analog alternate path</td>
   <td><span class="st doc">DOC</span></td>
   <td>By design; electrically fine. Documented in schematic review §2.5</td></tr>
-<tr><td class="id">F-06</td><td><span class="sev info">INFO</span></td>
+<tr id="f-06"><td class="id"><a href="#f-06">F-06</a></td><td><span class="sev info">INFO</span></td>
   <td>SSI timing: MT6701 response shifted 2 bytes / 1 bit — consistent with ~4 transceiver propagation delays in the clock→data round trip</td>
   <td><span class="st doc">DOC</span></td>
   <td>Already compensated in the driver; document a max SPI clock (~2–4&nbsp;MHz round-trip-limited)</td></tr>
-<tr><td class="id">F-07</td><td><span class="sev info">INFO</span></td>
+<tr id="f-07"><td class="id"><a href="#f-07">F-07</a></td><td><span class="sev info">INFO</span></td>
   <td>Encoder breakout (MT6701 + 3× CA-IF4820HD): termination correctly at receiving ends only; controller-transmit pairs are double-terminated (50Ω, within RS-485 drive spec)</td>
   <td><span class="st doc">DOC</span></td>
   <td>Verified good; no action</td></tr>
-<tr><td class="id">F-08</td><td><span class="sev low">LOW</span></td>
+<tr id="f-08"><td class="id"><a href="#f-08">F-08</a></td><td><span class="sev low">LOW</span></td>
   <td>Single-ended usage on rev A boards (fixed termination): hall path works for quadrature; push-pull needs R86–R93 → 560Ω swap (±434&nbsp;mV margin); OC stays marginal on the transceiver path</td>
   <td><span class="st doc">DOC</span></td>
   <td>Field-fix options recorded in README + schematic review §2.4; TP20 bodge point noted</td></tr>
@@ -120,51 +132,51 @@
 <div class="tablewrap">
 <table>
 <tr><th>ID</th><th>Sev</th><th>Finding</th><th>Status</th><th>Disposition</th></tr>
-<tr><td class="id">F-09</td><td><span class="sev high">HIGH</span></td>
+<tr id="f-09"><td class="id"><a href="#f-09">F-09</a></td><td><span class="sev high">HIGH</span></td>
   <td>Phase TVS SMAJ51A (51&nbsp;V standoff) below bus voltage — in leakage/breakdown whenever bus &gt; ~51&nbsp;V with a high-side on (the forgotten part from the old 48&nbsp;V-era rating)</td>
   <td><span class="st fixed">FIXED</span></td>
   <td>→ SMAJ64A (standoff 64&nbsp;V, br 71–79&nbsp;V &lt; 80&nbsp;V FETs). LCSC-TBD. <code>0371b4f</code></td></tr>
-<tr><td class="id">F-10</td><td><span class="sev med">MED</span></td>
+<tr id="f-10"><td class="id"><a href="#f-10">F-10</a></td><td><span class="sev med">MED</span></td>
   <td>Bus TVS SMDJ85A clamps ~137&nbsp;V — above the FET rating; protection margins inverted</td>
   <td><span class="st fixed">FIXED</span></td>
   <td>→ SMDJ64A, matching the phase philosophy. LCSC-TBD. <code>0371b4f</code>, <code>bdab81e</code></td></tr>
-<tr><td class="id">F-11</td><td><span class="sev info">INFO</span></td>
+<tr id="f-11"><td class="id"><a href="#f-11">F-11</a></td><td><span class="sev info">INFO</span></td>
   <td>Voltage philosophy (user decision): 80&nbsp;V silicon everywhere, TVS breakdown just below it; 60&nbsp;V max continuous bus. FETs stay BSC030N08NS5. 72&nbsp;V bus = documented 6-line variant (100&nbsp;V FETs, 78A TVS, 100&nbsp;V buck, 4.3k divider bottoms, no LM74700); a "72&nbsp;V" 20S li-ion pack charges to 84&nbsp;V → that's a 100&nbsp;V design</td>
   <td><span class="st dec">DECIDED</span></td>
   <td>Decision table in <a href="power.html#voltage">power review §3</a>. <code>bdab81e</code></td></tr>
-<tr><td class="id">F-12</td><td><span class="sev med">MED</span></td>
+<tr id="f-12"><td class="id"><a href="#f-12">F-12</a></td><td><span class="sev med">MED</span></td>
   <td>Reset/boot state = all four low-sides ON (LIN̄ pull-downs) → hard brake at any reset; regens into the bus at speed (interacts with F-26)</td>
   <td><span class="st doc">DOC</span></td>
   <td>Verify intended; bootstrap precharge benefit noted. Consider both-off default only with F-26 mitigated</td></tr>
-<tr><td class="id">F-13</td><td><span class="sev info">INFO</span></td>
+<tr id="f-13"><td class="id"><a href="#f-13">F-13</a></td><td><span class="sev info">INFO</span></td>
   <td>EG3113 has no shoot-through protection — firmware dead-time (SimpleFOC 6-PWM dead zone) is load-bearing</td>
   <td><span class="st doc">DOC</span></td>
   <td>Recorded; no hardware action</td></tr>
-<tr><td class="id">F-14</td><td><span class="sev low">LOW</span></td>
+<tr id="f-14"><td class="id"><a href="#f-14">F-14</a></td><td><span class="sev low">LOW</span></td>
   <td>Shunt documentation drift: schematic 2×8&nbsp;mΩ (±20.6&nbsp;A) vs installed 20&nbsp;mΩ (±4.1&nbsp;A, firmware clamps); README claimed "20&nbsp;A"</td>
   <td><span class="st fixed">FIXED</span></td>
   <td>README shunt↔range table; firmware comments already correct. <code>7699135</code></td></tr>
-<tr><td class="id">F-15</td><td><span class="sev low">LOW</span></td>
+<tr id="f-15"><td class="id"><a href="#f-15">F-15</a></td><td><span class="sev low">LOW</span></td>
   <td>Board silk phase labels A↔C swapped vs schematic nets (bridge A output exits on connector net C_N and vice versa)</td>
   <td><span class="st doc">DOC</span></td>
   <td>Firmware documents and compensates; renaming across sch+pcb judged riskier than the confusion. Revisit only in a full respin</td></tr>
-<tr><td class="id">F-16</td><td><span class="sev med">MED</span></td>
+<tr id="f-16"><td class="id"><a href="#f-16">F-16</a></td><td><span class="sev med">MED</span></td>
   <td>WS2812B V<sub>IH</sub> = 0.7·VDD = 3.5&nbsp;V at 5&nbsp;V supply vs 3.3&nbsp;V GPIO data — out of spec exactly when Vdrive is healthy</td>
   <td><span class="st fixed">FIXED</span></td>
   <td>D30 (DSS110) drops LED supply to ~4.5&nbsp;V (LED_VDD) + C114 decoupling. <code>ca239c8</code></td></tr>
-<tr><td class="id">F-17</td><td><span class="sev med">MED</span></td>
+<tr id="f-17"><td class="id"><a href="#f-17">F-17</a></td><td><span class="sev med">MED</span></td>
   <td>E-stop is a bare GPIO — a wedged CPU can't be stopped by it</td>
   <td><span class="st fixed">FIXED</span></td>
   <td>DNP option Q6+R113: open E-stop loop pulls RUN low → reset → gate-driver pulls brake the motor, no firmware in the loop. Populate to enable. <code>ca239c8</code></td></tr>
-<tr><td class="id">F-18</td><td><span class="sev med">MED</span></td>
+<tr id="f-18"><td class="id"><a href="#f-18">F-18</a></td><td><span class="sev med">MED</span></td>
   <td>DEMO_MODE self-spins the motor at power-up (re-enabled in 781a033) — hazard for a robotics controller</td>
   <td><span class="st open">OPEN</span></td>
   <td>Firmware backlog: gate behind a strap/button or disable at HEAD and document the flag</td></tr>
-<tr><td class="id">F-19</td><td><span class="sev low">LOW</span></td>
+<tr id="f-19"><td class="id"><a href="#f-19">F-19</a></td><td><span class="sev low">LOW</span></td>
   <td>Isolated CAN side is bus-powered (+5V_ISO from the harness) — isolation only works if the harness supplies it; no on-board 120Ω termination</td>
   <td><span class="st doc">DOC</span></td>
   <td>Document harness requirement; termination external by design</td></tr>
-<tr><td class="id">F-20</td><td><span class="sev info">INFO</span></td>
+<tr id="f-20"><td class="id"><a href="#f-20">F-20</a></td><td><span class="sev info">INFO</span></td>
   <td>RP2350 hookup verified against the hardware design guide (ABM8-272+15&nbsp;pF, 33Ω VREG_AVDD filter, QSPI+BOOTSEL, USBLC6+27Ω, SWD, debug UART, daisy-chain UARTs with TVS, PWM test points)</td>
   <td><span class="st doc">DOC</span></td>
   <td>Verified good; no action</td></tr>
@@ -175,27 +187,27 @@
 <div class="tablewrap">
 <table>
 <tr><th>ID</th><th>Sev</th><th>Finding</th><th>Status</th><th>Disposition</th></tr>
-<tr><td class="id">F-21</td><td><span class="sev info">INFO</span></td>
+<tr id="f-21"><td class="id"><a href="#f-21">F-21</a></td><td><span class="sev info">INFO</span></td>
   <td>Baseline DRC electrically clean: 0 clearance violations, 0 unconnected across 6 layers</td>
   <td><span class="st doc">DOC</span></td>
   <td>Recorded as the rev-A baseline</td></tr>
-<tr><td class="id">F-22</td><td><span class="sev low">LOW</span></td>
+<tr id="f-22"><td class="id"><a href="#f-22">F-22</a></td><td><span class="sev low">LOW</span></td>
   <td>5 dangling track stubs (B.Cu), 21 silk overlaps, 6 silk-over-copper at baseline</td>
   <td><span class="st open">OPEN</span></td>
   <td>Folded into the rev-B re-route session's cleanup pass (F-25)</td></tr>
-<tr><td class="id">F-23</td><td><span class="sev med">MED</span></td>
+<tr id="f-23"><td class="id"><a href="#f-23">F-23</a></td><td><span class="sev med">MED</span></td>
   <td>Courtyard truth vs DRC: real overlaps (C80 1.39&nbsp;mm² inside J9; D23/D24 vs U22/U26/U27) not reported by DRC despite <code>courtyards_overlap=error</code> — exclusions suspected; 11 footprints (all TPs + SW1/SW2) have no courtyard; <code>missing_courtyard=ignore</code></td>
   <td><span class="st revc">REV C</span></td>
   <td>Audit DRC exclusions, add courtyards to the 11, re-enable missing_courtyard — restores DRC's authority over spacing</td></tr>
-<tr><td class="id">F-24</td><td><span class="sev info">INFO</span></td>
+<tr id="f-24"><td class="id"><a href="#f-24">F-24</a></td><td><span class="sev info">INFO</span></td>
   <td>Spacing census (exact courtyard geometry): 62 pairs touching (&lt;0.05&nbsp;mm), 270 &lt; 0.25&nbsp;mm, concentrated in 5 clusters (gate-driver columns, RP2350 halo, encoder corner, USB/crystal, bottom-edge row). Whole-board relaxation = 61% of tracks invalidated → cluster-scoped shakes recommended</td>
   <td><span class="st dec">DECIDED</span></td>
   <td>Encoder-corner shake applied (49 parts, F-25); RP2350 halo deliberately left tight (decoupling loops); other clusters optional. Solver kept in <code>review/tools/</code></td></tr>
-<tr><td class="id">F-25</td><td><span class="sev high">HIGH</span></td>
+<tr id="f-25"><td class="id"><a href="#f-25">F-25</a></td><td><span class="sev high">HIGH</span></td>
   <td>Rev-B board is mid-rework: 214 airwires (corner signal routing deliberately removed), 22 sub-mm placement seams flagged as shorts, 11 courtyard seams, 5 proximity items vs protected phase/VMOT copper, U31 parked at (149.5, 119.75) ~30&nbsp;mm from R83, silk/mask cosmetics</td>
   <td><span class="st open">OPEN</span></td>
   <td><strong>Interactive KiCad re-route session required before any fab output.</strong> Worklist in <a href="pcb.html#revb">PCB review §7</a>. <code>d0455a8</code></td></tr>
-<tr><td class="id">F-26</td><td><span class="sev low">LOW</span></td>
+<tr id="f-26"><td class="id"><a href="#f-26">F-26</a></td><td><span class="sev low">LOW</span></td>
   <td>LCSC part numbers pending for: SMAJ64A, SMDJ64A, 100k 0402 (R101–R112), Q6 FET — marked <code>LCSC-TBD</code> in the files</td>
   <td><span class="st open">OPEN</span></td>
   <td>Pick in-stock parts at order time (grep for <code>LCSC-TBD</code>)</td></tr>
@@ -206,61 +218,61 @@
 <div class="tablewrap">
 <table>
 <tr><th>ID</th><th>Sev</th><th>Finding</th><th>Status</th><th>Disposition</th></tr>
-<tr><td class="id">F-27</td><td><span class="sev high">HIGH</span></td>
+<tr id="f-27"><td class="id"><a href="#f-27">F-27</a></td><td><span class="sev high">HIGH</span></td>
   <td>LM74700 (USB backfeed blocker) abs max 65&nbsp;V with cathode on VMOT — the weakest silicon on the bus; failure with Q5 enhanced connects the motor bus to the USB host. Amended 2026-08-10: the 5&nbsp;A USB-PD capability (20&nbsp;V/100&nbsp;W contract) also rules out any Schottky (~2.75&nbsp;W at 5&nbsp;A) <em>and</em> the existing Q5 (TMG08N10SI, 100&nbsp;mΩ → ~2.5&nbsp;W at 5&nbsp;A)</td>
   <td><span class="st open">OPEN</span></td>
   <td>Adopted for rev-B (2026-08-10): LTC4359CMS8 (MSOP-8, 100&nbsp;V abs-max pins, <code>C688235</code>) + Q5 → E100N4P0HL1 (100&nbsp;V/4&nbsp;mΩ PDFN5×6, <code>C29781176</code>, ~0.1&nbsp;W at 5&nbsp;A); 5&nbsp;A ampacity check on JP1 + VBUS copper in the layout session. SS210 option withdrawn. Detail: <a href="power.html#f27-adopted">power §2</a>. Until it lands: caution with USB attached above ~48&nbsp;V bus.
   <br><strong>Amended 2026-08-11 — schematic and PCB placement landed, routing outstanding.</strong> The earlier "5 colliding neighbours each" read was wrong: it counted <em>opposite-side</em> courtyards. On B.Cu the MSOP-8 clears everything 1&nbsp;mm east of the old centroid at zero cost (<code>167.745, 95.825</code>, rotated to horizontal into the hole C79 vacated). Q5's PowerPAK sits at <code>170.400, 103.325</code> rot&nbsp;180 — source east toward J3, drain west toward JP1, matching the power flow — which costs shoving TP15/TP17 ~3&nbsp;mm; the nearest pose needing no test-point move was 11–13&nbsp;mm away and would have stretched the 5&nbsp;A path. Board verified against the schematic netlist by <code>hardware/tools/revb/check_sync.py</code>; no new clearance, courtyard, hole or solder-mask violation vs the pre-sync DRC baseline, and copper outside the work window is bit-identical. <strong>Not fabricable yet:</strong> 84 ripped segments await routing — VBUS&nbsp;+7 airwires, Net-(JP1-A)&nbsp;+3, Net-(Q5-G)&nbsp;+1 plus 9 collateral nets — and the 5&nbsp;A ampacity check on JP1/VBUS copper is part of that pass</td></tr>
-<tr><td class="id">F-28</td><td><span class="sev med">MED</span></td>
+<tr id="f-28"><td class="id"><a href="#f-28">F-28</a></td><td><span class="sev med">MED</span></td>
   <td>Regen headroom is only ~0.22&nbsp;J (310&nbsp;µF between 60&nbsp;V and TVS breakdown); reset-brake (F-12) makes hard events likely; no chopper</td>
   <td><span class="st fixed">FIXED</span></td>
   <td>Firmware: <code>busGuard()</code> folds current_limit across 63–66&nbsp;V on every build; chopper implemented behind <code>-DBRAKE_CHOPPER=1</code> (D leg confirmed dual-role by design: steppers use it as a phase, BLDC builds fit the resistor J2&nbsp;"D"&nbsp;→&nbsp;J10&nbsp;GND). Design: <a href="power.html#brake">power §2</a>. Commit on rev-b-fixes</td></tr>
-<tr><td class="id">F-29</td><td><span class="sev med">MED</span></td>
+<tr id="f-29"><td class="id"><a href="#f-29">F-29</a></td><td><span class="sev med">MED</span></td>
   <td>Vdrive budget ~0.45&nbsp;A worst case vs XL7005A 0.4&nbsp;A; 47&nbsp;µH ripple 0.65&nbsp;A p-p at 60&nbsp;V puts peaks near the 1&nbsp;A-sat inductor</td>
   <td><span class="st revc">REV C</span></td>
   <td>XL7015 (0.8&nbsp;A, same footprint) + 100–220&nbsp;µH / ≥1.5&nbsp;A inductor</td></tr>
-<tr><td class="id">F-30</td><td><span class="sev med">MED</span></td>
+<tr id="f-30"><td class="id"><a href="#f-30">F-30</a></td><td><span class="sev med">MED</span></td>
   <td>SPX3819 (SOT-23-5, θJA≈230&nbsp;°C/W): ~+85&nbsp;°C rise at ~210&nbsp;mA — at the limit in a warm enclosure</td>
   <td><span class="st revc">REV C</span></td>
   <td>Same LDO family in SOT-89/SOT-223</td></tr>
-<tr><td class="id">F-31</td><td><span class="sev low">LOW</span></td>
+<tr id="f-31"><td class="id"><a href="#f-31">F-31</a></td><td><span class="sev low">LOW</span></td>
   <td>V_ENC (J12 pin 4) bare: no local cap, no ESD clamp, no current limit — a shorted encoder cable meets only the TS5A3159's ~300&nbsp;mA rating</td>
   <td><span class="st revc">REV C</span></td>
   <td>1&nbsp;µF + 5&nbsp;V TVS at the pin + polyfuse (or current-limited switch in place of U17)</td></tr>
-<tr><td class="id">F-32</td><td><span class="sev low">LOW</span></td>
+<tr id="f-32"><td class="id"><a href="#f-32">F-32</a></td><td><span class="sev low">LOW</span></td>
   <td>Hot-plug inrush: 60&nbsp;V into ~310&nbsp;µF through XT30 — spark/contact erosion</td>
   <td><span class="st doc">DOC</span></td>
   <td>Anti-spark on the harness or precharge note in docs</td></tr>
-<tr><td class="id">F-33</td><td><span class="sev low">LOW</span></td>
+<tr id="f-33"><td class="id"><a href="#f-33">F-33</a></td><td><span class="sev low">LOW</span></td>
   <td>XL7005A EN tied to GND (active-low enable assumed — boards boot); no way to sequence/disable Vdrive</td>
   <td><span class="st doc">DOC</span></td>
   <td>One datasheet check to confirm polarity; sequencing accepted as-is</td></tr>
-<tr><td class="id">F-34</td><td><span class="sev low">LOW</span></td>
+<tr id="f-34"><td class="id"><a href="#f-34">F-34</a></td><td><span class="sev low">LOW</span></td>
   <td>No battery reverse-polarity protection (XT30 keying is the protection) — standard for hobby drives</td>
   <td><span class="st doc">DOC</span></td>
   <td>One README sentence</td></tr>
-<tr><td class="id">F-35</td><td><span class="sev low">LOW</span></td>
+<tr id="f-35"><td class="id"><a href="#f-35">F-35</a></td><td><span class="sev low">LOW</span></td>
   <td>USB-only power: buck at max duty from ~5&nbsp;V leaves Vdrive ≈ 4.3–4.6&nbsp;V (5&nbsp;V encoders and LED dim); FUSB302 could negotiate 9–20&nbsp;V by default</td>
   <td><span class="st open">OPEN</span></td>
   <td>Firmware backlog: request ≥9&nbsp;V PD when available — hardware-gated on F-39 (U11 rework)</td></tr>
-<tr><td class="id">F-36</td><td><span class="sev info">INFO</span></td>
+<tr id="f-36"><td class="id"><a href="#f-36">F-36</a></td><td><span class="sev info">INFO</span></td>
   <td>Verified good: buck FB = 5.04&nbsp;V (10k/3.3k + 33&nbsp;n FF), SS210 freewheel (100&nbsp;V), local input cap adjacency note true on layout, RP2350 VREG per guide, PD-side ratings</td>
   <td><span class="st doc">DOC</span></td>
   <td>No action. Amended 2026-08-10: "PD-side ratings ✓" partially superseded — U11's VBUS pin missed, see F-39</td></tr>
-<tr><td class="id">F-39</td><td><span class="sev med">MED</span></td>
+<tr id="f-39"><td class="id"><a href="#f-39">F-39</a></td><td><span class="sev med">MED</span></td>
   <td>U11 (USBLC6-2P6) VBUS pin sits on the PD rail — 5&nbsp;V-class clamp (abs max 5.5&nbsp;V, internal ~6&nbsp;V zener to GND). Any PD contract above 5&nbsp;V — the F-35 fix, or the declared 20&nbsp;V/5&nbsp;A capability — drives it into continuous zener conduction and burns it. Found 2026-08-10 while rescoping F-27 for 5&nbsp;A</td>
   <td><span class="st open">OPEN</span></td>
   <td>Rev-B: move U11 pin&nbsp;5 from VBUS to +3V3 (data clamps ≈4&nbsp;V — correct for USB&nbsp;2.0 signaling; rail always up when USB is active) + a TVS VBUS→GND at J3. Do not enable &gt;5&nbsp;V PD requests before this lands. Detail: <a href="power.html#f39">power §2</a>.
   <br><strong>Amended 2026-08-11 — landed in schematic and PCB; clamp part changed.</strong> The SMAJ24A (SMA, 400&nbsp;W) has no legal placement near J3: J3's own 9.0×10.7&nbsp;mm courtyard, J6 overlapping it 0.9&nbsp;mm away, C105/C106 and the board edge leave nothing closer than 10&nbsp;mm, and that pose needs 11 signal segments ripped including /SWD, /RUN and /HALL1-2 — a clamp that far from the connector is not doing its job. Replaced with <strong>SMF24A</strong> (SOD-123FL, 200&nbsp;W 10/1000&nbsp;µs, 24&nbsp;V standoff, 38.9&nbsp;V clamp, <code>C169430</code>) at <code>183.725, 111.605</code> on F.Cu — 5.15&nbsp;mm from J3 and only 2 segments ripped. This halves the surge rating to keep the clamp where it works; a 24&nbsp;V SOD-323 part was considered and rejected because parts in that package are ESD-class arrays, not surge-rated TVS. U11 pin&nbsp;5 → +3V3 is done on both sides</td></tr>
-<tr><td class="id">F-40</td><td><span class="sev high">HIGH</span></td>
+<tr id="f-40"><td class="id"><a href="#f-40">F-40</a></td><td><span class="sev high">HIGH</span></td>
   <td>EG3113 gate driver is effectively unbuyable: LCSC <code>C480666</code> 9 in stock against a minimum purchase of 25; <code>EG3113D</code> (<code>C2929097</code>) and the JLCPCB-assembly DFN8 variant both at 0. The board needs four per unit, so the design cannot be ordered at the advertised QTY 10. Found 2026-08-11 during the GaN power-stage evaluation</td>
   <td><span class="st open">OPEN</span></td>
   <td>Qualify a pin-compatible SOIC-8 half-bridge driver at ≥80&nbsp;V with real stock depth. Blocks ordering; independent of the GaN question and should not wait on it. Spec it against F-41 at the same time — if a 10–12&nbsp;V gate rail ever lands, the replacement needs ≥12&nbsp;V V<sub>CC</sub> <em>and</em> 3.3&nbsp;V-compatible input thresholds at that V<sub>CC</sub>. Detail: <a href="gan.html#f40">GaN eval §7</a></td></tr>
-<tr><td class="id">F-41</td><td><span class="sev med">MED</span></td>
+<tr id="f-41"><td class="id"><a href="#f-41">F-41</a></td><td><span class="sev med">MED</span></td>
   <td>FETs driven ~5&nbsp;V below their characterisation point: BSC030N08NS5 is specified 2.6/3.4&nbsp;mΩ at V<sub>GS</sub>=10&nbsp;V and 3.0/4.5&nbsp;mΩ at 6&nbsp;V with V<sub>GS(th)</sub> spanning 2.2–3.8&nbsp;V, but V<sub>drive</sub> is 5.04&nbsp;V. Costs ~15% on R<sub>DS(on)</sub> plus ~2&nbsp;W/bridge of switching loss from ~95&nbsp;ns edges (R13/R14 = 10.2&nbsp;Ω limit the Miller plateau to ~155&nbsp;mA) — ~8&nbsp;W across the board at 20&nbsp;A, most of the thermal headroom. V<sub>drive</sub> cannot simply be raised: it also feeds the TS5A3159 switches (5.5&nbsp;V max), the SPX3819, the WS2812 and the 5&nbsp;V encoder supply. Found 2026-08-11 during the GaN power-stage evaluation</td>
   <td><span class="st open">OPEN</span></td>
   <td>Bench-gated. <strong>Measure a real switching edge first</strong> — the 2&nbsp;W is derived, not observed. Detail: <a href="gan.html#f41">GaN eval §7</a>.
-  <br><strong>Amended 2026-08-12 — current budget rescoped; finding unchanged, remedy order changed.</strong> Targeting 20&nbsp;A continuous with a 10&nbsp;A shunt-desolder mode relaxes nothing above, because <em>20&nbsp;A was already the analysis point</em>: the schematic note has always read "20 Amp max continuous / 50 Amp peak absolute maximum", and the sense chain (2× 8&nbsp;mΩ ∥ per phase → INA240A1 at 20&nbsp;V/V → ±20.6&nbsp;A FS; ±10.3&nbsp;A desoldered) was scaled for 20&nbsp;A all along — see <a href="power.html#sense">power §1</a>. What the rescope <em>does</em> open is a cheaper lever than a new rail: at 20&nbsp;A the di/dt budget tolerates faster edges, and a gate-resistor sweep (10.2&nbsp;→&nbsp;5.1&nbsp;→&nbsp;2.2&nbsp;Ω) reaches ~29&nbsp;ns versus the 10&nbsp;V rail's ~25&nbsp;ns for zero BOM cost, recovering most of the 8&nbsp;W. Revised order: (1) measure the edge, (2) gate-resistor sweep watching for dV/dt shoot-through, (3) FET respec to a V<sub>GS</sub>=4.5&nbsp;V-characterised part at the next BOM touch — reopens <a href="#power-stage">F-11</a>, (4) separate 10–12&nbsp;V gate rail, <strong>demoted to last resort</strong> (it alone also fixes the R<sub>DS(on)</sub> half, ~2&nbsp;W, but costs a whole regulator). In the 10&nbsp;A mode F-41 is moot (~1.6&nbsp;W/bridge total). Note for the thermal budget: the inline 4&nbsp;mΩ shunts burn 4.8&nbsp;W across A/B/C at 20&nbsp;A — a bigger conduction term than F-41's ~0.2&nbsp;W/phase</td></tr>
+  <br><strong>Amended 2026-08-12 — current budget rescoped; finding unchanged, remedy order changed.</strong> Targeting 20&nbsp;A continuous with a 10&nbsp;A shunt-desolder mode relaxes nothing above, because <em>20&nbsp;A was already the analysis point</em>: the schematic note has always read "20 Amp max continuous / 50 Amp peak absolute maximum", and the sense chain (2× 8&nbsp;mΩ ∥ per phase → INA240A1 at 20&nbsp;V/V → ±20.6&nbsp;A FS; ±10.3&nbsp;A desoldered) was scaled for 20&nbsp;A all along — see <a href="power.html#sense">power §1</a>. What the rescope <em>does</em> open is a cheaper lever than a new rail: at 20&nbsp;A the di/dt budget tolerates faster edges, and a gate-resistor sweep (10.2&nbsp;→&nbsp;5.1&nbsp;→&nbsp;2.2&nbsp;Ω) reaches ~29&nbsp;ns versus the 10&nbsp;V rail's ~25&nbsp;ns for zero BOM cost, recovering most of the 8&nbsp;W. Revised order: (1) measure the edge, (2) gate-resistor sweep watching for dV/dt shoot-through, (3) FET respec to a V<sub>GS</sub>=4.5&nbsp;V-characterised part at the next BOM touch — reopens <a href="#f-11">F-11</a>, (4) separate 10–12&nbsp;V gate rail, <strong>demoted to last resort</strong> (it alone also fixes the R<sub>DS(on)</sub> half, ~2&nbsp;W, but costs a whole regulator). In the 10&nbsp;A mode F-41 is moot (~1.6&nbsp;W/bridge total). Note for the thermal budget: the inline 4&nbsp;mΩ shunts burn 4.8&nbsp;W across A/B/C at 20&nbsp;A — a bigger conduction term than F-41's ~0.2&nbsp;W/phase</td></tr>
 </table>
 </div>
 
@@ -268,11 +280,11 @@
 <div class="tablewrap">
 <table>
 <tr><th>ID</th><th>Sev</th><th>Finding</th><th>Status</th><th>Disposition</th></tr>
-<tr><td class="id">F-37</td><td><span class="sev low">LOW</span></td>
+<tr id="f-37"><td class="id"><a href="#f-37">F-37</a></td><td><span class="sev low">LOW</span></td>
   <td><code>tuned_gains.txt</code> dates from the throttled 407&nbsp;Hz-loop era; halls <code>POLE_PAIRS</code> still TODO</td>
   <td><span class="st open">OPEN</span></td>
   <td>Re-run tune.py at the real ~20&nbsp;kHz loop; needs hardware on the bench</td></tr>
-<tr><td class="id">F-38</td><td><span class="sev low">LOW</span></td>
+<tr id="f-38"><td class="id"><a href="#f-38">F-38</a></td><td><span class="sev low">LOW</span></td>
   <td>Repo hygiene: tmp/ (JLC cart snapshot + venv) and __pycache__ untracked noise; launch.sh undocumented; runtime-regenerated dashboard.html overwrites its committed copy</td>
   <td><span class="st fixed">FIXED</span></td>
   <td>.gitignore'd tmp/ + __pycache__; launch.sh committed (registry-standard); dashboard.html snapshot committed as-found — consider pointing dashboard.py's output elsewhere. <code>469515b</code>, <code>90d4149</code></td></tr>
