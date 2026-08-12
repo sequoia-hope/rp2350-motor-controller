@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GaN Power Stage Evaluation — RP2350 Motor Controller</title>
+<style>
+  :root {
+    --bg: #f7f6f3; --panel: #ffffff; --ink: #1e2126; --muted: #5b6470;
+    --line: #d9d5cc; --accent: #6b4fa0; --good: #2c7a4b; --warn: #a05a00;
+    --bad: #b03434; --code-bg: #efede8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d; --panel: #1e2128; --ink: #e8e6e1; --muted: #9aa3af;
+      --line: #343945; --accent: #a98fd8; --good: #5cb884; --warn: #e0a44c;
+      --bad: #e06c6c; --code-bg: #262a33;
+    }
+    img.schcrop { filter: invert(0.92) hue-rotate(180deg); }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+  header.masthead { border-bottom: 3px solid var(--accent); padding: 2.2rem 0 1rem; margin-bottom: 1.5rem; }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 .4rem; }
+  .subtitle { color: var(--muted); margin: 0; }
+  h2 { font-size: 1.45rem; margin: 2.8rem 0 .8rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.12rem; margin: 1.8rem 0 .5rem; }
+  p { margin: .6rem 0; }
+  a { color: var(--accent); }
+  code, .mono { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .92em; background: var(--code-bg); padding: .08em .35em; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
+  th, td { text-align: left; padding: .45rem .65rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  th.num { text-align: right; }
+  .tablewrap { overflow-x: auto; }
+  .sev { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; padding: .12em .55em; border-radius: 99px; white-space: nowrap; }
+  .sev.high { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); }
+  .sev.med  { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+  .sev.low  { background: color-mix(in srgb, var(--muted) 18%, transparent); color: var(--muted); }
+  .sev.good { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+  figure { margin: 1.2rem 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; }
+  figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 4px; }
+  figure svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+  figcaption { color: var(--muted); font-size: .88rem; margin-top: .6rem; text-align: center; }
+  .callout { border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 8px 8px 0; padding: .8rem 1rem; margin: 1rem 0; }
+  .callout.bad { border-left-color: var(--bad); }
+  .callout.good { border-left-color: var(--good); }
+  .callout.warn { border-left-color: var(--warn); }
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 760px) { .cols2 { grid-template-columns: 1fr; } }
+  ul.tight li { margin: .3rem 0; }
+</style>
+</head>
+<body>
+<main>
+
+<header class="masthead">
+  <p style="margin:0 0 .4rem"><a href="index.html" style="text-decoration:none">← project hub</a></p>
+  <h1>GaN Power Stage Evaluation — EPC23102</h1>
+  <p class="subtitle">What happens if four EPC23102 ePower Stage ICs replace the 8×BSC030N08NS5 + 4×EG3113 power stage · sourcing, BOM, loss/thermal, layout, and the four things that would have to change · 2026-08-11</p>
+</header>
+
+<div class="callout">
+<strong>Verdict up front.</strong> The part is genuinely excellent and the integration story is real —
+32 fewer components per board, no gate loops at all, and a top-side thermal path the current stage
+simply does not have. But for <em>this</em> board it is a poor fit today: <strong>stock of 1 at
+LCSC</strong> at $9.31, <strong>+$16–31 per board</strong>, it breaks the fail-safe brake, it forces a
+retreat from 60&nbsp;V toward 48&nbsp;V, and it makes the unfiltered inline current sense much harder.
+The more actionable result is what fell out of the comparison: ~2&nbsp;W per bridge of switching loss is
+being burned <em>right now</em> because a 10&nbsp;V-rated MOSFET is driven at 5&nbsp;V — see
+<a href="#candidates">§7</a>.
+</div>
+
+<h2 id="part">1 · The part</h2>
+
+<p>EPC23102 is a monolithic GaN half-bridge: input logic interface, level shifter, synchronous bootstrap
+charging, both gate drivers, and both power FETs on one die in a 3.5&nbsp;×&nbsp;5&nbsp;mm QFN-13. The
+headline "35&nbsp;A" is a 1&nbsp;MHz DC/DC figure with a top-side heatsink and 500&nbsp;LFM of airflow —
+see <a href="#thermal">§4</a> for the number that actually applies to us.</p>
+
+<div class="tablewrap">
+<table>
+<thead><tr><th>Parameter</th><th>EPC23102</th><th>Current stage (per bridge)</th></tr></thead>
+<tbody>
+<tr><td>Topology</td><td>Monolithic GaN half-bridge + driver + level shift + sync bootstrap</td><td>2× BSC030N08NS5 + EG3113 + boot diode + 7 R + 2 clamp D + PNP</td></tr>
+<tr><td>R<sub>DS(on)</sub> @ 25 °C</td><td>5.2 mΩ typ / 6.6 max, <em>each side</em></td><td>2.6/3.4 mΩ @ V<sub>GS</sub>=10 V; <strong>3.0/4.5 mΩ @ 6 V</strong></td></tr>
+<tr><td>Voltage</td><td>100 V abs max, <strong>80 V recommended operating</strong>, no avalanche</td><td>80 V, 100% avalanche tested</td></tr>
+<tr><td>Package</td><td>QFN-13, 3.5 × 5 mm, exposed top-side die, wettable flanks, MSL1</td><td>2× PowerPAK SO-8 (5 × 6) + SOIC-8 driver</td></tr>
+<tr><td>Bias supply</td><td><strong>5 V</strong> V<sub>DRV</sub> (4.75–5.5, abs max 6)</td><td>V<sub>drive</sub> = 5.04 V (XL7005A, 1.25 V ref, R5/R6 = 10k/3.3k)</td></tr>
+<tr><td>Logic</td><td>HS<sub>IN</sub>/LS<sub>IN</sub> both active-high, V<sub>IH</sub> 2.4 V, internal 5 kΩ pull-downs</td><td>HIN active-high, <span style="text-decoration:overline">LIN</span> active-low with 5 V pull-up</td></tr>
+<tr><td>Dead time</td><td><strong>None</strong> — only a 5 ns cross-conduction lockout</td><td>EG3113 interlock (firmware comment: "no interlock" in practice)</td></tr>
+<tr><td>Bootstrap</td><td>Internal synchronous FET (1.7 Ω) — <strong>no external diode</strong></td><td>D3 DSS110 + R9 4.7 Ω + C10 10 µF</td></tr>
+<tr><td>Pulse width</td><td><strong>30 ns &lt; ON &lt; 200 µs</strong>, same for OFF, both sides</td><td>Unlimited DC on either side</td></tr>
+<tr><td>Thermal</td><td>Rθ<sub>JC_top</sub> <strong>0.4</strong> · Rθ<sub>JB</sub> 3 · Rθ<sub>JA</sub> 43 (JEDEC) / 25 (EVB) °C/W</td><td>Bottom drain pad only, ~40 °C/W each on good copper</td></tr>
+<tr><td>3rd-quadrant drop</td><td>−1.7 to −2.1 V (−3.5 V with V<sub>DD</sub>=0)</td><td>Body diode ≈ −1.0 V</td></tr>
+<tr><td>ESD</td><td>HBM ±500 V, CDM ±500 V (Class 1B)</td><td>Ordinary power MOSFET / SOIC driver</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout good">
+<strong>Two things line up by accident.</strong> Our gate rail is already <strong>5.04 V</strong>, exactly
+what the EPC wants — no new regulator. And the firmware already generates dead time explicitly in
+software (<code>current_test.cpp:110-117</code>, high-side pulled in by <code>dead_cycles</code>, low-side
+pushed out) rather than leaning on the driver, so the loss of the EG3113's interlock costs us nothing.
+</div>
+
+<h2 id="sourcing">2 · Sourcing — the headline</h2>
+
+<div class="tablewrap">
+<table>
+<thead><tr><th>Part</th><th>LCSC</th><th class="num">Stock</th><th class="num">Min buy</th><th class="num">$ @100</th><th>Library</th></tr></thead>
+<tbody>
+<tr><td><strong>EPC23102</strong></td><td><code>C5160232</code></td><td class="num"><strong>1</strong></td><td class="num">1</td><td class="num"><strong>$9.31</strong></td><td>Extended / shop</td></tr>
+<tr><td>EPC23102ENGRT</td><td><code>C5729483</code></td><td class="num">0</td><td class="num">1</td><td class="num">$14.18</td><td>Extended (obsolete at DigiKey)</td></tr>
+<tr><td>BSC030N08NS5</td><td><code>C501507</code></td><td class="num">27,306</td><td class="num">1</td><td class="num">$0.595</td><td>Extended</td></tr>
+<tr><td>EG3113</td><td><code>C480666</code></td><td class="num"><strong>9</strong></td><td class="num">25</td><td class="num">$0.280</td><td>Extended</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>DigiKey is cheaper and actually stocked — 7,015 units, $8.57&nbsp;@1, $6.16&nbsp;@25,
+<strong>$5.63&nbsp;@100</strong>, $4.95 on full 3,000-piece reels. But the LCSC line is what matters for
+this project's stated promise: <em>"you can order them yourself at cost by uploading a zip file to
+JLCPCB for under $50 per board QTY 10."</em> Four parts per board with a catalog stock count of
+<strong>one</strong>, at 65% over DigiKey's price, means consigning parts to JLCPCB — which is a
+different product than what the README sells.</p>
+
+<div class="callout bad">
+<strong>Unrelated but urgent:</strong> the EG3113 we ship today is effectively unbuyable —
+<strong>9 in stock with a minimum purchase of 25</strong>. The <code>EG3113D</code> and the
+JLCPCB-assembly DFN8 variant are both at zero. That is a live sourcing problem in the current design
+regardless of what we decide about GaN, and it is arguably the strongest argument for looking at an
+integrated stage in the first place. Filed as <a href="#f40">F-40</a>.
+</div>
+
+<h2 id="bom">3 · BOM delta</h2>
+
+<figure>
+  <img class="schcrop" src="img/gan_stage_current.png" alt="Schematic crop of half-bridge A: EG3113 driver with its discrete bootstrap and gate networks driving AH1/AL1">
+  <figcaption>Half-bridge A as it stands (rev-B working tree). Everything between <code>Vdrive</code> and
+  the two FET gates — D3, R9, C10, U1, C2, R10, D6, R13, R11, D7, R14, R15, R12, Q1 — is what the
+  EPC23102 absorbs onto its die.</figcaption>
+</figure>
+
+<figure>
+<svg viewBox="0 0 920 414" role="img" aria-label="Component count comparison: 16 discrete parts today versus 8 with EPC23102">
+  <style>
+    .ttl { font: 700 15px system-ui, sans-serif; fill: var(--ink); }
+    .sub { font: 12px system-ui, sans-serif; fill: var(--muted); }
+    .lbl { font: 11.5px system-ui, sans-serif; fill: var(--ink); }
+    .lblm { font: 11px system-ui, sans-serif; fill: var(--muted); }
+    .grp { font: 700 10.5px system-ui, sans-serif; fill: var(--muted); letter-spacing: .04em; }
+    .bx  { fill: var(--panel); stroke: var(--line); stroke-width: 1.2; }
+    .bxd { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+    .bxa { fill: color-mix(in srgb, var(--accent) 10%, transparent); stroke: var(--accent); stroke-width: 2; }
+    .bxi { fill: var(--panel); stroke: var(--accent); stroke-width: 1.2; }
+    .fet { fill: color-mix(in srgb, var(--warn) 16%, transparent); stroke: var(--warn); stroke-width: 1.3; }
+    .gan { fill: color-mix(in srgb, var(--good) 16%, transparent); stroke: var(--good); stroke-width: 1.3; }
+  </style>
+
+  <!-- LEFT -->
+  <text class="ttl" x="14" y="20">Today — 16 parts per bridge</text>
+  <text class="sub" x="14" y="38">8 FETs + 4 drivers + 52 discretes per board</text>
+  <rect class="bxd" x="14" y="50" width="420" height="344" rx="9"/>
+
+  <text class="grp" x="28" y="72">BOOTSTRAP</text>
+  <rect class="bx" x="28"  y="80" width="86" height="30" rx="5"/><text class="lbl" x="45"  y="100">D3 DSS110</text>
+  <rect class="bx" x="122" y="80" width="80" height="30" rx="5"/><text class="lbl" x="141" y="100">R9 4.7 Ω</text>
+  <rect class="bx" x="210" y="80" width="90" height="30" rx="5"/><text class="lbl" x="226" y="100">C10 10 µF</text>
+
+  <text class="grp" x="28" y="136">DRIVER</text>
+  <rect class="bx" x="28"  y="144" width="110" height="30" rx="5"/><text class="lbl" x="52"  y="164">U1 EG3113</text>
+  <rect class="bx" x="146" y="144" width="94" height="30" rx="5"/><text class="lbl" x="160" y="164">C2 4.7 µF</text>
+
+  <text class="grp" x="28" y="200">HIGH-SIDE GATE NET</text>
+  <rect class="bx" x="28"  y="208" width="72" height="30" rx="5"/><text class="lbl" x="47"  y="228">R10 0 Ω</text>
+  <rect class="bx" x="108" y="208" width="56" height="30" rx="5"/><text class="lbl" x="126" y="228">D6</text>
+  <rect class="bx" x="172" y="208" width="86" height="30" rx="5"/><text class="lbl" x="184" y="228">R13 10.2 Ω</text>
+
+  <text class="grp" x="28" y="264">LOW-SIDE GATE NET</text>
+  <rect class="bx" x="28"  y="272" width="62" height="30" rx="5"/><text class="lbl" x="42"  y="292">R11 0 Ω</text>
+  <rect class="bx" x="98"  y="272" width="48" height="30" rx="5"/><text class="lbl" x="112" y="292">D7</text>
+  <rect class="bx" x="154" y="272" width="52" height="30" rx="5"/><text class="lbl" x="164" y="292">R14</text>
+  <rect class="bx" x="214" y="272" width="52" height="30" rx="5"/><text class="lbl" x="224" y="292">R15</text>
+  <rect class="bx" x="274" y="272" width="52" height="30" rx="5"/><text class="lbl" x="284" y="292">R12</text>
+  <rect class="bx" x="334" y="272" width="76" height="30" rx="5"/><text class="lbl" x="345" y="292">Q1 PNP</text>
+
+  <rect class="fet" x="28"  y="326" width="186" height="36" rx="6"/>
+  <text class="lbl" x="42" y="349">AH1 BSC030N08NS5</text>
+  <rect class="fet" x="224" y="326" width="186" height="36" rx="6"/>
+  <text class="lbl" x="238" y="349">AL1 BSC030N08NS5</text>
+
+  <!-- arrow -->
+  <path d="M446 205 L472 205" stroke="var(--muted)" stroke-width="2" fill="none"/>
+  <path d="M472 205 l-7 -5 l0 10 z" fill="var(--muted)"/>
+
+  <!-- RIGHT -->
+  <text class="ttl" x="488" y="20">EPC23102 — 8 parts per bridge</text>
+  <text class="sub" x="488" y="38">4 ICs + 28 discretes per board · −32 parts</text>
+  <rect class="bxd" x="488" y="50" width="418" height="344" rx="9"/>
+
+  <text class="grp" x="502" y="72">ON THE DIE</text>
+  <rect class="bxa" x="502" y="80" width="390" height="164" rx="8"/>
+  <text class="lbl" x="516" y="100" style="font-weight:700">EPC23102 · 3.5 × 5 mm QFN-13</text>
+  <rect class="bxi" x="516" y="110" width="120" height="28" rx="5"/><text class="lblm" x="529" y="129">sync bootstrap</text>
+  <rect class="bxi" x="646" y="110" width="106" height="28" rx="5"/><text class="lblm" x="659" y="129">level shift</text>
+  <rect class="bxi" x="762" y="110" width="116" height="28" rx="5"/><text class="lblm" x="775" y="129">logic + lockout</text>
+  <rect class="bxi" x="516" y="146" width="176" height="28" rx="5"/><text class="lblm" x="529" y="165">HS gate driver</text>
+  <rect class="bxi" x="702" y="146" width="176" height="28" rx="5"/><text class="lblm" x="715" y="165">LS gate driver</text>
+  <rect class="gan" x="516" y="182" width="176" height="34" rx="6"/><text class="lbl" x="546" y="204">HS GaN FET</text>
+  <rect class="gan" x="702" y="182" width="176" height="34" rx="6"/><text class="lbl" x="733" y="204">LS GaN FET</text>
+  <text class="lblm" x="516" y="234">5.2 mΩ typ each · 100 V abs max · Rθ&#8202;JC_top 0.4 °C/W</text>
+
+  <text class="grp" x="502" y="272">STILL EXTERNAL</text>
+  <rect class="bx" x="502" y="280" width="92" height="30" rx="5"/><text class="lbl" x="512" y="300">C&#8202;BOOT 2.2 µ</text>
+  <rect class="bx" x="602" y="280" width="88" height="30" rx="5"/><text class="lbl" x="613" y="300">R&#8202;BOOT 10 Ω</text>
+  <rect class="bx" x="698" y="280" width="88" height="30" rx="5"/><text class="lbl" x="710" y="300">R&#8202;DRV 10 Ω</text>
+  <rect class="bx" x="794" y="280" width="98" height="30" rx="5"/><text class="lbl" x="806" y="300">C&#8202;VDD 2.2 µ</text>
+  <rect class="bx" x="502" y="320" width="112" height="30" rx="5"/><text class="lbl" x="512" y="340">C&#8202;VDRV 2.2 µ</text>
+  <rect class="bx" x="622" y="320" width="130" height="30" rx="5"/><text class="lbl" x="633" y="340">C&#8202;IN 2.2 µ / 100 V</text>
+  <rect class="bx" x="760" y="320" width="132" height="30" rx="5"/><text class="lbl" x="770" y="340">R&#8202;pull-up 2.2 k</text>
+  <text class="lblm" x="502" y="368">C&#8202;IN must sit millimetres from the V&#8202;IN/PGND bars.</text>
+  <text class="lblm" x="502" y="384">The pull-up preserves the boot-time brake default (§6.3).</text>
+</svg>
+<figcaption>What moves onto the die. Tying V<sub>DD</sub> to V<sub>DRV</sub> (recommended, and required to
+run below 10 V bus) merges two of the bypass caps, so 7 external parts is achievable.</figcaption>
+</figure>
+
+<div class="tablewrap">
+<table>
+<thead><tr><th>Per board</th><th class="num">Today</th><th class="num">EPC23102</th><th class="num">Δ</th></tr></thead>
+<tbody>
+<tr><td>Components in the gate/power path</td><td class="num">64</td><td class="num">32</td><td class="num"><strong>−32</strong></td></tr>
+<tr><td>Package footprint (FETs + driver)</td><td class="num">316 mm²</td><td class="num">70 mm²</td><td class="num">−3.4×</td></tr>
+<tr><td>Cost, LCSC @100</td><td class="num">$6.60</td><td class="num">$37.7</td><td class="num">+$31.1</td></tr>
+<tr><td>Cost, DigiKey @100</td><td class="num">$6.60</td><td class="num">$23.0</td><td class="num">+$16.4</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>On a sub-$50 board the power stage goes from roughly 13% of BOM to 40%.</p>
+
+<h2 id="thermal">4 · Loss and thermal — the actual trade</h2>
+
+<p>Per bridge at 20&nbsp;A phase current, 60&nbsp;V bus, 20&nbsp;kHz, ~100&nbsp;°C junction. Conduction
+numbers are datasheet-grounded; <strong>switching numbers are engineering estimates, ±50%</strong>.</p>
+
+<div class="tablewrap">
+<table>
+<thead><tr><th>Per bridge</th><th class="num">Silicon @ 5 V gate</th><th class="num">EPC23102</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Conduction</td><td class="num">2.2 W</td><td class="num"><strong>3.0 W</strong> (3.8 worst-case)</td><td>5.2 mΩ vs ~3.5 mΩ, ×1.45–1.6 hot</td></tr>
+<tr><td>Switching</td><td class="num"><strong>~2.0 W</strong></td><td class="num">0.2 W</td><td>~95 ns edges vs ~5 ns</td></tr>
+<tr><td>Q<sub>rr</sub> / 3rd-quadrant</td><td class="num">0.12 W</td><td class="num">0.08 W</td><td>GaN has no reverse recovery</td></tr>
+<tr><td><strong>Total</strong></td><td class="num"><strong>~4.4 W</strong></td><td class="num"><strong>~3.3 W</strong></td><td>−25%</td></tr>
+<tr><td>Dissipating area</td><td class="num">60 mm²</td><td class="num">17.5 mm²</td><td></td></tr>
+<tr><td>Power density</td><td class="num">0.073 W/mm²</td><td class="num">0.189 W/mm²</td><td><strong>2.6× higher</strong></td></tr>
+</tbody>
+</table>
+</div>
+
+<p>GaN loses on conduction and wins big on switching — but only because <em>our silicon is driven badly</em>.
+At V<sub>GS</sub>=5 V with V<sub>GS(th)</sub> as high as 3.8 V, the Miller-plateau gate current through
+R13/R14 (10.2 Ω) is only about (5&nbsp;−&nbsp;3.2)/11.5 ≈ <strong>155 mA</strong>, and Q<sub>gd</sub>&nbsp;≈&nbsp;15&nbsp;nC
+then takes ~95&nbsp;ns to move. That is where the 2&nbsp;W comes from, and it is not GaN's to claim —
+a 10–12 V gate rail recovers most of it. See <a href="#f41">F-41</a>.</p>
+
+<p>So the honest framing is: <strong>25% less loss, concentrated 2.6× harder.</strong> It is a
+heat-concentration problem, not a loss problem.</p>
+
+<div class="callout warn">
+<strong>The number that actually applies to us.</strong> Ignore "35 A". EPC's own three-phase motor-drive
+board (EPC9176, 48&nbsp;V, natural convection, 22&nbsp;°C ambient, 75&nbsp;°C case rise, 20/50/100 kHz,
+50 ns dead time) delivers <strong>15 A<sub>RMS</sub> per phase bare and 20 A<sub>RMS</sub> with a
+heatsink</strong>. Our schematic note targets "20 Amp max continuous (estimated, depends on thermals)".
+<strong>Our target sits exactly on the heatsink line.</strong>
+</div>
+
+<p>The flip side is real and in GaN's favour. Rθ<sub>JC_top</sub> = 0.4 °C/W is exceptional — the die
+backside is exposed through the top of the package. A PowerPAK SO-8 dumps heat out of its <em>bottom</em>
+drain pad into the PCB and gives you no comparable top-side path. Our four bridges already sit in a tidy
+column (x ≈ 139–145 mm, y ≈ 87–123 mm on F.Cu), so <strong>one heatsink bar with TIM covers all
+four</strong>. The datasheet even notes the exposed backside connects to PGND, so an electrically
+conductive TIM (40 W/m·K, cheaper) is allowed. If we are willing to add a heatsink, the GaN version could
+exceed 20 A continuous where the silicon version cannot — but "add a heatsink" is a new mechanical part
+and assembly step, and that too breaks upload-a-zip-and-go.</p>
+
+<h2 id="layout">5 · Layout implications</h2>
+
+<h3>Wins</h3>
+<ul class="tight">
+  <li><strong>Gate loops vanish entirely.</strong> Today the drivers (U1/U6/U7/U12) sit on B.Cu directly
+  under the FETs on F.Cu, so every gate and every return via-hops the 6-layer stack. That parasitic path
+  is precisely why the design needs 10.2 Ω series, clamp diodes D6/D7, and a PNP turn-off booster Q1. All
+  of it becomes on-die interconnect.</li>
+  <li><strong>The stackup is already right for GaN.</strong> F.Cu → In1.Cu is 0.1 mm prepreg with 2 oz
+  outer copper — put the return plane on In1 and the power loop is about as tight as FR4 gets.</li>
+  <li><strong>The bottom side under the power stage frees up:</strong> four SOIC-8, four SOD-123F, and
+  ~28 passives.</li>
+  <li>Package creepage is pre-solved: EPC spaces the HV and LV pads ≥0.6 mm for IPC 100 V rules.</li>
+</ul>
+
+<h3>New constraints</h3>
+<ul class="tight">
+  <li><strong>Input capacitance is currently inadequate for this.</strong> All four bridges share C1, C8,
+  C44 (2.2 µF 1206) and C81 (1 µF 0603) plus the three 100 µF THT bulk cans. That is thin for silicon;
+  for GaN di/dt each IC wants its own C<sub>IN</sub> within a couple of millimetres of its V<sub>IN</sub>/PGND
+  bars.</li>
+  <li><strong>Do not shrink the copper.</strong> Component footprint drops 3.4×, but the copper <em>is</em>
+  the heatsink. The freed bottom side should become thermal via field and return plane, not new component
+  real estate.</li>
+  <li>Rθ<sub>JB</sub> = 3 °C/W is only reachable with a dense via field under all three power bars, and
+  solder voiding under those bars directly degrades it — a step up in process sensitivity from PowerPAK
+  SO-8, though the wettable flanks and MSL1 rating help.</li>
+</ul>
+
+<h2 id="changes">6 · Four things that would have to change</h2>
+
+<h3 id="c1"><span class="sev high">HIGH</span> 6.1 · TVS strategy — GaN has no avalanche</h3>
+<p>The whole board philosophy is "80 V silicon with TVS breakdown just below it, so surges hit the TVS
+before any FET avalanches." That works because the BSC030N08NS5 is <em>100% avalanche tested</em> —
+exceeding 80 V briefly is survivable. GaN has no avalanche mechanism at all: 100 V is a cliff.</p>
+<p>SMAJ64A breaks down at 71–79 V (fine) but <strong>clamps to 103 V at its 3.9 A rated pulse</strong> —
+above abs max. The fix is not a different standoff voltage, it is more silicon: move the phase TVS to a
+1500 W part (SMCJ64A clamps to the same 103 V but at 14.6 A, so at any given surge current it clamps
+lower). The bus SMDJ64A is already the high-power part. Normal switching overshoot is not the problem —
+EPC claims &lt;+10 V above rail with tuned R<sub>BOOT</sub>/R<sub>DRV</sub>, i.e. 70 V on a 60 V bus.</p>
+<p><strong>Realistically this becomes a 48 V-class board</strong>, matching EPC's own reference designs.
+The 72 V-bus variant documented in the README is off the table entirely.</p>
+
+<h3 id="c2"><span class="sev med">MED</span> 6.2 · Logic polarity</h3>
+<p>EG3113 takes HIN + <span style="text-decoration:overline">LIN</span>; EPC23102 takes HS<sub>IN</sub> and
+LS<sub>IN</sub> both active-high. Schematic: the four <code>*_PWM_L\</code> nets lose their overbar.
+Firmware: one line — <code>pwm_config_set_output_polarity(&amp;cfg, false, true)</code> in
+<code>init_half_bridge()</code>, since the driver no longer does the inversion. Also tie V<sub>DD</sub> to
+V<sub>DRV</sub> (drops minimum bus voltage from 10 V to 0 V and disables standby) and leave STB open — it
+has a 200 kΩ internal pull-down. <em>Do not</em> tie STB to V<sub>DD</sub> unless V<sub>DD</sub> and
+V<sub>DRV</sub> are tied; the datasheet says that damages the IC.</p>
+
+<h3 id="c3"><span class="sev high">HIGH</span> 6.3 · The fail-safe brake cannot be carried over</h3>
+<p>This is the real blocker. From <code>main.cpp:80-90</code>:</p>
+<blockquote style="border-left:3px solid var(--line);margin:.8rem 0;padding:.2rem 0 .2rem 1rem;color:var(--muted)">
+"At reset/crash the gate-driver input pulls turn the low FET on, which shorts the chopper harmlessly
+(both resistor ends grounded) while plug-braking the motor — <strong>fail-safe with no firmware
+alive</strong>."
+</blockquote>
+<p>EPC23102 requires <strong>30 ns &lt; ON &lt; 200 µs on both sides</strong> — the internal gate-drive
+capacitors C<sub>B1</sub> need refreshing. You cannot DC-hold a FET on. A static pull-up on LS<sub>IN</sub>
+would violate that indefinitely; the brake would silently release, plausibly with the FET drifting through
+its linear region on the way out.</p>
+<p>What survives: braking as "PWM the low side at 95% duty", which is fine while firmware runs — and we
+already do exactly this shape of thing (<code>BRAKE_MAX_DUTY 0.95f // preserve bootstrap refresh</code>),
+just for a much looser reason. What does not survive: the DNP hardware E-stop (Q6 + R113, RUN low → brake
+with no firmware in the loop). Restoring it needs an external oscillator or watchdog to keep chopping
+LS<sub>IN</sub> when the MCU is dead — more parts, eating into the −32.</p>
+<p>A 2.2 kΩ pull-up to 5 V still wins against the internal 5 kΩ pull-down (3.5 V &gt; V<sub>IH</sub> 2.4 V)
+at 2.3 mA per bridge, so the <em>boot-time</em> default can still be "low side on" — it just cannot be a
+<em>sustained</em> state.</p>
+
+<h3 id="c4"><span class="sev high">HIGH</span> 6.4 · Current sense sees 19× the dV/dt</h3>
+<p>The INA240s sit directly on the switch node with <strong>no input filter at all</strong> — U5 pin 1 goes
+straight to <code>A_P</code>, pin 8 straight to the phase output, across the 2×8 mΩ shunt. Inline sensing
+means the amplifier eats the full switch-node slew as common mode.</p>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Edge rate at the INA240 input</th><th class="num">Today</th><th class="num">EPC23102 @ 10 Ω</th></tr></thead>
+<tbody><tr><td>60 V transition</td><td class="num">~95 ns → ~630 V/µs</td><td class="num">~5 ns → <strong>~12,000 V/µs</strong></td></tr></tbody>
+</table>
+</div>
+<p>INA240's "enhanced PWM rejection" is not characterised anywhere near 12 kV/µs. Expect large
+common-mode-induced output disturbance and long settling, which pushes the ADC sample point further from
+the edge and eats FOC bandwidth. Mitigations — a differential RC in front of the amplifier, and raising
+R<sub>DRV</sub>/R<sub>BOOT</sub> above 10 Ω to slow the edges — both spend the switching-loss win we came
+for. There is ~2 W of margin to spend, so this is survivable, but it wants bench validation before anyone
+commits copper.</p>
+<p>Secondary, and the least quantifiable: 12 kV/µs at 60 V on phase leads leaving through XT30 connectors
+with no common-mode chokes is a real step change in conducted and radiated EMI.</p>
+
+<h2 id="candidates">7 · Findings this turned up</h2>
+
+<div class="callout bad" id="f40">
+<p><span class="sev high">HIGH</span> <strong>F-40 (candidate) — EG3113 is effectively unbuyable.</strong>
+LCSC <code>C480666</code>: 9 in stock, minimum purchase 25. <code>EG3113D</code> (<code>C2929097</code>)
+and the JLCPCB-assembly DFN8 variant are both at 0. The board needs four per unit. Until this is resolved
+the current design cannot be ordered at the advertised QTY 10 either.</p>
+<p><strong>Next step:</strong> qualify a pin-compatible SOIC-8 half-bridge driver at ≥80 V with stock
+depth. This is independent of the GaN question and should not wait on it.</p>
+</div>
+
+<div class="callout warn" id="f41">
+<p><span class="sev med">MED</span> <strong>F-41 (candidate) — the FETs are driven 5 V below their
+characterisation point.</strong> BSC030N08NS5 is specified 2.6/3.4 mΩ at V<sub>GS</sub>=10 V and
+3.0/4.5 mΩ at 6 V, with V<sub>GS(th)</sub> spanning 2.2–3.8 V. V<sub>drive</sub> is 5.04 V, so we are
+below even the 6 V spec point, and a high-V<sub>th</sub> part sits close to the knee. Estimated cost:
+R<sub>DS(on)</sub> ~15% worse than the 6 V number, plus <strong>~2 W per bridge of switching loss</strong>
+from ~95 ns edges — call it 8 W across the board at 20 A, which is most of the thermal headroom.</p>
+<p><strong>Complication:</strong> V<sub>drive</sub> cannot simply be raised. It also feeds the thirteen
+TS5A3159 analog switches that sit on it (5.5 V max, 6 V abs max), the SPX3819 3.3 V LDO, and the WS2812
+via a Schottky drop. A gate-drive rail at 10–12 V would need to be a separate output. EG3113 accepts 2.8–20 V V<sub>CC</sub>,
+so the driver side is already capable.</p>
+<p><strong>Next step:</strong> measure a real switching edge on a built board before believing the 2 W
+estimate — it is derived, not observed.</p>
+
+<p><strong>Amended 2026-08-12 — current budget rescoped to 20 A continuous, with a 10 A precision mode.
+F-41 stands unchanged; the remedy ranking does not.</strong></p>
+
+<p>Rescoping the bridge away from "50 A" changes nothing in the analysis above, because <strong>20 A was
+already the analysis point</strong>. The schematic note has always read "20 Amp max continuous current draw
+(estimated, depends on thermals) / <strong>50 Amp peak absolute maximum</strong>" — the 50 A was the peak
+abs-max, never the continuous design target, and the 8 W figure above is the 20 A number.</p>
+
+<p>The sense chain agrees, and always did: 2× 8&nbsp;mΩ in parallel per phase (R20/R23, R39/R40, R55/R56,
+all 2512) into an INA240A1 at 20&nbsp;V/V gives 80&nbsp;mV/A → <strong>±20.6 A full scale</strong> against a
+1.65&nbsp;V-referenced 3.3&nbsp;V ADC. Desoldering one shunt per phase leaves 8&nbsp;mΩ → 160&nbsp;mV/A →
+<strong>±10.3 A</strong>, a clean 2× in gain. Derivation in <a href="power.html#sense">power §1</a>. The
+"50 A bridge" was only ever the FET and copper sizing.</p>
+
+<p><strong>What the 10 A mode does change</strong> — conduction goes as I², switching as I:</p>
+
+<div class="tablewrap">
+<table>
+<thead><tr><th>Per bridge, 20 kHz</th><th class="num">@ 20 A</th><th class="num">@ 10 A</th></tr></thead>
+<tbody>
+<tr><td>Conduction</td><td class="num">2.2 W</td><td class="num">0.55 W</td></tr>
+<tr><td>Switching (the F-41 penalty)</td><td class="num">~2.0 W</td><td class="num">~1.0 W</td></tr>
+<tr><td>Total (incl. Q<sub>rr</sub>)</td><td class="num">~4.4 W</td><td class="num">~1.6 W</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>In the 10 A mode F-41 is moot and a separate rail cannot be justified. At 20 A it stands as written.</p>
+
+<p><strong>New — the gate resistors are a cheaper lever than the rail.</strong> R13/R14 = 10.2&nbsp;Ω is the
+direct cause of the 95&nbsp;ns edge. Running the same plateau model backwards
+((V<sub>drive</sub>&nbsp;−&nbsp;3.2)&nbsp;/&nbsp;(R<sub>g</sub>&nbsp;+&nbsp;1.3) into
+Q<sub>gd</sub>&nbsp;≈&nbsp;15&nbsp;nC):</p>
+
+<div class="tablewrap">
+<table>
+<thead><tr><th>Gate R</th><th>Rail</th><th class="num">Plateau I</th><th class="num">Edge</th><th class="num">Switching W/bridge</th></tr></thead>
+<tbody>
+<tr><td>10.2 Ω (as built)</td><td>5 V</td><td class="num">155 mA</td><td class="num">95 ns</td><td class="num">2.0 W</td></tr>
+<tr><td>5.1 Ω</td><td>5 V</td><td class="num">281 mA</td><td class="num">53 ns</td><td class="num">~1.1 W</td></tr>
+<tr><td>2.2 Ω</td><td>5 V</td><td class="num">514 mA</td><td class="num">29 ns</td><td class="num">~0.6 W</td></tr>
+<tr><td>10.2 Ω</td><td>10 V</td><td class="num">591 mA</td><td class="num">25 ns</td><td class="num">~0.5 W</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>2.2&nbsp;Ω lands within a few ns of what the 10&nbsp;V rail buys, for two resistor values per bridge and no
+new regulator. The rail additionally recovers the R<sub>DS(on)</sub> penalty (~0.5&nbsp;W/bridge, ~2&nbsp;W
+board-wide) that a resistor change cannot touch — but that is the smaller half of the 8&nbsp;W.</p>
+
+<p>A firm 20 A ceiling instead of a 50 A peak is what makes the faster edges arguable: less power-loop di/dt
+to fear. The limiter is not current, it is the gate loop — drivers on B.Cu directly under the FETs,
+via-hopping the stack, which is exactly why D6/D7 and the Q1 turn-off booster exist. With
+V<sub>GS(th)</sub> as low as 2.2&nbsp;V, dV/dt-induced shoot-through through C<sub>gd</sub> is what will
+actually set the floor. Same caveat as everything else here: <strong>derived, not measured</strong>.</p>
+
+<div class="callout good">
+<strong>Reframe before spending a rail:</strong> the shunts outweigh the gate-drive penalty on conduction.
+Inline 4&nbsp;mΩ at 20 A phase RMS is 1.6&nbsp;W per phase — <strong>4.8&nbsp;W across A/B/C</strong>, pure
+I²R — against F-41's conduction penalty of ~15% of ~3.5&nbsp;mΩ ≈ 0.2&nbsp;W/phase. If thermal headroom at
+20 A is the real constraint, the 10 A mode halves the shunt term to 2.4&nbsp;W for free. Note the
+<em>per-resistor</em> dissipation is 0.8&nbsp;W in either mode — desoldering removes a resistor, it does not
+unload the survivor, and 0.8&nbsp;W in a 2512 is not generous.
+</div>
+
+<p>One convergence worth a bench check: 95&nbsp;ns edges eat the INA240's settling window, so faster edges
+serve the very current-sense fidelity the 10 A mode exists for. Higher dV/dt cuts the other way on CMRR —
+which is what the INA240's enhanced PWM rejection is for. Measure both.</p>
+
+<p><strong>Revised remedy order</strong> (was: "measure the edges, then decide about a 10–12 V gate rail"):</p>
+<ol class="tight">
+<li><strong>Measure a real switching edge.</strong> Unchanged, still first, still gates everything below.</li>
+<li><strong>Gate-resistor sweep</strong> 10.2 → 5.1 → 2.2&nbsp;Ω, watching for dV/dt shoot-through. Free,
+testable on hardware that already exists, recovers most of the 8&nbsp;W. <em>New — enabled by the lower
+current ceiling.</em></li>
+<li><strong>FET respec at the next BOM touch.</strong> A part characterised at V<sub>GS</sub>=4.5&nbsp;V
+makes 5&nbsp;V the characterisation point and dissolves F-41 outright; lower Q<sub>gd</sub> cuts switching
+loss independent of the rail. Costs: reopens the recorded decision in <a href="findings.html">F-11</a>
+("FETs stay BSC030N08NS5"), 80&nbsp;V logic-level parts are thinner on the ground than 60&nbsp;V, and the
+50 A peak rating must survive for stall/startup.</li>
+<li><strong>Separate 10–12 V gate rail.</strong> Demoted to last resort. Still the only option that fixes
+conduction as well as switching, but it buys ~2&nbsp;W more than step 2 in exchange for a whole new
+regulator — and it must not be done by raising V<sub>drive</sub> (see Complication above).</li>
+</ol>
+</div>
+
+<h2 id="verdict">8 · Decision</h2>
+
+<div class="tablewrap">
+<table>
+<thead><tr><th>Dimension</th><th>EPC23102</th><th>Verdict</th></tr></thead>
+<tbody>
+<tr><td>Sourcing at LCSC</td><td>Stock 1, $9.31, Extended/shop</td><td><span class="sev high">BLOCKER</span> breaks the JLCPCB promise</td></tr>
+<tr><td>Cost</td><td>+$16–31/board</td><td><span class="sev high">BLOCKER</span> 40% of BOM</td></tr>
+<tr><td>Fail-safe brake</td><td>200 µs max ON kills the DC hold</td><td><span class="sev high">BLOCKER</span> safety regression</td></tr>
+<tr><td>60 V bus</td><td>80 V recommended, no avalanche</td><td><span class="sev med">RETREAT</span> to 48 V class</td></tr>
+<tr><td>Current sense</td><td>19× dV/dt into an unfiltered INA240</td><td><span class="sev med">RISK</span> needs bench work</td></tr>
+<tr><td>Part count</td><td>−32 per board</td><td><span class="sev good">WIN</span></td></tr>
+<tr><td>Gate-loop parasitics</td><td>Eliminated entirely</td><td><span class="sev good">WIN</span></td></tr>
+<tr><td>Total loss</td><td>−25% at 20 A / 20 kHz</td><td><span class="sev good">WIN</span> (mostly by fixing a gate-drive flaw)</td></tr>
+<tr><td>Thermal path</td><td>Rθ<sub>JC_top</sub> 0.4 °C/W, one bar over four ICs</td><td><span class="sev good">WIN</span> if a heatsink is acceptable</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><strong>Not for rev-C.</strong> The blockers are structural, not fixable by layout effort, and two of
+them (price, stock) are outside our control. Revisit if EPC gets real LCSC stock depth, or if the project
+ever forks a "performance" variant that drops the upload-a-zip constraint, accepts a heatsink, targets
+48 V, and runs at 100 kHz+ where GaN's switching advantage actually compounds instead of merely
+compensating for a weak gate drive.</p>
+
+<p><strong>Do next, independent of GaN:</strong> F-40 (find a buyable gate driver) is urgent and blocks
+ordering today. F-41 (measure the switching edges, then sweep the gate resistors) is the cheap version of
+most of what GaN was offering — and per the 2026-08-12 amendment it is now cheaper still: at a 20 A ceiling
+the resistor sweep recovers most of the 8 W for zero BOM cost, and the 10–12 V rail drops to last resort.</p>
+
+<footer style="margin-top:4rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:1rem">
+  Sources: <a href="https://epc-co.com/epc/Portals/0/epc/documents/datasheets/EPC23102_datasheet.pdf">EPC23102 datasheet rev. 2026-02-11</a> ·
+  <a href="https://www.mouser.com/datasheet/2/196/Infineon-BSC030N08NS5-DataSheet-v02_03-EN-531283.pdf">Infineon BSC030N08NS5 v2.3</a> ·
+  <a href="https://www.digikey.com/en/products/detail/epc/EPC23102/21529594">DigiKey</a> ·
+  LCSC/JLCPCB parts API, queried 2026-08-11 ·
+  netlist and placement from <code>hardware/rp2350_driver.kicad_sch</code> / <code>.kicad_pcb</code> on
+  <code>rev-b-fixes</code> @2b6339d (working tree), firmware <code>src/main.cpp</code>,
+  <code>src/current_test.cpp</code>.
+  Conduction losses are datasheet-derived; <strong>switching losses, edge rates and dV/dt figures are
+  engineering estimates (±50%) and have not been measured on hardware.</strong>
+</footer>
+
+</main>
+</body>
+</html>

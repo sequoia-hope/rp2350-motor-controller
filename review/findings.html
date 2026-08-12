@@ -54,16 +54,19 @@
   <p style="margin:0 0 .4rem"><a href="index.html" style="text-decoration:none">← project hub</a></p>
   <h1>Findings Register</h1>
   <p class="subtitle">Every finding from the 2026-08-08 reviews (schematic · PCB · power) with disposition,
-  plus dated amendments. Stable IDs for cross-reference. Branch <code>rev-b-fixes</code>.</p>
+  plus dated amendments and later findings (F-39 from the F-27 rescope; F-40/F-41 from the 2026-08-11
+  <a href="gan.html">GaN power-stage eval</a>). Stable IDs for cross-reference. Branch
+  <code>rev-b-fixes</code>.</p>
 </header>
 
 <div class="summary">
-  <div><strong>39</strong>findings recorded</div>
+  <div><strong>41</strong>findings recorded</div>
   <div><strong>14</strong>fixed on rev-b-fixes</div>
   <div><strong>9</strong>rev-C candidates</div>
   <div><strong>1</strong>re-route session (board)</div>
   <div><strong>2</strong>rev-B USB power path — placed, routing due</div>
   <div><strong>2</strong>firmware backlog</div>
+  <div><strong>2</strong>power stage, from the GaN eval — F-40 blocks ordering</div>
   <div><strong>11</strong>documented / verify / decided</div>
 </div>
 
@@ -249,6 +252,15 @@
   <td><span class="st open">OPEN</span></td>
   <td>Rev-B: move U11 pin&nbsp;5 from VBUS to +3V3 (data clamps ≈4&nbsp;V — correct for USB&nbsp;2.0 signaling; rail always up when USB is active) + a TVS VBUS→GND at J3. Do not enable &gt;5&nbsp;V PD requests before this lands. Detail: <a href="power.html#f39">power §2</a>.
   <br><strong>Amended 2026-08-11 — landed in schematic and PCB; clamp part changed.</strong> The SMAJ24A (SMA, 400&nbsp;W) has no legal placement near J3: J3's own 9.0×10.7&nbsp;mm courtyard, J6 overlapping it 0.9&nbsp;mm away, C105/C106 and the board edge leave nothing closer than 10&nbsp;mm, and that pose needs 11 signal segments ripped including /SWD, /RUN and /HALL1-2 — a clamp that far from the connector is not doing its job. Replaced with <strong>SMF24A</strong> (SOD-123FL, 200&nbsp;W 10/1000&nbsp;µs, 24&nbsp;V standoff, 38.9&nbsp;V clamp, <code>C169430</code>) at <code>183.725, 111.605</code> on F.Cu — 5.15&nbsp;mm from J3 and only 2 segments ripped. This halves the surge rating to keep the clamp where it works; a 24&nbsp;V SOD-323 part was considered and rejected because parts in that package are ESD-class arrays, not surge-rated TVS. U11 pin&nbsp;5 → +3V3 is done on both sides</td></tr>
+<tr><td class="id">F-40</td><td><span class="sev high">HIGH</span></td>
+  <td>EG3113 gate driver is effectively unbuyable: LCSC <code>C480666</code> 9 in stock against a minimum purchase of 25; <code>EG3113D</code> (<code>C2929097</code>) and the JLCPCB-assembly DFN8 variant both at 0. The board needs four per unit, so the design cannot be ordered at the advertised QTY 10. Found 2026-08-11 during the GaN power-stage evaluation</td>
+  <td><span class="st open">OPEN</span></td>
+  <td>Qualify a pin-compatible SOIC-8 half-bridge driver at ≥80&nbsp;V with real stock depth. Blocks ordering; independent of the GaN question and should not wait on it. Spec it against F-41 at the same time — if a 10–12&nbsp;V gate rail ever lands, the replacement needs ≥12&nbsp;V V<sub>CC</sub> <em>and</em> 3.3&nbsp;V-compatible input thresholds at that V<sub>CC</sub>. Detail: <a href="gan.html#f40">GaN eval §7</a></td></tr>
+<tr><td class="id">F-41</td><td><span class="sev med">MED</span></td>
+  <td>FETs driven ~5&nbsp;V below their characterisation point: BSC030N08NS5 is specified 2.6/3.4&nbsp;mΩ at V<sub>GS</sub>=10&nbsp;V and 3.0/4.5&nbsp;mΩ at 6&nbsp;V with V<sub>GS(th)</sub> spanning 2.2–3.8&nbsp;V, but V<sub>drive</sub> is 5.04&nbsp;V. Costs ~15% on R<sub>DS(on)</sub> plus ~2&nbsp;W/bridge of switching loss from ~95&nbsp;ns edges (R13/R14 = 10.2&nbsp;Ω limit the Miller plateau to ~155&nbsp;mA) — ~8&nbsp;W across the board at 20&nbsp;A, most of the thermal headroom. V<sub>drive</sub> cannot simply be raised: it also feeds the TS5A3159 switches (5.5&nbsp;V max), the SPX3819, the WS2812 and the 5&nbsp;V encoder supply. Found 2026-08-11 during the GaN power-stage evaluation</td>
+  <td><span class="st open">OPEN</span></td>
+  <td>Bench-gated. <strong>Measure a real switching edge first</strong> — the 2&nbsp;W is derived, not observed. Detail: <a href="gan.html#f41">GaN eval §7</a>.
+  <br><strong>Amended 2026-08-12 — current budget rescoped; finding unchanged, remedy order changed.</strong> Targeting 20&nbsp;A continuous with a 10&nbsp;A shunt-desolder mode relaxes nothing above, because <em>20&nbsp;A was already the analysis point</em>: the schematic note has always read "20 Amp max continuous / 50 Amp peak absolute maximum", and the sense chain (2× 8&nbsp;mΩ ∥ per phase → INA240A1 at 20&nbsp;V/V → ±20.6&nbsp;A FS; ±10.3&nbsp;A desoldered) was scaled for 20&nbsp;A all along — see <a href="power.html#sense">power §1</a>. What the rescope <em>does</em> open is a cheaper lever than a new rail: at 20&nbsp;A the di/dt budget tolerates faster edges, and a gate-resistor sweep (10.2&nbsp;→&nbsp;5.1&nbsp;→&nbsp;2.2&nbsp;Ω) reaches ~29&nbsp;ns versus the 10&nbsp;V rail's ~25&nbsp;ns for zero BOM cost, recovering most of the 8&nbsp;W. Revised order: (1) measure the edge, (2) gate-resistor sweep watching for dV/dt shoot-through, (3) FET respec to a V<sub>GS</sub>=4.5&nbsp;V-characterised part at the next BOM touch — reopens <a href="#power-stage">F-11</a>, (4) separate 10–12&nbsp;V gate rail, <strong>demoted to last resort</strong> (it alone also fixes the R<sub>DS(on)</sub> half, ~2&nbsp;W, but costs a whole regulator). In the 10&nbsp;A mode F-41 is moot (~1.6&nbsp;W/bridge total). Note for the thermal budget: the inline 4&nbsp;mΩ shunts burn 4.8&nbsp;W across A/B/C at 20&nbsp;A — a bigger conduction term than F-41's ~0.2&nbsp;W/phase</td></tr>
 </table>
 </div>
 

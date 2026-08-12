@@ -97,6 +97,23 @@
     targets on wirelength and courtyard legality.</p>
     <p class="date">2026-08-09</p>
   </a>
+  <a class="card" href="gan.html">
+    <h3>GaN Power Stage Evaluation →</h3>
+    <p>Four EPC23102 ePower Stage ICs instead of 8×BSC030N08NS5 + 4×EG3113: −32 parts and no gate loops,
+    against stock-of-1 at LCSC, +$16–31/board, a 200&nbsp;µs pulse limit that kills the fail-safe brake,
+    and 19× the dV/dt into an unfiltered INA240. Verdict: not for rev-C — but it found two live findings
+    in the stage we already ship.</p>
+    <p class="date">2026-08-11</p>
+  </a>
+</div>
+
+<div class="board" style="border-left:4px solid var(--bad)">
+  <strong>Status 2026-08-11:</strong> the GaN evaluation turned up a blocker in the <em>current</em>
+  design — <strong>EG3113 is effectively unbuyable</strong> (LCSC <code>C480666</code>: 9 in stock,
+  minimum purchase 25; both alternates at zero), and the board needs four. Ordering at the advertised
+  QTY 10 is blocked until a replacement driver is qualified.
+  <a href="gan.html#f40">F-40</a>, with <a href="gan.html#f41">F-41</a> (FETs driven 5&nbsp;V below their
+  characterisation point) alongside it.
 </div>
 
 <div class="board" style="border-left:4px solid var(--good)">
@@ -128,6 +145,14 @@
 
 <h2>Current top items</h2>
 <ul class="digest">
+  <li><span class="sev high">HIGH</span> EG3113 gate driver is out of stock at LCSC (9 units, min buy 25;
+  alternates at 0) and the board needs four — blocks ordering today, independent of any GaN question
+  (<a href="gan.html#f40">F-40</a>).</li>
+  <li><span class="sev med">MED</span> BSC030N08NS5 driven at V<sub>drive</sub> = 5.04 V, below its 6 V
+  spec point: ~95 ns edges and an estimated ~2 W/bridge of switching loss. V<sub>drive</sub> can't just be
+  raised — it feeds the TS5A3159s at 5.5 V max (<a href="gan.html#f41">F-41</a>).
+  <em>Amended 2026-08-12 for the 20 A / 10 A current budget: the finding stands (20 A was always the
+  analysis point), but the lead remedy is now a gate-resistor sweep, not a 10–12 V rail.</em></li>
   <li><span class="sev high">HIGH</span> Encoder single-ended support: 100 Ω termination swamps the bias
   divider (±32 mV vs −100 mV threshold). Fix: switched termination on GPIO38/TP20 + P-side pull-ups
   (<a href="schematic.html#fixes">details</a>). Field fix for built boards: R86–R93 → 560 Ω.</li>

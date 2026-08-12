@@ -78,7 +78,33 @@ breakdown (71–79&nbsp;V) just below it, so surges hit the TVS before any FET a
   <li><span class="sev good">OK</span> <strong>PD-side ratings:</strong> VBUS caps 50&nbsp;V for 20&nbsp;V PD,
   USBLC6 on data, CC caps per FUSB302 app note. ✓ <em>(amended 2026-08-10: the ✓ missed U11's
   VBUS pin — 5&nbsp;V-class on the PD rail; see F-39 below)</em></li>
+  <li id="sense"><span class="sev good">OK</span> <strong>Current-sense scaling — matched to 20 A, not
+  50 A:</strong> six 8&nbsp;mΩ 2512 shunts, two in parallel per phase (R20/R23 on A, R39/R40 on B, R55/R56
+  on C), inline in the phase legs feeding INA240A1 at 20&nbsp;V/V. ✓ <em>Added 2026-08-12 while rescoping
+  the current budget — see <a href="gan.html#f41">F-41</a>.</em></li>
 </ul>
+
+<p><strong>Sense-chain full scale.</strong> The INA240 output is referenced to 1.65&nbsp;V for bidirectional
+sensing, so each direction gets 1.65&nbsp;V of the 3.3&nbsp;V ADC span. That fixes full scale at
+R<sub>shunt</sub>&nbsp;·&nbsp;20&nbsp;V/V, and it lands almost exactly on the schematic's stated 20 A
+continuous rating — the sense chain was scaled for 20 A all along, whatever the FETs and copper could take:</p>
+
+<div class="tablewrap">
+<table>
+  <tr><th>Mode</th><th>Shunt / phase</th><th>Gain</th><th>Full scale</th><th>Dissipation</th></tr>
+  <tr><td>As built</td><td>2× 8&nbsp;mΩ ∥ = 4&nbsp;mΩ</td><td>80&nbsp;mV/A</td><td><strong>±20.6 A</strong></td>
+      <td>1.6&nbsp;W/phase at 20 A (0.8&nbsp;W per resistor), 4.8&nbsp;W across A/B/C</td></tr>
+  <tr><td>Precision — one shunt desoldered per phase</td><td>8&nbsp;mΩ</td><td>160&nbsp;mV/A</td>
+      <td><strong>±10.3 A</strong></td>
+      <td>0.8&nbsp;W/phase at 10 A (0.8&nbsp;W in the surviving resistor), 2.4&nbsp;W total</td></tr>
+</table>
+</div>
+
+<p>A clean 2× in gain for one desoldering operation per phase, and it halves the board's shunt conduction
+loss. Two things to keep in view: the surviving resistor still sees <strong>0.8&nbsp;W</strong> — the mode
+removes a resistor, it does not unload the one that stays, and 0.8&nbsp;W in a 2512 is not generous — and
+these shunts are the single largest conduction term in the phase path at 20 A, larger than the entire
+gate-drive penalty in <a href="gan.html#f41">F-41</a>.</p>
 
 <div class="cols2">
 <figure>
