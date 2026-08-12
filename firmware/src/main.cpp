@@ -85,9 +85,13 @@
 // resistor each off-period, so duty is capped below 100%.
 //
 // GPIO9 is D_PWM_L\ (ACTIVE LOW): its 10k pull-down holds the low FET ON.
-// It must be driven HIGH before the first chop or CH2 vs CL2 shoot through
-// (EG3113 has no interlock). Without BRAKE_CHOPPER the D leg is left on its
-// pulls: high FET off, low FET on, node grounded — safest unused state.
+// It must be driven HIGH before the first chop, or the chopper simply never
+// conducts: the EG3113 interlocks (datasheet V1.2 §8.2 truth table — HIN=1
+// with LIN\=0 gives HO=0 AND LO=0), so raising CH2 while CL2 is still
+// commanded on parks both FETs off. A dead chopper, not a shoot-through —
+// the earlier "EG3113 has no interlock" note here was wrong. Without
+// BRAKE_CHOPPER the D leg is left on its pulls: high FET off, low FET on,
+// node grounded — safest unused state.
 //
 // The voltage guard itself (current_limit foldback) runs on every build:
 // 310uF between 60V and the 71V TVS breakdown is only ~0.22J, and a 4A
