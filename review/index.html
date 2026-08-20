@@ -97,6 +97,14 @@
     targets on wirelength and courtyard legality.</p>
     <p class="date">2026-08-09</p>
   </a>
+  <a class="card" href="modules.html">
+    <h3>Module Stretch &amp; Rev-B Routing →</h3>
+    <p>The board carved into 14 modules / 47 rigid leaves, every seam measured: <strong>no module-level slack</strong> —
+    the DRC-neutral stretch is five loose parts. Then the useful half: 17 provisional rev-B parts + the F-19 CAN
+    parts given legal homes on real KiCad geometry, Q6 to SOT-23, the corner cleaned (167→6 DRC items) and the
+    airwires handed to Freerouting with all existing copper locked.</p>
+    <p class="date">2026-08-20</p>
+  </a>
   <a class="card" href="gan.html">
     <h3>GaN Power Stage Evaluation →</h3>
     <p>Four EPC23102 ePower Stage ICs instead of 8×BSC030N08NS5 + 4×EG3113: −32 parts and no gate loops,
@@ -105,6 +113,15 @@
     in the stage we already ship.</p>
     <p class="date">2026-08-11</p>
   </a>
+</div>
+
+<div class="board" style="border-left:4px solid var(--good)">
+  <strong>Status 2026-08-20:</strong> the module-stretch experiment is in — verdict <em>no module-level slack</em>
+  (<a href="findings.html#f-44">F-44</a>, <a href="modules.html">full page</a>) — and the rev-B corner is un-jammed:
+  17 provisional parts + the F-19 CAN parts placed on real geometry, Q6 to SOT-23 (<a href="findings.html#f-45">F-45</a>),
+  stray copper removed, GND stitched, and the in-house router closed 197 of 251 connections.
+  <strong>DRC 167 → 4 (cosmetic), airwires 238 → 54</strong>, <code>check_sync</code> IN SYNC; the 54 left are
+  named placement fixes (<a href="findings.html#f-25">F-25</a>).
 </div>
 
 <div class="board" style="border-left:4px solid var(--bad)">
@@ -137,11 +154,15 @@
 </div>
 
 <div class="board" style="border-left:4px solid var(--accent)">
-  <strong><a href="findings.html">Findings Register</a></strong> — all 41 findings from the three
-  reviews and the GaN eval, plus dated amendments, with stable IDs (F-01…F-41), severity, and
+  <strong><a href="findings.html">Findings Register</a></strong> — all 45 findings from the three
+  reviews and the GaN eval, plus dated amendments, with stable IDs (F-01…F-45), severity, and
   disposition. Every row is a permalink: <code><a href="findings.html#f-40">findings.html#f-40</a></code>.
-  14 fixed on <code>rev-b-fixes</code>, 9 rev-C candidates, the rev-B USB power-path pair (F-27/F-39),
-  the GaN-eval pair (F-40/F-41), the re-route worklist, and the firmware backlog.
+  15 fixed on <code>rev-b-fixes</code>, 9 rev-C candidates, the rev-B USB power-path pair (F-27/F-39),
+  the GaN-eval pair (F-40/F-41), the CAN termination + barrier-stitch work
+  (<a href="findings.html#f-19">F-19</a>, with <a href="findings.html#f-42">F-42</a> raised against the
+  uncut inner planes), the 0603→0402 shrink of 15 logic-level passives
+  (<a href="findings.html#f-43">F-43</a>), the module-stretch verdict (<a href="findings.html#f-44">F-44</a>) and the
+  Q6 footprint fix (<a href="findings.html#f-45">F-45</a>), the re-route worklist, and the firmware backlog.
 </div>
 
 <h2>Current top items</h2>
@@ -166,7 +187,8 @@
   &gt;5 V contract (<a href="power.html#f27-adopted">F-27/F-39</a>).</li>
   <li><span class="sev med">MED</span> Whole-board jiggle = 61% of tracks re-routed; do cluster-scoped
   shakes instead, starting with the encoder corner where the new switches land
-  (<a href="pcb.html#jiggle">details</a>).</li>
+  (<a href="pcb.html#jiggle">details</a>). <em>2026-08-20: measured at module granularity too — the board has no
+  module-level slack; stretch is a re-route in disguise (<a href="modules.html">modules page</a>).</em></li>
 </ul>
 
 <footer>

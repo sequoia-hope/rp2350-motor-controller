@@ -30,9 +30,10 @@ PCB = os.path.join(HW, 'rp2350_driver.kicad_pcb')
 
 # Real differences that predate the rev-B work. Reported every run so they
 # stay visible, but they do not fail the gate.
-#   Q6 - shipped rev-A board has the 2N7002 on a SOT-89-3 land while the
-#        schematic symbol carries SOT-23. Not touched by F-27/F-39.
-KNOWN_PREEXISTING = {'footprint Q6'}
+#   (Q6 used to be here: the shipped rev-A board had the 2N7002 on a SOT-89-3
+#    land while the schematic carries SOT-23. Resolved 2026-08-20, F-45: the
+#    board now carries the schematic's SOT-23 -- see review/modules.html.)
+KNOWN_PREEXISTING = set()
 
 
 def tokenize(s):

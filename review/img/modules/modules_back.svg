@@ -1,0 +1,281 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1099 696" width="1099" height="696" font-family="ui-monospace,monospace">
+<rect width="1099" height="696" fill="#ffffff"/>
+<rect x="10.0" y="10.0" width="1078.7" height="650.3" fill="#f4f2ee" stroke="#333" stroke-width="1.5"/>
+<path d="M375.6,405.8 L375.6,447.1 L355.3,447.1 L355.3,405.8 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R11 · HB_A (HB)</title></path>
+<path d="M498.2,520.4 L498.2,540.7 L456.9,540.7 L456.9,520.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R73 · HB_D (HB)</title></path>
+<path d="M338.9,501.4 L338.9,527.3 L325.8,527.3 L325.8,501.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R101 · HB_A (HB)</title></path>
+<path d="M251.5,334.2 L251.5,347.3 L225.6,347.3 L225.6,334.2 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R99 · ENC_C (ENC)</title></path>
+<path d="M1079.6,316.8 L1079.6,358.1 L1059.3,358.1 L1059.3,316.8 Z" fill="#d64173" fill-opacity="0.55" stroke="#d64173" stroke-width="0.8"><title>C58 · CAN (CAN)</title></path>
+<path d="M783.0,27.5 L783.0,40.3 L757.6,40.3 L757.6,27.5 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>C50 · AUX_SW (AUX)</title></path>
+<path d="M363.9,370.2 L363.9,405.1 L344.5,405.1 L344.5,370.2 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>D7 · HB_A (HB)</title></path>
+<path d="M1047.3,578.3 L1047.3,583.2 L1056.0,583.2 L1056.0,588.4 L1060.9,588.4 L1060.9,619.9 L1056.0,619.9 L1056.0,625.1 L1047.3,625.1 L1047.3,630.0 L1022.8,630.0 L1022.8,625.1 L1014.1,625.1 L1014.1,619.9 L1009.2,619.9 L1009.2,588.4 L1014.1,588.4 L1014.1,583.2 L1022.8,583.2 L1022.8,578.3 Z" fill="#419fd6" fill-opacity="0.55" stroke="#419fd6" stroke-width="0.8"><title>U101 · USB_PD (USBPD)</title></path>
+<path d="M884.8,518.3 L884.8,565.8 L831.2,565.8 L831.2,518.3 Z" fill="#cad641" fill-opacity="0.55" stroke="#cad641" stroke-width="0.8"><title>D22 · D22 (BR)</title></path>
+<path d="M516.2,413.4 L516.2,433.7 L474.9,433.7 L474.9,413.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R13 · HB_A (HB)</title></path>
+<path d="M1008.8,630.7 L1008.8,643.4 L983.5,643.4 L983.5,630.7 Z" fill="#419fd6" fill-opacity="0.55" stroke="#419fd6" stroke-width="0.8"><title>C77 · USB_PD (USBPD)</title></path>
+<path d="M817.9,233.2 L817.9,253.5 L776.6,253.5 L776.6,233.2 Z" fill="#d69241" fill-opacity="0.55" stroke="#d69241" stroke-width="0.8"><title>C78 · PWR_OR (PWR)</title></path>
+<path d="M420.6,210.1 L420.6,230.4 L379.2,230.4 L379.2,210.1 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>TH1 · HB_B (HB)</title></path>
+<path d="M345.4,112.2 L345.4,165.8 L298.0,165.8 L298.0,112.2 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>Q3 · HB_C (HB)</title></path>
+<path d="M261.9,179.4 L261.9,205.3 L248.8,205.3 L248.8,179.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R107 · HB_B (HB)</title></path>
+<path d="M722.1,244.7 L673.2,329.4 L630.9,305.0 L679.8,220.3 Z" fill="#41d6bd" fill-opacity="0.55" stroke="#41d6bd" stroke-width="0.8"><title>D4 · BUCK (BUCK)</title></path>
+<path d="M944.1,59.3 L944.1,106.7 L916.9,106.7 L916.9,59.3 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>C12 · AUX_LDO (AUX)</title></path>
+<path d="M884.6,270.5 L884.6,347.3 L785.3,347.3 L785.3,270.5 Z" fill="#d69241" fill-opacity="0.55" stroke="#d69241" stroke-width="0.8"><title>Q5 · PWR_OR (PWR)</title></path>
+<path d="M474.5,463.7 L474.5,505.0 L454.2,505.0 L454.2,463.7 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C2 · HB_A (HB)</title></path>
+<path d="M116.4,41.9 L116.4,83.2 L96.1,83.2 L96.1,41.9 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>R71 · DIV (DIV)</title></path>
+<path d="M282.9,620.4 L282.9,646.3 L269.8,646.3 L269.8,620.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R106 · HB_D (HB)</title></path>
+<path d="M162.3,334.4 L162.3,347.4 L136.4,347.4 L136.4,334.4 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R84 · ENC_C (ENC)</title></path>
+<path d="M240.0,356.1 L240.0,381.4 L227.3,381.4 L227.3,356.1 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C112 · ENC_C (ENC)</title></path>
+<path d="M355.0,577.6 L355.0,597.9 L313.7,597.9 L313.7,577.6 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R77 · HB_D (HB)</title></path>
+<path d="M474.6,542.3 L474.6,583.6 L454.3,583.6 L454.3,542.3 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R74 · HB_D (HB)</title></path>
+<path d="M101.7,625.4 L101.7,638.5 L75.8,638.5 L75.8,625.4 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R98 · ENC_B (ENC)</title></path>
+<path d="M892.8,29.6 L892.8,56.9 L845.3,56.9 L845.3,29.6 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>C5 · AUX_LDO (AUX)</title></path>
+<path d="M140.8,445.5 L140.8,470.8 L128.1,470.8 L128.1,445.5 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C64 · ENC_SW (ENC)</title></path>
+<path d="M1021.0,83.6 L1021.0,96.3 L995.7,96.3 L995.7,83.6 Z" fill="#d64173" fill-opacity="0.55" stroke="#d64173" stroke-width="0.8"><title>C56 · CAN (CAN)</title></path>
+<path d="M139.0,87.4 L139.0,128.7 L118.7,128.7 L118.7,87.4 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>R67 · DIV (DIV)</title></path>
+<path d="M500.7,339.1 L500.7,359.4 L459.4,359.4 L459.4,339.1 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C15 · HB_B (HB)</title></path>
+<path d="M323.5,15.1 L351.7,15.1 L351.7,43.4 L323.5,43.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>TP6 · HB_C (HB)</title></path>
+<path d="M814.9,532.5 L814.9,546.3 L795.5,546.3 L795.5,532.5 Z" fill="#cad641" fill-opacity="0.55" stroke="#cad641" stroke-width="0.8"><title>D29 · D29 (BR)</title></path>
+<path d="M221.3,43.0 L221.3,55.8 L196.0,55.8 L196.0,43.0 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C40 · HB_C (HB)</title></path>
+<path d="M330.5,180.7 L358.7,180.7 L358.7,208.9 L330.5,208.9 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>TP4 · HB_B (HB)</title></path>
+<path d="M980.2,259.7 L982.9,260.7 L985.2,262.2 L987.3,264.1 L988.9,266.4 L990.0,269.0 L990.6,271.8 L990.6,273.2 L990.6,274.6 L990.0,277.4 L988.9,280.0 L987.3,282.3 L985.2,284.2 L982.9,285.7 L980.2,286.7 L977.4,287.1 L974.6,287.0 L971.8,286.3 L969.3,285.1 L967.1,283.3 L965.2,281.2 L963.9,278.7 L963.0,276.0 L962.7,273.2 L963.0,270.4 L963.9,267.7 L965.2,265.2 L967.1,263.1 L969.3,261.3 L971.8,260.1 L974.6,259.4 L977.4,259.3 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>TP18 · MCU (MCU)</title></path>
+<path d="M1080.4,106.1 L1080.4,287.4 L991.5,287.4 L991.5,106.1 Z" fill="#d64173" fill-opacity="0.55" stroke="#d64173" stroke-width="0.8"><title>U16 · CAN (CAN)</title></path>
+<path d="M728.9,170.8 L731.6,171.8 L733.9,173.3 L736.0,175.2 L737.6,177.5 L738.7,180.1 L739.3,182.9 L739.3,184.3 L739.3,185.7 L738.7,188.5 L737.6,191.1 L736.0,193.4 L733.9,195.3 L731.6,196.8 L728.9,197.8 L726.1,198.2 L723.3,198.1 L720.5,197.4 L718.0,196.2 L715.8,194.4 L713.9,192.3 L712.6,189.8 L711.7,187.1 L711.4,184.3 L711.7,181.5 L712.6,178.8 L713.9,176.3 L715.8,174.2 L718.0,172.4 L720.5,171.2 L723.3,170.5 L726.1,170.4 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>TP20 · TP20 (AUX)</title></path>
+<path d="M354.7,534.2 L354.7,554.5 L313.4,554.5 L313.4,534.2 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C51 · HB_D (HB)</title></path>
+<path d="M93.7,302.9 L93.7,328.2 L81.0,328.2 L81.0,302.9 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C113 · ENC_D (ENC)</title></path>
+<path d="M375.5,567.3 L375.5,608.6 L355.2,608.6 L355.2,567.3 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R76 · HB_D (HB)</title></path>
+<path d="M492.6,76.9 L492.6,118.2 L472.3,118.2 L472.3,76.9 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R46 · HB_C (HB)</title></path>
+<path d="M375.6,531.4 L375.6,566.3 L356.1,566.3 L356.1,531.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>D20 · HB_D (HB)</title></path>
+<path d="M171.3,444.4 L171.3,457.2 L146.0,457.2 L146.0,444.4 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C71 · ENC_AN (ENC)</title></path>
+<path d="M372.4,290.4 L372.4,331.7 L352.1,331.7 L352.1,290.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R28 · HB_B (HB)</title></path>
+<path d="M670.5,630.3 L657.7,630.3 L657.7,604.9 L670.5,604.9 Z" fill="#cad641" fill-opacity="0.55" stroke="#cad641" stroke-width="0.8"><title>C59 · VENC (BR)</title></path>
+<path d="M133.4,342.5 L133.4,355.5 L107.5,355.5 L107.5,342.5 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R92 · ENC_C (ENC)</title></path>
+<path d="M448.9,55.8 L448.9,76.1 L407.6,76.1 L407.6,55.8 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C36 · HB_C (HB)</title></path>
+<path d="M116.5,183.3 L116.5,224.6 L96.2,224.6 L96.2,183.3 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>R60 · DIV (DIV)</title></path>
+<path d="M116.5,135.0 L116.5,176.3 L96.2,176.3 L96.2,135.0 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>R63 · DIV (DIV)</title></path>
+<path d="M380.6,522.5 L408.9,522.5 L408.9,550.8 L380.6,550.8 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>TP10 · HB_D (HB)</title></path>
+<path d="M138.9,41.9 L138.9,83.2 L118.6,83.2 L118.6,41.9 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>R70 · DIV (DIV)</title></path>
+<path d="M763.2,233.1 L765.9,234.1 L768.2,235.6 L770.3,237.5 L771.9,239.8 L773.0,242.4 L773.6,245.2 L773.6,246.6 L773.6,248.0 L773.0,250.8 L771.9,253.4 L770.3,255.7 L768.2,257.6 L765.9,259.1 L763.2,260.1 L760.4,260.5 L757.6,260.4 L754.8,259.7 L752.3,258.5 L750.1,256.7 L748.2,254.6 L746.9,252.1 L746.0,249.4 L745.7,246.6 L746.0,243.8 L746.9,241.1 L748.2,238.6 L750.1,236.5 L752.3,234.7 L754.8,233.5 L757.6,232.8 L760.4,232.7 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>TP12 · MCU (MCU)</title></path>
+<path d="M891.9,613.4 L891.9,639.3 L878.8,639.3 L878.8,613.4 Z" fill="#419fd6" fill-opacity="0.55" stroke="#419fd6" stroke-width="0.8"><title>R110 · R110 (USBPD)</title></path>
+<path d="M907.4,310.1 L910.1,311.1 L912.4,312.6 L914.5,314.5 L916.1,316.8 L917.2,319.4 L917.8,322.2 L917.8,323.6 L917.8,325.0 L917.2,327.8 L916.1,330.4 L914.5,332.7 L912.4,334.6 L910.1,336.1 L907.4,337.1 L904.6,337.5 L901.8,337.4 L899.0,336.7 L896.5,335.5 L894.3,333.7 L892.4,331.6 L891.1,329.1 L890.2,326.4 L889.9,323.6 L890.2,320.8 L891.1,318.1 L892.4,315.6 L894.3,313.5 L896.5,311.7 L899.0,310.5 L901.8,309.8 L904.6,309.7 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>TP16 · MCU (MCU)</title></path>
+<path d="M216.8,627.5 L216.8,637.1 L213.9,637.1 L213.9,637.1 L202.5,637.1 L202.5,637.1 L194.3,637.1 L194.3,627.5 L197.1,627.5 L197.1,627.5 L208.5,627.5 L208.5,627.5 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R87 · ENC_B (ENC)</title></path>
+<path d="M344.0,368.2 L344.0,388.5 L302.7,388.5 L302.7,368.2 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C6 · HB_A (HB)</title></path>
+<path d="M293.7,210.8 L293.7,314.3 L218.2,314.3 L218.2,210.8 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>U9 · HB_B (HB)</title></path>
+<path d="M482.4,275.2 L510.6,275.2 L510.6,303.4 L482.4,303.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>TP3 · HB_B (HB)</title></path>
+<path d="M282.9,326.4 L282.9,352.3 L269.8,352.3 L269.8,326.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R104 · HB_B (HB)</title></path>
+<path d="M476.8,432.7 L505.0,432.7 L505.0,461.0 L476.8,461.0 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>TP2 · HB_A (HB)</title></path>
+<path d="M146.1,476.8 L146.1,487.5 L129.7,487.5 L129.7,476.8 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>D23 · ENC_SW (ENC)</title></path>
+<path d="M473.3,391.7 L473.3,433.0 L453.0,433.0 L453.0,391.7 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R10 · HB_A (HB)</title></path>
+<path d="M780.6,288.1 L770.1,306.3 L773.0,308.0 L742.3,361.2 L739.4,359.5 L728.9,377.7 L669.4,343.3 L679.9,325.1 L677.0,323.5 L707.7,270.2 L710.6,271.9 L721.1,253.7 Z" fill="#41d6bd" fill-opacity="0.55" stroke="#41d6bd" stroke-width="0.8"><title>U28 · BUCK (BUCK)</title></path>
+<path d="M358.1,47.0 L358.1,67.3 L316.8,67.3 L316.8,47.0 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C31 · HB_C (HB)</title></path>
+<path d="M872.4,220.5 L875.1,221.5 L877.4,223.0 L879.5,224.9 L881.1,227.2 L882.2,229.8 L882.8,232.6 L882.8,234.0 L882.8,235.4 L882.2,238.2 L881.1,240.8 L879.5,243.1 L877.4,245.0 L875.1,246.5 L872.4,247.5 L869.6,247.9 L866.8,247.8 L864.0,247.1 L861.5,245.9 L859.3,244.1 L857.4,242.0 L856.1,239.5 L855.2,236.8 L854.9,234.0 L855.2,231.2 L856.1,228.5 L857.4,226.0 L859.3,223.9 L861.5,222.1 L864.0,220.9 L866.8,220.2 L869.6,220.1 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>TP17 · MCU (MCU)</title></path>
+<path d="M83.6,394.9 L83.6,420.2 L70.8,420.2 L70.8,394.9 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C60 · ENC_A (ENC)</title></path>
+<path d="M871.4,418.5 L871.4,460.4 L840.7,460.4 L840.7,418.5 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>U11 · MCU (MCU)</title></path>
+<path d="M831.6,457.9 L831.6,470.9 L805.7,470.9 L805.7,457.9 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>R54 · MCU (MCU)</title></path>
+<path d="M926.9,25.4 L926.9,51.3 L913.8,51.3 L913.8,25.4 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>R112 · R112 (AUX)</title></path>
+<path d="M113.1,523.9 L113.1,528.1 L120.8,528.1 L120.8,534.4 L113.1,534.4 L113.1,537.2 L120.8,537.2 L120.8,543.5 L113.1,543.5 L113.1,546.3 L120.8,546.3 L120.8,552.6 L113.1,552.6 L113.1,556.8 L92.1,556.8 L92.1,552.6 L84.4,552.6 L84.4,546.3 L92.1,546.3 L92.1,543.5 L84.4,543.5 L84.4,537.2 L92.1,537.2 L92.1,534.4 L84.4,534.4 L84.4,528.1 L92.1,528.1 L92.1,523.9 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U23 · ENC_SW (ENC)</title></path>
+<path d="M363.9,610.9 L363.9,652.2 L343.6,652.2 L343.6,610.9 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R75 · HB_D (HB)</title></path>
+<path d="M513.8,141.2 L513.8,173.3 L452.3,173.3 L452.3,141.2 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>D14 · HB_C (HB)</title></path>
+<path d="M451.6,402.4 L451.6,505.8 L376.2,505.8 L376.2,402.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>U1 · HB_A (HB)</title></path>
+<path d="M982.0,81.0 L982.0,93.7 L956.7,93.7 L956.7,81.0 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>C114 · C114 (AUX)</title></path>
+<path d="M535.9,76.9 L535.9,118.2 L515.6,118.2 L515.6,76.9 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R41 · HB_C (HB)</title></path>
+<path d="M94.0,183.3 L94.0,224.6 L73.7,224.6 L73.7,183.3 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>R61 · DIV (DIV)</title></path>
+<path d="M139.1,135.0 L139.1,176.3 L118.8,176.3 L118.8,135.0 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>R62 · DIV (DIV)</title></path>
+<path d="M484.5,611.6 L484.5,652.9 L464.2,652.9 L464.2,611.6 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C48 · HB_D (HB)</title></path>
+<path d="M447.5,380.5 L447.5,400.8 L406.2,400.8 L406.2,380.5 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C10 · HB_A (HB)</title></path>
+<path d="M999.6,375.4 L990.4,384.6 L972.1,366.3 L981.3,357.1 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>R35 · MCU (MCU)</title></path>
+<path d="M355.0,556.4 L355.0,576.7 L313.7,576.7 L313.7,556.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R79 · HB_D (HB)</title></path>
+<path d="M62.2,483.2 L62.2,524.5 L41.9,524.5 L41.9,483.2 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C75 · ENC_SW (ENC)</title></path>
+<path d="M1024.0,339.3 L1014.7,348.5 L996.4,330.2 L1005.6,321.0 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>R65 · MCU (MCU)</title></path>
+<path d="M351.5,255.3 L351.5,275.6 L310.2,275.6 L310.2,255.3 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R30 · HB_B (HB)</title></path>
+<path d="M145.2,578.4 L145.2,586.9 L145.0,586.9 L145.0,591.8 L145.2,591.8 L145.2,600.4 L135.8,600.4 L135.8,591.8 L135.9,591.8 L135.9,586.9 L135.8,586.9 L135.8,578.4 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C73 · ENC_SW (ENC)</title></path>
+<path d="M168.8,286.5 L168.8,331.2 L124.1,331.2 L124.1,286.5 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U20 · ENC_C (ENC)</title></path>
+<path d="M449.4,76.5 L449.4,179.9 L373.9,179.9 L373.9,76.5 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>U7 · HB_C (HB)</title></path>
+<path d="M712.3,70.3 L712.3,163.9 L575.3,163.9 L575.3,70.3 Z" fill="#d641c4" fill-opacity="0.55" stroke="#d641c4" stroke-width="0.8"><title>D5 · D5 (BUS)</title></path>
+<path d="M1006.7,585.6 L1006.7,611.0 L994.0,611.0 L994.0,585.6 Z" fill="#419fd6" fill-opacity="0.55" stroke="#419fd6" stroke-width="0.8"><title>C107 · USB_PD (USBPD)</title></path>
+<path d="M281.5,365.4 L281.5,378.2 L256.1,378.2 L256.1,365.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C16 · HB_A (HB)</title></path>
+<path d="M367.0,118.1 L367.0,159.4 L346.7,159.4 L346.7,118.1 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R43 · HB_C (HB)</title></path>
+<path d="M97.9,303.1 L97.9,316.1 L72.0,316.1 L72.0,303.1 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R85 · ENC_D (ENC)</title></path>
+<path d="M120.8,300.7 L120.8,326.1 L108.1,326.1 L108.1,300.7 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C62 · ENC_C (ENC)</title></path>
+<path d="M116.5,87.4 L116.5,128.7 L96.2,128.7 L96.2,87.4 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>R68 · DIV (DIV)</title></path>
+<path d="M590.2,396.1 L564.8,396.1 L564.8,383.4 L590.2,383.4 Z" fill="#41d6bd" fill-opacity="0.55" stroke="#41d6bd" stroke-width="0.8"><title>C3 · BUCK (BUCK)</title></path>
+<path d="M209.7,444.5 L209.7,457.2 L184.4,457.2 L184.4,444.5 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C66 · ENC_AN (ENC)</title></path>
+<path d="M340.5,68.4 L340.5,88.7 L299.2,88.7 L299.2,68.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R47 · HB_C (HB)</title></path>
+<path d="M457.4,237.6 L457.4,341.1 L381.9,341.1 L381.9,237.6 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>U6 · HB_B (HB)</title></path>
+<path d="M980.4,551.6 L953.1,551.6 L953.1,504.1 L980.4,504.1 Z" fill="#419fd6" fill-opacity="0.55" stroke="#419fd6" stroke-width="0.8"><title>C106 · C106 (USBPD)</title></path>
+<path d="M507.9,215.4 L507.9,234.9 L473.0,234.9 L473.0,215.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>D12 · HB_B (HB)</title></path>
+<path d="M111.3,403.6 L111.3,439.8 L86.3,439.8 L86.3,403.6 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>FL2 · ENC_A (ENC)</title></path>
+<path d="M297.5,61.2 L297.5,164.6 L222.0,164.6 L222.0,61.2 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>U10 · HB_C (HB)</title></path>
+<path d="M354.4,414.3 L354.4,434.6 L313.1,434.6 L313.1,414.3 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R14 · HB_A (HB)</title></path>
+<path d="M296.9,501.4 L296.9,527.3 L283.8,527.3 L283.8,501.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R102 · HB_A (HB)</title></path>
+<path d="M33.6,100.4 L61.9,100.4 L61.9,128.7 L33.6,128.7 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>TP7 · DIV (DIV)</title></path>
+<path d="M982.3,45.8 L982.3,58.9 L956.4,58.9 L956.4,45.8 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>R113 · R113 (AUX)</title></path>
+<path d="M517.4,563.5 L517.4,583.8 L476.1,583.8 L476.1,563.5 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R78 · HB_D (HB)</title></path>
+<path d="M657.0,641.0 L612.4,641.0 L612.4,601.9 L657.0,601.9 Z" fill="#cad641" fill-opacity="0.55" stroke="#cad641" stroke-width="0.8"><title>U17 · VENC (BR)</title></path>
+<path d="M372.5,246.6 L372.5,287.9 L352.2,287.9 L352.2,246.6 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R27 · HB_B (HB)</title></path>
+<path d="M105.2,319.5 L105.2,344.5 L69.0,344.5 L69.0,319.5 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>FL4 · ENC_D (ENC)</title></path>
+<path d="M429.9,347.4 L429.9,373.3 L416.8,373.3 L416.8,347.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R103 · HB_A (HB)</title></path>
+<path d="M113.9,359.0 L113.9,384.9 L100.9,384.9 L100.9,359.0 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R82 · ENC_A (ENC)</title></path>
+<path d="M135.0,387.7 L135.0,413.6 L122.0,413.6 L122.0,387.7 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R89 · ENC_A (ENC)</title></path>
+<path d="M526.4,368.6 L526.4,388.9 L485.1,388.9 L485.1,368.6 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R9 · HB_A (HB)</title></path>
+<path d="M947.7,415.5 L938.5,424.7 L920.2,406.4 L929.4,397.2 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>R2 · MCU (MCU)</title></path>
+<path d="M868.2,358.5 L870.9,359.5 L873.2,361.0 L875.3,362.9 L876.9,365.2 L878.0,367.8 L878.6,370.6 L878.6,372.0 L878.6,373.4 L878.0,376.2 L876.9,378.8 L875.3,381.1 L873.2,383.1 L870.9,384.6 L868.2,385.5 L865.4,386.0 L862.6,385.8 L859.8,385.1 L857.3,383.9 L855.1,382.1 L853.2,380.0 L851.9,377.5 L851.0,374.8 L850.7,372.0 L851.0,369.2 L851.9,366.5 L853.2,364.0 L855.1,361.9 L857.3,360.2 L859.8,358.9 L862.6,358.2 L865.4,358.1 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>TP14 · MCU (MCU)</title></path>
+<path d="M371.5,210.4 L371.5,245.2 L352.0,245.2 L352.0,210.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>D11 · HB_B (HB)</title></path>
+<path d="M536.0,437.8 L536.0,499.2 L504.0,499.2 L504.0,437.8 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>D3 · HB_A (HB)</title></path>
+<path d="M363.4,365.5 L391.6,365.5 L391.6,393.7 L363.4,393.7 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>TP1 · HB_A (HB)</title></path>
+<path d="M76.3,577.0 L76.3,602.9 L63.3,602.9 L63.3,577.0 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R95 · ENC_SW (ENC)</title></path>
+<path d="M510.7,542.6 L510.7,562.1 L475.8,562.1 L475.8,542.6 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>D19 · HB_D (HB)</title></path>
+<path d="M75.5,609.2 L75.5,653.8 L30.9,653.8 L30.9,609.2 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U19 · ENC_B (ENC)</title></path>
+<path d="M531.0,238.8 L531.0,280.1 L510.7,280.1 L510.7,238.8 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R25 · HB_B (HB)</title></path>
+<path d="M795.3,154.2 L795.3,173.7 L781.5,173.7 L781.5,154.2 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>D28 · D28 (AUX)</title></path>
+<path d="M62.2,534.2 L62.2,575.5 L41.9,575.5 L41.9,534.2 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C70 · ENC_SW (ENC)</title></path>
+<path d="M822.2,179.5 L822.2,184.0 L842.2,184.0 L842.2,223.9 L822.2,223.9 L822.2,228.3 L773.4,228.3 L773.4,223.9 L753.3,223.9 L753.3,184.0 L773.4,184.0 L773.4,179.5 Z" fill="#d69241" fill-opacity="0.55" stroke="#d69241" stroke-width="0.8"><title>U29 · PWR_OR (PWR)</title></path>
+<path d="M523.4,306.0 L523.4,338.1 L461.9,338.1 L461.9,306.0 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>D10 · HB_B (HB)</title></path>
+<path d="M324.9,620.4 L324.9,646.3 L311.8,646.3 L311.8,620.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R105 · HB_D (HB)</title></path>
+<path d="M64.6,391.9 L64.6,394.0 L77.5,394.0 L77.5,424.7 L64.6,424.7 L64.6,426.8 L40.1,426.8 L40.1,424.7 L27.2,424.7 L27.2,394.0 L40.1,394.0 L40.1,391.9 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U30 · ENC_A (ENC)</title></path>
+<path d="M113.4,484.8 L113.4,489.0 L121.1,489.0 L121.1,495.3 L113.4,495.3 L113.4,498.1 L121.1,498.1 L121.1,504.4 L113.4,504.4 L113.4,507.2 L121.1,507.2 L121.1,513.5 L113.4,513.5 L113.4,517.7 L92.4,517.7 L92.4,513.5 L84.7,513.5 L84.7,507.2 L92.4,507.2 L92.4,504.4 L84.7,504.4 L84.7,498.1 L92.4,498.1 L92.4,495.3 L84.7,495.3 L84.7,489.0 L92.4,489.0 L92.4,484.8 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U26 · ENC_SW (ENC)</title></path>
+<path d="M96.5,396.7 L96.5,422.0 L83.8,422.0 L83.8,396.7 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C110 · ENC_A (ENC)</title></path>
+<path d="M532.4,590.9 L532.4,652.4 L500.3,652.4 L500.3,590.9 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>D18 · HB_D (HB)</title></path>
+<path d="M931.2,331.1 L933.9,332.1 L936.2,333.6 L938.3,335.5 L939.9,337.8 L941.0,340.4 L941.6,343.2 L941.6,344.6 L941.6,346.0 L941.0,348.8 L939.9,351.4 L938.3,353.7 L936.2,355.6 L933.9,357.1 L931.2,358.1 L928.4,358.5 L925.6,358.4 L922.8,357.7 L920.3,356.5 L918.1,354.7 L916.2,352.6 L914.9,350.1 L914.0,347.4 L913.7,344.6 L914.0,341.8 L914.9,339.1 L916.2,336.6 L918.1,334.5 L920.3,332.7 L922.8,331.5 L925.6,330.8 L928.4,330.7 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>TP13 · MCU (MCU)</title></path>
+<path d="M558.6,384.4 L558.6,410.3 L545.6,410.3 L545.6,384.4 Z" fill="#41d6bd" fill-opacity="0.55" stroke="#41d6bd" stroke-width="0.8"><title>R6 · BUCK (BUCK)</title></path>
+<path d="M580.8,283.9 L606.7,283.9 L606.7,348.9 L590.6,365.0 L580.8,365.0 L580.8,379.7 L551.5,379.7 L551.5,365.0 L541.7,365.0 L525.6,348.9 L525.6,283.9 L551.5,283.9 L551.5,269.2 L580.8,269.2 Z" fill="#41d6bd" fill-opacity="0.55" stroke="#41d6bd" stroke-width="0.8"><title>C11 · BUCK (BUCK)</title></path>
+<path d="M73.8,249.5 L73.8,274.9 L61.0,274.9 L61.0,249.5 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C63 · ENC_D (ENC)</title></path>
+<path d="M194.1,213.4 L194.1,215.5 L207.0,215.5 L207.0,246.2 L194.1,246.2 L194.1,248.3 L169.6,248.3 L169.6,246.2 L156.7,246.2 L156.7,215.5 L169.6,215.5 L169.6,213.4 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U32 · ENC_C (ENC)</title></path>
+<path d="M590.2,410.7 L564.3,410.7 L564.3,397.7 L590.2,397.7 Z" fill="#41d6bd" fill-opacity="0.55" stroke="#41d6bd" stroke-width="0.8"><title>R5 · BUCK (BUCK)</title></path>
+<path d="M349.4,209.9 L349.4,230.2 L308.1,230.2 L308.1,209.9 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C23 · HB_B (HB)</title></path>
+<path d="M349.1,233.3 L349.1,253.6 L307.8,253.6 L307.8,233.3 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R33 · HB_B (HB)</title></path>
+<path d="M58.5,249.1 L58.5,275.0 L45.5,275.0 L45.5,249.1 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R91 · ENC_D (ENC)</title></path>
+<path d="M716.9,459.4 L716.9,485.3 L703.8,485.3 L703.8,459.4 Z" fill="#cad641" fill-opacity="0.55" stroke="#cad641" stroke-width="0.8"><title>R108 · R108 (BR)</title></path>
+<path d="M502.7,174.3 L502.7,194.6 L461.4,194.6 L461.4,174.3 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C27 · HB_C (HB)</title></path>
+<path d="M873.8,472.5 L873.8,498.4 L860.8,498.4 L860.8,472.5 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>R53 · MCU (MCU)</title></path>
+<path d="M140.9,525.5 L140.9,550.8 L128.1,550.8 L128.1,525.5 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C65 · ENC_SW (ENC)</title></path>
+<path d="M1008.8,354.5 L999.5,363.7 L981.2,345.4 L990.4,336.2 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>R36 · MCU (MCU)</title></path>
+<path d="M93.9,87.4 L93.9,128.7 L73.6,128.7 L73.6,87.4 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>R69 · DIV (DIV)</title></path>
+<path d="M240.3,579.2 L220.8,579.2 L220.8,565.4 L240.3,565.4 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>D25 · ENC_D25 (ENC)</title></path>
+<path d="M963.0,400.3 L953.7,409.5 L935.4,391.2 L944.6,382.0 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>R21 · MCU (MCU)</title></path>
+<path d="M349.6,436.6 L349.6,490.2 L302.1,490.2 L302.1,436.6 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>Q1 · HB_A (HB)</title></path>
+<path d="M299.5,387.1 L299.5,490.6 L224.0,490.6 L224.0,387.1 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>U5 · HB_A (HB)</title></path>
+<path d="M908.7,60.1 L908.7,107.6 L851.5,107.6 L851.5,60.1 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>U4 · AUX_LDO (AUX)</title></path>
+<path d="M370.6,450.0 L370.6,491.3 L350.3,491.3 L350.3,450.0 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R12 · HB_A (HB)</title></path>
+<path d="M1082.9,290.9 L1082.9,311.2 L1041.6,311.2 L1041.6,290.9 Z" fill="#d64173" fill-opacity="0.55" stroke="#d64173" stroke-width="0.8"><title>C57 · CAN (CAN)</title></path>
+<path d="M122.7,387.4 L122.7,400.5 L96.8,400.5 L96.8,387.4 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R97 · ENC_A (ENC)</title></path>
+<path d="M138.1,415.6 L138.1,441.5 L125.1,441.5 L125.1,415.6 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R88 · ENC_A (ENC)</title></path>
+<path d="M141.2,494.1 L141.2,519.5 L128.5,519.5 L128.5,494.1 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C72 · ENC_SW (ENC)</title></path>
+<path d="M451.4,583.5 L479.6,583.5 L479.6,611.8 L451.4,611.8 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>TP9 · HB_D (HB)</title></path>
+<path d="M1056.1,43.3 L1056.1,75.4 L994.6,75.4 L994.6,43.3 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>D30 · D30 (AUX)</title></path>
+<path d="M94.0,135.0 L94.0,176.3 L73.7,176.3 L73.7,135.0 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>R64 · DIV (DIV)</title></path>
+<path d="M928.4,284.9 L931.1,285.9 L933.4,287.4 L935.5,289.3 L937.1,291.6 L938.2,294.2 L938.8,297.0 L938.8,298.4 L938.8,299.8 L938.2,302.6 L937.1,305.2 L935.5,307.5 L933.4,309.4 L931.1,310.9 L928.4,311.9 L925.6,312.3 L922.8,312.2 L920.0,311.5 L917.5,310.3 L915.3,308.5 L913.4,306.4 L912.1,303.9 L911.2,301.2 L910.9,298.4 L911.2,295.6 L912.1,292.9 L913.4,290.4 L915.3,288.3 L917.5,286.5 L920.0,285.3 L922.8,284.6 L925.6,284.5 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>TP19 · MCU (MCU)</title></path>
+<path d="M305.9,561.7 L305.9,609.1 L252.2,609.1 L252.2,561.7 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>Q4 · HB_D (HB)</title></path>
+<path d="M318.5,192.5 L318.5,205.2 L293.1,205.2 L293.1,192.5 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C29 · HB_B (HB)</title></path>
+<path d="M131.8,603.2 L131.8,609.5 L128.3,609.5 L128.3,614.4 L131.8,614.4 L131.8,620.7 L94.7,620.7 L94.7,614.4 L98.2,614.4 L98.2,609.5 L94.7,609.5 L94.7,603.2 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>FL1 · ENC_B (ENC)</title></path>
+<path d="M1081.6,372.0 L1081.6,385.1 L1055.7,385.1 L1055.7,372.0 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>R24 · MCU (MCU)</title></path>
+<path d="M1035.6,320.5 L1026.4,329.8 L1008.1,311.4 L1017.3,302.2 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>R66 · MCU (MCU)</title></path>
+<path d="M822.9,28.7 L822.9,41.4 L797.5,41.4 L797.5,28.7 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>C49 · AUX_SW (AUX)</title></path>
+<path d="M765.2,152.4 L765.2,165.4 L739.3,165.4 L739.3,152.4 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>R49 · R49 (AUX)</title></path>
+<path d="M62.2,430.3 L62.2,471.6 L41.9,471.6 L41.9,430.3 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C69 · ENC_SW (ENC)</title></path>
+<path d="M906.1,403.7 L893.5,407.0 L886.8,382.0 L899.4,378.7 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>R1 · MCU (MCU)</title></path>
+<path d="M162.3,350.4 L162.3,386.7 L137.3,386.7 L137.3,350.4 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>FL3 · ENC_C (ENC)</title></path>
+<path d="M130.1,358.6 L130.1,384.5 L117.0,384.5 L117.0,358.6 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R93 · ENC_C (ENC)</title></path>
+<path d="M452.3,548.8 L452.3,652.3 L376.8,652.3 L376.8,548.8 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>U12 · HB_D (HB)</title></path>
+<path d="M221.4,392.5 L221.4,437.2 L182.4,437.2 L182.4,392.5 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U24 · ENC_AN (ENC)</title></path>
+<path d="M351.3,89.7 L351.3,110.0 L310.0,110.0 L310.0,89.7 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R45 · HB_C (HB)</title></path>
+<path d="M145.6,561.2 L145.6,572.0 L129.3,572.0 L129.3,561.2 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>D24 · ENC_SW (ENC)</title></path>
+<path d="M480.9,236.5 L480.9,277.8 L460.6,277.8 L460.6,236.5 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R29 · HB_B (HB)</title></path>
+<path d="M470.7,67.8 L470.7,109.1 L450.4,109.1 L450.4,67.8 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R42 · HB_C (HB)</title></path>
+<path d="M1038.0,630.6 L1038.0,643.3 L1012.6,643.3 L1012.6,630.6 Z" fill="#419fd6" fill-opacity="0.55" stroke="#419fd6" stroke-width="0.8"><title>C108 · USB_PD (USBPD)</title></path>
+<path d="M121.0,252.7 L121.0,297.4 L76.3,297.4 L76.3,252.7 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U21 · ENC_D (ENC)</title></path>
+<path d="M1108.0,416.9 L1108.0,565.7 L983.1,565.7 L983.1,416.9 Z" fill="#9aa0a8" fill-opacity="0.55" stroke="#9aa0a8" stroke-width="0.8"><title>J3 · J3 (PIN)</title></path>
+<path d="M349.6,278.2 L349.6,331.8 L302.2,331.8 L302.2,278.2 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>Q2 · HB_B (HB)</title></path>
+<path d="M480.3,114.2 L508.5,114.2 L508.5,142.4 L480.3,142.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>TP5 · HB_C (HB)</title></path>
+<path d="M189.4,627.5 L189.4,637.1 L166.8,637.1 L166.8,627.5 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R86 · ENC_B (ENC)</title></path>
+<path d="M237.2,619.3 L237.2,644.6 L224.5,644.6 L224.5,619.3 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C111 · ENC_B (ENC)</title></path>
+<path d="M344.0,390.6 L344.0,410.9 L302.7,410.9 L302.7,390.6 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R15 · HB_A (HB)</title></path>
+<path d="M129.4,625.9 L129.4,638.7 L104.0,638.7 L104.0,625.9 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C61 · ENC_B (ENC)</title></path>
+<path d="M236.5,493.7 L236.5,507.6 L217.0,507.6 L217.0,493.7 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>D27 · ENC_D27 (ENC)</title></path>
+<path d="M502.7,236.4 L502.7,277.7 L482.4,277.7 L482.4,236.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R31 · HB_B (HB)</title></path>
+<path d="M554.6,521.4 L554.6,523.5 L567.5,523.5 L567.5,554.2 L554.6,554.2 L554.6,556.3 L530.1,556.3 L530.1,554.2 L517.2,554.2 L517.2,523.5 L530.1,523.5 L530.1,521.4 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U31 · ENC_B (ENC)</title></path>
+<path d="M771.8,411.3 L771.8,446.2 L725.8,446.2 L725.8,411.3 Z" fill="#d69241" fill-opacity="0.55" stroke="#d69241" stroke-width="0.8"><title>JP1 · JP1 (PWR)</title></path>
+<path d="M61.7,333.1 L61.7,346.9 L42.3,346.9 L42.3,333.1 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>D26 · ENC_D (ENC)</title></path>
+<path d="M93.9,41.9 L93.9,83.2 L73.6,83.2 L73.6,41.9 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>R72 · DIV (DIV)</title></path>
+<path d="M98.6,347.1 L98.6,391.7 L53.9,391.7 L53.9,347.1 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U18 · ENC_A (ENC)</title></path>
+<path d="M980.1,474.2 L952.8,474.2 L952.8,426.7 L980.1,426.7 Z" fill="#419fd6" fill-opacity="0.55" stroke="#419fd6" stroke-width="0.8"><title>C105 · C105 (USBPD)</title></path>
+<path d="M65.0,277.2 L65.0,290.2 L39.1,290.2 L39.1,277.2 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R90 · ENC_D (ENC)</title></path>
+<path d="M296.9,25.4 L296.9,51.3 L283.8,51.3 L283.8,25.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R109 · HB_C (HB)</title></path>
+<path d="M65.3,288.0 L65.3,301.1 L39.4,301.1 L39.4,288.0 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R100 · ENC_D (ENC)</title></path>
+<path d="M830.8,43.2 L830.8,87.9 L791.8,87.9 L791.8,43.2 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>U13 · AUX_SW (AUX)</title></path>
+<path d="M90.1,602.6 L90.1,625.1 L80.4,625.1 L80.4,602.6 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R83 · ENC_B (ENC)</title></path>
+<path d="M77.1,539.5 L77.1,564.8 L64.4,564.8 L64.4,539.5 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C68 · ENC_SW (ENC)</title></path>
+<path d="M984.0,390.1 L974.8,399.3 L956.5,380.9 L965.7,371.7 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>R22 · MCU (MCU)</title></path>
+<path d="M64.6,298.1 L64.6,300.2 L77.5,300.2 L77.5,330.9 L64.6,330.9 L64.6,333.0 L40.1,333.0 L40.1,330.9 L27.2,330.9 L27.2,300.2 L40.1,300.2 L40.1,298.1 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U33 · ENC_D (ENC)</title></path>
+<path d="M77.5,483.2 L77.5,508.5 L64.7,508.5 L64.7,483.2 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C74 · ENC_SW (ENC)</title></path>
+<path d="M789.2,42.5 L789.2,87.2 L750.1,87.2 L750.1,42.5 Z" fill="#48d641" fill-opacity="0.55" stroke="#48d641" stroke-width="0.8"><title>U14 · AUX_SW (AUX)</title></path>
+<path d="M781.7,381.1 L752.5,410.3 L738.1,395.9 L767.3,366.7 Z" fill="#d69241" fill-opacity="0.55" stroke="#d69241" stroke-width="0.8"><title>C81 · C81 (PWR)</title></path>
+<path d="M113.0,445.5 L113.0,449.7 L120.7,449.7 L120.7,456.0 L113.0,456.0 L113.0,458.8 L120.7,458.8 L120.7,465.1 L113.0,465.1 L113.0,467.9 L120.7,467.9 L120.7,474.2 L113.0,474.2 L113.0,478.4 L92.0,478.4 L92.0,474.2 L84.3,474.2 L84.3,467.9 L92.0,467.9 L92.0,465.1 L84.3,465.1 L84.3,458.8 L92.0,458.8 L92.0,456.0 L84.3,456.0 L84.3,449.7 L92.0,449.7 L92.0,445.5 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U22 · ENC_SW (ENC)</title></path>
+<path d="M470.8,215.2 L470.8,235.5 L429.5,235.5 L429.5,215.2 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C28 · HB_B (HB)</title></path>
+<path d="M179.7,394.4 L179.7,439.1 L140.7,439.1 L140.7,394.4 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U25 · ENC_AN (ENC)</title></path>
+<path d="M139.1,183.3 L139.1,224.6 L118.8,224.6 L118.8,183.3 Z" fill="#416dd6" fill-opacity="0.55" stroke="#416dd6" stroke-width="0.8"><title>R59 · DIV (DIV)</title></path>
+<path d="M513.8,83.4 L513.8,118.2 L494.4,118.2 L494.4,83.4 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>D15 · HB_C (HB)</title></path>
+<path d="M697.0,379.6 L694.2,384.4 L694.8,384.8 L662.0,441.6 L661.4,441.3 L658.6,446.1 L592.0,407.7 L594.8,402.9 L594.2,402.5 L627.0,345.6 L627.6,346.0 L630.4,341.1 Z" fill="#41d6bd" fill-opacity="0.55" stroke="#41d6bd" stroke-width="0.8"><title>L3 · BUCK (BUCK)</title></path>
+<path d="M838.1,351.4 L840.8,352.4 L843.1,353.9 L845.2,355.8 L846.8,358.1 L847.9,360.7 L848.5,363.5 L848.5,364.9 L848.5,366.3 L847.9,369.1 L846.8,371.7 L845.2,374.0 L843.1,375.9 L840.8,377.4 L838.1,378.4 L835.3,378.8 L832.5,378.7 L829.7,378.0 L827.2,376.8 L825.0,375.0 L823.1,372.9 L821.8,370.4 L820.9,367.7 L820.6,364.9 L820.9,362.1 L821.8,359.4 L823.1,356.9 L825.0,354.8 L827.2,353.0 L829.7,351.8 L832.5,351.1 L835.3,351.0 Z" fill="#6641d6" fill-opacity="0.55" stroke="#6641d6" stroke-width="0.8"><title>TP15 · MCU (MCU)</title></path>
+<path d="M78.3,427.3 L78.3,453.2 L65.3,453.2 L65.3,427.3 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R94 · ENC_SW (ENC)</title></path>
+<path d="M933.9,613.4 L933.9,639.3 L920.8,639.3 L920.8,613.4 Z" fill="#419fd6" fill-opacity="0.55" stroke="#419fd6" stroke-width="0.8"><title>R111 · R111 (USBPD)</title></path>
+<path d="M515.1,36.1 L515.1,48.9 L489.7,48.9 L489.7,36.1 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C19 · HB_C (HB)</title></path>
+<path d="M112.6,563.0 L112.6,567.2 L120.3,567.2 L120.3,573.5 L112.6,573.5 L112.6,576.3 L120.3,576.3 L120.3,582.6 L112.6,582.6 L112.6,585.4 L120.3,585.4 L120.3,591.7 L112.6,591.7 L112.6,595.9 L91.6,595.9 L91.6,591.7 L83.9,591.7 L83.9,585.4 L91.6,585.4 L91.6,582.6 L83.9,582.6 L83.9,576.3 L91.6,576.3 L91.6,573.5 L83.9,573.5 L83.9,567.2 L91.6,567.2 L91.6,563.0 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>U27 · ENC_SW (ENC)</title></path>
+<path d="M77.6,510.9 L77.6,536.8 L64.6,536.8 L64.6,510.9 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>R96 · ENC_SW (ENC)</title></path>
+<path d="M451.3,527.1 L451.3,547.4 L410.0,547.4 L410.0,527.1 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>C55 · HB_D (HB)</title></path>
+<path d="M509.4,393.2 L509.4,412.7 L474.5,412.7 L474.5,393.2 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>D6 · HB_A (HB)</title></path>
+<path d="M381.8,40.6 L381.8,75.5 L362.3,75.5 L362.3,40.6 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>D16 · HB_C (HB)</title></path>
+<path d="M77.3,455.8 L77.3,481.1 L64.5,481.1 L64.5,455.8 Z" fill="#d64141" fill-opacity="0.55" stroke="#d64141" stroke-width="0.8"><title>C67 · ENC_SW (ENC)</title></path>
+<path d="M1008.8,617.1 L1008.8,629.9 L983.5,629.9 L983.5,617.1 Z" fill="#419fd6" fill-opacity="0.55" stroke="#419fd6" stroke-width="0.8"><title>C76 · USB_PD (USBPD)</title></path>
+<path d="M373.2,76.2 L373.2,117.5 L352.9,117.5 L352.9,76.2 Z" fill="#98d641" fill-opacity="0.55" stroke="#98d641" stroke-width="0.8"><title>R44 · HB_C (HB)</title></path>
+<text x="68.6" y="302.0" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">ENC_D</text>
+<text x="162.0" y="335.5" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">ENC_C</text>
+<text x="96.9" y="404.4" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">ENC_A</text>
+<line x1="96.9" y1="401.4" x2="50.1" y2="401.4" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<text x="179.3" y="620.4" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">ENC_B</text>
+<text x="95.3" y="519.0" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">ENC_SW</text>
+<text x="179.4" y="436.3" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">ENC_AN</text>
+<line x1="179.4" y1="433.3" x2="179.4" y2="438.0" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<line x1="226.7" y1="500.7" x2="226.7" y2="580.2" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<line x1="226.7" y1="500.7" x2="226.7" y2="580.2" stroke="#2c7a4b" stroke-width="2.2" stroke-dasharray="" marker-end="url(#arrO)"/>
+<text x="101.8" y="134.2" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">DIV</text>
+<text x="393.9" y="97.7" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">HB_C</text>
+<text x="388.7" y="263.1" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">HB_B</text>
+<line x1="388.7" y1="260.1" x2="315.9" y2="260.1" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<text x="391.5" y="430.0" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">HB_A</text>
+<line x1="391.5" y1="427.0" x2="391.5" y2="457.8" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<text x="399.4" y="585.3" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">HB_D</text>
+<line x1="399.4" y1="582.3" x2="399.4" y2="526.3" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<text x="617.0" y="360.1" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">BUCK</text>
+<line x1="617.0" y1="357.1" x2="598.7" y2="357.1" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<line x1="810.0" y1="252.1" x2="810.0" y2="212.5" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<line x1="748.8" y1="428.7" x2="748.8" y2="487.3" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<line x1="759.9" y1="388.5" x2="759.9" y2="355.9" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<line x1="759.9" y1="388.5" x2="759.9" y2="355.9" stroke="#2c7a4b" stroke-width="2.2" stroke-dasharray="" marker-end="url(#arrO)"/>
+<text x="921.7" y="362.1" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">MCU</text>
+<line x1="893.2" y1="70.0" x2="893.2" y2="73.4" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<text x="790.4" y="52.8" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">AUX_SW</text>
+<line x1="788.4" y1="163.9" x2="788.4" y2="128.6" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<line x1="788.4" y1="163.9" x2="788.4" y2="128.6" stroke="#2c7a4b" stroke-width="2.2" stroke-dasharray="" marker-end="url(#arrO)"/>
+<text x="1044.0" y="234.3" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">CAN</text>
+<text x="1010.6" y="623.0" text-anchor="middle" font-size="9" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">USB_PD</text>
+<line x1="1010.6" y1="620.0" x2="1037.2" y2="620.0" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<line x1="966.5" y1="450.4" x2="913.3" y2="450.4" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<line x1="966.8" y1="527.9" x2="908.0" y2="527.9" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<line x1="966.8" y1="527.9" x2="908.0" y2="527.9" stroke="#2c7a4b" stroke-width="2.2" stroke-dasharray="" marker-end="url(#arrO)"/>
+<line x1="885.4" y1="626.4" x2="801.4" y2="554.1" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3" marker-end="url(#arrT)"/>
+<line x1="885.4" y1="626.4" x2="801.4" y2="554.1" stroke="#2c7a4b" stroke-width="2.2" stroke-dasharray="" marker-end="url(#arrO)"/>
+<text x="1049.5" y="494.3" text-anchor="middle" font-size="7" font-weight="bold" fill="#111" stroke="#fff" stroke-width="2.5" paint-order="stroke">J3</text>
+<rect x="10" y="675.2999999999998" width="10" height="10" fill="#d64141"/><text x="23" y="684.2999999999998" font-size="9" fill="#222">ENC</text>
+<rect x="52.5" y="675.2999999999998" width="10" height="10" fill="#416dd6"/><text x="65.5" y="684.2999999999998" font-size="9" fill="#222">DIV</text>
+<rect x="95.0" y="675.2999999999998" width="10" height="10" fill="#98d641"/><text x="108.0" y="684.2999999999998" font-size="9" fill="#222">HB</text>
+<rect x="131.0" y="675.2999999999998" width="10" height="10" fill="#d641c4"/><text x="144.0" y="684.2999999999998" font-size="9" fill="#222">BUS</text>
+<rect x="173.5" y="675.2999999999998" width="10" height="10" fill="#41d6bd"/><text x="186.5" y="684.2999999999998" font-size="9" fill="#222">BUCK</text>
+<rect x="222.5" y="675.2999999999998" width="10" height="10" fill="#d69241"/><text x="235.5" y="684.2999999999998" font-size="9" fill="#222">PWR</text>
+<rect x="265.0" y="675.2999999999998" width="10" height="10" fill="#6641d6"/><text x="278.0" y="684.2999999999998" font-size="9" fill="#222">MCU</text>
+<rect x="307.5" y="675.2999999999998" width="10" height="10" fill="#48d641"/><text x="320.5" y="684.2999999999998" font-size="9" fill="#222">AUX</text>
+<rect x="350.0" y="675.2999999999998" width="10" height="10" fill="#d64173"/><text x="363.0" y="684.2999999999998" font-size="9" fill="#222">CAN</text>
+<rect x="392.5" y="675.2999999999998" width="10" height="10" fill="#419fd6"/><text x="405.5" y="684.2999999999998" font-size="9" fill="#222">USBPD</text>
+<rect x="448.0" y="675.2999999999998" width="10" height="10" fill="#cad641"/><text x="461.0" y="684.2999999999998" font-size="9" fill="#222">BR</text>
+<rect x="484.0" y="675.2999999999998" width="10" height="10" fill="#9aa0a8"/><text x="497.0" y="684.2999999999998" font-size="9" fill="#222">pinned interface</text>
+<line x1="614.0" y1="680.2999999999998" x2="636.0" y2="680.2999999999998" stroke="#e0a44c" stroke-width="2.2" stroke-dasharray="4,3"/><text x="640.0" y="684.2999999999998" font-size="9" fill="#222">stretch proposed (x20)</text>
+<line x1="774.0" y1="680.2999999999998" x2="796.0" y2="680.2999999999998" stroke="#2c7a4b" stroke-width="2.2"/><text x="800.0" y="684.2999999999998" font-size="9" fill="#222">survived DRC referee (x20)</text>
+<defs><marker id="arrT" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#e0a44c"/></marker><marker id="arrO" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2c7a4b"/></marker></defs></svg>

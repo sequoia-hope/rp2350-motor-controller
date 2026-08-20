@@ -27883,7 +27883,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 229.87 433.07 0)
 			(effects
 				(font
@@ -32995,7 +32995,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 414.02 461.01 0)
 			(effects
 				(font
@@ -33426,7 +33426,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 328.93 191.008 90)
 			(effects
 				(font
@@ -35826,7 +35826,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 57.15 422.91 0)
 			(effects
 				(font
@@ -43191,7 +43191,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 355.6 415.5948 0)
 			(effects
 				(font
@@ -44469,7 +44469,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 314.96 316.23 0)
 			(effects
 				(font
@@ -45538,7 +45538,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 57.15 431.8 0)
 			(effects
 				(font
@@ -49445,7 +49445,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 279.4 479.0948 0)
 			(effects
 				(font
@@ -50930,7 +50930,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 153.67 488.95 0)
 			(effects
 				(font
@@ -51136,7 +51136,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 323.85 193.548 90)
 			(effects
 				(font
@@ -55792,7 +55792,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 204.1652 453.39 0)
 			(effects
 				(font
@@ -59842,7 +59842,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 153.67 497.84 0)
 			(effects
 				(font
@@ -59920,7 +59920,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 228.6 424.18 0)
 			(effects
 				(font
@@ -61341,7 +61341,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 173.99 411.7848 0)
 			(effects
 				(font
@@ -62891,7 +62891,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 415.29 469.9 0)
 			(effects
 				(font
@@ -69577,5 +69577,652 @@
 			(justify left)
 		)
 		(uuid "9d50d527-0e0e-4a10-ab0f-3a3324fe92df")
+	)
+	(label "CAN0_P"
+		(at 546.1 264.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "7a68f0e7-ffde-46c2-b763-35be6f960e2d")
+	)
+	(wire
+		(pts
+			(xy 546.1 264.16) (xy 546.1 265.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "666f667a-4b25-4d63-8b45-1c0c93fa6c04")
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 546.1 269.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6c2db0e3-8f5f-49ad-9c16-35b501b5b764")
+		(property
+			"Reference"
+			"R114"
+			(at 548.64 267.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Value"
+			"120R"
+			(at 548.64 270.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Footprint"
+			"Resistor_SMD:R_0603_1608Metric"
+			(at 546.1 269.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Datasheet"
+			"~"
+			(at 546.1 269.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Description"
+			"Resistor"
+			(at 546.1 269.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"LCSC"
+			""
+			(at 546.1 269.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin
+			"1"
+			(uuid "049fe382-c1e7-455e-9557-517cdcda7874")
+		)
+		(pin
+			"2"
+			(uuid "5a9efefa-8e55-4d4e-84b6-38bbef94f184")
+		)
+		(instances
+			(project
+				"rp2350_driver"
+				(path
+					"/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R114")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 546.1 273.05) (xy 546.1 276.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "60d04834-114f-4fc2-a5bb-da99aad8fc99")
+	)
+	(symbol
+		(lib_id "Jumper:Jumper_2_Open")
+		(at 551.18 276.86 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1ee3dbff-caa8-4c17-8200-1d2715803e8e")
+		(property
+			"Reference"
+			"JP2"
+			(at 551.18 274.066 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Value"
+			"Jumper_2_Open"
+			(at 551.18 280.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Footprint"
+			"Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm"
+			(at 551.18 276.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Datasheet"
+			"~"
+			(at 551.18 276.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Description"
+			"Jumper, 2-pole, open"
+			(at 551.18 276.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"LCSC"
+			""
+			(at 551.18 276.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin
+			"1"
+			(uuid "a112343e-407e-4892-8eb0-ba488adc3cc4")
+		)
+		(pin
+			"2"
+			(uuid "90e7b809-f66d-4dc8-875c-ea789d6d864b")
+		)
+		(instances
+			(project
+				"rp2350_driver"
+				(path
+					"/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "JP2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 556.26 276.86) (xy 556.26 281.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "63656e80-b80a-429c-a521-2d1095a22761")
+	)
+	(label "CAN0_N"
+		(at 556.26 281.94 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a6de9e04-33d9-48a4-8152-79918337fd04")
+	)
+	(symbol
+		(lib_id "motor_parts:GND_ISO")
+		(at 541.02 302.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0b2ae432-87f4-4734-a6da-52a63ee794fc")
+		(property
+			"Reference"
+			"#PWR0374"
+			(at 541.02 308.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Value"
+			"GND_ISO"
+			(at 535.94 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Footprint"
+			""
+			(at 541.02 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Datasheet"
+			""
+			(at 541.02 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Description"
+			""
+			(at 541.02 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin
+			"1"
+			(uuid "512c180a-3fd8-4586-a91d-7dfa6fd7e3de")
+		)
+		(instances
+			(project
+				"rp2350_driver"
+				(path
+					"/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0374")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 541.02 302.26) (xy 541.02 297.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "398620ec-845f-45a0-98f7-59cf309a415b")
+	)
+	(wire
+		(pts
+			(xy 541.02 297.18) (xy 546.1 297.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4461c3b9-4c2b-4e96-8509-d74a5072352a")
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 549.91 297.18 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ae141d75-9eb1-4e28-bacd-1d40256c5a77")
+		(property
+			"Reference"
+			"C115"
+			(at 549.91 293.37 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Value"
+			"1n 2kV"
+			(at 549.91 300.99 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Footprint"
+			"Capacitor_SMD:C_1206_3216Metric"
+			(at 549.91 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Datasheet"
+			"~"
+			(at 549.91 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Description"
+			"Unpolarized capacitor"
+			(at 549.91 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"LCSC"
+			""
+			(at 549.91 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin
+			"1"
+			(uuid "931b918a-91e5-4bb1-b173-cbb8485b2edc")
+		)
+		(pin
+			"2"
+			(uuid "4816a5bd-f81c-4084-ad41-dc00acf663aa")
+		)
+		(instances
+			(project
+				"rp2350_driver"
+				(path
+					"/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "C115")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 553.72 297.18) (xy 558.8 297.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6377259f-6810-4e44-9a62-746b6020f399")
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 562.61 297.18 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "03cfdb86-af1c-4aa6-9bc9-e5e3755e5868")
+		(property
+			"Reference"
+			"R115"
+			(at 562.61 293.37 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Value"
+			"100R"
+			(at 560.07 300.99 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Footprint"
+			"Resistor_SMD:R_0603_1608Metric"
+			(at 562.61 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Datasheet"
+			"~"
+			(at 562.61 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Description"
+			"Resistor"
+			(at 562.61 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"LCSC"
+			""
+			(at 562.61 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin
+			"1"
+			(uuid "643f1fff-1cce-4e76-8003-67ffb38e0365")
+		)
+		(pin
+			"2"
+			(uuid "63c4a2b7-7e0c-49e1-ac9a-7defd67b4372")
+		)
+		(instances
+			(project
+				"rp2350_driver"
+				(path
+					"/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R115")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 566.42 297.18) (xy 571.5 297.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7d30eb9f-30b9-4b61-bd84-325b00f040a5")
+	)
+	(wire
+		(pts
+			(xy 571.5 297.18) (xy 571.5 302.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ecd2c1ec-2385-41b0-acc8-7dd264b31524")
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 571.5 302.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2f17a48b-f97e-46ed-87db-b917519e358e")
+		(property
+			"Reference"
+			"#PWR0375"
+			(at 571.5 308.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Value"
+			"GND"
+			(at 566.42 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Footprint"
+			""
+			(at 571.5 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Datasheet"
+			""
+			(at 571.5 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Description"
+			""
+			(at 571.5 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin
+			"1"
+			(uuid "6803d4ff-2702-4d3d-9012-37b0e4ebc40b")
+		)
+		(instances
+			(project
+				"rp2350_driver"
+				(path
+					"/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0375")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(text "F-19 (a): end-of-bus termination. JP2 open = un-terminated, the\nshipping default for a mid-bus node. Bridge JP2 to put R114 (120R)\nacross CANH/CANL when this board sits at a bus end. Termination is\non the isolated side, so it is powered by the harness like U16."
+		(exclude_from_sim no)
+		(at 487.0 312.0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ffa11246-101a-4e40-995e-b1f3c3dac455")
+	)
+	(text "F-19 (b): isolation-barrier stitch. GND_ISO is powered and referenced\nONLY by the CAN harness (J11) -- no board 5V/GND feeds the isolated\nside, so isolation depends on the harness supplying +5V_ISO. C115\nblocks DC so the barrier holds, while giving common-mode current a\ndefined return instead of letting it radiate off the harness. R115\ndamps the C115/trace resonance and limits surge current.\nLAYOUT: C115 must be the ONLY part straddling the barrier gap --\nkeep R115 wholly on the board-GND side of the split."
+		(exclude_from_sim no)
+		(at 487.0 328.0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "f51bbe8f-8098-422a-b966-8a2d59ba42f5")
 	)
 )

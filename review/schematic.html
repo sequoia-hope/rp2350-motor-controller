@@ -573,7 +573,15 @@ variant BOM see the <a href="power.html#voltage">power review's decision table</
   <li><span class="sev low">LOW</span> <strong>Isolated CAN has no isolated supply:</strong> CA-IS3052
   VCC2 comes from the CAN connector (+5V_ISO). Isolation only helps if the harness actually carries an
   isolated 5&nbsp;V — document it, and note there's no on-board 120&nbsp;Ω split termination (fine for a
-  node, worth a silk note). CANH/L ESD part (ESDCAN24) ✓.</li>
+  node, worth a silk note). CANH/L ESD part (ESDCAN24) ✓.
+  <br><strong>Resolved in rev&nbsp;B</strong> (<a href="findings.html#f-19">F-19</a>): harness-only power is
+  now the <em>deliberate</em> choice — nothing on the board feeds +5V_ISO, and the schematic carries a note
+  saying so. Termination is on-board but optional: <strong>R114 (120&nbsp;Ω) + JP2</strong>, a solder jumper
+  left open so the shipping default stays un-terminated for a mid-bus node. A series
+  <strong>C115 (1&nbsp;nF 2&nbsp;kV) + R115 (100&nbsp;Ω)</strong> now stitches GND to GND_ISO: the cap blocks
+  DC so the barrier still holds, but common-mode current gets a defined return instead of radiating off the
+  harness, and the resistor damps the resulting resonance. Caveat: the barrier is not yet cut into the inner
+  planes — see <a href="findings.html#f-42">F-42</a>.</li>
   <li><span class="sev good">OK</span> RP2350 hookup follows the design guide: ABM8-272 + 15&nbsp;pF, 33&nbsp;Ω
   + 4.7&nbsp;µF VREG_AVDD filter, W25Q16 QSPI with 1&nbsp;k BOOTSEL button, USBLC6 + 27&nbsp;Ω on USB,
   RUN button, SWD on JST-SH, debug UART on GPIO0/1 with 100&nbsp;Ω series, daisy-chain UARTs with TVS,

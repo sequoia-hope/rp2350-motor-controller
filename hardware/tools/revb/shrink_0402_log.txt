@@ -1,0 +1,93 @@
+shrinking 15 footprints 0603 -> 0402
+  R1   Resistor_SMD:R_0603_1608Metric     -> Resistor_SMD:R_0402_1005Metric     at (174.792,109.321) rot 105 B.Cu
+  R2   Resistor_SMD:R_0603_1608Metric     -> Resistor_SMD:R_0402_1005Metric     at (177.474,110.615) rot 135 B.Cu
+  R21  Resistor_SMD:R_0603_1608Metric     -> Resistor_SMD:R_0402_1005Metric     at (178.560,109.529) rot 135 B.Cu
+  R22  Resistor_SMD:R_0603_1608Metric     -> Resistor_SMD:R_0402_1005Metric     at (180.063,108.796) rot 135 B.Cu
+  R35  Resistor_SMD:R_0603_1608Metric     -> Resistor_SMD:R_0402_1005Metric     at (181.179,107.750) rot 135 B.Cu
+  R36  Resistor_SMD:R_0603_1608Metric     -> Resistor_SMD:R_0402_1005Metric     at (181.832,106.257) rot 135 B.Cu
+  R65  Resistor_SMD:R_0603_1608Metric     -> Resistor_SMD:R_0402_1005Metric     at (182.918,105.171) rot 135 B.Cu
+  R66  Resistor_SMD:R_0603_1608Metric     -> Resistor_SMD:R_0402_1005Metric     at (183.747,103.832) rot 135 B.Cu
+  R49  Resistor_SMD:R_0603_1608Metric     -> Resistor_SMD:R_0402_1005Metric     at (164.490,92.610) rot 180 B.Cu
+  R53  Resistor_SMD:R_0603_1608Metric     -> Resistor_SMD:R_0402_1005Metric     at (172.710,115.935) rot -90 B.Cu
+  R54  Resistor_SMD:R_0603_1608Metric     -> Resistor_SMD:R_0402_1005Metric     at (169.235,114.430) rot 0 B.Cu
+  C16  Capacitor_SMD:C_0603_1608Metric    -> Capacitor_SMD:C_0402_1005Metric    at (129.960,107.819) rot 0 B.Cu
+  C29  Capacitor_SMD:C_0603_1608Metric    -> Capacitor_SMD:C_0402_1005Metric    at (132.605,95.465) rot 0 B.Cu
+  C40  Capacitor_SMD:C_0603_1608Metric    -> Capacitor_SMD:C_0402_1005Metric    at (125.663,84.790) rot 180 B.Cu
+  C19  Capacitor_SMD:C_0603_1608Metric    -> Capacitor_SMD:C_0402_1005Metric    at (146.645,84.295) rot 180 B.Cu
+copper stranded by the smaller pads (79 endpoints were on-pad before):
+  C29.1 net +3V3 on B.Cu: endpoint (131.765,95.400) no longer on the pad
+  C29.1 net +3V3 on B.Cu: endpoint (131.830,95.465) no longer on the pad
+  R49.1 net /TH1_SENSE on B.Cu: endpoint (165.315,92.610) no longer on the pad
+  C16.1 net +3V3 on B.Cu: endpoint (129.185,107.819) no longer on the pad
+  R21.2 net B_PWM_H on B.Cu: endpoint (177.932,108.990) no longer on the pad
+  R35.1 net GND on B.Cu: endpoint (181.771,108.474) no longer on the pad
+  R35.1 net GND on B.Cu: endpoint (181.832,108.535) no longer on the pad
+  R2.1 net GND on B.Cu: endpoint (178.057,111.198) no longer on the pad
+  R35.1 net GND on B.Cu: endpoint (181.771,108.342) no longer on the pad
+  R35.1 net GND on B.Cu: endpoint (181.771,108.474) no longer on the pad
+  C40.1 net +3V3 on B.Cu: endpoint (126.438,84.354) no longer on the pad
+  R35.1 net GND on B.Cu: endpoint (181.763,108.333) no longer on the pad
+  R35.1 net GND on B.Cu: endpoint (181.771,108.342) no longer on the pad
+  R66.1 net GND on B.Cu: endpoint (184.474,104.559) no longer on the pad
+  R66.1 net GND on B.Cu: endpoint (184.273,104.472) no longer on the pad
+  R66.1 net GND on B.Cu: endpoint (184.273,104.677) no longer on the pad
+  R65.2 net D_PWM_H on B.Cu: endpoint (182.069,104.853) no longer on the pad
+  C40.1 net +3V3 on B.Cu: endpoint (126.438,84.790) no longer on the pad
+  C19.1 net +3V3 on B.Cu: endpoint (147.420,84.295) no longer on the pad
+  R1.1 net GND on B.Cu: endpoint (175.005,110.118) no longer on the pad
+  R1.1 net GND on B.Cu: endpoint (175.105,110.218) no longer on the pad
+  R35.2 net C_PWM_H on B.Cu: endpoint (180.420,107.342) no longer on the pad
+  R1.2 net A_PWM_H on B.Cu: endpoint (174.578,108.525) no longer on the pad
+  R53.1 net Net-(U8-GPIO1) on B.Cu: endpoint (172.710,115.110) no longer on the pad
+  R54.2 net TXO_DEBUG on B.Cu: endpoint (170.060,114.430) no longer on the pad
+  R66.2 net D_PWM_L\ on B.Cu: endpoint (183.164,103.248) no longer on the pad
+  R66.1 net GND on B.Cu: endpoint (184.273,104.677) no longer on the pad
+  R21.2 net B_PWM_H on B.Cu: endpoint (177.932,108.990) no longer on the pad
+  R21.2 net B_PWM_H on B.Cu: endpoint (177.977,108.946) no longer on the pad
+  R2.2 net A_PWM_L\ on B.Cu: endpoint (176.890,110.032) no longer on the pad
+  C19.2 net GND on B.Cu: endpoint (145.870,84.295) no longer on the pad
+  C40.2 net GND on B.Cu: endpoint (124.888,84.790) no longer on the pad
+  C40.2 net GND on B.Cu: endpoint (124.535,84.790) no longer on the pad
+  R35.2 net C_PWM_H on B.Cu: endpoint (180.596,107.166) no longer on the pad
+  R35.2 net C_PWM_H on B.Cu: endpoint (180.420,107.342) no longer on the pad
+  R1.2 net A_PWM_H on B.Cu: endpoint (174.578,108.525) no longer on the pad
+  R66.1 net GND on B.Cu: endpoint (184.474,104.559) no longer on the pad
+  R66.1 net GND on B.Cu: endpoint (184.331,104.415) no longer on the pad
+  C40.2 net GND on B.Cu: endpoint (124.535,84.790) no longer on the pad
+  C29.1 net +3V3 on B.Cu: endpoint (131.830,95.465) no longer on the pad
+  C29.2 net GND on B.Cu: endpoint (133.380,95.465) no longer on the pad
+  C16.1 net +3V3 on B.Cu: endpoint (129.185,107.819) no longer on the pad
+  C16.1 net +3V3 on B.Cu: endpoint (128.925,108.079) no longer on the pad
+  R22.1 net GND on B.Cu: endpoint (180.646,109.380) no longer on the pad
+  R65.2 net D_PWM_H on B.Cu: endpoint (182.069,104.853) no longer on the pad
+  R65.2 net D_PWM_H on B.Cu: endpoint (182.334,104.588) no longer on the pad
+  R65.1 net GND on B.Cu: endpoint (183.501,105.755) no longer on the pad
+  R36.2 net C_PWM_L\ on B.Cu: endpoint (181.248,105.674) no longer on the pad
+  R53.2 net RXI_DEBUG on B.Cu: endpoint (172.710,116.760) no longer on the pad
+  R54.2 net TXO_DEBUG on B.Cu: endpoint (170.060,114.430) no longer on the pad
+  R54.2 net TXO_DEBUG on B.Cu: endpoint (170.060,114.339) no longer on the pad
+  R22.2 net B_PWM_L\ on B.Cu: endpoint (179.479,108.213) no longer on the pad
+  R1.1 net GND on B.Cu: endpoint (175.105,110.218) no longer on the pad
+  R66.2 net D_PWM_L\ on B.Cu: endpoint (183.164,103.248) no longer on the pad
+  R66.2 net D_PWM_L\ on B.Cu: endpoint (183.113,103.248) no longer on the pad
+  C16.2 net GND on B.Cu: endpoint (130.735,107.819) no longer on the pad
+  C29.1 net +3V3 on B.Cu: endpoint (131.765,95.400) no longer on the pad
+  R49.2 net GND on B.Cu: endpoint (163.678,92.610) no longer on the pad
+  R49.2 net GND on B.Cu: endpoint (164.018,92.950) no longer on the pad
+  R1.2 net A_PWM_H on B.Cu: endpoint (174.578,108.525) no longer on the pad
+  R2.1 net GND on B.Cu: endpoint (178.057,111.198) no longer on the pad
+  C29.1 net +3V3 on B.Cu: endpoint (131.830,95.465) no longer on the pad
+  R54.1 net Net-(U8-GPIO0) on B.Cu: endpoint (168.410,114.430) no longer on the pad
+  C40.1 net +3V3 on B.Cu: endpoint (126.438,84.790) no longer on the pad
+  C40.1 net +3V3 on B.Cu: endpoint (126.438,84.354) no longer on the pad
+  R66.2 net D_PWM_L\ on B.Cu: endpoint (183.113,103.248) no longer on the pad
+  R66.1 net GND on B.Cu: endpoint (184.331,104.415) no longer on the pad
+  R66.1 net GND on B.Cu: endpoint (184.273,104.472) no longer on the pad
+  R49.2 net GND on B.Cu: endpoint (163.665,92.610) no longer on the pad
+  R49.2 net GND on B.Cu: endpoint (163.678,92.610) no longer on the pad
+  R36.1 net GND on B.Cu: endpoint (182.415,106.841) no longer on the pad
+  R21.1 net GND on B.Cu: endpoint (179.143,110.112) no longer on the pad
+  72 endpoint(s) stranded
+  added 48 stub(s) from the old pad points to the new pads
+  48 distinct stranded point(s): 48 stubbed, 0 already on the pad
+saved /home/sequoia/pcb/rp2350-motor-controller/hardware/rp2350_driver.kicad_pcb
