@@ -6,3 +6,6 @@ rp2350_driver_jiggle2*
 hardware/rp2350_driver_morph.kicad_pcb
 hardware/rp2350_driver_morph.kicad_pro
 hardware/tools/revb/sync_log.txt
+rp2350_driver_rubber.kicad_pcb
+rp2350_driver_rubber.kicad_pro
+rp2350_driver_rubber.kicad_prl

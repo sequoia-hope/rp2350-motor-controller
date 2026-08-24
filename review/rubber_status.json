@@ -1,0 +1,928 @@
+{
+ "sites": [
+  {
+   "x": 153.824329,
+   "y": 94.857835,
+   "type": "clearance",
+   "deficit": 0.1214,
+   "items": [
+    "PTH pad 2 [VMOT] of J9",
+    "Track [/E-STOP] on B.Cu, length 5.9596 mm"
+   ]
+  },
+  {
+   "x": 150.963527,
+   "y": 111.0618,
+   "type": "clearance",
+   "deficit": 0.11679999999999999,
+   "items": [
+    "Track [Vdrive] on In3.Cu, length 0.4543 mm",
+    "Track [/ENC_A_SW] on In3.Cu, length 16.9871 mm"
+   ]
+  },
+  {
+   "x": 152.812201,
+   "y": 111.147874,
+   "type": "clearance",
+   "deficit": 0.11679999999999999,
+   "items": [
+    "Track [Vdrive] on In3.Cu, length 1.8507 mm",
+    "Track [/ENC_A_SW] on In3.Cu, length 0.4343 mm"
+   ]
+  },
+  {
+   "x": 150.484265,
+   "y": 111.005792,
+   "type": "clearance",
+   "deficit": 0.07429999999999999,
+   "items": [
+    "Track [/ENC_A_SW] on In3.Cu, length 0.4343 mm",
+    "Track [Vdrive] on In3.Cu, length 5.6239 mm"
+   ]
+  },
+  {
+   "x": 150.669604,
+   "y": 111.408261,
+   "type": "clearance",
+   "deficit": 0.07429999999999999,
+   "items": [
+    "Track [Vdrive] on In3.Cu, length 5.6239 mm",
+    "Track [/ENC_A_SW] on In3.Cu, length 16.9871 mm"
+   ]
+  },
+  {
+   "x": 185.726121,
+   "y": 103.579289,
+   "type": "clearance",
+   "deficit": 0.06989999999999999,
+   "items": [
+    "Track [/I2C_SCL] on In3.Cu, length 10.3883 mm",
+    "Track [/HALL2] on In3.Cu, length 0.0891 mm"
+   ]
+  },
+  {
+   "x": 178.443369,
+   "y": 106.470258,
+   "type": "clearance",
+   "deficit": 0.05869999999999999,
+   "items": [
+    "Track [/HALL3] on In2.Cu, length 1.5379 mm",
+    "Track [/H2_SW] on In2.Cu, length 1.1922 mm"
+   ]
+  },
+  {
+   "x": 151.493257,
+   "y": 118.679917,
+   "type": "clearance",
+   "deficit": 0.05449999999999999,
+   "items": [
+    "Track [/HALL2] on In3.Cu, length 0.3720 mm",
+    "Track [/I2C_SCL] on In3.Cu, length 13.3956 mm"
+   ]
+  },
+  {
+   "x": 170.253872,
+   "y": 122.68522,
+   "type": "clearance",
+   "deficit": 0.05099999999999999,
+   "items": [
+    "PTH pad 3 [GND] of J8",
+    "Track [/TXO_INTERBOARD_2] on F.Cu, length 3.3508 mm"
+   ]
+  },
+  {
+   "x": 181.693082,
+   "y": 112.806967,
+   "type": "clearance",
+   "deficit": 0.045899999999999996,
+   "items": [
+    "Track [/ENC_B_SW] on In3.Cu, length 2.1560 mm",
+    "PTH pad S1 [GND] of J3"
+   ]
+  },
+  {
+   "x": 178.03583949999998,
+   "y": 109.9807705,
+   "type": "clearance",
+   "deficit": 0.044800000000000006,
+   "items": [
+    "Track [D_PWM_L\\] on In2.Cu, length 2.3238 mm",
+    "Track [D_PWM_H] on In2.Cu, length 1.8210 mm"
+   ]
+  },
+  {
+   "x": 148.365071,
+   "y": 118.002926,
+   "type": "clearance",
+   "deficit": 0.043399999999999994,
+   "items": [
+    "Track [/I2C_SCL] on In3.Cu, length 13.3956 mm",
+    "Track [/HALL1] on In3.Cu, length 9.7457 mm"
+   ]
+  },
+  {
+   "x": 179.61011,
+   "y": 108.505991,
+   "type": "clearance",
+   "deficit": 0.0416,
+   "items": [
+    "Track [D_PWM_L\\] on In2.Cu, length 2.1328 mm",
+    "Track [D_PWM_H] on In2.Cu, length 1.8210 mm"
+   ]
+  },
+  {
+   "x": 148.799645,
+   "y": 116.777455,
+   "type": "clearance",
+   "deficit": 0.04099999999999998,
+   "items": [
+    "Track [/HALL1] on In3.Cu, length 15.5879 mm",
+    "Track [/MOT_TH] on In3.Cu, length 19.2891 mm"
+   ]
+  },
+  {
+   "x": 149.515529,
+   "y": 117.529891,
+   "type": "clearance",
+   "deficit": 0.04099999999999998,
+   "items": [
+    "Track [/HALL1] on In3.Cu, length 1.0386 mm",
+    "Track [/MOT_TH] on In3.Cu, length 19.2891 mm"
+   ]
+  },
+  {
+   "x": 152.756393,
+   "y": 86.14178,
+   "type": "clearance",
+   "deficit": 0.036599999999999994,
+   "items": [
+    "Track [Vdrive] on B.Cu, length 9.9425 mm",
+    "PTH pad [<no net>] of J9"
+   ]
+  },
+  {
+   "x": 134.838039,
+   "y": 117.168739,
+   "type": "clearance",
+   "deficit": 0.0348,
+   "items": [
+    "Track [/I2C_SCL] on In3.Cu, length 12.8497 mm",
+    "Track [/HALL1] on In3.Cu, length 15.5879 mm"
+   ]
+  },
+  {
+   "x": 148.799645,
+   "y": 116.777455,
+   "type": "clearance",
+   "deficit": 0.0348,
+   "items": [
+    "Track [/HALL1] on In3.Cu, length 15.5879 mm",
+    "Track [/I2C_SCL] on In3.Cu, length 0.0591 mm"
+   ]
+  },
+  {
+   "x": 148.551164,
+   "y": 84.291061,
+   "type": "clearance",
+   "deficit": 0.031399999999999983,
+   "items": [
+    "Track [/EXT_ANALOG2] on In3.Cu, length 7.9432 mm",
+    "Via [GND] on F.Cu - B.Cu"
+   ]
+  },
+  {
+   "x": 176.482387,
+   "y": 112.03215,
+   "type": "clearance",
+   "deficit": 0.028700000000000003,
+   "items": [
+    "Track [/I2C_SW] on In2.Cu, length 2.3471 mm",
+    "Track [D_PWM_L\\] on In2.Cu, length 2.3238 mm"
+   ]
+  },
+  {
+   "x": 134.992444,
+   "y": 105.380818,
+   "type": "clearance",
+   "deficit": 0.028599999999999987,
+   "items": [
+    "Track [/ENC_C_SW] on In3.Cu, length 17.8937 mm",
+    "Via [GND] on F.Cu - B.Cu"
+   ]
+  },
+  {
+   "x": 171.431925,
+   "y": 92.706329,
+   "type": "clearance",
+   "deficit": 0.026999999999999996,
+   "items": [
+    "Track [A_SENSE] on F.Cu, length 1.7684 mm",
+    "Pad 2 [GND] of C38 on F.Cu"
+   ]
+  },
+  {
+   "x": 181.693082,
+   "y": 112.806967,
+   "type": "hole_clearance",
+   "deficit": 0.0267,
+   "items": [
+    "Track [/ENC_B_SW] on In3.Cu, length 2.1560 mm",
+    "NPTH pad of J3"
+   ]
+  },
+  {
+   "x": 152.813192,
+   "y": 92.880248,
+   "type": "clearance",
+   "deficit": 0.025499999999999995,
+   "items": [
+    "Track [C_PWM_H] on In3.Cu, length 1.7766 mm",
+    "Track [/TH_SW_1] on In3.Cu, length 8.8854 mm"
+   ]
+  },
+  {
+   "x": 154.587506,
+   "y": 92.79057,
+   "type": "clearance",
+   "deficit": 0.025499999999999995,
+   "items": [
+    "Track [C_PWM_H] on In3.Cu, length 1.8995 mm",
+    "Track [/TH_SW_1] on In3.Cu, length 8.8854 mm"
+   ]
+  },
+  {
+   "x": 164.205942,
+   "y": 110.008386,
+   "type": "clearance",
+   "deficit": 0.024400000000000005,
+   "items": [
+    "Track [/MOT_TH] on F.Cu, length 6.4387 mm",
+    "Via [/H3_SW] on F.Cu - B.Cu"
+   ]
+  },
+  {
+   "x": 177.52982120000001,
+   "y": 109.27929019999999,
+   "type": "clearance",
+   "deficit": 0.022199999999999998,
+   "items": [
+    "Track [/RXI_INTERBOARD_2] on In2.Cu, length 0.2860 mm",
+    "Track [/HALL3] on In2.Cu, length 1.4466 mm"
+   ]
+  },
+  {
+   "x": 178.374029,
+   "y": 108.006547,
+   "type": "clearance",
+   "deficit": 0.02209999999999998,
+   "items": [
+    "Track [/HALL3] on In2.Cu, length 1.4466 mm",
+    "Track [/RXI_INTERBOARD_2] on In2.Cu, length 0.0000 mm"
+   ]
+  },
+  {
+   "x": 144.489777,
+   "y": 114.931525,
+   "type": "clearance",
+   "deficit": 0.021400000000000002,
+   "items": [
+    "Track [/H3_SW] on In3.Cu, length 11.4239 mm",
+    "Track [/H1_SW] on In3.Cu, length 11.4060 mm"
+   ]
+  },
+  {
+   "x": 173.40214514285714,
+   "y": 105.65306285714287,
+   "type": "clearance",
+   "deficit": 0.020100000000000007,
+   "items": [
+    "Track [Net-(U8-GPIO0)] on F.Cu, length 1.1695 mm",
+    "Track [+3V3] on F.Cu, length 0.1379 mm"
+   ]
+  },
+  {
+   "x": 148.365071,
+   "y": 118.002926,
+   "type": "clearance",
+   "deficit": 0.019699999999999995,
+   "items": [
+    "Track [/I2C_SCL] on In3.Cu, length 13.3956 mm",
+    "Track [/HALL2] on In3.Cu, length 15.8039 mm"
+   ]
+  },
+  {
+   "x": 147.687594,
+   "y": 117.225553,
+   "type": "clearance",
+   "deficit": 0.019699999999999995,
+   "items": [
+    "Track [/I2C_SCL] on In3.Cu, length 1.0312 mm",
+    "Track [/HALL2] on In3.Cu, length 15.8039 mm"
+   ]
+  },
+  {
+   "x": 176.563723,
+   "y": 105.805003,
+   "type": "clearance",
+   "deficit": 0.01899999999999999,
+   "items": [
+    "Track [/H3_SW] on In2.Cu, length 7.2783 mm",
+    "Track [B_PWM_L\\] on In2.Cu, length 6.3363 mm"
+   ]
+  },
+  {
+   "x": 176.253,
+   "y": 111.218208,
+   "type": "clearance",
+   "deficit": 0.018699999999999994,
+   "items": [
+    "Track [D_PWM_H] on In2.Cu, length 0.7451 mm",
+    "Track [/RXI_INTERBOARD_2] on In2.Cu, length 1.9839 mm"
+   ]
+  },
+  {
+   "x": 175.507879,
+   "y": 111.211964,
+   "type": "clearance",
+   "deficit": 0.018699999999999994,
+   "items": [
+    "Track [D_PWM_H] on In2.Cu, length 5.5292 mm",
+    "Track [/RXI_INTERBOARD_2] on In2.Cu, length 1.9839 mm"
+   ]
+  },
+  {
+   "x": 170.063394,
+   "y": 111.125644,
+   "type": "clearance",
+   "deficit": 0.018699999999999994,
+   "items": [
+    "Track [/H1_SW] on In2.Cu, length 2.5592 mm",
+    "Track [/H3_SW] on In2.Cu, length 5.7598 mm"
+   ]
+  },
+  {
+   "x": 179.212359,
+   "y": 105.47363,
+   "type": "clearance",
+   "deficit": 0.018299999999999983,
+   "items": [
+    "Track [D_PWM_H] on In2.Cu, length 2.8661 mm",
+    "Track [D_PWM_L\\] on In2.Cu, length 3.4300 mm"
+   ]
+  },
+  {
+   "x": 179.56937,
+   "y": 105.076279,
+   "type": "clearance",
+   "deficit": 0.018299999999999983,
+   "items": [
+    "Track [D_PWM_L\\] on In2.Cu, length 3.4300 mm",
+    "Track [D_PWM_H] on In2.Cu, length 0.7645 mm"
+   ]
+  },
+  {
+   "x": 134.838039,
+   "y": 117.168739,
+   "type": "clearance",
+   "deficit": 0.017999999999999988,
+   "items": [
+    "Track [/I2C_SCL] on In3.Cu, length 12.8497 mm",
+    "Via [GND] on F.Cu - B.Cu"
+   ]
+  },
+  {
+   "x": 179.043317,
+   "y": 94.959867,
+   "type": "clearance",
+   "deficit": 0.017999999999999988,
+   "items": [
+    "Track [/XOUT] on F.Cu, length 3.0116 mm",
+    "Via [+1V1] on F.Cu - B.Cu"
+   ]
+  },
+  {
+   "x": 178.567195,
+   "y": 104.256301,
+   "type": "clearance",
+   "deficit": 0.015100000000000002,
+   "items": [
+    "Track [D_PWM_H] on F.Cu, length 0.2835 mm",
+    "Track [D_PWM_L\\] on F.Cu, length 0.6842 mm"
+   ]
+  },
+  {
+   "x": 178.880918,
+   "y": 103.719456,
+   "type": "clearance",
+   "deficit": 0.015100000000000002,
+   "items": [
+    "Track [D_PWM_L\\] on F.Cu, length 0.6842 mm",
+    "Track [D_PWM_H] on F.Cu, length 0.1246 mm"
+   ]
+  },
+  {
+   "x": 173.561065,
+   "y": 104.397726,
+   "type": "clearance",
+   "deficit": 0.0131,
+   "items": [
+    "Track [Net-(U8-GPIO0)] on F.Cu, length 1.2231 mm",
+    "Track [+3V3] on F.Cu, length 0.1379 mm"
+   ]
+  },
+  {
+   "x": 178.868296,
+   "y": 109.883115,
+   "type": "clearance",
+   "deficit": 0.012800000000000006,
+   "items": [
+    "Track [/HALL2] on In3.Cu, length 0.9783 mm",
+    "Track [/I2C_SCL] on In3.Cu, length 7.6613 mm"
+   ]
+  },
+  {
+   "x": 178.187791,
+   "y": 110.585956,
+   "type": "clearance",
+   "deficit": 0.012800000000000006,
+   "items": [
+    "Track [/HALL2] on In3.Cu, length 7.6334 mm",
+    "Track [/I2C_SCL] on In3.Cu, length 7.6613 mm"
+   ]
+  },
+  {
+   "x": 171.75391566666667,
+   "y": 105.67346200000001,
+   "type": "clearance",
+   "deficit": 0.012699999999999989,
+   "items": [
+    "Track [/QSPI_SD0] on F.Cu, length 0.0204 mm",
+    "Track [/QSPI_SD2] on F.Cu, length 0.8182 mm"
+   ]
+  },
+  {
+   "x": 171.747545,
+   "y": 105.048347,
+   "type": "clearance",
+   "deficit": 0.012699999999999989,
+   "items": [
+    "Track [/QSPI_SD0] on F.Cu, length 0.5779 mm",
+    "Track [/QSPI_SD2] on F.Cu, length 0.8182 mm"
+   ]
+  },
+  {
+   "x": 178.240541,
+   "y": 110.402717,
+   "type": "clearance",
+   "deficit": 0.0116,
+   "items": [
+    "Track [/I2C_SW] on In2.Cu, length 2.4275 mm",
+    "Track [D_PWM_L\\] on In2.Cu, length 2.1328 mm"
+   ]
+  },
+  {
+   "x": 171.997799,
+   "y": 100.73772,
+   "type": "clearance",
+   "deficit": 0.010999999999999982,
+   "items": [
+    "Track [/ENC_D_DATA] on In3.Cu, length 3.9380 mm",
+    "Track [/ENC_C_DATA] on In3.Cu, length 1.0160 mm"
+   ]
+  },
+  {
+   "x": 176.956859,
+   "y": 102.287031,
+   "type": "clearance",
+   "deficit": 0.010999999999999982,
+   "items": [
+    "Track [/H1_SW] on In2.Cu, length 3.9521 mm",
+    "Track [/H2_SW] on In2.Cu, length 1.3709 mm"
+   ]
+  },
+  {
+   "x": 171.4226715,
+   "y": 92.868928,
+   "type": "clearance",
+   "deficit": 0.010999999999999982,
+   "items": [
+    "Track [A_SENSE] on F.Cu, length 1.7684 mm",
+    "Pad 1 [+3V3] of C38 on F.Cu"
+   ]
+  },
+  {
+   "x": 174.211288,
+   "y": 111.161783,
+   "type": "clearance",
+   "deficit": 0.010499999999999982,
+   "items": [
+    "Track [/HALL3] on In2.Cu, length 1.5218 mm",
+    "Track [/RXI_INTERBOARD_2] on In2.Cu, length 1.3974 mm"
+   ]
+  },
+  {
+   "x": 183.160813,
+   "y": 114.246448,
+   "type": "hole_clearance",
+   "deficit": 0.010399999999999993,
+   "items": [
+    "Track [/CAN0_N] on In2.Cu, length 0.5690 mm",
+    "NPTH pad of J3"
+   ]
+  },
+  {
+   "x": 181.50235750000002,
+   "y": 96.5643775,
+   "type": "clearance",
+   "deficit": 0.009699999999999986,
+   "items": [
+    "Track [+3V3] on F.Cu, length 0.1501 mm",
+    "Track [/I2C_SCL] on F.Cu, length 0.2293 mm"
+   ]
+  },
+  {
+   "x": 169.96407340000002,
+   "y": 96.418059,
+   "type": "clearance",
+   "deficit": 0.009300000000000003,
+   "items": [
+    "Track [VMOT_SENSE] on F.Cu, length 0.4541 mm",
+    "Track [/ADC5] on F.Cu, length 0.4765 mm"
+   ]
+  },
+  {
+   "x": 170.421564,
+   "y": 96.939766,
+   "type": "clearance",
+   "deficit": 0.009300000000000003,
+   "items": [
+    "Track [VMOT_SENSE] on F.Cu, length 0.5568 mm",
+    "Track [/ADC5] on F.Cu, length 0.2298 mm"
+   ]
+  },
+  {
+   "x": 169.4612125,
+   "y": 97.6627655,
+   "type": "clearance",
+   "deficit": 0.009199999999999986,
+   "items": [
+    "Track [/ENC_C_SW] on In3.Cu, length 0.3253 mm",
+    "Track [/ENC_D_SW] on In3.Cu, length 0.3190 mm"
+   ]
+  },
+  {
+   "x": 181.023216,
+   "y": 100.187507,
+   "type": "clearance",
+   "deficit": 0.009199999999999986,
+   "items": [
+    "Track [/ENC_B_DATA] on F.Cu, length 0.6042 mm",
+    "Track [/ENC_A_DATA] on F.Cu, length 0.0690 mm"
+   ]
+  },
+  {
+   "x": 181.438117,
+   "y": 100.626687,
+   "type": "clearance",
+   "deficit": 0.009199999999999986,
+   "items": [
+    "Track [/ENC_B_DATA] on F.Cu, length 1.0651 mm",
+    "Track [/ENC_A_DATA] on F.Cu, length 0.2319 mm"
+   ]
+  },
+  {
+   "x": 172.385295,
+   "y": 115.425076,
+   "type": "clearance",
+   "deficit": 0.008300000000000002,
+   "items": [
+    "Track [/I2C_SW] on In2.Cu, length 4.7702 mm",
+    "Track [D_PWM_L\\] on In2.Cu, length 5.1377 mm"
+   ]
+  },
+  {
+   "x": 175.75611,
+   "y": 112.049864,
+   "type": "clearance",
+   "deficit": 0.008300000000000002,
+   "items": [
+    "Track [/I2C_SW] on In2.Cu, length 0.7265 mm",
+    "Track [D_PWM_L\\] on In2.Cu, length 5.1377 mm"
+   ]
+  },
+  {
+   "x": 178.223222,
+   "y": 92.529612,
+   "type": "clearance",
+   "deficit": 0.008199999999999985,
+   "items": [
+    "Track [/SWCLK] on In2.Cu, length 2.2288 mm",
+    "Via [/TH_SW_1] on F.Cu - B.Cu"
+   ]
+  },
+  {
+   "x": 169.173131,
+   "y": 85.431184,
+   "type": "clearance",
+   "deficit": 0.007599999999999996,
+   "items": [
+    "Track [/EXT_ANALOG_SW] on B.Cu, length 1.9451 mm",
+    "Track [/EXT_ANALOG2] on B.Cu, length 2.1112 mm"
+   ]
+  },
+  {
+   "x": 168.95487,
+   "y": 85.807901,
+   "type": "clearance",
+   "deficit": 0.007599999999999996,
+   "items": [
+    "Track [/EXT_ANALOG2] on B.Cu, length 2.1112 mm",
+    "Track [/EXT_ANALOG_SW] on B.Cu, length 0.9541 mm"
+   ]
+  },
+  {
+   "x": 188.885,
+   "y": 83.283,
+   "type": "copper_edge_clearance",
+   "deficit": 0.007500000000000007,
+   "items": [
+    "Segment on Edge.Cuts",
+    "Track [/SWCLK] on In2.Cu, length 4.7972 mm"
+   ]
+  },
+  {
+   "x": 170.022863,
+   "y": 96.219129,
+   "type": "clearance",
+   "deficit": 0.006599999999999995,
+   "items": [
+    "Track [/ADC5] on F.Cu, length 0.4765 mm",
+    "Track [/ADC4] on F.Cu, length 0.3218 mm"
+   ]
+  },
+  {
+   "x": 169.689942,
+   "y": 95.878261,
+   "type": "clearance",
+   "deficit": 0.006599999999999995,
+   "items": [
+    "Track [/ADC5] on F.Cu, length 1.0651 mm",
+    "Track [/ADC4] on F.Cu, length 0.4982 mm"
+   ]
+  },
+  {
+   "x": 156.51968,
+   "y": 97.278951,
+   "type": "clearance",
+   "deficit": 0.0058,
+   "items": [
+    "Track [C_PWM_L\\] on In3.Cu, length 2.8231 mm",
+    "Track [C_PWM_H] on In3.Cu, length 3.0260 mm"
+   ]
+  },
+  {
+   "x": 156.67874,
+   "y": 96.88755,
+   "type": "clearance",
+   "deficit": 0.0058,
+   "items": [
+    "Track [C_PWM_H] on In3.Cu, length 3.0260 mm",
+    "Track [C_PWM_L\\] on In3.Cu, length 0.9271 mm"
+   ]
+  },
+  {
+   "x": 169.498487,
+   "y": 97.170099,
+   "type": "clearance",
+   "deficit": 0.005099999999999993,
+   "items": [
+    "Track [/ENC_D_SW] on In3.Cu, length 2.4277 mm",
+    "Track [/ENC_C_SW] on In3.Cu, length 0.3253 mm"
+   ]
+  },
+  {
+   "x": 172.674514,
+   "y": 107.703141,
+   "type": "clearance",
+   "deficit": 0.004799999999999999,
+   "items": [
+    "Track [/QSPI_SS] on F.Cu, length 2.2851 mm",
+    "Track [+3V3] on F.Cu, length 0.1414 mm"
+   ]
+  },
+  {
+   "x": 174.098519,
+   "y": 103.864462,
+   "type": "clearance",
+   "deficit": 0.004699999999999982,
+   "items": [
+    "Track [Net-(U8-GPIO0)] on F.Cu, length 0.7571 mm",
+    "Track [+3V3] on F.Cu, length 1.3167 mm"
+   ]
+  },
+  {
+   "x": 180.632956,
+   "y": 101.492272,
+   "type": "clearance",
+   "deficit": 0.004399999999999987,
+   "items": [
+    "Track [/I2C_SW] on F.Cu, length 0.2360 mm",
+    "Track [/V_SW] on F.Cu, length 1.1426 mm"
+   ]
+  },
+  {
+   "x": 172.045238,
+   "y": 97.384014,
+   "type": "clearance",
+   "deficit": 0.004299999999999998,
+   "items": [
+    "Track [/ENC_D_SW] on In3.Cu, length 2.3204 mm",
+    "Track [/ENC_C_SW] on In3.Cu, length 0.3253 mm"
+   ]
+  },
+  {
+   "x": 187.00755,
+   "y": 100.54115,
+   "type": "clearance",
+   "deficit": 0.004299999999999998,
+   "items": [
+    "Pad 5 [GND_ISO] of U16 on B.Cu",
+    "Track [+5V_ISO] on B.Cu, length 2.9840 mm"
+   ]
+  },
+  {
+   "x": 171.431925,
+   "y": 92.706329,
+   "type": "clearance",
+   "deficit": 0.0040000000000000036,
+   "items": [
+    "Track [A_SENSE] on F.Cu, length 1.7684 mm",
+    "Track [/PD_INT] on F.Cu, length 0.3610 mm"
+   ]
+  },
+  {
+   "x": 153.824329,
+   "y": 94.857835,
+   "type": "clearance",
+   "deficit": 0.003599999999999992,
+   "items": [
+    "PTH pad 2 [VMOT] of J9",
+    "Track [C_PWM_H] on In3.Cu, length 1.8995 mm"
+   ]
+  },
+  {
+   "x": 180.174687,
+   "y": 101.036034,
+   "type": "clearance",
+   "deficit": 0.0032999999999999974,
+   "items": [
+    "Track [/I2C_SW] on F.Cu, length 0.6467 mm",
+    "Track [/V_SW] on F.Cu, length 0.3200 mm"
+   ]
+  },
+  {
+   "x": 182.217414,
+   "y": 100.974021,
+   "type": "clearance",
+   "deficit": 0.0030999999999999917,
+   "items": [
+    "Track [/ENC_A_DATA] on F.Cu, length 0.9075 mm",
+    "Track [+3V3] on F.Cu, length 0.6923 mm"
+   ]
+  },
+  {
+   "x": 181.855371,
+   "y": 101.311952,
+   "type": "clearance",
+   "deficit": 0.0030999999999999917,
+   "items": [
+    "Track [+3V3] on F.Cu, length 0.6923 mm",
+    "Track [/ENC_A_DATA] on F.Cu, length 0.2319 mm"
+   ]
+  },
+  {
+   "x": 171.170933,
+   "y": 111.873754,
+   "type": "clearance",
+   "deficit": 0.001799999999999996,
+   "items": [
+    "Track [/USB_DP] on B.Cu, length 3.6280 mm",
+    "Track [/USB_DN] on B.Cu, length 1.9828 mm"
+   ]
+  },
+  {
+   "x": 167.070783,
+   "y": 97.163288,
+   "type": "clearance",
+   "deficit": 0.0007999999999999952,
+   "items": [
+    "Track [/ENC_D_SW] on In3.Cu, length 0.1428 mm",
+    "Track [/ENC_C_SW] on In3.Cu, length 2.4781 mm"
+   ]
+  },
+  {
+   "x": 167.713873,
+   "y": 122.68522,
+   "type": "clearance",
+   "deficit": 0.0007999999999999952,
+   "items": [
+    "PTH pad 2 [/TXO_INTERBOARD_2] of J8",
+    "Track [/I2C_SCL] on B.Cu, length 1.7281 mm"
+   ]
+  },
+  {
+   "x": 187.331212,
+   "y": 99.903359,
+   "type": "clearance",
+   "deficit": 0.0007999999999999952,
+   "items": [
+    "Track [/RUN] on In2.Cu, length 7.4270 mm",
+    "Via [GND_ISO] on F.Cu - B.Cu"
+   ]
+  },
+  {
+   "x": 176.944187,
+   "y": 112.8402,
+   "type": "clearance",
+   "deficit": 0.0005000000000000004,
+   "items": [
+    "Track [/I2C_SDA] on In2.Cu, length 8.8962 mm",
+    "Track [/TXO_INTERBOARD_2] on In2.Cu, length 2.9644 mm"
+   ]
+  },
+  {
+   "x": 183.632789,
+   "y": 103.843915,
+   "type": "clearance",
+   "deficit": 0.0005000000000000004,
+   "items": [
+    "Track [/TXO_INTERBOARD_2] on In2.Cu, length 2.9644 mm",
+    "Track [/I2C_SDA] on In2.Cu, length 3.7369 mm"
+   ]
+  },
+  {
+   "x": 134.895,
+   "y": 118.523,
+   "type": "hole_to_hole",
+   "deficit": 0.0,
+   "items": [
+    "Via [GND] on F.Cu - B.Cu",
+    "Via [GND] on F.Cu - B.Cu"
+   ]
+  },
+  {
+   "x": 151.820337,
+   "y": 112.704406,
+   "type": "courtyards_overlap",
+   "deficit": 0.0,
+   "items": [
+    "Footprint C39",
+    "Footprint J10"
+   ]
+  },
+  {
+   "x": 158.824329,
+   "y": 94.857835,
+   "type": "courtyards_overlap",
+   "deficit": 0.0,
+   "items": [
+    "Footprint J9",
+    "Footprint BH1"
+   ]
+  },
+  {
+   "x": 158.824329,
+   "y": 94.857835,
+   "type": "courtyards_overlap",
+   "deficit": 0.0,
+   "items": [
+    "Footprint J9",
+    "Footprint C80"
+   ]
+  },
+  {
+   "x": 165.173873,
+   "y": 122.68522,
+   "type": "courtyards_overlap",
+   "deficit": 0.0,
+   "items": [
+    "Footprint J8",
+    "Footprint J5"
+   ]
+  },
+  {
+   "x": 165.286364,
+   "y": 89.906425,
+   "type": "courtyards_overlap",
+   "deficit": 0.0,
+   "items": [
+    "Footprint J7",
+    "Footprint C38"
+   ]
+  }
+ ],
+ "n_new": 161,
+ "airwires": 54,
+ "airwires_base": 54,
+ "sync": "IN SYNC \u2014 board matches schematic"
+}

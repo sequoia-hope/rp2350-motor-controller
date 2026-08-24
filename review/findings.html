@@ -68,7 +68,7 @@
 </header>
 
 <div class="summary">
-  <div><strong>41</strong>findings recorded</div>
+  <div><strong>42</strong>findings recorded</div>
   <div><strong>14</strong>fixed on rev-b-fixes</div>
   <div><strong>9</strong>rev-C candidates</div>
   <div><strong>1</strong>re-route session (board)</div>
@@ -229,6 +229,10 @@ rows are never renumbered.</p>
   <td>Q6 (DNP E-stop 2N7002) sat on a <strong>SOT-89-3</strong> land on the board while the schematic carries SOT-23 — the one "known rev-A discrepancy" <code>check_sync.py</code> had been tolerating; its 5.1&nbsp;mm courtyard also hung 0.77&nbsp;mm over the top edge (<code>copper_edge_clearance</code>) and no 5×5&nbsp;mm hole exists near the corner</td>
   <td><span class="st fixed">FIXED</span></td>
   <td>Board footprint swapped to the schematic's <code>Package_TO_SOT_SMD:SOT-23</code> (pad 1/2/3 = /E-STOP, /RUN, GND preserved, schematic path kept), placed on the back beside J11 at (178.75, 122.5). <code>check_sync</code> IN SYNC with an empty known-exceptions list</td></tr>
+<tr id="f-46"><td class="id"><a href="#f-46">F-46</a></td><td><span class="sev info">INFO</span></td>
+  <td>Rubber-stretch feasibility: dilating the board ×k with footprints as rigid bodies is illegal at <em>any</em> k&nbsp;&gt;&nbsp;1 if positions are simply scaled — pad copper lags full dilation by (k−1)·|pad offset from footprint origin| (~10&nbsp;mm on J12-class connectors), and the sign is geometric: any at-limit copper sitting <em>between a footprint's origin and one of its pads</em> loses clearance at every k. Measured census (smooth-rubber engine, strain routed around the inclusions): the violating-site count is nearly <strong>flat in k</strong> — 68 sites at +0.25%, 91 at +1% — while deficits scale ∝&nbsp;k (median 8&nbsp;→&nbsp;15&nbsp;µm). The at-limit pair set, not the stretch amount, is the price. Uniform stretch also does <em>not</em> unbox the <a href="#f-25">F-25</a> placement blockers (R111 stays inside H2's ring at any small k)</td>
+  <td><span class="st doc">DOC</span></td>
+  <td>Engine + tolerance pipeline in <code>hardware/tools/rubber/</code> (<code>stretch.py</code> dilation warp with glued trace ends; <code>nudge.py</code> DRC-refereed local repair with tee/via-rim ride constraints — absorbs ~⅔ of the damage; <code>status.py</code> hand-repair loop), full story on the <a href="rubber.html">rubber page</a>. The +1% board is staged as <code>rp2350_driver_rubber.kicad_pcb</code>: 92 sites (median 15&nbsp;µm) for hand repair, airwires 54 preserved, <code>check_sync</code> IN SYNC</td></tr>
 </table>
 </div>
 
