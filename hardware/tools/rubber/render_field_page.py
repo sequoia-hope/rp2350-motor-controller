@@ -149,10 +149,10 @@ The +1% board now hands a human <strong>{stg['sites']} sites</strong> (median {s
 <code>check_sync</code> IN SYNC and no airwire regression at any k.</div>
 
 <h2 id="why">1 · The bug was the interpolation domain</h2>
-<p>Both engines agree on the physics: a footprint is a rigid chip glued to the sheet, so it translates by the dilation
-of its <em>origin</em> and its pads therefore trail full dilation by (k−1)·|ρ|, where ρ is the pad's offset from that
-origin. That lag has to be blended back into the surrounding copper somewhere, and <em>where</em> is the whole
-question.</p>
+<p>Both engines agree on the physics: a footprint is a rigid chip glued to the sheet, so it takes a single translation
+and its pads therefore trail full dilation by (k−1)·|ρ|, where ρ is each pad's offset from whatever point the part is
+anchored at. (Which point that should be turns out to matter a great deal — see §4.) That lag has to be blended back
+into the surrounding copper somewhere, and <em>where</em> is the whole question.</p>
 <p>The old engine blended it along the copper graph — the same graph KiCad uses for connectivity. Nothing in that
 construction knows about distance. A trace pinned to a connector's far pad rides the lagging footprint vector; the
 trace running beside it, whose own pins are elsewhere on the board, rides near-pure ambient; and the gap between them
@@ -211,10 +211,55 @@ segment's body, which KiCad connects by overlap and not by topology — and same
 host. And every track end that lands on a pad is pinned to that footprint's vector directly; the field already equals
 it there, so the two agree to <strong>{eng['pin_err_um']:.0f}&nbsp;µm</strong>, which is the honest measure of how
 well the territories cover the pads.</p>
+<p>Everything that pierces the board is rigid on every layer it pierces, which is not the same as everything that
+has copper on it: a drill carries its own DRC clearance whether or not it has an annulus, so all {eng['holes']}
+holes ({eng['npth']} of them NPTH, with no net and no copper obligation) are pinned on all six layers rather than
+relying on a pad polygon happening to cover them. Off the copper layers, free silk art is stretched point by point
+through the field ({eng['silk_art']} graphics) and silk text moves through it and scales by k ({eng['silk_text']}
+texts) — text cannot deform, so scaling is the honest compromise for something that has to stay legible. Footprint
+silk is untouched: it belongs to a rigid part and already moved with it.</p>
 <p>Each of those four decisions was kept because DRC said so, at +1%, cumulatively:</p>
 {ablation_table()}
 
-<h2 id="admissibility">4 · Does the field close anything, anywhere?</h2>
+<h2 id="anchor">4 · What the field map found: mounting holes</h2>
+<p>Drawing the field over the board is what turned up the next bug, and it was not where it looked. The question was
+whether NPTH holes and stitching vias were being pinned at all. They were — every one of this board's
+{eng['holes']} drilled holes ({eng['npth']} NPTH) is rigid on all six layers and all {eng['via_inclusions']} via
+barrels are coupled across the stack — and yet the field around the phase connectors' mounting holes was visibly
+inconsistent, and copper was colliding there.</p>
+<p>The cause was the <em>anchor</em>. A rigid part gets one translation to choose, and the engine was using
+ambient(footprint origin). The footprint origin is an arbitrary CAD anchor, and on this board the phase connectors
+J1/J2/J9 carry theirs <strong>{eng['anchor_worst_mm']} mm</strong> off their own pad centroid (J12 5.10&nbsp;mm, J11
+3.83&nbsp;mm; {eng['anchor_off_count']} footprints are off by more than 50&nbsp;µm). Anchoring there dragged every one
+of those parts' pads — mounting holes included — through an extra 56&nbsp;µm of lag at +1% for no reason whatever.</p>
+<p>The right choice is the least-squares one: the translation minimising Σ|v − ambient(pad<sub>i</sub>)|² over the
+part's own pads, which for an affine ambient is exactly <strong>ambient(pad centroid)</strong>. That single change
+took +1% from 47 to <strong>37</strong> violations, and it smooths the field everywhere, not just at connectors:
+tracks needing a split fell 134 → {eng['split']}, worst chord sag 46 → {eng['sag_max_um']:.0f}&nbsp;µm, F.Cu
+σ<sub>min</sub> 0.63 → {eng['layers']['F.Cu']['sigma_min']:.2f}.</p>
+<figure>
+<img src="img/fieldmap_conn.png" alt="warp field around the phase connector J9" style="width:100%;border-radius:6px">
+<figcaption>B.Cu around phase connector J9, +1%. Left: lag behind the ambient dilation, with arrows and the rigid
+territories outlined in green; blue circles are plated holes, red are NPTH. J9's four pads — two power pads and two
+mounting holes 12.8&nbsp;mm apart — read as four bright plateaus, and the <em>dark spot at their centre</em> is the
+pad centroid the part is now anchored at. Right: σ<sub>min</sub>, where the dark red bands land exactly on the pad
+rims facing the connector interior.</figcaption>
+</figure>
+<p>The map also shows what has <em>not</em> been solved. A connector's four pads remain four rigid islands with a
+saddle between them, because the space they span is not part of the connector at all — it is open board with other
+parts and live traces in it. Making that span rigid (<code>ENCLOSE=hull</code>) was tried and is worse with the
+origin anchor (61 violations against 47, with fresh 70–78&nbsp;µm sites along the hull boundary) and a wash with the
+centroid anchor (38 against 37), so the closing is kept. The residual sag inside those bodies is 29&nbsp;µm, down
+from 43.</p>
+<figure>
+<img src="img/fieldmap_In3.png" alt="warp field over the whole board, In3.Cu" style="width:100%;border-radius:6px">
+<figcaption>The whole board on In3.Cu, where the only rigid things are through-hole pads, drills and via barrels — so
+the through-hole connectors stand out as the bright plateaus and the stitching-via farms as the regular dotted
+lattices. <code>fieldmap.py</code> draws the field <code>stretch.py</code> dumped, never a rebuilt one, so the picture
+is the field the board actually got.</figcaption>
+</figure>
+
+<h2 id="admissibility">5 · Does the field close anything, anywhere?</h2>
 <p>The map is F(x) = x + u(x), so a gap between two nearby points survives if and only if the smallest singular value
 of J = I + ∇u is ≥ 1 — a geometry-only test that does not care what copper happens to be there. It is worth knowing
 that the construction is non-contracting <em>by design</em> in the clean case: for a single circular rigid inclusion
@@ -233,25 +278,21 @@ everywhere.</p>
 <code>sigma_probe.py</code> bins it by distance from the nearest rigid territory and converts the depth into what it
 would actually cost a {R['sigma_profile_gap_mm']}&nbsp;mm clearance:</p>
 {sigma_table()}
-<p class="small">The probe solves the <em>pad-only</em> field, without the via inclusions of the second pass, which
-is what isolates the contribution of the rigid parts. That is why its F.Cu minimum reads
-{prof['F.Cu']['bins'][0]['worst']:.3f} where the table above reads {eng['layers']['F.Cu']['sigma_min']:.3f}: the
-difference is entirely the corners of the via octagons, the same artifact and just as shallow in extent. B.Cu is
-dominated by pads either way and reads {prof['B.Cu']['bins'][0]['worst']:.3f} in both.</p>
-<p>Two populations, and only one of them is a pad rim. Contraction <em>is</em> concentrated near pads — on B.Cu only
-{prof['B.Cu']['bins'][-1]['share_bad']:.1f}% of contracting cells lie more than 2&nbsp;mm from one, against
-{prof['B.Cu']['bins'][-1]['share_all']:.1f}% of all cells — but between a tenth and a quarter of it is genuinely out
-in open routing space, so "it is all pad rims" would have been wrong. What makes it harmless there is depth, not
-location: out beyond 1&nbsp;mm the <em>worst</em> cell on either layer costs
-{max(prof[l]['bins'][4]['loss_um'] for l in prof):.0f}&nbsp;µm of a {R['sigma_profile_gap_mm']}&nbsp;mm gap and the
-median costs about {(1-prof['F.Cu']['bins'][4]['median'])*R['sigma_profile_gap_mm']*1000:.1f}&nbsp;µm. The deep
-values — {prof['B.Cu']['bins'][0]['worst']:.2f} on B.Cu — live hard against pad rims, in seams where nothing but
-those two pads lives and they are moving apart anyway.</p>
+<p>Contraction is now, to the cell, a near-territory phenomenon: beyond 2&nbsp;mm from any rigid shape there is
+<strong>not one contracting cell on either layer</strong>, and beyond 1&nbsp;mm the worst survivor costs
+{max(prof[l]['bins'][4]['loss_um'] for l in prof):.1f}&nbsp;µm of a {R['sigma_profile_gap_mm']}&nbsp;mm gap while the
+median costs {(1-prof['F.Cu']['bins'][4]['median'])*R['sigma_profile_gap_mm']*1000:.1f}&nbsp;µm. The deep values —
+{prof['B.Cu']['bins'][0]['worst']:.2f} on B.Cu — sit hard against pad rims, in seams where nothing but those two pads
+lives and they are moving apart anyway.</p>
+<p class="small">This is stricter than it was before the anchor fix, and worth recording as a correction: with the
+parts anchored at their footprint origins, a tenth to a quarter of the contraction really was out in open routing
+space, and an earlier draft of this page that called it "all pad rims" was wrong at the time. Moving the anchor to the
+pad centroid is what emptied the open-space bins.</p>
 <p class="small">This is the map earning its keep as an oracle: it predicts a median cost of well under a micron and
 a worst case of a few tens, and the DRC that follows reports a median deficit of {sw['1.01']['new']['med']}&nbsp;µm
 and a worst of {sw['1.01']['new']['mx']}&nbsp;µm. A proposed field can be judged before it is applied.</p>
 
-<h2 id="sweep">5 · Tolerance sweep, head to head</h2>
+<h2 id="sweep">6 · Tolerance sweep, head to head</h2>
 {sweep_table()}
 {bars()}
 <p>Both engines measured with the same tool (<code>status.py</code>: DRC, position-independent diff against the
@@ -262,7 +303,7 @@ cleaner than the old engine at <strong>+0.25%</strong> — {sw['1.03']['new']['v
 airwire at +3% ({sw['1.03']['old']['air']} against a baseline of 54); algorithm A does not
 ({sw['1.03']['new']['air']}).</p>
 
-<h2 id="handoff">6 · The staged board</h2>
+<h2 id="handoff">7 · The staged board</h2>
 <p><code>{stg['board']}</code> — +1%, nudged, {stg['viol']} violations in
 <strong>{stg['sites']} sites</strong> (median {stg['med']}&nbsp;µm, p90 {stg['p90']}&nbsp;µm, worst
 {stg['mx']}&nbsp;µm), airwires {stg['airwires']} against a baseline of {stg['airwires_base']},
@@ -273,7 +314,7 @@ hardware/rp2350_driver_rubber_A.kicad_pcb</code>.</p>
 <div class="tablewrap"><table><tr><th>µm</th><th>position</th><th>type</th><th>items</th></tr>
 {site_rows()}</table></div>
 
-<h2 id="next">7 · Where this goes</h2>
+<h2 id="next">8 · Where this goes</h2>
 <p>The field solver is deliberately more general than this one use. <code>ambient</code> is any callable and
 inclusion vectors are arbitrary, so the same machinery expresses "push these two parts apart and let the copper
 between them relax harmonically" with no dilation at all — the shape a steerable <em>add space here</em> operator

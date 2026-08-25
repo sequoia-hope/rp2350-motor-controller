@@ -62,7 +62,8 @@ def sigma_min_2x2(a, b, c, d):
 class WarpField:
     """Harmonic displacement field with rigid inclusions on a regular grid."""
 
-    def __init__(self, bounds, h=0.15, margin=3.0, ambient=None, close=1.0):
+    def __init__(self, bounds, h=0.15, margin=3.0, ambient=None, close=1.0,
+                 enclose='hull'):
         """bounds: (x0, y0, x1, y1) region of interest, in mm (the board).
         margin: how far the solve domain extends past it -- the residual decays
         to zero on the outer boundary instead of being clamped at the board
@@ -73,10 +74,17 @@ class WarpField:
         *enclosed by* them -- a trace threading a connector's pin field is held
         on both sides and cannot do anything but move with the part.  Without
         this the field sags toward ambient between the pins while the pins hold,
-        and shears exactly the traces that run through them."""
+        and shears exactly the traces that run through them.
+        enclose: how that enclosed space is defined -- 'hull' (convex hull of
+        the inclusion's own shapes, scale-free), 'close' (the fixed `close`
+        radius), 'both', or 'none'.  A fixed radius cannot serve a board with
+        both 0.5 mm-pitch pin fields and connectors whose pads are 12.8 mm
+        apart: on this board a 1 mm closing left 43 um of sag inside J9's body,
+        which is a shear against its own mounting holes."""
         x0, y0, x1, y1 = bounds
         self.h = float(h)
         self.close = float(close)
+        self.enclose = enclose
         self.x0 = x0 - margin; self.y0 = y0 - margin
         self.nx = int(math.ceil((x1 + margin - self.x0) / self.h)) + 1
         self.ny = int(math.ceil((y1 + margin - self.y0) / self.h)) + 1
@@ -94,18 +102,30 @@ class WarpField:
         self._incl.append((polys, tuple(vec), float(priority), tag))
 
     def _rasterize(self, grow=1):
-        """Mark inclusion territories on the grid, in three rounds so that a
-        pad can never be stolen by a neighbour: every inclusion's raw pads are
-        claimed first, then the space each one encloses (morphological closing),
-        then a `grow`-cell halo.  Within a round, heavier inclusions go first
-        and nothing already owned is overwritten.  The halo exists so the four
-        grid corners around any pad interior belong to that footprint, which
-        makes bilinear evaluation there return its vector exactly."""
+        """Mark inclusion territories on the grid, in four rounds, so that no
+        inclusion can ever lose its own shapes or their immediate surroundings
+        to a neighbour:
+
+          1. every inclusion's raw shapes (its pads),
+          2. a protective `grow`-cell halo around those,
+          3. the space each inclusion encloses -- convex hull and/or closing,
+          4. a halo around that.
+
+        Rounds 1-2 run for ALL inclusions before round 3, which is what lets a
+        connector's hull span its own 12.8 mm body without swallowing the cells
+        around a small part that happens to sit inside it.  Within a round,
+        heavier inclusions go first and nothing already owned is overwritten.
+        The halo exists so the four grid corners around any pad interior belong
+        to that footprint, making bilinear evaluation there exact."""
         order = sorted(range(len(self._incl)), key=lambda i: -self._incl[i][2])
-        wins = {idx: self._window(self._incl[idx][0]) for idx in order}
+        use_hull = self.enclose in ('hull', 'both')
+        hulls = {idx: (self._hull(self._incl[idx][0]) if use_hull else None) for idx in order}
+        # the window must hold the hull too, or a 12.8 mm body gets clipped to
+        # the extent of the pads that generated it
+        wins = {idx: self._window(self._incl[idx][0], extra=hulls[idx]) for idx in order}
         nc = int(round(self.close / self.h))
         disk = None
-        if nc > 0:
+        if nc > 0 and self.enclose in ('close', 'both'):
             yy, xx = np.ogrid[-nc:nc + 1, -nc:nc + 1]
             disk = (xx * xx + yy * yy) <= nc * nc
 
@@ -115,29 +135,66 @@ class WarpField:
             sub = self.owner[j0:j0 + m.shape[0], i0:i0 + m.shape[1]]
             sub[m & (sub < 0)] = idx
 
+        def enclosed(idx):
+            """the inclusion's territory including whatever its shapes enclose"""
+            m, i0, j0 = wins[idx]
+            if m is None or not m.any():
+                return None, i0, j0
+            full = m.copy()
+            if disk is not None:
+                full |= ndimage.binary_closing(m, structure=disk)
+            if hulls[idx] is not None:
+                full |= self._rast_into(hulls[idx], i0, j0, m.shape)
+            return full, i0, j0
+
         for idx in order:                                   # 1. the pads themselves
             m, i0, j0 = wins[idx]
             claim(idx, m, i0, j0)
-        if disk is not None:                                # 2. what they enclose
-            for idx in order:
-                m, i0, j0 = wins[idx]
-                if m is None or not m.any(): continue
-                claim(idx, ndimage.binary_closing(m, structure=disk) & ~m, i0, j0)
-        for idx in order:                                   # 3. one-cell halo
+        for idx in order:                                   # 2. protect their surroundings
             m, i0, j0 = wins[idx]
             if m is None or not m.any(): continue
-            full = m if disk is None else ndimage.binary_closing(m, structure=disk)
+            claim(idx, ndimage.binary_dilation(m, iterations=grow) & ~m, i0, j0)
+        encl = {}
+        for idx in order:                                   # 3. what they enclose
+            full, i0, j0 = enclosed(idx)
+            encl[idx] = (full, i0, j0)
+            if full is None: continue
+            claim(idx, full & ~wins[idx][0], i0, j0)
+        for idx in order:                                   # 4. halo around that
+            full, i0, j0 = encl[idx]
+            if full is None: continue
             claim(idx, ndimage.binary_dilation(full, iterations=grow) & ~full, i0, j0)
         return sum(1 for idx in wins if wins[idx][0] is not None and wins[idx][0].any())
 
-    def _window(self, polys):
-        """(mask, i0, j0): the union of `polys` rasterised on a local window,
-        padded enough for the closing and halo rounds to have room."""
+    def _hull(self, polys):
+        """Convex hull of an inclusion's own shapes, as a point list."""
+        pts = np.array([p for shape in polys if len(shape) >= 3 for p in shape], float)
+        if len(pts) < 3:
+            return None
+        try:
+            from scipy.spatial import ConvexHull
+            return [tuple(pts[i]) for i in ConvexHull(pts).vertices]
+        except Exception:
+            return None                    # collinear / degenerate: closing covers it
+
+    def _rast_into(self, poly, i0, j0, shape):
+        """Rasterise one polygon into an existing window at (i0, j0)."""
+        gx, gy = np.meshgrid(self.x0 + self.h * (i0 + np.arange(shape[1])),
+                             self.y0 + self.h * (j0 + np.arange(shape[0])))
+        return Path(np.asarray(poly, float)).contains_points(
+            np.column_stack([gx.ravel(), gy.ravel()])).reshape(shape)
+
+    def _window(self, polys, pad=None, extra=None):
+        """(mask, i0, j0): the union of `polys` rasterised on a local window.
+        `extra` points widen the window without being rasterised into it, so a
+        territory's enclosure can be pasted in later without clipping."""
         pts_all = [p for pts in polys if len(pts) >= 3 for p in pts]
         if not pts_all:
             return None, 0, 0
-        pad = int(round(self.close / self.h)) + 2
-        xs = [p[0] for p in pts_all]; ys = [p[1] for p in pts_all]
+        if pad is None:
+            pad = int(round(self.close / self.h)) + 2
+        ext = list(pts_all) + (list(extra) if extra else [])
+        xs = [p[0] for p in ext]; ys = [p[1] for p in ext]
         i0 = max(0, int((min(xs) - self.x0) / self.h) - pad)
         i1 = min(self.nx - 1, int((max(xs) - self.x0) / self.h) + pad)
         j0 = max(0, int((min(ys) - self.y0) / self.h) - pad)

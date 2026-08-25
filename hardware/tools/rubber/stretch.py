@@ -2,12 +2,10 @@
 """Rubber stretch: dilate the board about its centre by (KX, KY) with
 footprints as rigid inclusions.
 
-Algorithm A (2026-08-25).  Every footprint still moves rigidly by the dilation
-of its origin, but the rigid-inclusion lag is now interpolated through SPACE by
-field.WarpField -- one harmonic displacement field u(x,y) that equals the
-footprint vector inside each courtyard/pad territory, decays to pure ambient
-dilation away from it, and is evaluated by position for every piece of copper,
-zone vertex and silk item on the board.
+Algorithm A (2026-08-25).  Each footprint translates rigidly, and the resulting
+rigid-inclusion lag is interpolated through SPACE by field.WarpField -- one
+harmonic displacement field per COPPER LAYER, evaluated by position for every
+track, via, pad, zone vertex and silk item on the board.
 
 What that fixes.  The previous engine interpolated the same residual along each
 net's own copper graph, so two traces 0.2 mm apart on different nets got
@@ -17,6 +15,24 @@ of two unrelated residuals.  That was the entire F-46 violation census.  A field
 that is a function of position cannot shear neighbouring copper apart, whatever
 nets it belongs to.
 
+What is rigid, and why each piece:
+  * a footprint's PADS (not its courtyard -- copper merely passing under a
+    courtyard is free to deform, and abutting courtyards fight over the seam),
+    plus what those pads enclose (CLOSE/ENCLOSE), so a trace threading a pin
+    field is carried by the pins on both sides;
+  * every DRILL, on all six layers, whether or not it carries an annulus.  A
+    hole pierces the whole stack and has its own DRC clearance, so an NPTH
+    mounting hole with no net is as rigid as any pad;
+  * every VIA barrel, coupled across the layers it pierces in two passes: it is
+    one rigid body and can only be in one place, so it takes the mean of what
+    the layers want and that value is handed back to each of them.
+
+The rigid translation itself is ambient(PAD CENTROID), not ambient(origin): the
+footprint origin is an arbitrary CAD anchor, and the choice that least disturbs
+surrounding copper is the least-squares one over the part's own pads.  On this
+board the phase connectors carry their origin 5.59 mm off centroid, which was
+dragging their mounting holes through 56 um of needless lag at +1%.
+
 Two geometric passes keep the discretisation honest:
   * adaptive splitting -- a straight segment cannot follow a curved field, so
     each track is subdivided until its chord is within SPLIT_TOL of the field.
@@ -24,12 +40,16 @@ Two geometric passes keep the discretisation honest:
     segment's body) and pads sitting mid-body on their host.
   * sigma_min census -- the map F(x) = x + u(x) closes a gap iff the smallest
     singular value of I + grad u drops below 1, so the field reports where it is
-    contracting before DRC ever runs.
+    contracting before DRC ever runs.  fieldmap.py draws it; sigma_probe.py bins
+    it by distance from the nearest rigid territory.
 
 Edge.Cuts stays on pure ambient (the outline is exactly the dilated outline);
 the field's far-field equals ambient, so copper near the edge is consistent.
+Free silk art is stretched point-by-point through the field; silk text moves
+through it and scales by k.  Footprint silk is rigid with its part.
 
-env: SRC, OUT, KX, KY, CX, CY, H (grid mm), MARGIN, SPLIT_TOL, STATS
+env: SRC, OUT, KX, KY, CX, CY, H (grid mm), MARGIN, CLOSE, ENCLOSE, ANCHOR,
+     SPLIT_TOL, VIA_PASSES, STATS, FIELD_DUMP
 """
 import json, math, os, shutil, sys, collections, time
 S = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, S)
@@ -47,8 +67,10 @@ KX = float(os.environ.get('KX', '1.0')); KY = float(os.environ.get('KY', '1.0'))
 H = float(os.environ.get('H', '0.12'))
 MARGIN = float(os.environ.get('MARGIN', '8.0'))
 CLOSE = float(os.environ.get('CLOSE', '1.0'))
+ENCLOSE = os.environ.get('ENCLOSE', 'close')
 SPLIT_TOL = float(os.environ.get('SPLIT_TOL', '0.015'))
 STATS = os.environ.get('STATS', '')
+FIELD_DUMP = os.environ.get('FIELD_DUMP', '')
 
 t_start = time.time()
 bd = load_board(SRC)
@@ -62,12 +84,27 @@ def ambient(x, y):
 def to_v(x, y):
     return pcbnew.VECTOR2I(int(round(x / NM)), int(round(y / NM)))
 
-# ---- footprints: rigid, vector = dilation of the origin ---------------------
+# ---- footprints: rigid, vector = dilation of the PAD CENTROID ---------------
+# A rigid part has one translation to choose, and the choice that least disturbs
+# the copper around it is the one minimising sum |v - ambient(pad_i)|^2 over its
+# own pads -- which, ambient being affine, is exactly ambient(pad centroid).
+# The footprint origin is an arbitrary CAD anchor and is a poor stand-in: on
+# this board the phase connectors J1/J2/J9 carry their origin 5.59 mm off their
+# pad centroid, so anchoring there dragged every one of their pads -- mounting
+# holes included -- through an extra 56 um of lag at +1% for no reason at all.
+ANCHOR = os.environ.get('ANCHOR', 'centroid')
 V = {}          # ref -> (vx, vy)
+anchor_off = []
 terr = []       # (poly, bbox, ref, side) courtyard territories, OLD coordinates
 for f in bd.GetFootprints():
     r = f.GetReference(); p = f.GetPosition()
-    V[r] = ambient(p.x * NM, p.y * NM)
+    q = [(pd.GetPosition().x * NM, pd.GetPosition().y * NM) for pd in f.Pads()]
+    if ANCHOR == 'centroid' and q:
+        ax = sum(t[0] for t in q) / len(q); ay = sum(t[1] for t in q) / len(q)
+    else:
+        ax, ay = p.x * NM, p.y * NM
+    anchor_off.append(math.hypot(ax - p.x * NM, ay - p.y * NM))
+    V[r] = ambient(ax, ay)
     try: f.BuildCourtyardCaches()
     except AttributeError: pass
     for lay in (pcbnew.F_CrtYd, pcbnew.B_CrtYd):
@@ -190,6 +227,10 @@ for ra, rb, pa, pb, g0, cross0 in prs:
     if cross or d < min(g0, 0.1) - 1e-4: n_bad += 1
 print(f'  courtyard relax: {len(prs)} close pairs, {n_corr} corrections '
       f'(max {corr_max*1000:.1f} um), {n_bad} unresolved')
+if ANCHOR == 'centroid':
+    print(f'  anchor: pad centroid ({sum(1 for d in anchor_off if d > 0.05)} footprints '
+          f'off their origin, worst {max(anchor_off):.2f} mm = '
+          f'{max(anchor_off)*abs(KX-1)*1000:.0f} um of lag avoided)')
 
 
 # ---- the spatial fields, one per copper layer -------------------------------
@@ -212,7 +253,12 @@ print(f'  courtyard relax: {len(prs)} close pairs, {n_corr} corrections '
 CU = list(bd.GetEnabledLayers().CuStack())
 BOUNDS = (bb.GetLeft() * NM, bb.GetTop() * NM, bb.GetRight() * NM, bb.GetBottom() * NM)
 
+def _oct(cx_, cy_, rx, ry, n=12):
+    return [(cx_ + rx * math.cos(2 * math.pi * i / n),
+             cy_ + ry * math.sin(2 * math.pi * i / n)) for i in range(n)]
+
 pad_polys = {L: collections.defaultdict(list) for L in CU}
+n_hole = 0
 for f in bd.GetFootprints():
     r = f.GetReference()
     for p in f.Pads():
@@ -232,6 +278,20 @@ for f in bd.GetFootprints():
         for L in CU:
             if p.IsOnLayer(L):
                 pad_polys[L][r].extend(polys)
+        # A DRILL pierces every layer whether or not there is copper on it, and
+        # it carries its own DRC clearance, so it is rigid on all six -- an NPTH
+        # mounting hole has no net and may have no annulus at all.  Adding it
+        # explicitly means we never depend on the copper polygon happening to
+        # cover the hole (it does on this board; that is not guaranteed).
+        dx, dy = p.GetDrillSizeX() * NM, p.GetDrillSizeY() * NM
+        if dx > 0 and dy > 0:
+            pos = p.GetPosition()
+            hole = _oct(pos.x * NM, pos.y * NM, dx / 2, dy / 2)
+            for L in CU:
+                pad_polys[L][r].append(hole)
+            n_hole += 1
+print(f'  {n_hole} drilled holes pinned on all {len(CU)} copper layers '
+      f'({sum(1 for f in bd.GetFootprints() for p in f.Pads() if p.GetAttribute() == 3)} NPTH)')
 
 def build_fields(extra=()):
     """One harmonic field per copper layer.  `extra` is a list of
@@ -240,7 +300,7 @@ def build_fields(extra=()):
     thing to each layer it passes through."""
     out = {}
     for L in CU:
-        fl = WarpField(BOUNDS, h=H, margin=MARGIN, close=CLOSE,
+        fl = WarpField(BOUNDS, h=H, margin=MARGIN, close=CLOSE, enclose=ENCLOSE,
                        ambient=dilation(CX, CY, KX, KY))
         for r, pl in pad_polys[L].items():
             fl.add_inclusion(pl, V[r], priority=npads.get(r, 1), tag=r)
@@ -380,6 +440,7 @@ def node_disps(flds):
 # where it pierces -- without it a via shears against the copper beside it by
 # however much the layers disagreed, which was most of the residual census.
 disp, _ = node_disps(fields)
+n_via_incl = 0
 VIA_PASSES = int(os.environ.get('VIA_PASSES', '2'))
 oct8 = [(math.cos(i * math.pi / 4), math.sin(i * math.pi / 4)) for i in range(8)]
 for _ in range(VIA_PASSES - 1):
@@ -390,7 +451,24 @@ for _ in range(VIA_PASSES - 1):
                       disp[nid]))
     fields = build_fields(extra)
     disp, _ = node_disps(fields)
+    n_via_incl = len(extra)
 disp, pin_err = node_disps(fields)
+
+# The solved fields, exactly as applied below, for fieldmap.py to draw.  Dumping
+# them rather than rebuilding them in the renderer is the only way the picture
+# is guaranteed to be the field the board actually got.
+if FIELD_DUMP:
+    f0 = fields[CU[0]]
+    dump = dict(kx=KX, ky=KY, cx=CX, cy=CY, h=f0.h, x0=f0.x0, y0=f0.y0,
+                anchor=ANCHOR, enclose=ENCLOSE, close=CLOSE,
+                layers=np.array([bd.GetLayerName(L) for L in CU]))
+    for L in CU:
+        n = bd.GetLayerName(L)
+        dump[f'RX_{n}'] = fields[L].RX.astype(np.float32)
+        dump[f'RY_{n}'] = fields[L].RY.astype(np.float32)
+        dump[f'OWN_{n}'] = fields[L].owner >= 0
+    np.savez_compressed(FIELD_DUMP, **dump)
+    print(f'  field dump -> {FIELD_DUMP}')
 
 # ---- adaptive splitting: a chord cannot follow a curved field ---------------
 # Subdivide each track until its straight chord is within SPLIT_TOL of the
@@ -467,14 +545,66 @@ for d in [d for d in bd.GetDrawings() if d.GetLayer() == pcbnew.Edge_Cuts]:
         d.SetStart(to_v(s.x * NM + vs[0], s.y * NM + vs[1]))
         d.SetEnd(to_v(e.x * NM + ve[0], e.y * NM + ve[1]))
 
-# ---- free text / graphics: ride the copper field on their own side ----------
-n_txt = 0
+# ---- free silk art and text: STRETCH, don't just translate ------------------
+# Every defining point of a graphic maps through the field, so a logo, a long
+# rule or a box actually deforms with the sheet instead of sliding rigidly.
+# Text cannot deform, so it is the one thing that gets the honest compromise:
+# its anchor moves through the field and its glyph size and stroke scale by k,
+# which is what "stretched" means for something that must stay legible.
+# (Footprint silk is NOT touched here -- it belongs to a rigid part and already
+# moved with it.)
+KAVG = 0.5 * (KX + KY)
+
+def stretch_pt(P, L):
+    vx, vy = fld1(P.x * NM, P.y * NM, L)
+    return to_v(P.x * NM + vx, P.y * NM + vy)
+
+n_txt = n_art = 0
 for d in bd.GetDrawings():
     if d.GetLayer() == pcbnew.Edge_Cuts: continue
     L = CU[-1] if bd.GetLayerName(d.GetLayer()).startswith('B.') else CU[0]
-    p = d.GetPosition()
-    vx, vy = fld1(p.x * NM, p.y * NM, L)
-    d.Move(to_v(vx, vy) - to_v(0, 0)); n_txt += 1
+    cls = d.GetClass()
+    if cls in ('PCB_TEXT', 'PCB_TEXTBOX'):
+        p = d.GetPosition()
+        d.SetPosition(stretch_pt(p, L))
+        try:
+            sz = d.GetTextSize()
+            d.SetTextSize(pcbnew.VECTOR2I(int(round(sz.x * KX)), int(round(sz.y * KY))))
+            d.SetTextThickness(int(round(d.GetTextThickness() * KAVG)))
+        except Exception:
+            pass
+        n_txt += 1
+        continue
+    shape = d.GetShape() if hasattr(d, 'GetShape') else None
+    try:
+        if shape == pcbnew.SHAPE_T_ARC:
+            d.SetArcGeometry(stretch_pt(d.GetStart(), L), stretch_pt(d.GetArcMid(), L),
+                             stretch_pt(d.GetEnd(), L))
+        elif shape == pcbnew.SHAPE_T_CIRCLE:
+            c = d.GetPosition()
+            d.SetPosition(stretch_pt(c, L))
+            d.SetEnd(stretch_pt(d.GetEnd(), L))       # radius point
+        elif shape == pcbnew.SHAPE_T_POLY:
+            ps = d.GetPolyShape()
+            for i in range(ps.OutlineCount()):
+                o = ps.Outline(i)
+                for j in range(o.PointCount()):
+                    q = o.CPoint(j)
+                    vx, vy = fld1(q.x * NM, q.y * NM, L)
+                    o.SetPoint(j, to_v(q.x * NM + vx, q.y * NM + vy))
+        elif shape == pcbnew.SHAPE_T_BEZIER:
+            d.SetStart(stretch_pt(d.GetStart(), L)); d.SetEnd(stretch_pt(d.GetEnd(), L))
+            d.SetBezierC1(stretch_pt(d.GetBezierC1(), L))
+            d.SetBezierC2(stretch_pt(d.GetBezierC2(), L))
+        else:                                          # segment, rect
+            d.SetStart(stretch_pt(d.GetStart(), L)); d.SetEnd(stretch_pt(d.GetEnd(), L))
+        if hasattr(d, 'SetWidth'):
+            d.SetWidth(int(round(d.GetWidth() * KAVG)))
+        n_art += 1
+    except Exception:
+        p = d.GetPosition()                            # last resort: translate
+        vx, vy = fld1(p.x * NM, p.y * NM, L)
+        d.Move(to_v(vx, vy) - to_v(0, 0)); n_art += 1
 
 with quiet_stderr():
     pcbnew.ZONE_FILLER(bd).Fill(bd.Zones())
@@ -507,7 +637,10 @@ for L in CU:
 print(f'stretch KX={KX} KY={KY} centre=({CX:.2f},{CY:.2f})  [algorithm A: spatial field]')
 print(f'  {n_fp} footprints moved; {len(nodes)} copper nodes, {n_pin} pad-pinned '
       f'(field/pin agreement {pin_err*1000:.2f} um)')
-print(f'  {n_t} tracks, {n_v} vias, {n_zv} zone vertices, {n_txt} drawings; '
+print(f'  rigid inclusions per layer field: {sum(len(v) for v in pad_polys[CU[0]].values())} pad/hole '
+      f'shapes on {bd.GetLayerName(CU[0])}, {n_hole} drills on all {len(CU)}, '
+      f'{n_via_incl} via barrels (of {len(vias)} vias, all coupled across the stack)')
+print(f'  {n_t} tracks, {n_v} vias, {n_zv} zone vertices, {n_art} silk graphics, {n_txt} texts; '
       f'{n_split} tracks split (+{n_newseg} segments), max chord sag {sag_max*1000:.1f} um')
 print('  admissibility (sigma_min of I+grad u, per layer):')
 for L in CU:

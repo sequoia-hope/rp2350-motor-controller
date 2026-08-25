@@ -13,12 +13,20 @@ current engine), `review/rubber.html` (the first attempt and the F-46 census).
                  admissibility map (the field closes a gap iff the smallest
                  singular value of I+grad u drops below 1).
     stretch.py   applies it to the board: KX/KY dilation about the centre,
-                 footprints rigid, ONE FIELD PER COPPER LAYER, via barrels
-                 coupled across layers in two passes, adaptive track splitting
-                 so a chord follows the curved field, zones/silk follow,
+                 footprints rigid at their PAD CENTROID, ONE FIELD PER COPPER
+                 LAYER, every drill rigid on all layers (NPTH included), via
+                 barrels coupled across layers in two passes, adaptive track
+                 splitting so a chord follows the curved field, zones follow,
+                 silk art stretched point-by-point and silk text scaled by k,
                  Edge.Cuts on pure ambient, corner arcs map exactly.
                    SRC=... OUT=... KX=1.01 KY=1.01 python3 stretch.py
-                 env: H (grid mm), MARGIN, CLOSE, SPLIT_TOL, VIA_PASSES, TERR, STATS
+                 env: H (grid mm), MARGIN, CLOSE, ENCLOSE, ANCHOR, SPLIT_TOL,
+                      VIA_PASSES, STATS, FIELD_DUMP
+    fieldmap.py  static board-referenced map of the field stretch.py APPLIED
+                 (it draws the FIELD_DUMP, never a rebuilt field): lag heat map
+                 + arrows + rigid-territory outlines on the left, sigma_min on
+                 the right, copper/holes/refs superimposed, mm axes.
+                   FIELD=dump.npz LAYER=In3.Cu OUT=map.png [ZOOM=cx,cy,w]
     nudge.py     DRC-refereed local repair: cluster new violations into sites,
                  push offending track chains apart (deficit+margin, falloff
                  2 mm), tee ends and via-rim ends RIDE their bar, vias movable,
@@ -69,6 +77,29 @@ Staged board: `hardware/rp2350_driver_rubber_A.kicad_pcb`.
   place: mean of the layers it spans, then handed back to every layer as a rigid
   inclusion and re-solved.  Without that second pass a via shears against the
   copper beside it by however much the layers disagreed.
+- **A DRILL is rigid on every layer, annulus or not.**  It pierces the whole
+  stack and carries its own DRC clearance, so an NPTH mounting hole with no net
+  and no copper is as rigid as any pad.  (On this board every hole happens to
+  have an annulus on all six layers, so pinning the copper covered it by luck;
+  the drills are now pinned explicitly and the tool prints the count.)
+- **Anchor a rigid part at its PAD CENTROID, not its footprint origin.**  A part
+  gets one translation, and the least-squares choice over its own pads --
+  ambient(pad centroid), ambient being affine -- is the one that least disturbs
+  the copper around it.  The origin is an arbitrary CAD anchor: the phase
+  connectors J1/J2/J9 carry theirs 5.59 mm off centroid (J12 5.10, J11 3.83),
+  which dragged every one of their pads, mounting holes included, through 56 um
+  of needless lag at +1%.  Worth 47 -> 37 violations on its own, and it smooths
+  the field generally: splits 134 -> 93, worst chord sag 46 -> 42 um, F.Cu
+  sigma_min 0.63 -> 0.75.
+- **The enclosure must scale with the part, but the convex hull is too much.**
+  A fixed closing radius cannot serve both a 0.5 mm pin field and a connector
+  whose pads are 12.8 mm apart, and it left 43 um of sag inside J9's body.  But
+  the hull of those four pads is mostly open board with *other parts in it*
+  (BH1, C80, live traces), and forcing that rigid was worse than the disease:
+  61 violations against 47, with fresh 70-78 um sites at the hull boundary.
+  Kept `close`; `ENCLOSE=hull` is available and, once the anchor is right, is a
+  wash (38 vs 37).  The honest residue is that a connector's four pads stay four
+  rigid islands with a saddle between them -- visible directly in fieldmap.py.
 - a straight segment cannot follow a curved field: split adaptively (15 um
   tolerance here).  This is also what holds tee ends (364 on this board) and
   same-net pads crossed mid-body onto their host -- KiCad connects by overlap,

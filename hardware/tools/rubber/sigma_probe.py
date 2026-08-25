@@ -5,7 +5,7 @@ The map F(x) = x + u(x) closes a gap between two nearby points iff the smallest
 singular value of J = I + grad u drops below 1.  `stretch.py` prints that as one
 number per layer, which is not enough to act on: the global minimum is always a
 corner artifact (harmonic gradients blow up at the sharp corners of a polygonal
-pad, and get worse as the grid is refined), so a bare sigma_min says "0.63" on a
+pad, and get worse as the grid is refined), so a bare sigma_min says "0.75" on a
 field whose bulk is perfectly healthy.
 
 This bins the contraction by distance from the nearest rigid territory, which
@@ -14,80 +14,54 @@ and harmless because the only things there are the pads themselves, and open
 routing space, where a dip would actually eat a trace-to-trace clearance.  Read
 the depth column -- a sigma of 0.998 across a 0.2 mm gap is 0.4 um.
 
-This solves the PAD-ONLY field, without the via inclusions stretch.py adds in
-its second pass, so it isolates the contribution of the rigid parts.  Its
-sigma_min therefore reads higher than stretch.py's on layers carrying many vias
-(F.Cu here: 0.94 vs 0.63); the difference is the corners of the via octagons.
+Like fieldmap.py it reads the field stretch.py DUMPED, so all three tools are
+describing the same field rather than three separate rebuilds of it.
 
-    KX=1.01 KY=1.01 LAYER=F.Cu python3 sigma_probe.py
+    FIELD=dump.npz [LAYER=F.Cu,B.Cu] [GAP=0.2] [OUTJ=out.json] python3 sigma_probe.py
 """
-import collections, json, math, os, sys
+import json, os, sys
 S = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, S)
-HW = os.path.dirname(os.path.dirname(S))
-sys.path.insert(0, os.path.join(HW, 'tools', 'jiggle2'))
-from common import load_board, NM
-from field import WarpField, dilation
+from field import sigma_min_2x2
 import numpy as np
 from scipy import ndimage
-import pcbnew
 
-SRC = os.environ.get('SRC', os.path.join(HW, 'rp2350_driver.kicad_pcb'))
-KX = float(os.environ.get('KX', '1.01')); KY = float(os.environ.get('KY', '1.01'))
-H = float(os.environ.get('H', '0.12')); CLOSE = float(os.environ.get('CLOSE', '1.0'))
-LAYERS = os.environ.get('LAYER', '')
-GAP = float(os.environ.get('GAP', '0.2'))     # reference clearance, mm
+FIELD = os.environ['FIELD']
+GAP = float(os.environ.get('GAP', '0.2'))          # reference clearance, mm
 OUTJ = os.environ.get('OUTJ', '')
-
-bd = load_board(SRC)
-bb = bd.GetBoardEdgesBoundingBox()
-CX = (bb.GetLeft() + bb.GetRight()) / 2 * NM
-CY = (bb.GetTop() + bb.GetBottom()) / 2 * NM
-CU = list(bd.GetEnabledLayers().CuStack())
-want = [L for L in CU if not LAYERS or bd.GetLayerName(L) in LAYERS.split(',')]
-BOUNDS = (bb.GetLeft() * NM, bb.GetTop() * NM, bb.GetRight() * NM, bb.GetBottom() * NM)
-
-V = {}; npads = {}; pads_by = {L: collections.defaultdict(list) for L in CU}
-for f in bd.GetFootprints():
-    r = f.GetReference(); p = f.GetPosition()
-    V[r] = ((KX - 1) * (p.x * NM - CX), (KY - 1) * (p.y * NM - CY))
-    npads[r] = max(1, len(list(f.Pads())))
-    for pd in f.Pads():
-        polys = []
-        try:
-            ps = pd.GetEffectivePolygon(pcbnew.PADSTACK.ALL_LAYERS)
-            for i in range(ps.OutlineCount()):
-                o = ps.Outline(i)
-                polys.append([(o.CPoint(j).x * NM, o.CPoint(j).y * NM)
-                              for j in range(o.PointCount())])
-        except Exception:
-            pb = pd.GetBoundingBox()
-            polys.append([(pb.GetLeft() * NM, pb.GetTop() * NM), (pb.GetRight() * NM, pb.GetTop() * NM),
-                          (pb.GetRight() * NM, pb.GetBottom() * NM), (pb.GetLeft() * NM, pb.GetBottom() * NM)])
-        for L in CU:
-            if pd.IsOnLayer(L): pads_by[L][r].extend(polys)
+Z = np.load(FIELD, allow_pickle=False)
+KX, KY = float(Z['kx']), float(Z['ky'])
+CX, CY = float(Z['cx']), float(Z['cy'])
+h, x0, y0 = float(Z['h']), float(Z['x0']), float(Z['y0'])
+all_layers = [str(s) for s in Z['layers']]
+want = os.environ.get('LAYER', '').split(',') if os.environ.get('LAYER') else all_layers
 
 BINS = [0.0, 0.15, 0.3, 0.6, 1.0, 2.0]
 out = {}
-print(f'sigma probe  KX={KX} KY={KY}  h={H}  reference gap {GAP} mm')
-for L in want:
-    fl = WarpField(BOUNDS, h=H, margin=8.0, close=CLOSE, ambient=dilation(CX, CY, KX, KY))
-    for r, pl in pads_by[L].items():
-        fl.add_inclusion(pl, V[r], priority=npads[r], tag=r)
-    fl.solve(verbose=False)
-    s = fl.sigma_min()
-    gx = fl.x0 + fl.h * np.arange(fl.nx)[None, :]
-    gy = fl.y0 + fl.h * np.arange(fl.ny)[:, None]
-    inb = np.broadcast_to((gx >= BOUNDS[0]) & (gx <= BOUNDS[2]) &
-                          (gy >= BOUNDS[1]) & (gy <= BOUNDS[3]), (fl.ny, fl.nx)).copy()
-    own = fl.owner >= 0
-    m = inb & ~ndimage.binary_erosion(own, iterations=1)
+print(f'sigma probe  KX={KX} KY={KY}  h={h}  reference gap {GAP} mm  '
+      f'(anchor {str(Z["anchor"])}, enclose {str(Z["enclose"])})')
+for name in want:
+    name = name.strip()
+    if name not in all_layers:
+        continue
+    RX, RY = Z[f'RX_{name}'].astype(float), Z[f'RY_{name}'].astype(float)
+    own = Z[f'OWN_{name}']
+    ny, nx = RX.shape
+    gx = x0 + h * np.arange(nx)[None, :]
+    gy = y0 + h * np.arange(ny)[:, None]
+    UX = RX + (KX - 1.0) * (gx - CX)
+    UY = RY + (KY - 1.0) * (gy - CY)
+    dUXdy, dUXdx = np.gradient(UX, h, h)
+    dUYdy, dUYdx = np.gradient(UY, h, h)
+    s = sigma_min_2x2(1.0 + dUXdx, dUXdy, dUYdx, 1.0 + dUYdy)
+    m = np.ones_like(s, bool)
+    m[0, :] = m[-1, :] = m[:, 0] = m[:, -1] = False
+    m &= ~ndimage.binary_erosion(own, iterations=1)
     bad = m & (s < 1.0 - 1e-4)
-    dist = ndimage.distance_transform_edt(~own) * fl.h
-    name = bd.GetLayerName(L)
+    dist = ndimage.distance_transform_edt(~own) * h
     print(f'\n{name}: {bad.sum()} of {m.sum()} cells contracting '
           f'({100.0*bad.sum()/max(m.sum(),1):.1f}%), global min {s[m].min():.3f}')
     print('  distance from    share of      share of      worst    median     worst loss')
-    print('  nearest pad      contracting   all cells     sigma    sigma      on a %.2f mm gap' % GAP)
+    print(f'  nearest rigid    contracting   all cells     sigma    sigma      on a {GAP:.2f} mm gap')
     rows = []
     for thr in BINS:
         sel = bad & (dist > thr)

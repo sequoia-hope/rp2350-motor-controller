@@ -15,11 +15,11 @@
    "new": {
     "k": 1.0025,
     "alg": "new",
-    "viol": 27,
-    "sites": 25,
+    "viol": 22,
+    "sites": 21,
     "air": 54,
-    "mx": 7,
-    "med": 2,
+    "mx": 3,
+    "med": 1,
     "sync": "IN SYNC \u2014 board matches schematic"
    }
   },
@@ -37,11 +37,11 @@
    "new": {
     "k": 1.005,
     "alg": "new",
-    "viol": 37,
-    "sites": 34,
-    "air": 53,
-    "mx": 22,
-    "med": 2,
+    "viol": 23,
+    "sites": 22,
+    "air": 54,
+    "mx": 6,
+    "med": 3,
     "sync": "IN SYNC \u2014 board matches schematic"
    }
   },
@@ -59,11 +59,11 @@
    "new": {
     "k": 1.01,
     "alg": "new",
-    "viol": 47,
-    "sites": 41,
+    "viol": 37,
+    "sites": 35,
     "air": 53,
-    "mx": 36,
-    "med": 4,
+    "mx": 14,
+    "med": 5,
     "sync": "IN SYNC \u2014 board matches schematic"
    }
   },
@@ -81,11 +81,11 @@
    "new": {
     "k": 1.02,
     "alg": "new",
-    "viol": 56,
-    "sites": 50,
+    "viol": 46,
+    "sites": 43,
     "air": 53,
-    "mx": 62,
-    "med": 14,
+    "mx": 35,
+    "med": 4,
     "sync": "IN SYNC \u2014 board matches schematic"
    }
   },
@@ -103,11 +103,11 @@
    "new": {
     "k": 1.03,
     "alg": "new",
-    "viol": 99,
-    "sites": 75,
-    "air": 54,
-    "mx": 125,
-    "med": 20,
+    "viol": 49,
+    "sites": 44,
+    "air": 53,
+    "mx": 64,
+    "med": 12,
     "sync": "IN SYNC \u2014 board matches schematic"
    }
   }
@@ -117,326 +117,278 @@
   "split_tol": 0.015,
   "nodes": 5196,
   "pinned": 976,
-  "pin_err_um": 12.16,
-  "split": 134,
-  "new_segments": 231,
-  "sag_max_um": 46.4,
+  "pin_err_um": 14.39,
+  "split": 93,
+  "new_segments": 142,
+  "sag_max_um": 42.0,
   "layers": {
    "F.Cu": {
     "name": "F.Cu",
-    "sigma_min": 0.6321547460885657,
-    "p01": 0.9691469978995424,
-    "p50": 1.003757623400027,
-    "contracting": 43009,
-    "cells": 186190
+    "sigma_min": 0.7511633550461333,
+    "p01": 0.974789326647117,
+    "p50": 1.0041539165487905,
+    "contracting": 37004,
+    "cells": 186177
    },
    "In1.Cu": {
     "name": "In1.Cu",
-    "sigma_min": 0.6321547463013794,
-    "p01": 0.979200835837294,
-    "p50": 1.0069452460321004,
-    "contracting": 24808,
-    "cells": 220304
+    "sigma_min": 0.7834192408382945,
+    "p01": 0.9877570696717042,
+    "p50": 1.007497531245286,
+    "contracting": 20428,
+    "cells": 220277
    },
    "In2.Cu": {
     "name": "In2.Cu",
-    "sigma_min": 0.6321547463013794,
-    "p01": 0.979200835837294,
-    "p50": 1.0069452460321004,
-    "contracting": 24808,
-    "cells": 220304
+    "sigma_min": 0.7834192408382945,
+    "p01": 0.9877570696717042,
+    "p50": 1.007497531245286,
+    "contracting": 20428,
+    "cells": 220277
    },
    "In3.Cu": {
     "name": "In3.Cu",
-    "sigma_min": 0.6321547463013794,
-    "p01": 0.979200835837294,
-    "p50": 1.0069452460321004,
-    "contracting": 24808,
-    "cells": 220304
+    "sigma_min": 0.7834192408382945,
+    "p01": 0.9877570696717042,
+    "p50": 1.007497531245286,
+    "contracting": 20428,
+    "cells": 220277
    },
    "In4.Cu": {
     "name": "In4.Cu",
-    "sigma_min": 0.6321547463013794,
-    "p01": 0.979200835837294,
-    "p50": 1.0069452460321004,
-    "contracting": 24808,
-    "cells": 220304
+    "sigma_min": 0.7834192408382945,
+    "p01": 0.9877570696717042,
+    "p50": 1.007497531245286,
+    "contracting": 20428,
+    "cells": 220277
    },
    "B.Cu": {
     "name": "B.Cu",
-    "sigma_min": 0.5280391823402387,
-    "p01": 0.9572603684010924,
-    "p50": 1.0034440845058201,
-    "contracting": 46253,
-    "cells": 176910
+    "sigma_min": 0.7477879083435677,
+    "p01": 0.9735929324977318,
+    "p50": 1.003743932032821,
+    "contracting": 39951,
+    "cells": 176883
    }
-  }
+  },
+  "tracks": 4940,
+  "vias": 617,
+  "zone_verts": 1433,
+  "anchor": "centroid",
+  "enclose": "close",
+  "anchor_worst_mm": 5.59,
+  "anchor_off_count": 38,
+  "holes": 66,
+  "npth": 6,
+  "via_inclusions": 617,
+  "silk_art": 11,
+  "silk_text": 28
  },
  "staged": {
   "board": "hardware/rp2350_driver_rubber_A.kicad_pcb",
   "k": 1.01,
-  "viol": 52,
-  "sites": 30,
+  "viol": 30,
+  "sites": 24,
   "airwires": 53,
   "airwires_base": 54,
   "sync": "IN SYNC \u2014 board matches schematic",
-  "med": 6,
-  "p90": 22,
-  "mx": 29,
+  "med": 8,
+  "p90": 21,
+  "mx": 26,
   "site_list": [
    {
-    "x": 171.47302910000002,
-    "y": 92.8502629,
+    "x": 167.774518,
+    "y": 122.613344,
     "type": "clearance",
-    "deficit": 0.02939999999999998,
-    "items": [
-     "Track [A_SENSE] on F.Cu, length 1.7611 mm",
-     "Track [/PD_INT] on F.Cu, length 0.3583 mm"
-    ]
-   },
-   {
-    "x": 153.73952,
-    "y": 94.887959,
-    "type": "clearance",
-    "deficit": 0.02579999999999999,
-    "items": [
-     "PTH pad 2 [VMOT] of J9",
-     "Track [C_PWM_H] on In3.Cu, length 1.6697 mm"
-    ]
-   },
-   {
-    "x": 167.749406,
-    "y": 122.613231,
-    "type": "clearance",
-    "deficit": 0.02209999999999998,
+    "deficit": 0.026499999999999996,
     "items": [
      "PTH pad 2 [/TXO_INTERBOARD_2] of J8",
-     "Track [/I2C_SCL] on B.Cu, length 2.0747 mm"
+     "Track [/I2C_SCL] on B.Cu, length 2.0750 mm"
     ]
    },
    {
-    "x": 171.778139,
-    "y": 93.368687,
+    "x": 153.714479,
+    "y": 94.837845,
     "type": "clearance",
-    "deficit": 0.019100000000000006,
-    "items": [
-     "Track [/PD_INT] on F.Cu, length 0.4610 mm",
-     "Track [A_SENSE] on F.Cu, length 0.1151 mm"
-    ]
-   },
-   {
-    "x": 151.029058,
-    "y": 111.179296,
-    "type": "clearance",
-    "deficit": 0.018600000000000005,
-    "items": [
-     "Track [Vdrive] on In3.Cu, length 0.4339 mm",
-     "PTH pad 1 [VMOT] of C39"
-    ]
-   },
-   {
-    "x": 171.358583,
-    "y": 92.651712,
-    "type": "clearance",
-    "deficit": 0.0169,
-    "items": [
-     "Track [A_SENSE] on F.Cu, length 1.7611 mm",
-     "Pad 2 [GND] of C38 on F.Cu"
-    ]
-   },
-   {
-    "x": 170.289405,
-    "y": 122.613231,
-    "type": "clearance",
-    "deficit": 0.015499999999999986,
-    "items": [
-     "PTH pad 3 [GND] of J8",
-     "Track [/TXO_INTERBOARD_2] on F.Cu, length 1.6641 mm"
-    ]
-   },
-   {
-    "x": 153.102622,
-    "y": 86.145815,
-    "type": "clearance",
-    "deficit": 0.015100000000000002,
-    "items": [
-     "Track [Vdrive] on B.Cu, length 9.5749 mm",
-     "PTH pad [<no net>] of J9"
-    ]
-   },
-   {
-    "x": 172.10293725000002,
-    "y": 94.079048,
-    "type": "clearance",
-    "deficit": 0.013300000000000006,
-    "items": [
-     "Track [A_SENSE] on F.Cu, length 0.9122 mm",
-     "Track [/PD_INT] on F.Cu, length 0.4610 mm"
-    ]
-   },
-   {
-    "x": 152.765449,
-    "y": 111.176232,
-    "type": "clearance",
-    "deficit": 0.011300000000000004,
-    "items": [
-     "Track [Vdrive] on In3.Cu, length 1.7364 mm",
-     "PTH pad 1 [VMOT] of C39"
-    ]
-   },
-   {
-    "x": 173.92704,
-    "y": 91.60918,
-    "type": "clearance",
-    "deficit": 0.009699999999999986,
-    "items": [
-     "Track [/H1_SW] on F.Cu, length 0.9072 mm",
-     "Track [/H2_SW] on F.Cu, length 0.2157 mm"
-    ]
-   },
-   {
-    "x": 173.944683,
-    "y": 92.516174,
-    "type": "clearance",
-    "deficit": 0.009699999999999986,
-    "items": [
-     "Track [/H1_SW] on F.Cu, length 0.6099 mm",
-     "Track [/H2_SW] on F.Cu, length 0.2157 mm"
-    ]
-   },
-   {
-    "x": 153.73952,
-    "y": 94.887959,
-    "type": "clearance",
-    "deficit": 0.008899999999999991,
+    "deficit": 0.0262,
     "items": [
      "PTH pad 2 [VMOT] of J9",
-     "Track [/E-STOP] on B.Cu, length 2.9586 mm"
+     "Track [C_PWM_H] on In3.Cu, length 1.6694 mm"
     ]
    },
    {
-    "x": 165.7756715,
-    "y": 85.38860349999999,
+    "x": 151.050917,
+    "y": 111.191432,
     "type": "clearance",
-    "deficit": 0.007599999999999996,
+    "deficit": 0.02149999999999999,
     "items": [
-     "Track [Vdrive] on B.Cu, length 1.0141 mm",
-     "Track [/EXT_ANALOG_SW] on B.Cu, length 1.1467 mm"
+     "Track [Vdrive] on In3.Cu, length 0.4345 mm",
+     "PTH pad 1 [VMOT] of C39"
     ]
    },
    {
-    "x": 125.06335,
-    "y": 113.54765,
+    "x": 171.326248,
+    "y": 92.809582,
     "type": "clearance",
-    "deficit": 0.0063,
+    "deficit": 0.020100000000000007,
     "items": [
-     "Pad 2 [GND] of C66 on B.Cu",
-     "Track [Vdrive] on B.Cu, length 0.4403 mm"
+     "Track [A_SENSE] on F.Cu, length 1.7214 mm",
+     "Pad 1 [+3V3] of C38 on F.Cu"
+    ]
+   },
+   {
+    "x": 170.314517,
+    "y": 122.613344,
+    "type": "clearance",
+    "deficit": 0.018199999999999994,
+    "items": [
+     "PTH pad 3 [GND] of J8",
+     "Track [/TXO_INTERBOARD_2] on F.Cu, length 3.3524 mm"
+    ]
+   },
+   {
+    "x": 152.785886,
+    "y": 111.182903,
+    "type": "clearance",
+    "deficit": 0.016600000000000004,
+    "items": [
+     "Track [Vdrive] on In3.Cu, length 1.7350 mm",
+     "PTH pad 1 [VMOT] of C39"
+    ]
+   },
+   {
+    "x": 148.551873,
+    "y": 84.30817,
+    "type": "clearance",
+    "deficit": 0.012300000000000005,
+    "items": [
+     "Track [/EXT_ANALOG2] on In3.Cu, length 7.9437 mm",
+     "Via [GND] on F.Cu - B.Cu"
+    ]
+   },
+   {
+    "x": 173.94641,
+    "y": 92.516328,
+    "type": "clearance",
+    "deficit": 0.010300000000000004,
+    "items": [
+     "Track [/H1_SW] on F.Cu, length 0.6086 mm",
+     "Track [/H2_SW] on F.Cu, length 0.2146 mm"
+    ]
+   },
+   {
+    "x": 173.934719,
+    "y": 91.608433,
+    "type": "clearance",
+    "deficit": 0.010300000000000004,
+    "items": [
+     "Track [/H1_SW] on F.Cu, length 0.9080 mm",
+     "Track [/H2_SW] on F.Cu, length 0.2146 mm"
+    ]
+   },
+   {
+    "x": 171.325327,
+    "y": 92.646792,
+    "type": "clearance",
+    "deficit": 0.009800000000000003,
+    "items": [
+     "Track [A_SENSE] on F.Cu, length 1.7214 mm",
+     "Pad 2 [GND] of C38 on F.Cu"
     ]
    },
    {
     "x": 187.00755,
     "y": 100.54115,
     "type": "clearance",
-    "deficit": 0.006000000000000005,
+    "deficit": 0.009300000000000003,
     "items": [
      "Pad 5 [GND_ISO] of U16 on B.Cu",
-     "Track [+5V_ISO] on B.Cu, length 1.4657 mm"
+     "Track [+5V_ISO] on B.Cu, length 1.4648 mm"
     ]
    },
    {
-    "x": 149.526334,
-    "y": 117.522101,
+    "x": 153.714479,
+    "y": 94.837845,
     "type": "clearance",
-    "deficit": 0.005199999999999982,
+    "deficit": 0.008099999999999996,
     "items": [
-     "Track [/HALL1] on In3.Cu, length 1.0431 mm",
-     "Track [/MOT_TH] on In3.Cu, length 19.3202 mm"
+     "PTH pad 2 [VMOT] of J9",
+     "Track [/E-STOP] on B.Cu, length 2.9515 mm"
     ]
    },
    {
-    "x": 148.786959,
-    "y": 116.786323,
+    "x": 165.7756715,
+    "y": 85.38860349999999,
     "type": "clearance",
-    "deficit": 0.005199999999999982,
+    "deficit": 0.0068000000000000005,
     "items": [
-     "Track [/HALL1] on In3.Cu, length 15.5718 mm",
-     "Track [/MOT_TH] on In3.Cu, length 19.3202 mm"
+     "Track [Vdrive] on B.Cu, length 1.0167 mm",
+     "Track [/EXT_ANALOG_SW] on B.Cu, length 1.1471 mm"
     ]
    },
    {
     "x": 165.893977,
     "y": 84.74781,
     "type": "clearance",
-    "deficit": 0.004799999999999999,
-    "items": [
-     "Track [Vdrive] on B.Cu, length 0.5225 mm",
-     "Track [/EXT_ANALOG_SW] on B.Cu, length 1.1467 mm"
-    ]
-   },
-   {
-    "x": 115.403827,
-    "y": 84.175347,
-    "type": "clearance",
     "deficit": 0.004299999999999998,
     "items": [
-     "Track [+3V3] on B.Cu, length 2.9300 mm",
-     "Pad 1 [C_PHASE_SENSE] of R72 on B.Cu"
+     "Track [Vdrive] on B.Cu, length 0.5225 mm",
+     "Track [/EXT_ANALOG_SW] on B.Cu, length 1.1471 mm"
     ]
    },
    {
-    "x": 115.17424,
-    "y": 95.320123,
-    "type": "clearance",
-    "deficit": 0.003799999999999998,
-    "items": [
-     "Track [+3V3] on B.Cu, length 1.1009 mm",
-     "PTH pad [<no net>] of J1"
-    ]
-   },
-   {
-    "x": 173.57467133333333,
-    "y": 105.80224766666667,
-    "type": "clearance",
-    "deficit": 0.00269999999999998,
-    "items": [
-     "Track [Net-(U8-GPIO1)] on F.Cu, length 0.8859 mm",
-     "Track [Net-(U8-GPIO0)] on F.Cu, length 1.1785 mm"
-    ]
-   },
-   {
-    "x": 161.083212,
-    "y": 124.576669,
-    "type": "clearance",
-    "deficit": 0.002599999999999991,
-    "items": [
-     "Track [/ENC_B_SW] on In3.Cu, length 6.0160 mm",
-     "Track [/ENC_B_DATA] on In3.Cu, length 3.7029 mm"
-    ]
-   },
-   {
-    "x": 185.733715,
-    "y": 103.673626,
+    "x": 123.9425,
+    "y": 87.954,
     "type": "clearance",
     "deficit": 0.001899999999999985,
     "items": [
-     "Track [/I2C_SCL] on In3.Cu, length 10.3231 mm",
-     "Track [/ENC_B_DATA] on In3.Cu, length 4.6044 mm"
+     "PTH pad 1 [/A_N] of J1",
+     "Track [/C_P] on B.Cu, length 2.8962 mm"
     ]
    },
    {
-    "x": 134.956824,
-    "y": 105.36806,
+    "x": 133.366947,
+    "y": 110.615511,
     "type": "clearance",
-    "deficit": 0.0007000000000000062,
+    "deficit": 0.0012000000000000066,
     "items": [
-     "Track [/ENC_C_SW] on In3.Cu, length 17.9271 mm",
-     "Via [B_PWM_H] on F.Cu - B.Cu"
+     "Track [/ENC_A_DATA] on In3.Cu, length 17.0078 mm",
+     "Track [/ENC_A_SW] on In3.Cu, length 17.0111 mm"
     ]
    },
    {
-    "x": 151.879184,
-    "y": 112.772502,
+    "x": 150.37477,
+    "y": 110.618003,
+    "type": "clearance",
+    "deficit": 0.0010999999999999899,
+    "items": [
+     "Track [/ENC_A_DATA] on In3.Cu, length 0.4339 mm",
+     "Track [/ENC_A_SW] on In3.Cu, length 17.0111 mm"
+    ]
+   },
+   {
+    "x": 186.114717,
+    "y": 99.306627,
+    "type": "clearance",
+    "deficit": 0.0005999999999999894,
+    "items": [
+     "Track [+5V_ISO] on B.Cu, length 0.7164 mm",
+     "Pad 6 [/CAN0_N] of U16 on B.Cu"
+    ]
+   },
+   {
+    "x": 142.134107,
+    "y": 116.256556,
+    "type": "clearance",
+    "deficit": 0.0005000000000000004,
+    "items": [
+     "Pad 1 [Vdrive] of U1 on B.Cu",
+     "Track [A_PWM_H] on B.Cu, length 2.1361 mm"
+    ]
+   },
+   {
+    "x": 151.90344,
+    "y": 112.778879,
     "type": "courtyards_overlap",
     "deficit": 0.0,
     "items": [
@@ -445,8 +397,8 @@
     ]
    },
    {
-    "x": 158.73952,
-    "y": 94.887959,
+    "x": 158.714479,
+    "y": 94.837845,
     "type": "courtyards_overlap",
     "deficit": 0.0,
     "items": [
@@ -455,8 +407,8 @@
     ]
    },
    {
-    "x": 158.73952,
-    "y": 94.887959,
+    "x": 158.714479,
+    "y": 94.837845,
     "type": "courtyards_overlap",
     "deficit": 0.0,
     "items": [
@@ -465,8 +417,8 @@
     ]
    },
    {
-    "x": 165.209406,
-    "y": 122.613231,
+    "x": 165.234518,
+    "y": 122.613344,
     "type": "courtyards_overlap",
     "deficit": 0.0,
     "items": [
@@ -475,7 +427,7 @@
     ]
    },
    {
-    "x": 165.2308,
+    "x": 165.2562,
     "y": 89.949,
     "type": "courtyards_overlap",
     "deficit": 0.0,
@@ -523,116 +475,122 @@
    "viol": 47,
    "sites": 41,
    "note": "a trace threading a pin field is held by the pins on both sides"
+  },
+  {
+   "name": "+ anchored at the pad centroid",
+   "viol": 37,
+   "sites": 35,
+   "note": "the footprint origin is an arbitrary CAD anchor; the phase connectors carry theirs 5.59 mm off"
   }
  ],
  "sigma_profile": {
   "F.Cu": {
-   "contracting": 34581,
-   "cells": 196564,
-   "sigma_min": 0.938293828458276,
+   "contracting": 37057,
+   "cells": 339085,
+   "sigma_min": 0.7511633599956233,
    "bins": [
     {
      "thr": 0.0,
-     "share_bad": 82.95885023567855,
-     "share_all": 95.18273946399137,
-     "worst": 0.938293828458276,
-     "median": 0.9983991404710693,
-     "loss_um": 12.341234308344795
+     "share_bad": 75.99373937447716,
+     "share_all": 95.30560184024655,
+     "worst": 0.7511633599956233,
+     "median": 0.9968518946249861,
+     "loss_um": 49.76732800087533
     },
     {
      "thr": 0.15,
-     "share_bad": 69.74350076631676,
-     "share_all": 90.11670499175841,
-     "worst": 0.949602185756272,
-     "median": 0.9984538366904394,
-     "loss_um": 10.079562848745605
+     "share_bad": 56.62627843592304,
+     "share_all": 90.18977542504092,
+     "worst": 0.8726726954293049,
+     "median": 0.9969638160231239,
+     "loss_um": 25.465460914139015
     },
     {
      "thr": 0.3,
-     "share_bad": 57.083369480350484,
-     "share_all": 83.10931808469506,
-     "worst": 0.9583367304839816,
-     "median": 0.9985375402612221,
-     "loss_um": 8.33265390320368
+     "share_bad": 38.20600696224735,
+     "share_all": 82.71613312296327,
+     "worst": 0.9318417528893675,
+     "median": 0.9972545017243624,
+     "loss_um": 13.631649422126491
     },
     {
      "thr": 0.6,
-     "share_bad": 37.13599953731818,
-     "share_all": 68.08316884068293,
-     "worst": 0.9704184440123246,
-     "median": 0.9986510715161421,
-     "loss_um": 5.9163111975350855
+     "share_bad": 15.778395444855223,
+     "share_all": 68.911334916024,
+     "worst": 0.9730835241144683,
+     "median": 0.9977802658424154,
+     "loss_um": 5.38329517710634
     },
     {
      "thr": 1.0,
-     "share_bad": 23.079147508747578,
-     "share_all": 53.069229360411875,
-     "worst": 0.9815746042788468,
-     "median": 0.9988046960749637,
-     "loss_um": 3.6850791442306408
+     "share_bad": 4.830396416331597,
+     "share_all": 57.352286299895304,
+     "worst": 0.992158236302587,
+     "median": 0.9984521248341524,
+     "loss_um": 1.5683527394825927
     },
     {
      "thr": 2.0,
-     "share_bad": 4.835025013735867,
-     "share_all": 25.88113794998067,
-     "worst": 0.9942322528141668,
-     "median": 0.9991424572912244,
-     "loss_um": 1.1535494371666346
+     "share_bad": 0.0,
+     "share_all": 43.378209003642155,
+     "worst": 1.0,
+     "median": 1.0,
+     "loss_um": 0.0
     }
    ]
   },
   "B.Cu": {
-   "contracting": 39190,
-   "cells": 186550,
-   "sigma_min": 0.5273995873744977,
+   "contracting": 40007,
+   "cells": 329791,
+   "sigma_min": 0.7477879063328252,
    "bins": [
     {
      "thr": 0.0,
-     "share_bad": 76.18780301097219,
-     "share_all": 91.68694719914232,
-     "worst": 0.5273995873744977,
-     "median": 0.9976904996035783,
-     "loss_um": 94.52008252510046
+     "share_bad": 69.92526307896118,
+     "share_all": 93.69843325014934,
+     "worst": 0.7477879063328252,
+     "median": 0.9974110616233207,
+     "loss_um": 50.44241873343496
     },
     {
      "thr": 0.15,
-     "share_bad": 59.50752743046696,
-     "share_all": 82.8780487804878,
-     "worst": 0.766682254942563,
-     "median": 0.9976527417285267,
-     "loss_um": 46.66354901148739
+     "share_bad": 48.15907216237159,
+     "share_all": 87.0078322331416,
+     "worst": 0.863436183538748,
+     "median": 0.9976008984183503,
+     "loss_um": 27.31276329225041
     },
     {
      "thr": 0.3,
-     "share_bad": 45.14927277366675,
-     "share_all": 70.71240954167783,
-     "worst": 0.8809603619251953,
-     "median": 0.9977908509715282,
-     "loss_um": 23.807927614960935
+     "share_bad": 30.324693178693728,
+     "share_all": 77.96422582787281,
+     "worst": 0.9173549458153873,
+     "median": 0.9979491011753608,
+     "loss_um": 16.52901083692253
     },
     {
      "thr": 0.6,
-     "share_bad": 24.901760653227864,
-     "share_all": 48.306084159742696,
-     "worst": 0.931302331129287,
-     "median": 0.9980896766425578,
-     "loss_um": 13.73953377414261
+     "share_bad": 11.15554777913865,
+     "share_all": 63.60452529025959,
+     "worst": 0.9699299690940993,
+     "median": 0.9985561184329093,
+     "loss_um": 6.014006181180132
     },
     {
      "thr": 1.0,
-     "share_bad": 11.263077315641745,
-     "share_all": 29.455373894398285,
-     "worst": 0.9700813951783944,
-     "median": 0.9983432346967968,
-     "loss_um": 5.983720964321115
+     "share_bad": 2.7145249581323267,
+     "share_all": 53.923848740565994,
+     "worst": 0.9859986169529578,
+     "median": 0.9990340198907683,
+     "loss_um": 2.800276609408448
     },
     {
      "thr": 2.0,
-     "share_bad": 0.7042612911457005,
-     "share_all": 7.793621013133208,
-     "worst": 0.993839108797282,
-     "median": 0.9991581438565147,
-     "loss_um": 1.2321782405436021
+     "share_bad": 0.0,
+     "share_all": 43.43114275404726,
+     "worst": 1.0,
+     "median": 1.0,
+     "loss_um": 0.0
     }
    ]
   }

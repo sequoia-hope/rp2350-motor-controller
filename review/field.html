@@ -35,19 +35,19 @@ the ambient dilation — was interpolated along <em>each net's own copper graph<
 different nets got completely uncorrelated displacements and the gap between them changed by the difference of two
 unrelated residuals. Replacing that with one harmonic displacement field <em>per copper layer</em>, evaluated by
 position for every track, via, pad and zone vertex, removes
-<strong>90% of the DRC damage</strong> at +1%
-(465 → 47 violations) and between
-84% and
-91% across the sweep.
-The +1% board now hands a human <strong>30 sites</strong> (median 6&nbsp;µm, worst
-29&nbsp;µm) instead of 92 (median 15&nbsp;µm, worst 121&nbsp;µm), with
+<strong>92% of the DRC damage</strong> at +1%
+(465 → 37 violations) and between
+91% and
+94% across the sweep.
+The +1% board now hands a human <strong>24 sites</strong> (median 8&nbsp;µm, worst
+26&nbsp;µm) instead of 92 (median 15&nbsp;µm, worst 121&nbsp;µm), with
 <code>check_sync</code> IN SYNC and no airwire regression at any k.</div>
 
 <h2 id="why">1 · The bug was the interpolation domain</h2>
-<p>Both engines agree on the physics: a footprint is a rigid chip glued to the sheet, so it translates by the dilation
-of its <em>origin</em> and its pads therefore trail full dilation by (k−1)·|ρ|, where ρ is the pad's offset from that
-origin. That lag has to be blended back into the surrounding copper somewhere, and <em>where</em> is the whole
-question.</p>
+<p>Both engines agree on the physics: a footprint is a rigid chip glued to the sheet, so it takes a single translation
+and its pads therefore trail full dilation by (k−1)·|ρ|, where ρ is each pad's offset from whatever point the part is
+anchored at. (Which point that should be turns out to matter a great deal — see §4.) That lag has to be blended back
+into the surrounding copper somewhere, and <em>where</em> is the whole question.</p>
 <p>The old engine blended it along the copper graph — the same graph KiCad uses for connectivity. Nothing in that
 construction knows about distance. A trace pinned to a connector's far pad rides the lagging footprint vector; the
 trace running beside it, whose own pins are elsewhere on the board, rides near-pure ambient; and the gap between them
@@ -100,12 +100,19 @@ the copper beside it by however much the layers disagreed — which was most of 
 </ul>
 <p>Two discretisation passes keep it honest. A straight segment cannot follow a curved field, so each track is
 subdivided until its chord is within <strong>15&nbsp;µm</strong> of the field
-(134 tracks split, +231 segments at +1%, worst chord sag
-46&nbsp;µm). That is also what holds tee junctions — the 364 track ends resting on a passing
+(93 tracks split, +142 segments at +1%, worst chord sag
+42&nbsp;µm). That is also what holds tee junctions — the 364 track ends resting on a passing
 segment's body, which KiCad connects by overlap and not by topology — and same-net pads crossed mid-body, onto their
 host. And every track end that lands on a pad is pinned to that footprint's vector directly; the field already equals
-it there, so the two agree to <strong>12&nbsp;µm</strong>, which is the honest measure of how
+it there, so the two agree to <strong>14&nbsp;µm</strong>, which is the honest measure of how
 well the territories cover the pads.</p>
+<p>Everything that pierces the board is rigid on every layer it pierces, which is not the same as everything that
+has copper on it: a drill carries its own DRC clearance whether or not it has an annulus, so all 66
+holes (6 of them NPTH, with no net and no copper obligation) are pinned on all six layers rather than
+relying on a pad polygon happening to cover them. Off the copper layers, free silk art is stretched point by point
+through the field (11 graphics) and silk text moves through it and scales by k (28
+texts) — text cannot deform, so scaling is the honest compromise for something that has to stay legible. Footprint
+silk is untouched: it belongs to a rigid part and already moved with it.</p>
 <p>Each of those four decisions was kept because DRC said so, at +1%, cumulatively:</p>
 <div class="tablewrap"><table><tr><th>engine, cumulative</th><th>violations</th><th>sites</th><th>why</th></tr>
 <tr><td class='mono'>graph-harmonic (before)</td><td class='num'><strong>465</strong></td><td class='num'>257</td><td class='small'>residual interpolated along each net&#x27;s own copper graph</td></tr>
@@ -113,9 +120,48 @@ well the territories cover the pads.</p>
 <tr><td class='mono'>+ one field per copper layer</td><td class='num'><strong>53</strong></td><td class='num'>48</td><td class='small'>opposite-side parts overlapping in projection stop fighting over cells</td></tr>
 <tr><td class='mono'>+ via barrels coupled in two passes</td><td class='num'><strong>50</strong></td><td class='num'>44</td><td class='small'>every layer agrees with the barrel where it pierces</td></tr>
 <tr><td class='mono'>+ pad-enclosure closing</td><td class='num'><strong>47</strong></td><td class='num'>41</td><td class='small'>a trace threading a pin field is held by the pins on both sides</td></tr>
+<tr><td class='mono'>+ anchored at the pad centroid</td><td class='num'><strong>37</strong></td><td class='num'>35</td><td class='small'>the footprint origin is an arbitrary CAD anchor; the phase connectors carry theirs 5.59 mm off</td></tr>
 </table></div>
 
-<h2 id="admissibility">4 · Does the field close anything, anywhere?</h2>
+<h2 id="anchor">4 · What the field map found: mounting holes</h2>
+<p>Drawing the field over the board is what turned up the next bug, and it was not where it looked. The question was
+whether NPTH holes and stitching vias were being pinned at all. They were — every one of this board's
+66 drilled holes (6 NPTH) is rigid on all six layers and all 617 via
+barrels are coupled across the stack — and yet the field around the phase connectors' mounting holes was visibly
+inconsistent, and copper was colliding there.</p>
+<p>The cause was the <em>anchor</em>. A rigid part gets one translation to choose, and the engine was using
+ambient(footprint origin). The footprint origin is an arbitrary CAD anchor, and on this board the phase connectors
+J1/J2/J9 carry theirs <strong>5.59 mm</strong> off their own pad centroid (J12 5.10&nbsp;mm, J11
+3.83&nbsp;mm; 38 footprints are off by more than 50&nbsp;µm). Anchoring there dragged every one
+of those parts' pads — mounting holes included — through an extra 56&nbsp;µm of lag at +1% for no reason whatever.</p>
+<p>The right choice is the least-squares one: the translation minimising Σ|v − ambient(pad<sub>i</sub>)|² over the
+part's own pads, which for an affine ambient is exactly <strong>ambient(pad centroid)</strong>. That single change
+took +1% from 47 to <strong>37</strong> violations, and it smooths the field everywhere, not just at connectors:
+tracks needing a split fell 134 → 93, worst chord sag 46 → 42&nbsp;µm, F.Cu
+σ<sub>min</sub> 0.63 → 0.75.</p>
+<figure>
+<img src="img/fieldmap_conn.png" alt="warp field around the phase connector J9" style="width:100%;border-radius:6px">
+<figcaption>B.Cu around phase connector J9, +1%. Left: lag behind the ambient dilation, with arrows and the rigid
+territories outlined in green; blue circles are plated holes, red are NPTH. J9's four pads — two power pads and two
+mounting holes 12.8&nbsp;mm apart — read as four bright plateaus, and the <em>dark spot at their centre</em> is the
+pad centroid the part is now anchored at. Right: σ<sub>min</sub>, where the dark red bands land exactly on the pad
+rims facing the connector interior.</figcaption>
+</figure>
+<p>The map also shows what has <em>not</em> been solved. A connector's four pads remain four rigid islands with a
+saddle between them, because the space they span is not part of the connector at all — it is open board with other
+parts and live traces in it. Making that span rigid (<code>ENCLOSE=hull</code>) was tried and is worse with the
+origin anchor (61 violations against 47, with fresh 70–78&nbsp;µm sites along the hull boundary) and a wash with the
+centroid anchor (38 against 37), so the closing is kept. The residual sag inside those bodies is 29&nbsp;µm, down
+from 43.</p>
+<figure>
+<img src="img/fieldmap_In3.png" alt="warp field over the whole board, In3.Cu" style="width:100%;border-radius:6px">
+<figcaption>The whole board on In3.Cu, where the only rigid things are through-hole pads, drills and via barrels — so
+the through-hole connectors stand out as the bright plateaus and the stitching-via farms as the regular dotted
+lattices. <code>fieldmap.py</code> draws the field <code>stretch.py</code> dumped, never a rebuilt one, so the picture
+is the field the board actually got.</figcaption>
+</figure>
+
+<h2 id="admissibility">5 · Does the field close anything, anywhere?</h2>
 <p>The map is F(x) = x + u(x), so a gap between two nearby points survives if and only if the smallest singular value
 of J = I + ∇u is ≥ 1 — a geometry-only test that does not care what copper happens to be there. It is worth knowing
 that the construction is non-contracting <em>by design</em> in the clean case: for a single circular rigid inclusion
@@ -127,12 +173,12 @@ that. Read the percentile, not the minimum: harmonic gradients blow up at the sh
 the global minimum is a corner artifact that gets <em>worse</em> as the grid is refined, while the bulk of the board
 sits just above 1.</p>
 <div class="tablewrap"><table><tr><th>layer</th><th>σ<sub>min</sub></th><th>1st pct</th><th>median</th><th>contracting cells</th></tr>
-<tr><td class='mono'>F.Cu</td><td class='num'>0.632</td><td class='num'>0.9691</td><td class='num'>1.0038</td><td class='num'>23.1%</td></tr>
-<tr><td class='mono'>In1.Cu</td><td class='num'>0.632</td><td class='num'>0.9792</td><td class='num'>1.0069</td><td class='num'>11.3%</td></tr>
-<tr><td class='mono'>In2.Cu</td><td class='num'>0.632</td><td class='num'>0.9792</td><td class='num'>1.0069</td><td class='num'>11.3%</td></tr>
-<tr><td class='mono'>In3.Cu</td><td class='num'>0.632</td><td class='num'>0.9792</td><td class='num'>1.0069</td><td class='num'>11.3%</td></tr>
-<tr><td class='mono'>In4.Cu</td><td class='num'>0.632</td><td class='num'>0.9792</td><td class='num'>1.0069</td><td class='num'>11.3%</td></tr>
-<tr><td class='mono'>B.Cu</td><td class='num'>0.528</td><td class='num'>0.9573</td><td class='num'>1.0034</td><td class='num'>26.1%</td></tr>
+<tr><td class='mono'>F.Cu</td><td class='num'>0.751</td><td class='num'>0.9748</td><td class='num'>1.0042</td><td class='num'>19.9%</td></tr>
+<tr><td class='mono'>In1.Cu</td><td class='num'>0.783</td><td class='num'>0.9878</td><td class='num'>1.0075</td><td class='num'>9.3%</td></tr>
+<tr><td class='mono'>In2.Cu</td><td class='num'>0.783</td><td class='num'>0.9878</td><td class='num'>1.0075</td><td class='num'>9.3%</td></tr>
+<tr><td class='mono'>In3.Cu</td><td class='num'>0.783</td><td class='num'>0.9878</td><td class='num'>1.0075</td><td class='num'>9.3%</td></tr>
+<tr><td class='mono'>In4.Cu</td><td class='num'>0.783</td><td class='num'>0.9878</td><td class='num'>1.0075</td><td class='num'>9.3%</td></tr>
+<tr><td class='mono'>B.Cu</td><td class='num'>0.748</td><td class='num'>0.9736</td><td class='num'>1.0037</td><td class='num'>22.6%</td></tr>
 </table></div>
 <p class="small">Grid 0.12 mm. The median is above 1 on every layer — the board is expanding almost
 everywhere.</p>
@@ -141,40 +187,36 @@ everywhere.</p>
 <code>sigma_probe.py</code> bins it by distance from the nearest rigid territory and converts the depth into what it
 would actually cost a 0.2&nbsp;mm clearance:</p>
 <div class="tablewrap"><table><tr><th>distance from<br>nearest pad</th><th colspan="3">F.Cu</th><th colspan="3">B.Cu</th></tr><tr><th>share of<br>contracting</th><th>worst σ</th><th>worst loss on<br>a 0.2 mm gap</th><th>share of<br>contracting</th><th>worst σ</th><th>worst loss on<br>a 0.2 mm gap</th></tr>
-<tr><td class='num'>&gt; 0.00 mm</td><td class='num'>83.0%</td><td class='num'>0.938</td><td class='num'>12.3 µm</td><td class='num'>76.2%</td><td class='num'>0.527</td><td class='num'>94.5 µm</td></tr>
-<tr><td class='num'>&gt; 0.15 mm</td><td class='num'>69.7%</td><td class='num'>0.950</td><td class='num'>10.1 µm</td><td class='num'>59.5%</td><td class='num'>0.767</td><td class='num'>46.7 µm</td></tr>
-<tr><td class='num'>&gt; 0.30 mm</td><td class='num'>57.1%</td><td class='num'>0.958</td><td class='num'>8.3 µm</td><td class='num'>45.1%</td><td class='num'>0.881</td><td class='num'>23.8 µm</td></tr>
-<tr><td class='num'>&gt; 0.60 mm</td><td class='num'>37.1%</td><td class='num'>0.970</td><td class='num'>5.9 µm</td><td class='num'>24.9%</td><td class='num'>0.931</td><td class='num'>13.7 µm</td></tr>
-<tr><td class='num'>&gt; 1.00 mm</td><td class='num'>23.1%</td><td class='num'>0.982</td><td class='num'>3.7 µm</td><td class='num'>11.3%</td><td class='num'>0.970</td><td class='num'>6.0 µm</td></tr>
-<tr><td class='num'>&gt; 2.00 mm</td><td class='num'>4.8%</td><td class='num'>0.994</td><td class='num'>1.2 µm</td><td class='num'>0.7%</td><td class='num'>0.994</td><td class='num'>1.2 µm</td></tr>
+<tr><td class='num'>&gt; 0.00 mm</td><td class='num'>76.0%</td><td class='num'>0.751</td><td class='num'>49.8 µm</td><td class='num'>69.9%</td><td class='num'>0.748</td><td class='num'>50.4 µm</td></tr>
+<tr><td class='num'>&gt; 0.15 mm</td><td class='num'>56.6%</td><td class='num'>0.873</td><td class='num'>25.5 µm</td><td class='num'>48.2%</td><td class='num'>0.863</td><td class='num'>27.3 µm</td></tr>
+<tr><td class='num'>&gt; 0.30 mm</td><td class='num'>38.2%</td><td class='num'>0.932</td><td class='num'>13.6 µm</td><td class='num'>30.3%</td><td class='num'>0.917</td><td class='num'>16.5 µm</td></tr>
+<tr><td class='num'>&gt; 0.60 mm</td><td class='num'>15.8%</td><td class='num'>0.973</td><td class='num'>5.4 µm</td><td class='num'>11.2%</td><td class='num'>0.970</td><td class='num'>6.0 µm</td></tr>
+<tr><td class='num'>&gt; 1.00 mm</td><td class='num'>4.8%</td><td class='num'>0.992</td><td class='num'>1.6 µm</td><td class='num'>2.7%</td><td class='num'>0.986</td><td class='num'>2.8 µm</td></tr>
+<tr><td class='num'>&gt; 2.00 mm</td><td class='num'>0.0%</td><td class='num'>1.000</td><td class='num'>0.0 µm</td><td class='num'>0.0%</td><td class='num'>1.000</td><td class='num'>0.0 µm</td></tr>
 </table></div>
-<p class="small">The probe solves the <em>pad-only</em> field, without the via inclusions of the second pass, which
-is what isolates the contribution of the rigid parts. That is why its F.Cu minimum reads
-0.938 where the table above reads 0.632: the
-difference is entirely the corners of the via octagons, the same artifact and just as shallow in extent. B.Cu is
-dominated by pads either way and reads 0.527 in both.</p>
-<p>Two populations, and only one of them is a pad rim. Contraction <em>is</em> concentrated near pads — on B.Cu only
-0.7% of contracting cells lie more than 2&nbsp;mm from one, against
-7.8% of all cells — but between a tenth and a quarter of it is genuinely out
-in open routing space, so "it is all pad rims" would have been wrong. What makes it harmless there is depth, not
-location: out beyond 1&nbsp;mm the <em>worst</em> cell on either layer costs
-6&nbsp;µm of a 0.2&nbsp;mm gap and the
-median costs about 0.2&nbsp;µm. The deep
-values — 0.53 on B.Cu — live hard against pad rims, in seams where nothing but
-those two pads lives and they are moving apart anyway.</p>
+<p>Contraction is now, to the cell, a near-territory phenomenon: beyond 2&nbsp;mm from any rigid shape there is
+<strong>not one contracting cell on either layer</strong>, and beyond 1&nbsp;mm the worst survivor costs
+2.8&nbsp;µm of a 0.2&nbsp;mm gap while the
+median costs 0.3&nbsp;µm. The deep values —
+0.75 on B.Cu — sit hard against pad rims, in seams where nothing but those two pads
+lives and they are moving apart anyway.</p>
+<p class="small">This is stricter than it was before the anchor fix, and worth recording as a correction: with the
+parts anchored at their footprint origins, a tenth to a quarter of the contraction really was out in open routing
+space, and an earlier draft of this page that called it "all pad rims" was wrong at the time. Moving the anchor to the
+pad centroid is what emptied the open-space bins.</p>
 <p class="small">This is the map earning its keep as an oracle: it predicts a median cost of well under a micron and
-a worst case of a few tens, and the DRC that follows reports a median deficit of 4&nbsp;µm
-and a worst of 36&nbsp;µm. A proposed field can be judged before it is applied.</p>
+a worst case of a few tens, and the DRC that follows reports a median deficit of 5&nbsp;µm
+and a worst of 14&nbsp;µm. A proposed field can be judged before it is applied.</p>
 
-<h2 id="sweep">5 · Tolerance sweep, head to head</h2>
+<h2 id="sweep">6 · Tolerance sweep, head to head</h2>
 <div class="tablewrap"><table>
 <tr><th rowspan="2">stretch</th><th colspan="3">graph-harmonic (before)</th><th colspan="3">spatial field (algorithm A)</th><th rowspan="2">violations<br>removed</th></tr>
 <tr><th>violations</th><th>sites</th><th>worst</th><th>violations</th><th>sites</th><th>worst</th></tr>
-<tr><td class='num'>+0.25%</td><td class='num'>306</td><td class='num'>173</td><td class='num'>23 µm</td><td class='num'><strong>27</strong></td><td class='num'><strong>25</strong></td><td class='num'>7 µm</td><td class='num'>−91%</td></tr>
-<tr><td class='num'>+0.5%</td><td class='num'>374</td><td class='num'>208</td><td class='num'>47 µm</td><td class='num'><strong>37</strong></td><td class='num'><strong>34</strong></td><td class='num'>22 µm</td><td class='num'>−90%</td></tr>
-<tr><td class='num'>+1%</td><td class='num'>465</td><td class='num'>257</td><td class='num'>95 µm</td><td class='num'><strong>47</strong></td><td class='num'><strong>41</strong></td><td class='num'>36 µm</td><td class='num'>−90%</td></tr>
-<tr><td class='num'>+2%</td><td class='num'>532</td><td class='num'>298</td><td class='num'>159 µm</td><td class='num'><strong>56</strong></td><td class='num'><strong>50</strong></td><td class='num'>62 µm</td><td class='num'>−89%</td></tr>
-<tr><td class='num'>+3%</td><td class='num'>612</td><td class='num'>351</td><td class='num'>180 µm</td><td class='num'><strong>99</strong></td><td class='num'><strong>75</strong></td><td class='num'>125 µm</td><td class='num'>−84%</td></tr>
+<tr><td class='num'>+0.25%</td><td class='num'>306</td><td class='num'>173</td><td class='num'>23 µm</td><td class='num'><strong>22</strong></td><td class='num'><strong>21</strong></td><td class='num'>3 µm</td><td class='num'>−93%</td></tr>
+<tr><td class='num'>+0.5%</td><td class='num'>374</td><td class='num'>208</td><td class='num'>47 µm</td><td class='num'><strong>23</strong></td><td class='num'><strong>22</strong></td><td class='num'>6 µm</td><td class='num'>−94%</td></tr>
+<tr><td class='num'>+1%</td><td class='num'>465</td><td class='num'>257</td><td class='num'>95 µm</td><td class='num'><strong>37</strong></td><td class='num'><strong>35</strong></td><td class='num'>14 µm</td><td class='num'>−92%</td></tr>
+<tr><td class='num'>+2%</td><td class='num'>532</td><td class='num'>298</td><td class='num'>159 µm</td><td class='num'><strong>46</strong></td><td class='num'><strong>43</strong></td><td class='num'>35 µm</td><td class='num'>−91%</td></tr>
+<tr><td class='num'>+3%</td><td class='num'>612</td><td class='num'>351</td><td class='num'>180 µm</td><td class='num'><strong>49</strong></td><td class='num'><strong>44</strong></td><td class='num'>64 µm</td><td class='num'>−92%</td></tr>
 </table></div>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 220" width="100%" style="max-width:470px" font-family="ui-monospace,monospace" font-size="10">
 <line x1="40" y1="180" x2="462" y2="180" stroke="#888"/><line x1="40" y1="180" x2="40" y2="8" stroke="#888"/>
@@ -184,28 +226,28 @@ and a worst of 36&nbsp;µm. A proposed field can be judged before it is applied.
 <text x="36" y="24.2" text-anchor="end" fill="#888">600</text><line x1="40" y1="21.2" x2="462" y2="21.2" stroke="#8883" stroke-dasharray="2 4"/>
 <rect x="50.0" y="99.0" width="32.2" height="81.0" fill="#b03434" fill-opacity="0.75"><title>+0.25% old: 306</title></rect>
 <text x="66.1" y="96.0" text-anchor="middle" fill="#b03434">306</text>
-<rect x="82.2" y="172.9" width="32.2" height="7.1" fill="#2c7a4b" fill-opacity="0.75"><title>+0.25% new: 27</title></rect>
-<text x="98.2" y="169.9" text-anchor="middle" fill="#2c7a4b">27</text>
+<rect x="82.2" y="174.2" width="32.2" height="5.8" fill="#2c7a4b" fill-opacity="0.75"><title>+0.25% new: 22</title></rect>
+<text x="98.2" y="171.2" text-anchor="middle" fill="#2c7a4b">22</text>
 <text x="82.2" y="193" text-anchor="middle" fill="#888">+0.25%</text>
 <rect x="131.6" y="81.0" width="32.2" height="99.0" fill="#b03434" fill-opacity="0.75"><title>+0.5% old: 374</title></rect>
 <text x="147.7" y="78.0" text-anchor="middle" fill="#b03434">374</text>
-<rect x="163.8" y="170.2" width="32.2" height="9.8" fill="#2c7a4b" fill-opacity="0.75"><title>+0.5% new: 37</title></rect>
-<text x="179.8" y="167.2" text-anchor="middle" fill="#2c7a4b">37</text>
+<rect x="163.8" y="173.9" width="32.2" height="6.1" fill="#2c7a4b" fill-opacity="0.75"><title>+0.5% new: 23</title></rect>
+<text x="179.8" y="170.9" text-anchor="middle" fill="#2c7a4b">23</text>
 <text x="163.8" y="193" text-anchor="middle" fill="#888">+0.5%</text>
 <rect x="213.2" y="56.9" width="32.2" height="123.1" fill="#b03434" fill-opacity="0.75"><title>+1% old: 465</title></rect>
 <text x="229.3" y="53.9" text-anchor="middle" fill="#b03434">465</text>
-<rect x="245.4" y="167.6" width="32.2" height="12.4" fill="#2c7a4b" fill-opacity="0.75"><title>+1% new: 47</title></rect>
-<text x="261.4" y="164.6" text-anchor="middle" fill="#2c7a4b">47</text>
+<rect x="245.4" y="170.2" width="32.2" height="9.8" fill="#2c7a4b" fill-opacity="0.75"><title>+1% new: 37</title></rect>
+<text x="261.4" y="167.2" text-anchor="middle" fill="#2c7a4b">37</text>
 <text x="245.4" y="193" text-anchor="middle" fill="#888">+1%</text>
 <rect x="294.8" y="39.2" width="32.2" height="140.8" fill="#b03434" fill-opacity="0.75"><title>+2% old: 532</title></rect>
 <text x="310.9" y="36.2" text-anchor="middle" fill="#b03434">532</text>
-<rect x="327.0" y="165.2" width="32.2" height="14.8" fill="#2c7a4b" fill-opacity="0.75"><title>+2% new: 56</title></rect>
-<text x="343.0" y="162.2" text-anchor="middle" fill="#2c7a4b">56</text>
+<rect x="327.0" y="167.8" width="32.2" height="12.2" fill="#2c7a4b" fill-opacity="0.75"><title>+2% new: 46</title></rect>
+<text x="343.0" y="164.8" text-anchor="middle" fill="#2c7a4b">46</text>
 <text x="327.0" y="193" text-anchor="middle" fill="#888">+2%</text>
 <rect x="376.4" y="18.0" width="32.2" height="162.0" fill="#b03434" fill-opacity="0.75"><title>+3% old: 612</title></rect>
 <text x="392.5" y="15.0" text-anchor="middle" fill="#b03434">612</text>
-<rect x="408.6" y="153.8" width="32.2" height="26.2" fill="#2c7a4b" fill-opacity="0.75"><title>+3% new: 99</title></rect>
-<text x="424.6" y="150.8" text-anchor="middle" fill="#2c7a4b">99</text>
+<rect x="408.6" y="167.0" width="32.2" height="13.0" fill="#2c7a4b" fill-opacity="0.75"><title>+3% new: 49</title></rect>
+<text x="424.6" y="164.0" text-anchor="middle" fill="#2c7a4b">49</text>
 <text x="408.6" y="193" text-anchor="middle" fill="#888">+3%</text>
 <rect x="320" y="12" width="9" height="9" fill="#b03434" fill-opacity="0.75"/><text x="333" y="20" fill="#888">graph-harmonic</text>
 <rect x="320" y="26" width="9" height="9" fill="#2c7a4b" fill-opacity="0.75"/><text x="333" y="34" fill="#888">spatial field</text>
@@ -214,23 +256,23 @@ and a worst of 36&nbsp;µm. A proposed field can be judged before it is applied.
 <p>Both engines measured with the same tool (<code>status.py</code>: DRC, position-independent diff against the
 pre-stretch baseline, site clustering), on the same board, at the same k, before any nudging.
 <code>check_sync</code> reports IN SYNC in all 10 runs. Algorithm A at <strong>+3%</strong> is still
-cleaner than the old engine at <strong>+0.25%</strong> — 99 violations against
+cleaner than the old engine at <strong>+0.25%</strong> — 49 violations against
 306 — a twelve-fold larger stretch for a third of the damage. The old engine also opens an
 airwire at +3% (55 against a baseline of 54); algorithm A does not
-(54).</p>
+(53).</p>
 
-<h2 id="handoff">6 · The staged board</h2>
-<p><code>hardware/rp2350_driver_rubber_A.kicad_pcb</code> — +1%, nudged, 52 violations in
-<strong>30 sites</strong> (median 6&nbsp;µm, p90 22&nbsp;µm, worst
-29&nbsp;µm), airwires 53 against a baseline of 54,
+<h2 id="handoff">7 · The staged board</h2>
+<p><code>hardware/rp2350_driver_rubber_A.kicad_pcb</code> — +1%, nudged, 30 violations in
+<strong>24 sites</strong> (median 8&nbsp;µm, p90 21&nbsp;µm, worst
+26&nbsp;µm), airwires 53 against a baseline of 54,
 <code>IN SYNC — board matches schematic</code>. The prior pipeline handed over 92 sites at median
 15&nbsp;µm and worst 121&nbsp;µm, so this is roughly a third of the hand work and a quarter of the
 worst deficit. Work it worst-first with <code>python3 hardware/tools/rubber/status.py --board
 hardware/rp2350_driver_rubber_A.kicad_pcb</code>.</p>
 <div class="tablewrap"><table><tr><th>µm</th><th>position</th><th>type</th><th>items</th></tr>
-<tr><td class='num'>29</td><td class='num'>(171.5, 92.9)</td><td>clearance</td><td class='mono small'>Track [A_SENSE] on F.Cu, length 1.7611 mm | Track [/PD_INT] on F.Cu, length 0.3583 mm</td></tr><tr><td class='num'>26</td><td class='num'>(153.7, 94.9)</td><td>clearance</td><td class='mono small'>PTH pad 2 [VMOT] of J9 | Track [C_PWM_H] on In3.Cu, length 1.6697 mm</td></tr><tr><td class='num'>22</td><td class='num'>(167.7, 122.6)</td><td>clearance</td><td class='mono small'>PTH pad 2 [/TXO_INTERBOARD_2] of J8 | Track [/I2C_SCL] on B.Cu, length 2.0747 mm</td></tr><tr><td class='num'>19</td><td class='num'>(171.8, 93.4)</td><td>clearance</td><td class='mono small'>Track [/PD_INT] on F.Cu, length 0.4610 mm | Track [A_SENSE] on F.Cu, length 0.1151 mm</td></tr><tr><td class='num'>19</td><td class='num'>(151.0, 111.2)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on In3.Cu, length 0.4339 mm | PTH pad 1 [VMOT] of C39</td></tr><tr><td class='num'>17</td><td class='num'>(171.4, 92.7)</td><td>clearance</td><td class='mono small'>Track [A_SENSE] on F.Cu, length 1.7611 mm | Pad 2 [GND] of C38 on F.Cu</td></tr><tr><td class='num'>15</td><td class='num'>(170.3, 122.6)</td><td>clearance</td><td class='mono small'>PTH pad 3 [GND] of J8 | Track [/TXO_INTERBOARD_2] on F.Cu, length 1.6641 mm</td></tr><tr><td class='num'>15</td><td class='num'>(153.1, 86.1)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on B.Cu, length 9.5749 mm | PTH pad [&lt;no net&gt;] of J9</td></tr><tr><td class='num'>13</td><td class='num'>(172.1, 94.1)</td><td>clearance</td><td class='mono small'>Track [A_SENSE] on F.Cu, length 0.9122 mm | Track [/PD_INT] on F.Cu, length 0.4610 mm</td></tr><tr><td class='num'>11</td><td class='num'>(152.8, 111.2)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on In3.Cu, length 1.7364 mm | PTH pad 1 [VMOT] of C39</td></tr><tr><td class='num'>10</td><td class='num'>(173.9, 91.6)</td><td>clearance</td><td class='mono small'>Track [/H1_SW] on F.Cu, length 0.9072 mm | Track [/H2_SW] on F.Cu, length 0.2157 mm</td></tr><tr><td class='num'>10</td><td class='num'>(173.9, 92.5)</td><td>clearance</td><td class='mono small'>Track [/H1_SW] on F.Cu, length 0.6099 mm | Track [/H2_SW] on F.Cu, length 0.2157 mm</td></tr><tr><td class='num'>9</td><td class='num'>(153.7, 94.9)</td><td>clearance</td><td class='mono small'>PTH pad 2 [VMOT] of J9 | Track [/E-STOP] on B.Cu, length 2.9586 mm</td></tr><tr><td class='num'>8</td><td class='num'>(165.8, 85.4)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on B.Cu, length 1.0141 mm | Track [/EXT_ANALOG_SW] on B.Cu, length 1.1467 mm</td></tr><tr><td class='num'>6</td><td class='num'>(125.1, 113.5)</td><td>clearance</td><td class='mono small'>Pad 2 [GND] of C66 on B.Cu | Track [Vdrive] on B.Cu, length 0.4403 mm</td></tr><tr><td class='num'>6</td><td class='num'>(187.0, 100.5)</td><td>clearance</td><td class='mono small'>Pad 5 [GND_ISO] of U16 on B.Cu | Track [+5V_ISO] on B.Cu, length 1.4657 mm</td></tr><tr><td class='num'>5</td><td class='num'>(149.5, 117.5)</td><td>clearance</td><td class='mono small'>Track [/HALL1] on In3.Cu, length 1.0431 mm | Track [/MOT_TH] on In3.Cu, length 19.3202 mm</td></tr><tr><td class='num'>5</td><td class='num'>(148.8, 116.8)</td><td>clearance</td><td class='mono small'>Track [/HALL1] on In3.Cu, length 15.5718 mm | Track [/MOT_TH] on In3.Cu, length 19.3202 mm</td></tr><tr><td class='num'>5</td><td class='num'>(165.9, 84.7)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on B.Cu, length 0.5225 mm | Track [/EXT_ANALOG_SW] on B.Cu, length 1.1467 mm</td></tr><tr><td class='num'>4</td><td class='num'>(115.4, 84.2)</td><td>clearance</td><td class='mono small'>Track [+3V3] on B.Cu, length 2.9300 mm | Pad 1 [C_PHASE_SENSE] of R72 on B.Cu</td></tr><tr><td class='num'>4</td><td class='num'>(115.2, 95.3)</td><td>clearance</td><td class='mono small'>Track [+3V3] on B.Cu, length 1.1009 mm | PTH pad [&lt;no net&gt;] of J1</td></tr><tr><td class='num'>3</td><td class='num'>(173.6, 105.8)</td><td>clearance</td><td class='mono small'>Track [Net-(U8-GPIO1)] on F.Cu, length 0.8859 mm | Track [Net-(U8-GPIO0)] on F.Cu, length 1.1785 mm</td></tr><tr><td class='num'>3</td><td class='num'>(161.1, 124.6)</td><td>clearance</td><td class='mono small'>Track [/ENC_B_SW] on In3.Cu, length 6.0160 mm | Track [/ENC_B_DATA] on In3.Cu, length 3.7029 mm</td></tr><tr><td class='num'>2</td><td class='num'>(185.7, 103.7)</td><td>clearance</td><td class='mono small'>Track [/I2C_SCL] on In3.Cu, length 10.3231 mm | Track [/ENC_B_DATA] on In3.Cu, length 4.6044 mm</td></tr><tr><td class='num'>1</td><td class='num'>(135.0, 105.4)</td><td>clearance</td><td class='mono small'>Track [/ENC_C_SW] on In3.Cu, length 17.9271 mm | Via [B_PWM_H] on F.Cu - B.Cu</td></tr><tr><td class='num'>0</td><td class='num'>(151.9, 112.8)</td><td>courtyards_overlap</td><td class='mono small'>Footprint C39 | Footprint J10</td></tr><tr><td class='num'>0</td><td class='num'>(158.7, 94.9)</td><td>courtyards_overlap</td><td class='mono small'>Footprint J9 | Footprint BH1</td></tr><tr><td class='num'>0</td><td class='num'>(158.7, 94.9)</td><td>courtyards_overlap</td><td class='mono small'>Footprint J9 | Footprint C80</td></tr><tr><td class='num'>0</td><td class='num'>(165.2, 122.6)</td><td>courtyards_overlap</td><td class='mono small'>Footprint J8 | Footprint J5</td></tr><tr><td class='num'>0</td><td class='num'>(165.2, 89.9)</td><td>courtyards_overlap</td><td class='mono small'>Footprint J7 | Footprint C38</td></tr></table></div>
+<tr><td class='num'>26</td><td class='num'>(167.8, 122.6)</td><td>clearance</td><td class='mono small'>PTH pad 2 [/TXO_INTERBOARD_2] of J8 | Track [/I2C_SCL] on B.Cu, length 2.0750 mm</td></tr><tr><td class='num'>26</td><td class='num'>(153.7, 94.8)</td><td>clearance</td><td class='mono small'>PTH pad 2 [VMOT] of J9 | Track [C_PWM_H] on In3.Cu, length 1.6694 mm</td></tr><tr><td class='num'>21</td><td class='num'>(151.1, 111.2)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on In3.Cu, length 0.4345 mm | PTH pad 1 [VMOT] of C39</td></tr><tr><td class='num'>20</td><td class='num'>(171.3, 92.8)</td><td>clearance</td><td class='mono small'>Track [A_SENSE] on F.Cu, length 1.7214 mm | Pad 1 [+3V3] of C38 on F.Cu</td></tr><tr><td class='num'>18</td><td class='num'>(170.3, 122.6)</td><td>clearance</td><td class='mono small'>PTH pad 3 [GND] of J8 | Track [/TXO_INTERBOARD_2] on F.Cu, length 3.3524 mm</td></tr><tr><td class='num'>17</td><td class='num'>(152.8, 111.2)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on In3.Cu, length 1.7350 mm | PTH pad 1 [VMOT] of C39</td></tr><tr><td class='num'>12</td><td class='num'>(148.6, 84.3)</td><td>clearance</td><td class='mono small'>Track [/EXT_ANALOG2] on In3.Cu, length 7.9437 mm | Via [GND] on F.Cu - B.Cu</td></tr><tr><td class='num'>10</td><td class='num'>(173.9, 92.5)</td><td>clearance</td><td class='mono small'>Track [/H1_SW] on F.Cu, length 0.6086 mm | Track [/H2_SW] on F.Cu, length 0.2146 mm</td></tr><tr><td class='num'>10</td><td class='num'>(173.9, 91.6)</td><td>clearance</td><td class='mono small'>Track [/H1_SW] on F.Cu, length 0.9080 mm | Track [/H2_SW] on F.Cu, length 0.2146 mm</td></tr><tr><td class='num'>10</td><td class='num'>(171.3, 92.6)</td><td>clearance</td><td class='mono small'>Track [A_SENSE] on F.Cu, length 1.7214 mm | Pad 2 [GND] of C38 on F.Cu</td></tr><tr><td class='num'>9</td><td class='num'>(187.0, 100.5)</td><td>clearance</td><td class='mono small'>Pad 5 [GND_ISO] of U16 on B.Cu | Track [+5V_ISO] on B.Cu, length 1.4648 mm</td></tr><tr><td class='num'>8</td><td class='num'>(153.7, 94.8)</td><td>clearance</td><td class='mono small'>PTH pad 2 [VMOT] of J9 | Track [/E-STOP] on B.Cu, length 2.9515 mm</td></tr><tr><td class='num'>7</td><td class='num'>(165.8, 85.4)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on B.Cu, length 1.0167 mm | Track [/EXT_ANALOG_SW] on B.Cu, length 1.1471 mm</td></tr><tr><td class='num'>4</td><td class='num'>(165.9, 84.7)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on B.Cu, length 0.5225 mm | Track [/EXT_ANALOG_SW] on B.Cu, length 1.1471 mm</td></tr><tr><td class='num'>2</td><td class='num'>(123.9, 88.0)</td><td>clearance</td><td class='mono small'>PTH pad 1 [/A_N] of J1 | Track [/C_P] on B.Cu, length 2.8962 mm</td></tr><tr><td class='num'>1</td><td class='num'>(133.4, 110.6)</td><td>clearance</td><td class='mono small'>Track [/ENC_A_DATA] on In3.Cu, length 17.0078 mm | Track [/ENC_A_SW] on In3.Cu, length 17.0111 mm</td></tr><tr><td class='num'>1</td><td class='num'>(150.4, 110.6)</td><td>clearance</td><td class='mono small'>Track [/ENC_A_DATA] on In3.Cu, length 0.4339 mm | Track [/ENC_A_SW] on In3.Cu, length 17.0111 mm</td></tr><tr><td class='num'>1</td><td class='num'>(186.1, 99.3)</td><td>clearance</td><td class='mono small'>Track [+5V_ISO] on B.Cu, length 0.7164 mm | Pad 6 [/CAN0_N] of U16 on B.Cu</td></tr><tr><td class='num'>1</td><td class='num'>(142.1, 116.3)</td><td>clearance</td><td class='mono small'>Pad 1 [Vdrive] of U1 on B.Cu | Track [A_PWM_H] on B.Cu, length 2.1361 mm</td></tr><tr><td class='num'>0</td><td class='num'>(151.9, 112.8)</td><td>courtyards_overlap</td><td class='mono small'>Footprint C39 | Footprint J10</td></tr><tr><td class='num'>0</td><td class='num'>(158.7, 94.8)</td><td>courtyards_overlap</td><td class='mono small'>Footprint J9 | Footprint BH1</td></tr><tr><td class='num'>0</td><td class='num'>(158.7, 94.8)</td><td>courtyards_overlap</td><td class='mono small'>Footprint J9 | Footprint C80</td></tr><tr><td class='num'>0</td><td class='num'>(165.2, 122.6)</td><td>courtyards_overlap</td><td class='mono small'>Footprint J8 | Footprint J5</td></tr><tr><td class='num'>0</td><td class='num'>(165.3, 89.9)</td><td>courtyards_overlap</td><td class='mono small'>Footprint J7 | Footprint C38</td></tr></table></div>
 
-<h2 id="next">7 · Where this goes</h2>
+<h2 id="next">8 · Where this goes</h2>
 <p>The field solver is deliberately more general than this one use. <code>ambient</code> is any callable and
 inclusion vectors are arbitrary, so the same machinery expresses "push these two parts apart and let the copper
 between them relax harmonically" with no dilation at all — the shape a steerable <em>add space here</em> operator
