@@ -9,3 +9,9 @@ hardware/tools/revb/sync_log.txt
 rp2350_driver_rubber.kicad_pcb
 rp2350_driver_rubber.kicad_pro
 rp2350_driver_rubber.kicad_prl
+rp2350_driver_rubber_A.kicad_pcb
+rp2350_driver_rubber_A.kicad_pro
+rp2350_driver_rubber_A.kicad_prl
+hardware/_autosave-*
+hardware/rp2350_driver_rubber-backups/
+hardware/~*.lck

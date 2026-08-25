@@ -2,32 +2,55 @@
 """Rubber stretch: dilate the board about its centre by (KX, KY) with
 footprints as rigid inclusions.
 
-Every footprint moves rigidly by the dilation of its origin. Copper is owned
-by connectivity (same graph as modules/warp2.py): a track end on a pad is
-pinned to that pad's footprint vector, so nothing detaches; every other
-track end / via node takes  ambient(x,y) + H,  where ambient is the pure
-dilation field ((KX-1)(x-cx), (KY-1)(y-cy)) and H is the graph-harmonic
-interpolation of the pinned residuals (footprint vector minus ambient) —
-the rigid-inclusion lag decays smoothly along each net's own copper instead
-of stepping at the last segment. Pad-less clusters (stitch farms) take pure
-ambient per node: dilation only grows their spacings. Zone outlines follow
-the footprint field inside a courtyard, ambient outside; zones refill.
-Edge.Cuts lines stretch, corner arcs translate rigidly (radius kept) and the
-lines re-snap to their endpoints. Silk text and free graphics ride ambient.
+Algorithm A (2026-08-25).  Every footprint still moves rigidly by the dilation
+of its origin, but the rigid-inclusion lag is now interpolated through SPACE by
+field.WarpField -- one harmonic displacement field u(x,y) that equals the
+footprint vector inside each courtyard/pad territory, decays to pure ambient
+dilation away from it, and is evaluated by position for every piece of copper,
+zone vertex and silk item on the board.
 
-env: SRC, OUT, KX, KY, CX, CY   (defaults: main board, _rubber copy, 1.0, centre)
+What that fixes.  The previous engine interpolated the same residual along each
+net's own copper graph, so two traces 0.2 mm apart on different nets got
+uncorrelated displacements -- one pinned to a lagging footprint, its neighbour
+riding near-pure ambient -- and the gap between them changed by the difference
+of two unrelated residuals.  That was the entire F-46 violation census.  A field
+that is a function of position cannot shear neighbouring copper apart, whatever
+nets it belongs to.
+
+Two geometric passes keep the discretisation honest:
+  * adaptive splitting -- a straight segment cannot follow a curved field, so
+    each track is subdivided until its chord is within SPLIT_TOL of the field.
+    This is also what keeps tee junctions (364 track ends resting on a passing
+    segment's body) and pads sitting mid-body on their host.
+  * sigma_min census -- the map F(x) = x + u(x) closes a gap iff the smallest
+    singular value of I + grad u drops below 1, so the field reports where it is
+    contracting before DRC ever runs.
+
+Edge.Cuts stays on pure ambient (the outline is exactly the dilated outline);
+the field's far-field equals ambient, so copper near the edge is consistent.
+
+env: SRC, OUT, KX, KY, CX, CY, H (grid mm), MARGIN, SPLIT_TOL, STATS
 """
-import json, math, os, shutil, sys, collections
+import json, math, os, shutil, sys, collections, time
 S = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, S)
 HW = os.path.dirname(os.path.dirname(S))
 sys.path.insert(0, os.path.join(HW, 'tools', 'jiggle2'))
 from common import load_board, NM, quiet_stderr
+from field import WarpField, dilation
+import numpy as np
+from scipy import ndimage
 import pcbnew
 
 SRC = os.environ.get('SRC', os.path.join(HW, 'rp2350_driver.kicad_pcb'))
 OUT = os.environ.get('OUT', os.path.join(HW, 'rp2350_driver_rubber.kicad_pcb'))
 KX = float(os.environ.get('KX', '1.0')); KY = float(os.environ.get('KY', '1.0'))
+H = float(os.environ.get('H', '0.12'))
+MARGIN = float(os.environ.get('MARGIN', '8.0'))
+CLOSE = float(os.environ.get('CLOSE', '1.0'))
+SPLIT_TOL = float(os.environ.get('SPLIT_TOL', '0.015'))
+STATS = os.environ.get('STATS', '')
 
+t_start = time.time()
 bd = load_board(SRC)
 bb = bd.GetBoardEdgesBoundingBox()
 CX = float(os.environ.get('CX', (bb.GetLeft() + bb.GetRight()) / 2 * NM))
@@ -41,7 +64,7 @@ def to_v(x, y):
 
 # ---- footprints: rigid, vector = dilation of the origin ---------------------
 V = {}          # ref -> (vx, vy)
-terr = []       # (poly, bbox, ref) courtyard territories, OLD coordinates
+terr = []       # (poly, bbox, ref, side) courtyard territories, OLD coordinates
 for f in bd.GetFootprints():
     r = f.GetReference(); p = f.GetPosition()
     V[r] = ambient(p.x * NM, p.y * NM)
@@ -66,14 +89,9 @@ def pip(x, y, pts):
         j = i
     return inside
 
-def fp_field(x, y):
-    """footprint vector if (x,y) is inside a courtyard (old coords), else ambient."""
-    for pts, tb, r, _side in terr:
-        if tb[0] <= x <= tb[2] and tb[1] <= y <= tb[3] and pip(x, y, pts):
-            return V[r]
-    return ambient(x, y)
-
 # ---- courtyard relax: rigid-lag must not close any courtyard pair -----------
+# (dilation moves origins apart, but two territories can still slide past each
+# other into a closer approach; this pre-corrects V before the field is built.)
 def _ss_close(a1, a2, b1, b2):
     best = None
     for (p, q1, q2, flip) in ((a1, b1, b2, 0), (a2, b1, b2, 0), (b1, a1, a2, 1), (b2, a1, a2, 1)):
@@ -111,7 +129,6 @@ def _pen(A, B, va=(0, 0), vb=(0, 0)):
     At = [(x + va[0], y + va[1]) for x, y in A]; Bt = [(x + vb[0], y + vb[1]) for x, y in B]
     best = (0.0, 1.0, 0.0)
     for P, Q, sgn in ((At, Bt, 1.0), (Bt, At, -1.0)):
-        # vertices of P inside Q: depth = min distance to Q's boundary
         for (px, py) in P:
             if not pip(px, py, Q): continue
             bd_ = None
@@ -119,11 +136,8 @@ def _pen(A, B, va=(0, 0), vb=(0, 0)):
                 r = _ss_close((px, py), (px, py), Q[j], Q[(j + 1) % len(Q)])
                 if bd_ is None or r[0] < bd_[0]: bd_ = r
             if bd_ and bd_[0] > best[0]:
-                # push direction: from the vertex toward Q's boundary = out of Q
                 ux, uy = bd_[2][0] - px, bd_[2][1] - py
                 Lu = math.hypot(ux, uy) or 1.0
-                # sgn=+1: A-vertex inside B -> B must move away along -(out of B)... 
-                # convention: return direction to ADD to V[rb] (B's motion)
                 best = (bd_[0], sgn * -ux / Lu, sgn * -uy / Lu)
     return best
 
@@ -148,7 +162,6 @@ for it in range(80):
         axc = sum(x for x, y in pa) / len(pa); ayc = sum(y for x, y in pa) / len(pa)
         bxc = sum(x for x, y in pb) / len(pb); byc = sum(y for x, y in pb) / len(pb)
         if cross0:
-            # already touching in pcbnew geometry: penetration depth must not grow.
             pen0 = _pen(pa, pb)
             pen = _pen(pa, pb, V[ra], V[rb])
             if pen[0] <= pen0[0] + 1e-6: continue
@@ -178,6 +191,83 @@ for ra, rb, pa, pb, g0, cross0 in prs:
 print(f'  courtyard relax: {len(prs)} close pairs, {n_corr} corrections '
       f'(max {corr_max*1000:.1f} um), {n_bad} unresolved')
 
+
+# ---- the spatial fields, one per copper layer -------------------------------
+# Territory of a footprint on a layer = its PADS present on that layer.  Two
+# reasons it is pads and not courtyards: what physically has to stay rigid is a
+# part's pad geometry (copper merely passing under a courtyard is free to
+# deform, and a trace under a QFN is exactly that), and abutting courtyards
+# fight over the seam cells between them.  All pads of one footprint share one
+# vector, so the part stays rigid, and the space between its own pads is bounded
+# by that same value on every side so it comes out rigid too, for free.
+#
+# One field per layer, because the board is six copper layers and clearance
+# rules live inside a layer, never between them.  A single 2-D field forces
+# parts on opposite sides that overlap in projection to fight over the same
+# cells -- measured here as Y1's pad being owned by U16 and U7's by CL1, worth
+# up to 57 um of bogus shear.  Layers couple only where copper physically
+# pierces them: through-hole pads (rigid on every layer, so Dirichlet in every
+# field) and vias (one rigid barrel, so one displacement -- the mean of what
+# the layers it spans ask for).
+CU = list(bd.GetEnabledLayers().CuStack())
+BOUNDS = (bb.GetLeft() * NM, bb.GetTop() * NM, bb.GetRight() * NM, bb.GetBottom() * NM)
+
+pad_polys = {L: collections.defaultdict(list) for L in CU}
+for f in bd.GetFootprints():
+    r = f.GetReference()
+    for p in f.Pads():
+        polys = []
+        try:
+            ps = p.GetEffectivePolygon(pcbnew.PADSTACK.ALL_LAYERS)
+            for i in range(ps.OutlineCount()):
+                o = ps.Outline(i)
+                polys.append([(o.CPoint(j).x * NM, o.CPoint(j).y * NM)
+                              for j in range(o.PointCount())])
+        except Exception:
+            pb = p.GetBoundingBox()
+            polys.append([(pb.GetLeft() * NM, pb.GetTop() * NM),
+                          (pb.GetRight() * NM, pb.GetTop() * NM),
+                          (pb.GetRight() * NM, pb.GetBottom() * NM),
+                          (pb.GetLeft() * NM, pb.GetBottom() * NM)])
+        for L in CU:
+            if p.IsOnLayer(L):
+                pad_polys[L][r].extend(polys)
+
+def build_fields(extra=()):
+    """One harmonic field per copper layer.  `extra` is a list of
+    (polys, vec) rigid inclusions added to EVERY layer -- how a via barrel,
+    which is one rigid body piercing the whole stack, is made to mean the same
+    thing to each layer it passes through."""
+    out = {}
+    for L in CU:
+        fl = WarpField(BOUNDS, h=H, margin=MARGIN, close=CLOSE,
+                       ambient=dilation(CX, CY, KX, KY))
+        for r, pl in pad_polys[L].items():
+            fl.add_inclusion(pl, V[r], priority=npads.get(r, 1), tag=r)
+        for polys, vec in extra:
+            fl.add_inclusion(polys, vec, priority=0.0, tag='via')  # pads outrank vias
+        fl.solve(verbose=False)
+        out[L] = fl
+    return out
+
+t0 = time.time()
+fields = build_fields()
+print(f'  {len(CU)} layer fields ({" ".join(bd.GetLayerName(L) for L in CU)}) '
+      f'on a {fields[CU[0]].nx}x{fields[CU[0]].ny} grid @ {H} mm, {time.time()-t0:.1f}s')
+
+def fld1(x, y, L):
+    ux, uy = fields[L](np.array([x]), np.array([y]))
+    return float(ux[0]), float(uy[0])
+
+def fldn(x, y, lays):
+    """mean of the layer fields over `lays` -- a via barrel is one rigid body."""
+    sx = sy = 0.0
+    for L in lays:
+        u = fld1(x, y, L); sx += u[0]; sy += u[1]
+    n = max(len(lays), 1)
+    return sx / n, sy / n
+
+# ---- footprint moves --------------------------------------------------------
 n_fp = 0
 for f in bd.GetFootprints():
     v = V[f.GetReference()]
@@ -207,26 +297,18 @@ def pad_hit(x, y, layer, netcode):
             return v
     return None
 
-# ---- copper graph (residuals; adapted from modules/warp2.py) ----------------
+# ---- copper nodes -----------------------------------------------------------
+# The graph is kept only for node IDENTITY (endpoints shared by several tracks,
+# and via barrels, must move as one) and for pad pinning.  There is no solve on
+# it any more: a free node's displacement is just the field at its position.
 tracks = [t for t in bd.GetTracks() if t.GetClass() == 'PCB_TRACK']
 vias = [t for t in bd.GetTracks() if t.GetClass() == 'PCB_VIA']
 node_of = {}
-nodes = []      # dict(x, y, res:(rx,ry)|None, net)   res = pinned residual
-adj = collections.defaultdict(list)
-via_nodes = []; tnodes = []
+nodes = []      # dict(x, y, pin:(vx,vy)|None, net, lays:set)
+via_nodes = []; tnodes = []; via_rad = {}
 
 def new_node(x, y, net):
-    nodes.append(dict(x=x, y=y, res=None, net=net)); return len(nodes) - 1
-
-def residual(vec, x, y):
-    a = ambient(x, y); return (vec[0] - a[0], vec[1] - a[1])
-
-conn = bd.GetConnectivity()
-pad_vec = {}
-for f in bd.GetFootprints():
-    v = V[f.GetReference()]
-    for p in f.Pads():
-        pad_vec[p.m_Uuid.AsString()] = v
+    nodes.append(dict(x=x, y=y, pin=None, net=net, lays=set())); return len(nodes) - 1
 
 via_index = collections.defaultdict(list)
 for vo in vias:
@@ -234,16 +316,14 @@ for vo in vias:
     nid = new_node(x, y, nc); via_nodes.append((vo, nid))
     try: r = vo.GetWidth(pcbnew.PADSTACK.ALL_LAYERS) * NM / 2
     except Exception: r = 0.3
+    via_rad[nid] = r
     via_index[(int(x // 1.0), int(y // 1.0))].append((x, y, r, nc, nid))
+    # CuStack is in physical order, so a via spans the slice it pierces
+    i0, i1 = CU.index(vo.TopLayer()), CU.index(vo.BottomLayer())
+    nodes[nid]['lays'].update(CU[min(i0, i1):max(i0, i1) + 1])
     fv = pad_hit(x, y, None, nc)
-    if fv is None:
-        try:
-            for cp in conn.GetConnectedPads(vo):
-                pv = pad_vec.get(cp.m_Uuid.AsString())
-                if pv is not None: fv = pv; break
-        except Exception: pass
     if fv is not None:
-        nodes[nid]['res'] = residual(fv, x, y)
+        nodes[nid]['pin'] = fv
 
 def find_via(x, y, nc):
     for cx in (int(x // 1.0) - 1, int(x // 1.0), int(x // 1.0) + 1):
@@ -253,7 +333,7 @@ def find_via(x, y, nc):
                     return nid
     return None
 
-n_pin = n_overlap_pin = 0
+n_pin = 0
 for t in tracks:
     s, e = t.GetStart(), t.GetEnd(); lay = t.GetLayer(); nc = t.GetNetCode()
     ends = []
@@ -267,93 +347,113 @@ for t in tracks:
                 nid = new_node(x, y, nc); node_of[key] = nid
                 fv = pad_hit(x, y, lay, nc)
                 if fv is not None:
-                    nodes[nid]['res'] = residual(fv, x, y); n_pin += 1
+                    nodes[nid]['pin'] = fv; n_pin += 1
+        nodes[nid]['lays'].add(lay)
         ends.append(nid)
-    na, nb = ends
-    try: cpads = list(conn.GetConnectedPads(t))
-    except Exception: cpads = []
-    for cp in cpads:
-        pv = pad_vec.get(cp.m_Uuid.AsString())
-        if pv is None: continue
-        pc = cp.GetPosition(); pcx, pcy = pc.x * NM, pc.y * NM
-        da = math.hypot(s.x * NM - pcx, s.y * NM - pcy)
-        db = math.hypot(e.x * NM - pcx, e.y * NM - pcy)
-        nid = na if da <= db else nb
-        if nodes[nid]['res'] is None:
-            nodes[nid]['res'] = residual(pv, nodes[nid]['x'], nodes[nid]['y']); n_overlap_pin += 1
-    L = math.hypot((e.x - s.x) * NM, (e.y - s.y) * NM)
-    w = 1.0 / max(L, 0.02)
-    adj[na].append((nb, w)); adj[nb].append((na, w))
-    tnodes.append((t, na, nb))
+    tnodes.append((t, ends[0], ends[1]))
 
-# components + harmonic residual solve
-seen = [False] * len(nodes); comps = []
-for i in range(len(nodes)):
-    if seen[i]: continue
-    stack = [i]; seen[i] = True; comp = []
-    while stack:
-        n = stack.pop(); comp.append(n)
-        for m, w in adj[n]:
-            if not seen[m]: seen[m] = True; stack.append(m)
-    comps.append(comp)
+# node displacement: its layer field (mean over layers for a via barrel),
+# except on a pad where the footprint vector is authoritative.  Inside a
+# territory the field already equals that vector, so the two agree; what is
+# left of the gap measures how well the territories cover the pads.
+NX = np.array([n['x'] for n in nodes]); NY = np.array([n['y'] for n in nodes])
+LMASK = {L: np.array([L in n['lays'] for n in nodes]) for L in CU}
 
-H = [None] * len(nodes)
-n_free_cl = n_pin_cl = 0
-for comp in comps:
-    pinned = [n for n in comp if nodes[n]['res'] is not None]
-    if not pinned:
-        for n in comp: H[n] = (0.0, 0.0)     # pure ambient: stitch farms etc.
-        n_free_cl += 1
-        continue
-    n_pin_cl += 1
-    vals = {tuple(nodes[n]['res']) for n in pinned}
-    if len(vals) == 1:
-        v = next(iter(vals))
-        for n in comp: H[n] = v
-        continue
-    cur = {n: (nodes[n]['res'] if nodes[n]['res'] is not None else None) for n in comp}
-    free = [n for n in comp if cur[n] is None]
-    mx = sum(v[0] for v in vals) / len(vals); my = sum(v[1] for v in vals) / len(vals)
-    for n in free: cur[n] = (mx, my)
-    for it in range(3000):
-        dmax = 0.0
-        for n in free:
-            sw = sx = sy = 0.0
-            for m, w in adj[n]:
-                if m in cur: sw += w; sx += w * cur[m][0]; sy += w * cur[m][1]
-            if sw == 0: continue
-            nv = (sx / sw, sy / sw)
-            dmax = max(dmax, abs(nv[0] - cur[n][0]), abs(nv[1] - cur[n][1]))
-            cur[n] = nv
-        if dmax < 1e-7: break
-    for n in comp: H[n] = cur[n]
+def node_disps(flds):
+    UX = np.zeros(len(nodes)); UY = np.zeros(len(nodes)); W = np.zeros(len(nodes))
+    for L in CU:
+        m = LMASK[L]
+        if not m.any(): continue
+        ux, uy = flds[L](NX[m], NY[m])
+        UX[m] += ux; UY[m] += uy; W[m] += 1.0
+    W[W == 0] = 1.0
+    d = list(zip(UX / W, UY / W)); err = 0.0
+    for i, n in enumerate(nodes):
+        if n['pin'] is not None:
+            err = max(err, math.hypot(n['pin'][0] - d[i][0], n['pin'][1] - d[i][1]))
+            d[i] = n['pin']
+    return d, err
 
-def node_disp(n):
-    a = ambient(nodes[n]['x'], nodes[n]['y']); h = H[n]
-    return (a[0] + h[0], a[1] + h[1])
+# Pass 1 fixes what each layer wants at every via; the barrel can only be in one
+# place, so it takes the mean.  Pass 2 hands that one displacement back to every
+# layer as a rigid inclusion, so each layer's field now agrees with the barrel
+# where it pierces -- without it a via shears against the copper beside it by
+# however much the layers disagreed, which was most of the residual census.
+disp, _ = node_disps(fields)
+VIA_PASSES = int(os.environ.get('VIA_PASSES', '2'))
+oct8 = [(math.cos(i * math.pi / 4), math.sin(i * math.pi / 4)) for i in range(8)]
+for _ in range(VIA_PASSES - 1):
+    extra = []
+    for vo, nid in via_nodes:
+        r = via_rad.get(nid, 0.3)
+        extra.append(([[(nodes[nid]['x'] + r * c, nodes[nid]['y'] + r * s) for c, s in oct8]],
+                      disp[nid]))
+    fields = build_fields(extra)
+    disp, _ = node_disps(fields)
+disp, pin_err = node_disps(fields)
 
-n_t = n_v = 0
+# ---- adaptive splitting: a chord cannot follow a curved field ---------------
+# Subdivide each track until its straight chord is within SPLIT_TOL of the
+# field everywhere along it.  This is also what holds tee ends (a track end
+# resting on a passing segment's body -- KiCad connects by overlap, not
+# topology) and same-net pads crossed mid-body onto their host: both follow the
+# field, and the host is never further than SPLIT_TOL from it.
+def refine(P0, P1, t0_, t1_, d0, d1, L, out, depth):
+    if depth > 5: return
+    tm = 0.5 * (t0_ + t1_)
+    mx = P0[0] + (P1[0] - P0[0]) * tm; my = P0[1] + (P1[1] - P0[1]) * tm
+    dm = fld1(mx, my, L)
+    cx_ = 0.5 * (d0[0] + d1[0]); cy_ = 0.5 * (d0[1] + d1[1])
+    if math.hypot(dm[0] - cx_, dm[1] - cy_) <= SPLIT_TOL:
+        return
+    refine(P0, P1, t0_, tm, d0, dm, L, out, depth + 1)
+    out.append((tm, (mx, my), dm))
+    refine(P0, P1, tm, t1_, dm, d1, L, out, depth + 1)
+
+n_t = n_split = n_newseg = 0; sag_max = 0.0
 for t, na, nb in tnodes:
-    da, db = node_disp(na), node_disp(nb)
-    s, e = t.GetStart(), t.GetEnd()
-    t.SetStart(to_v(s.x * NM + da[0], s.y * NM + da[1]))
-    t.SetEnd(to_v(e.x * NM + db[0], e.y * NM + db[1])); n_t += 1
+    s, e = t.GetStart(), t.GetEnd(); L = t.GetLayer()
+    P0 = (s.x * NM, s.y * NM); P1 = (e.x * NM, e.y * NM)
+    d0, d1 = disp[na], disp[nb]
+    mx, my = 0.5 * (P0[0] + P1[0]), 0.5 * (P0[1] + P1[1])
+    dm = fld1(mx, my, L)
+    sag_max = max(sag_max, math.hypot(dm[0] - 0.5 * (d0[0] + d1[0]),
+                                      dm[1] - 0.5 * (d0[1] + d1[1])))
+    cuts = []
+    refine(P0, P1, 0.0, 1.0, d0, d1, L, cuts, 0)
+    if cuts:
+        pts = [(P0, d0)] + [(p, d) for _, p, d in cuts] + [(P1, d1)]
+        t.SetStart(to_v(pts[0][0][0] + pts[0][1][0], pts[0][0][1] + pts[0][1][1]))
+        t.SetEnd(to_v(pts[1][0][0] + pts[1][1][0], pts[1][0][1] + pts[1][1][1]))
+        for k in range(1, len(pts) - 1):
+            nt = pcbnew.PCB_TRACK(bd)
+            nt.SetLayer(L); nt.SetWidth(t.GetWidth()); nt.SetNetCode(t.GetNetCode())
+            nt.SetStart(to_v(pts[k][0][0] + pts[k][1][0], pts[k][0][1] + pts[k][1][1]))
+            nt.SetEnd(to_v(pts[k+1][0][0] + pts[k+1][1][0], pts[k+1][0][1] + pts[k+1][1][1]))
+            bd.Add(nt); n_newseg += 1
+        n_split += 1
+    else:
+        t.SetStart(to_v(P0[0] + d0[0], P0[1] + d0[1]))
+        t.SetEnd(to_v(P1[0] + d1[0], P1[1] + d1[1]))
+    n_t += 1
+
+n_v = 0
 for vo, nid in via_nodes:
-    d = node_disp(nid)
+    d = disp[nid]
     p = vo.GetPosition()
     vo.SetPosition(to_v(p.x * NM + d[0], p.y * NM + d[1])); n_v += 1
 
 # ---- zones ------------------------------------------------------------------
 n_zv = 0
 for z in bd.Zones():
+    lays = [L for L in CU if z.IsOnLayer(L)] or [CU[0]]
     o = z.Outline()
     for i in range(o.TotalVertices()):
         p = o.CVertex(i); x, y = p.x * NM, p.y * NM
-        v = fp_field(x, y)
-        o.SetVertex(i, to_v(x + v[0], y + v[1])); n_zv += 1
+        vx, vy = fldn(x, y, lays)
+        o.SetVertex(i, to_v(x + vx, y + vy)); n_zv += 1
 
-# ---- edge cuts: map every defining point through ambient ---------------------
-# (a circle maps to a circle under isotropic scale; corner radii grow by k)
+# ---- edge cuts: pure ambient (the fields' far field agrees with it) ---------
 for d in [d for d in bd.GetDrawings() if d.GetLayer() == pcbnew.Edge_Cuts]:
     if d.GetShape() == pcbnew.SHAPE_T_ARC:
         pts = []
@@ -367,12 +467,14 @@ for d in [d for d in bd.GetDrawings() if d.GetLayer() == pcbnew.Edge_Cuts]:
         d.SetStart(to_v(s.x * NM + vs[0], s.y * NM + vs[1]))
         d.SetEnd(to_v(e.x * NM + ve[0], e.y * NM + ve[1]))
 
-# ---- free text / graphics on other layers -----------------------------------
+# ---- free text / graphics: ride the copper field on their own side ----------
 n_txt = 0
 for d in bd.GetDrawings():
     if d.GetLayer() == pcbnew.Edge_Cuts: continue
-    p = d.GetPosition(); v = ambient(p.x * NM, p.y * NM)
-    d.Move(to_v(v[0], v[1]) - to_v(0, 0)); n_txt += 1
+    L = CU[-1] if bd.GetLayerName(d.GetLayer()).startswith('B.') else CU[0]
+    p = d.GetPosition()
+    vx, vy = fld1(p.x * NM, p.y * NM, L)
+    d.Move(to_v(vx, vy) - to_v(0, 0)); n_txt += 1
 
 with quiet_stderr():
     pcbnew.ZONE_FILLER(bd).Fill(bd.Zones())
@@ -381,10 +483,42 @@ pro = SRC.replace('.kicad_pcb', '.kicad_pro'); opro = OUT.replace('.kicad_pcb', 
 if os.path.exists(pro) and os.path.abspath(pro) != os.path.abspath(opro):
     shutil.copy(pro, opro)
 
-res_mags = [math.hypot(*nodes[n]['res']) for n in range(len(nodes)) if nodes[n]['res'] is not None]
-print(f'stretch KX={KX} KY={KY} centre=({CX:.2f},{CY:.2f})')
-print(f'  {n_fp} footprints moved; graph {len(nodes)} nodes / {len(comps)} clusters '
-      f'({n_pin_cl} pinned, {n_free_cl} pad-less); {n_t} tracks, {n_v} vias, {n_zv} zone vertices, {n_txt} drawings')
-if res_mags:
-    print(f'  rigid-lag residuals: max {max(res_mags)*1000:.1f} um, mean {sum(res_mags)/len(res_mags)*1000:.1f} um')
-print('saved', OUT)
+# ---- admissibility census ---------------------------------------------------
+# The map F(x) = x + u(x) closes a gap iff the smallest singular value of
+# I + grad u drops below 1.  Reported per layer over the board, skipping rigid
+# interiors (trivially 1) -- the cells that matter are free space and the ramp
+# along each pad's rim, which is exactly where the F-46 pairs sit.  Note the
+# global minimum is a corner effect: harmonic gradients blow up at the sharp
+# corners of a polygonal pad, so read the percentile, not the min.
+f0 = fields[CU[0]]
+gx = f0.x0 + f0.h * np.arange(f0.nx)[None, :]
+gy = f0.y0 + f0.h * np.arange(f0.ny)[:, None]
+inb = ((gx >= BOUNDS[0]) & (gx <= BOUNDS[2]) & (gy >= BOUNDS[1]) & (gy <= BOUNDS[3]))
+inb = np.broadcast_to(inb, (f0.ny, f0.nx)).copy()
+reps = {}
+for L in CU:
+    fl = fields[L]
+    m = inb & ~ndimage.binary_erosion(fl.owner >= 0, iterations=1)
+    s = fl.sigma_min()
+    reps[L] = dict(name=bd.GetLayerName(L), sigma_min=float(s[m].min()),
+                   p01=float(np.percentile(s[m], 1)), p50=float(np.percentile(s[m], 50)),
+                   contracting=int((s[m] < 1.0 - 1e-4).sum()), cells=int(m.sum()))
+
+print(f'stretch KX={KX} KY={KY} centre=({CX:.2f},{CY:.2f})  [algorithm A: spatial field]')
+print(f'  {n_fp} footprints moved; {len(nodes)} copper nodes, {n_pin} pad-pinned '
+      f'(field/pin agreement {pin_err*1000:.2f} um)')
+print(f'  {n_t} tracks, {n_v} vias, {n_zv} zone vertices, {n_txt} drawings; '
+      f'{n_split} tracks split (+{n_newseg} segments), max chord sag {sag_max*1000:.1f} um')
+print('  admissibility (sigma_min of I+grad u, per layer):')
+for L in CU:
+    r_ = reps[L]
+    print(f'    {r_["name"]:7s} min {r_["sigma_min"]:.3f}  p01 {r_["p01"]:.4f}  '
+          f'p50 {r_["p50"]:.4f}  contracting {100.0*r_["contracting"]/max(r_["cells"],1):5.2f}%')
+print(f'saved {OUT}  [{time.time()-t_start:.1f}s]')
+if STATS:
+    json.dump(dict(kx=KX, ky=KY, h=H, split_tol=SPLIT_TOL, n_fp=n_fp,
+                   nodes=len(nodes), pinned=n_pin, pin_err_um=pin_err * 1000,
+                   tracks=n_t, vias=n_v, zone_verts=n_zv, split=n_split,
+                   new_segments=n_newseg, sag_max_um=sag_max * 1000,
+                   layers={bd.GetLayerName(L): reps[L] for L in CU}),
+              open(STATS, 'w'), indent=1)

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Warping Fields — RP2350 Motor Controller</title>
+<style>
+  :root { --bg:#f7f6f3; --panel:#fff; --ink:#1e2126; --muted:#5b6470; --line:#d9d5cc; --accent:#6b4fa0; --good:#2c7a4b; --warn:#a05a00; --bad:#b03434; --code-bg:#efede8; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#16181d; --panel:#1e2128; --ink:#e8e6e1; --muted:#9aa3af; --line:#343945; --accent:#a98fd8; --good:#5cb884; --warn:#e0a44c; --bad:#e06c6c; --code-bg:#262a33; } }
+  * { box-sizing:border-box; } html,body { margin:0; padding:0; }
+  body { background:var(--bg); color:var(--ink); font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  main { max-width:1040px; margin:0 auto; padding:2rem 1.25rem 5rem; }
+  header.masthead { border-bottom:3px solid var(--accent); padding:2.2rem 0 1rem; margin-bottom:1.5rem; }
+  h1 { font-size:1.9rem; line-height:1.2; margin:0 0 .4rem; } .subtitle { color:var(--muted); margin:0; }
+  h2 { font-size:1.45rem; margin:2.8rem 0 .8rem; padding-top:1rem; border-top:1px solid var(--line); } h3 { font-size:1.12rem; margin:1.8rem 0 .5rem; }
+  p { margin:.6rem 0; } a { color:var(--accent); }
+  code,.mono { font-family:ui-monospace,"SF Mono",Consolas,monospace; font-size:.92em; background:var(--code-bg); padding:.08em .35em; border-radius:4px; }
+  table { border-collapse:collapse; width:100%; margin:1rem 0; font-size:.92rem; } th,td { text-align:left; padding:.4rem .6rem; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); } td.num { text-align:right; font-family:ui-monospace,monospace; }
+  .tablewrap { overflow-x:auto; } .small { font-size:.85rem; color:var(--muted); }
+  .sev { display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.05em; padding:.12em .55em; border-radius:99px; white-space:nowrap; }
+  .sev.high { background:color-mix(in srgb,var(--bad) 16%,transparent); color:var(--bad); } .sev.med { background:color-mix(in srgb,var(--warn) 18%,transparent); color:var(--warn); }
+  .sev.low { background:color-mix(in srgb,var(--muted) 18%,transparent); color:var(--muted); } .sev.good { background:color-mix(in srgb,var(--good) 16%,transparent); color:var(--good); }
+  figure { margin:1.2rem 0; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:1rem; } figure img { max-width:100%; height:auto; display:block; margin:0 auto; border-radius:4px; }
+  figcaption { color:var(--muted); font-size:.88rem; margin-top:.6rem; text-align:center; }
+  .callout { border-left:4px solid var(--accent); background:var(--panel); border-radius:0 8px 8px 0; padding:.8rem 1rem; margin:1rem 0; } .callout.warn { border-left-color:var(--warn); } .callout.good { border-left-color:var(--good); } .callout.bad { border-left-color:var(--bad); }
+  .cols2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; } @media (max-width:760px) { .cols2 { grid-template-columns:1fr; } }
+  .scrollfig { overflow-x:auto; }
+</style></head><body><main>
+<header class="masthead"><p style="margin:0 0 .4rem"><a href="index.html" style="text-decoration:none">← project hub</a></p>
+<h1>Warping Fields</h1>
+<p class="subtitle">Interpolate the rigid-inclusion lag through <em>space</em>, not along each net's copper ·
+algorithm A for the rubber stretch · 2026-08-25</p></header>
+
+<div class="callout"><strong>In one paragraph.</strong> The <a href="rubber.html">rubber stretch</a> failed for a
+reason that turned out to be in the algorithm, not in the geometry. Its residual — the lag of a rigid footprint behind
+the ambient dilation — was interpolated along <em>each net's own copper graph</em>, so two traces 0.2&nbsp;mm apart on
+different nets got completely uncorrelated displacements and the gap between them changed by the difference of two
+unrelated residuals. Replacing that with one harmonic displacement field <em>per copper layer</em>, evaluated by
+position for every track, via, pad and zone vertex, removes
+<strong>90% of the DRC damage</strong> at +1%
+(465 → 47 violations) and between
+84% and
+91% across the sweep.
+The +1% board now hands a human <strong>30 sites</strong> (median 6&nbsp;µm, worst
+29&nbsp;µm) instead of 92 (median 15&nbsp;µm, worst 121&nbsp;µm), with
+<code>check_sync</code> IN SYNC and no airwire regression at any k.</div>
+
+<h2 id="why">1 · The bug was the interpolation domain</h2>
+<p>Both engines agree on the physics: a footprint is a rigid chip glued to the sheet, so it translates by the dilation
+of its <em>origin</em> and its pads therefore trail full dilation by (k−1)·|ρ|, where ρ is the pad's offset from that
+origin. That lag has to be blended back into the surrounding copper somewhere, and <em>where</em> is the whole
+question.</p>
+<p>The old engine blended it along the copper graph — the same graph KiCad uses for connectivity. Nothing in that
+construction knows about distance. A trace pinned to a connector's far pad rides the lagging footprint vector; the
+trace running beside it, whose own pins are elsewhere on the board, rides near-pure ambient; and the gap between them
+closes by up to the full lag. Every site in the old census is a different-net pair, every deficit sits in the
+rigid-lag range, and the site count is nearly flat in k while the depth scales — which is exactly the signature of a
+fixed set of pairs straddling a residual discontinuity whose magnitude grows with k.</p>
+<p>A field that is a function of <em>position</em> cannot do that. Neighbouring copper moves together whatever nets it
+belongs to, because it is evaluated at neighbouring points of one continuous field.</p>
+
+<h2 id="video">2 · Watch it happen</h2>
+<p>The whole top layer, stretched 0 → +10% and back, both engines side by side. Copper is coloured by its
+<strong>lag behind the rubber</strong>. On the left, neighbouring traces take unrelated colours and visibly slide past
+each other — that is the shear. On the right, colour varies smoothly with position: parts still lag, but everything
+near them lags <em>with</em> them.</p>
+<figure>
+<video src="img/rubber_stretch.mp4" autoplay loop muted playsinline controls
+       style="width:100%;border-radius:8px;background:#0d1117"></video>
+<figcaption>F.Cu, 0 → +10% → 0, 8&nbsp;s loop. Both engines are exactly linear in (k−1), so each is solved once and
+every frame is a scalar multiple — the animation is exact, not interpolated.</figcaption>
+</figure>
+<figure>
+<video src="img/rubber_stretch_zoom.mp4" autoplay loop muted playsinline controls
+       style="width:100%;border-radius:8px;background:#0d1117"></video>
+<figcaption>The same run zoomed to a 26&nbsp;mm window on the dense corner, where the shear is at trace scale.
+<code>ZOOM=cx,cy,width_mm python3 animate.py</code> re-aims it anywhere.</figcaption>
+</figure>
+
+<h2 id="engine">3 · The field</h2>
+<p><code>hardware/tools/rubber/field.py</code> is a standalone solver — no pcbnew — so it can be reused for the
+steerable "add space here" fields later. It solves, on a regular grid,</p>
+<p class="mono" style="text-align:center">u(x) = ambient(x) + r(x)&nbsp;&nbsp;·&nbsp;&nbsp;u = v<sub>i</sub> inside
+rigid inclusion i&nbsp;&nbsp;·&nbsp;&nbsp;∇²r = 0 in free space&nbsp;&nbsp;·&nbsp;&nbsp;r → 0 on the domain boundary</p>
+<p>with <code>ambient</code> an arbitrary callable (a dilation here, <code>None</code> for a pure push-these-apart
+field) and inclusion vectors arbitrary. Four decisions were forced by measurement rather than taste:</p>
+<ul>
+<li><strong>Territories are pads, not courtyards.</strong> What must stay rigid is a part's pad geometry; copper
+merely passing under a courtyard is free to deform, and a trace under a QFN is exactly that. Courtyard territories
+also make abutting parts fight over the seam cells between them. All pads of one footprint share one vector, so the
+part stays rigid and the space between its own pads comes out rigid for free.</li>
+<li><strong>Plus what the pads enclose.</strong> A morphological closing of each part's own pad set: a trace threading
+a connector's pin field is held on both sides and can do nothing but move with the part. Without it the field sags
+toward ambient between the pins while the pins hold, and shears precisely those traces.</li>
+<li><strong>One field per copper layer.</strong> Clearance rules live inside a layer, never between them, and this
+board is six layers. A single 2-D field forces parts on opposite sides that overlap in projection to fight over the
+same cells — measured here as Y1's pad owned by U16 and U7's by CL1, worth up to 57&nbsp;µm of bogus shear.</li>
+<li><strong>Vias couple the layers, in two passes.</strong> A via barrel is one rigid body piercing the whole stack,
+so it can only be in one place: it takes the mean of what the layers it spans ask for, and then that displacement is
+handed back to every layer as a rigid inclusion and the fields re-solved. Without the second pass a via shears against
+the copper beside it by however much the layers disagreed — which was most of what remained.</li>
+</ul>
+<p>Two discretisation passes keep it honest. A straight segment cannot follow a curved field, so each track is
+subdivided until its chord is within <strong>15&nbsp;µm</strong> of the field
+(134 tracks split, +231 segments at +1%, worst chord sag
+46&nbsp;µm). That is also what holds tee junctions — the 364 track ends resting on a passing
+segment's body, which KiCad connects by overlap and not by topology — and same-net pads crossed mid-body, onto their
+host. And every track end that lands on a pad is pinned to that footprint's vector directly; the field already equals
+it there, so the two agree to <strong>12&nbsp;µm</strong>, which is the honest measure of how
+well the territories cover the pads.</p>
+<p>Each of those four decisions was kept because DRC said so, at +1%, cumulatively:</p>
+<div class="tablewrap"><table><tr><th>engine, cumulative</th><th>violations</th><th>sites</th><th>why</th></tr>
+<tr><td class='mono'>graph-harmonic (before)</td><td class='num'><strong>465</strong></td><td class='num'>257</td><td class='small'>residual interpolated along each net&#x27;s own copper graph</td></tr>
+<tr><td class='mono'>one spatial field, pad territories</td><td class='num'><strong>150</strong></td><td class='num'>107</td><td class='small'>residual interpolated through space; one 2-D field for the whole stack</td></tr>
+<tr><td class='mono'>+ one field per copper layer</td><td class='num'><strong>53</strong></td><td class='num'>48</td><td class='small'>opposite-side parts overlapping in projection stop fighting over cells</td></tr>
+<tr><td class='mono'>+ via barrels coupled in two passes</td><td class='num'><strong>50</strong></td><td class='num'>44</td><td class='small'>every layer agrees with the barrel where it pierces</td></tr>
+<tr><td class='mono'>+ pad-enclosure closing</td><td class='num'><strong>47</strong></td><td class='num'>41</td><td class='small'>a trace threading a pin field is held by the pins on both sides</td></tr>
+</table></div>
+
+<h2 id="admissibility">4 · Does the field close anything, anywhere?</h2>
+<p>The map is F(x) = x + u(x), so a gap between two nearby points survives if and only if the smallest singular value
+of J = I + ∇u is ≥ 1 — a geometry-only test that does not care what copper happens to be there. It is worth knowing
+that the construction is non-contracting <em>by design</em> in the clean case: for a single circular rigid inclusion
+of radius a in a dilation field, the harmonic residual gives exactly</p>
+<p class="mono" style="text-align:center">σ<sub>min</sub> = 1 + (k−1)(1 − a²/r²) ≥ 1 for r ≥ a</p>
+<p>with equality on the inclusion boundary — gaps just outside a part are preserved, and everything further out
+grows. Real footprints are neither circular nor isolated, so the grid map below says how far the board strays from
+that. Read the percentile, not the minimum: harmonic gradients blow up at the sharp corners of a polygonal pad, so
+the global minimum is a corner artifact that gets <em>worse</em> as the grid is refined, while the bulk of the board
+sits just above 1.</p>
+<div class="tablewrap"><table><tr><th>layer</th><th>σ<sub>min</sub></th><th>1st pct</th><th>median</th><th>contracting cells</th></tr>
+<tr><td class='mono'>F.Cu</td><td class='num'>0.632</td><td class='num'>0.9691</td><td class='num'>1.0038</td><td class='num'>23.1%</td></tr>
+<tr><td class='mono'>In1.Cu</td><td class='num'>0.632</td><td class='num'>0.9792</td><td class='num'>1.0069</td><td class='num'>11.3%</td></tr>
+<tr><td class='mono'>In2.Cu</td><td class='num'>0.632</td><td class='num'>0.9792</td><td class='num'>1.0069</td><td class='num'>11.3%</td></tr>
+<tr><td class='mono'>In3.Cu</td><td class='num'>0.632</td><td class='num'>0.9792</td><td class='num'>1.0069</td><td class='num'>11.3%</td></tr>
+<tr><td class='mono'>In4.Cu</td><td class='num'>0.632</td><td class='num'>0.9792</td><td class='num'>1.0069</td><td class='num'>11.3%</td></tr>
+<tr><td class='mono'>B.Cu</td><td class='num'>0.528</td><td class='num'>0.9573</td><td class='num'>1.0034</td><td class='num'>26.1%</td></tr>
+</table></div>
+<p class="small">Grid 0.12 mm. The median is above 1 on every layer — the board is expanding almost
+everywhere — and the sub-1 tail is concentrated on pad rims and in the seams between adjacent pads of different
+parts, where nothing but those two pads lives and they are moving apart anyway.</p>
+
+<h2 id="sweep">5 · Tolerance sweep, head to head</h2>
+<div class="tablewrap"><table>
+<tr><th rowspan="2">stretch</th><th colspan="3">graph-harmonic (before)</th><th colspan="3">spatial field (algorithm A)</th><th rowspan="2">violations<br>removed</th></tr>
+<tr><th>violations</th><th>sites</th><th>worst</th><th>violations</th><th>sites</th><th>worst</th></tr>
+<tr><td class='num'>+0.25%</td><td class='num'>306</td><td class='num'>173</td><td class='num'>23 µm</td><td class='num'><strong>27</strong></td><td class='num'><strong>25</strong></td><td class='num'>7 µm</td><td class='num'>−91%</td></tr>
+<tr><td class='num'>+0.5%</td><td class='num'>374</td><td class='num'>208</td><td class='num'>47 µm</td><td class='num'><strong>37</strong></td><td class='num'><strong>34</strong></td><td class='num'>22 µm</td><td class='num'>−90%</td></tr>
+<tr><td class='num'>+1%</td><td class='num'>465</td><td class='num'>257</td><td class='num'>95 µm</td><td class='num'><strong>47</strong></td><td class='num'><strong>41</strong></td><td class='num'>36 µm</td><td class='num'>−90%</td></tr>
+<tr><td class='num'>+2%</td><td class='num'>532</td><td class='num'>298</td><td class='num'>159 µm</td><td class='num'><strong>56</strong></td><td class='num'><strong>50</strong></td><td class='num'>62 µm</td><td class='num'>−89%</td></tr>
+<tr><td class='num'>+3%</td><td class='num'>612</td><td class='num'>351</td><td class='num'>180 µm</td><td class='num'><strong>99</strong></td><td class='num'><strong>75</strong></td><td class='num'>125 µm</td><td class='num'>−84%</td></tr>
+</table></div>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 220" width="100%" style="max-width:470px" font-family="ui-monospace,monospace" font-size="10">
+<line x1="40" y1="180" x2="462" y2="180" stroke="#888"/><line x1="40" y1="180" x2="40" y2="8" stroke="#888"/>
+<text x="36" y="183.0" text-anchor="end" fill="#888">0</text><line x1="40" y1="180.0" x2="462" y2="180.0" stroke="#8883" stroke-dasharray="2 4"/>
+<text x="36" y="130.1" text-anchor="end" fill="#888">200</text><line x1="40" y1="127.1" x2="462" y2="127.1" stroke="#8883" stroke-dasharray="2 4"/>
+<text x="36" y="77.1" text-anchor="end" fill="#888">400</text><line x1="40" y1="74.1" x2="462" y2="74.1" stroke="#8883" stroke-dasharray="2 4"/>
+<text x="36" y="24.2" text-anchor="end" fill="#888">600</text><line x1="40" y1="21.2" x2="462" y2="21.2" stroke="#8883" stroke-dasharray="2 4"/>
+<rect x="50.0" y="99.0" width="32.2" height="81.0" fill="#b03434" fill-opacity="0.75"><title>+0.25% old: 306</title></rect>
+<text x="66.1" y="96.0" text-anchor="middle" fill="#b03434">306</text>
+<rect x="82.2" y="172.9" width="32.2" height="7.1" fill="#2c7a4b" fill-opacity="0.75"><title>+0.25% new: 27</title></rect>
+<text x="98.2" y="169.9" text-anchor="middle" fill="#2c7a4b">27</text>
+<text x="82.2" y="193" text-anchor="middle" fill="#888">+0.25%</text>
+<rect x="131.6" y="81.0" width="32.2" height="99.0" fill="#b03434" fill-opacity="0.75"><title>+0.5% old: 374</title></rect>
+<text x="147.7" y="78.0" text-anchor="middle" fill="#b03434">374</text>
+<rect x="163.8" y="170.2" width="32.2" height="9.8" fill="#2c7a4b" fill-opacity="0.75"><title>+0.5% new: 37</title></rect>
+<text x="179.8" y="167.2" text-anchor="middle" fill="#2c7a4b">37</text>
+<text x="163.8" y="193" text-anchor="middle" fill="#888">+0.5%</text>
+<rect x="213.2" y="56.9" width="32.2" height="123.1" fill="#b03434" fill-opacity="0.75"><title>+1% old: 465</title></rect>
+<text x="229.3" y="53.9" text-anchor="middle" fill="#b03434">465</text>
+<rect x="245.4" y="167.6" width="32.2" height="12.4" fill="#2c7a4b" fill-opacity="0.75"><title>+1% new: 47</title></rect>
+<text x="261.4" y="164.6" text-anchor="middle" fill="#2c7a4b">47</text>
+<text x="245.4" y="193" text-anchor="middle" fill="#888">+1%</text>
+<rect x="294.8" y="39.2" width="32.2" height="140.8" fill="#b03434" fill-opacity="0.75"><title>+2% old: 532</title></rect>
+<text x="310.9" y="36.2" text-anchor="middle" fill="#b03434">532</text>
+<rect x="327.0" y="165.2" width="32.2" height="14.8" fill="#2c7a4b" fill-opacity="0.75"><title>+2% new: 56</title></rect>
+<text x="343.0" y="162.2" text-anchor="middle" fill="#2c7a4b">56</text>
+<text x="327.0" y="193" text-anchor="middle" fill="#888">+2%</text>
+<rect x="376.4" y="18.0" width="32.2" height="162.0" fill="#b03434" fill-opacity="0.75"><title>+3% old: 612</title></rect>
+<text x="392.5" y="15.0" text-anchor="middle" fill="#b03434">612</text>
+<rect x="408.6" y="153.8" width="32.2" height="26.2" fill="#2c7a4b" fill-opacity="0.75"><title>+3% new: 99</title></rect>
+<text x="424.6" y="150.8" text-anchor="middle" fill="#2c7a4b">99</text>
+<text x="408.6" y="193" text-anchor="middle" fill="#888">+3%</text>
+<rect x="320" y="12" width="9" height="9" fill="#b03434" fill-opacity="0.75"/><text x="333" y="20" fill="#888">graph-harmonic</text>
+<rect x="320" y="26" width="9" height="9" fill="#2c7a4b" fill-opacity="0.75"/><text x="333" y="34" fill="#888">spatial field</text>
+<text x="10" y="110.0" transform="rotate(-90 10 110.0)" text-anchor="middle" fill="#888">new DRC violations</text>
+</svg>
+<p>Both engines measured with the same tool (<code>status.py</code>: DRC, position-independent diff against the
+pre-stretch baseline, site clustering), on the same board, at the same k, before any nudging.
+<code>check_sync</code> reports IN SYNC in all 10 runs. Algorithm A at <strong>+3%</strong> is still
+cleaner than the old engine at <strong>+0.25%</strong> — 99 violations against
+306 — a twelve-fold larger stretch for a third of the damage. The old engine also opens an
+airwire at +3% (55 against a baseline of 54); algorithm A does not
+(54).</p>
+
+<h2 id="handoff">6 · The staged board</h2>
+<p><code>hardware/rp2350_driver_rubber_A.kicad_pcb</code> — +1%, nudged, 52 violations in
+<strong>30 sites</strong> (median 6&nbsp;µm, p90 22&nbsp;µm, worst
+29&nbsp;µm), airwires 53 against a baseline of 54,
+<code>IN SYNC — board matches schematic</code>. The prior pipeline handed over 92 sites at median
+15&nbsp;µm and worst 121&nbsp;µm, so this is roughly a third of the hand work and a quarter of the
+worst deficit. Work it worst-first with <code>python3 hardware/tools/rubber/status.py --board
+hardware/rp2350_driver_rubber_A.kicad_pcb</code>.</p>
+<div class="tablewrap"><table><tr><th>µm</th><th>position</th><th>type</th><th>items</th></tr>
+<tr><td class='num'>29</td><td class='num'>(171.5, 92.9)</td><td>clearance</td><td class='mono small'>Track [A_SENSE] on F.Cu, length 1.7611 mm | Track [/PD_INT] on F.Cu, length 0.3583 mm</td></tr><tr><td class='num'>26</td><td class='num'>(153.7, 94.9)</td><td>clearance</td><td class='mono small'>PTH pad 2 [VMOT] of J9 | Track [C_PWM_H] on In3.Cu, length 1.6697 mm</td></tr><tr><td class='num'>22</td><td class='num'>(167.7, 122.6)</td><td>clearance</td><td class='mono small'>PTH pad 2 [/TXO_INTERBOARD_2] of J8 | Track [/I2C_SCL] on B.Cu, length 2.0747 mm</td></tr><tr><td class='num'>19</td><td class='num'>(171.8, 93.4)</td><td>clearance</td><td class='mono small'>Track [/PD_INT] on F.Cu, length 0.4610 mm | Track [A_SENSE] on F.Cu, length 0.1151 mm</td></tr><tr><td class='num'>19</td><td class='num'>(151.0, 111.2)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on In3.Cu, length 0.4339 mm | PTH pad 1 [VMOT] of C39</td></tr><tr><td class='num'>17</td><td class='num'>(171.4, 92.7)</td><td>clearance</td><td class='mono small'>Track [A_SENSE] on F.Cu, length 1.7611 mm | Pad 2 [GND] of C38 on F.Cu</td></tr><tr><td class='num'>15</td><td class='num'>(170.3, 122.6)</td><td>clearance</td><td class='mono small'>PTH pad 3 [GND] of J8 | Track [/TXO_INTERBOARD_2] on F.Cu, length 1.6641 mm</td></tr><tr><td class='num'>15</td><td class='num'>(153.1, 86.1)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on B.Cu, length 9.5749 mm | PTH pad [&lt;no net&gt;] of J9</td></tr><tr><td class='num'>13</td><td class='num'>(172.1, 94.1)</td><td>clearance</td><td class='mono small'>Track [A_SENSE] on F.Cu, length 0.9122 mm | Track [/PD_INT] on F.Cu, length 0.4610 mm</td></tr><tr><td class='num'>11</td><td class='num'>(152.8, 111.2)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on In3.Cu, length 1.7364 mm | PTH pad 1 [VMOT] of C39</td></tr><tr><td class='num'>10</td><td class='num'>(173.9, 91.6)</td><td>clearance</td><td class='mono small'>Track [/H1_SW] on F.Cu, length 0.9072 mm | Track [/H2_SW] on F.Cu, length 0.2157 mm</td></tr><tr><td class='num'>10</td><td class='num'>(173.9, 92.5)</td><td>clearance</td><td class='mono small'>Track [/H1_SW] on F.Cu, length 0.6099 mm | Track [/H2_SW] on F.Cu, length 0.2157 mm</td></tr><tr><td class='num'>9</td><td class='num'>(153.7, 94.9)</td><td>clearance</td><td class='mono small'>PTH pad 2 [VMOT] of J9 | Track [/E-STOP] on B.Cu, length 2.9586 mm</td></tr><tr><td class='num'>8</td><td class='num'>(165.8, 85.4)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on B.Cu, length 1.0141 mm | Track [/EXT_ANALOG_SW] on B.Cu, length 1.1467 mm</td></tr><tr><td class='num'>6</td><td class='num'>(125.1, 113.5)</td><td>clearance</td><td class='mono small'>Pad 2 [GND] of C66 on B.Cu | Track [Vdrive] on B.Cu, length 0.4403 mm</td></tr><tr><td class='num'>6</td><td class='num'>(187.0, 100.5)</td><td>clearance</td><td class='mono small'>Pad 5 [GND_ISO] of U16 on B.Cu | Track [+5V_ISO] on B.Cu, length 1.4657 mm</td></tr><tr><td class='num'>5</td><td class='num'>(149.5, 117.5)</td><td>clearance</td><td class='mono small'>Track [/HALL1] on In3.Cu, length 1.0431 mm | Track [/MOT_TH] on In3.Cu, length 19.3202 mm</td></tr><tr><td class='num'>5</td><td class='num'>(148.8, 116.8)</td><td>clearance</td><td class='mono small'>Track [/HALL1] on In3.Cu, length 15.5718 mm | Track [/MOT_TH] on In3.Cu, length 19.3202 mm</td></tr><tr><td class='num'>5</td><td class='num'>(165.9, 84.7)</td><td>clearance</td><td class='mono small'>Track [Vdrive] on B.Cu, length 0.5225 mm | Track [/EXT_ANALOG_SW] on B.Cu, length 1.1467 mm</td></tr><tr><td class='num'>4</td><td class='num'>(115.4, 84.2)</td><td>clearance</td><td class='mono small'>Track [+3V3] on B.Cu, length 2.9300 mm | Pad 1 [C_PHASE_SENSE] of R72 on B.Cu</td></tr><tr><td class='num'>4</td><td class='num'>(115.2, 95.3)</td><td>clearance</td><td class='mono small'>Track [+3V3] on B.Cu, length 1.1009 mm | PTH pad [&lt;no net&gt;] of J1</td></tr><tr><td class='num'>3</td><td class='num'>(173.6, 105.8)</td><td>clearance</td><td class='mono small'>Track [Net-(U8-GPIO1)] on F.Cu, length 0.8859 mm | Track [Net-(U8-GPIO0)] on F.Cu, length 1.1785 mm</td></tr><tr><td class='num'>3</td><td class='num'>(161.1, 124.6)</td><td>clearance</td><td class='mono small'>Track [/ENC_B_SW] on In3.Cu, length 6.0160 mm | Track [/ENC_B_DATA] on In3.Cu, length 3.7029 mm</td></tr><tr><td class='num'>2</td><td class='num'>(185.7, 103.7)</td><td>clearance</td><td class='mono small'>Track [/I2C_SCL] on In3.Cu, length 10.3231 mm | Track [/ENC_B_DATA] on In3.Cu, length 4.6044 mm</td></tr><tr><td class='num'>1</td><td class='num'>(135.0, 105.4)</td><td>clearance</td><td class='mono small'>Track [/ENC_C_SW] on In3.Cu, length 17.9271 mm | Via [B_PWM_H] on F.Cu - B.Cu</td></tr><tr><td class='num'>0</td><td class='num'>(151.9, 112.8)</td><td>courtyards_overlap</td><td class='mono small'>Footprint C39 | Footprint J10</td></tr><tr><td class='num'>0</td><td class='num'>(158.7, 94.9)</td><td>courtyards_overlap</td><td class='mono small'>Footprint J9 | Footprint BH1</td></tr><tr><td class='num'>0</td><td class='num'>(158.7, 94.9)</td><td>courtyards_overlap</td><td class='mono small'>Footprint J9 | Footprint C80</td></tr><tr><td class='num'>0</td><td class='num'>(165.2, 122.6)</td><td>courtyards_overlap</td><td class='mono small'>Footprint J8 | Footprint J5</td></tr><tr><td class='num'>0</td><td class='num'>(165.2, 89.9)</td><td>courtyards_overlap</td><td class='mono small'>Footprint J7 | Footprint C38</td></tr></table></div>
+
+<h2 id="next">7 · Where this goes</h2>
+<p>The field solver is deliberately more general than this one use. <code>ambient</code> is any callable and
+inclusion vectors are arbitrary, so the same machinery expresses "push these two parts apart and let the copper
+between them relax harmonically" with no dilation at all — the shape a steerable <em>add space here</em> operator
+needs. The pieces that already exist for that: the σ<sub>min</sub> map is an admissibility oracle that says whether a
+proposed field is legal <em>before</em> DRC runs, and exact linearity in the drive amplitude means a candidate field
+is solved once and then scaled to find the largest legal amount. Combining that with jiggling is the next step; the
+open question is the same one the <a href="creep.html">creep</a> and <a href="modules.html">module</a> work hit — no
+field of any kind reroutes a trace, so the 53 open airwires stay a topological problem.</p>
+
+<p class="small" style="margin-top:2rem">Tooling: <code>hardware/tools/rubber/field.py</code> (solver),
+<code>stretch.py</code> (board application), <code>animate.py</code> (the videos),
+<code>render_field_page.py</code> (this page), <code>field_results.json</code> (its data).
+The superseded graph-harmonic engine is preserved at git <code>cbc2240</code>.</p>
+</main></body></html>
