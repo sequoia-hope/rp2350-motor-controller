@@ -299,7 +299,8 @@ and a worst of {sw['1.01']['new']['mx']}&nbsp;µm. A proposed field can be judge
 pre-stretch baseline, site clustering), on the same board, at the same k, before any nudging.
 <code>check_sync</code> reports IN SYNC in all {2*len(ks)} runs. Algorithm A at <strong>+3%</strong> is still
 cleaner than the old engine at <strong>+0.25%</strong> — {sw['1.03']['new']['viol']} violations against
-{sw['1.0025']['old']['viol']} — a twelve-fold larger stretch for a third of the damage. The old engine also opens an
+{sw['1.0025']['old']['viol']} — a twelve-fold larger stretch for
+{sw['1.0025']['old']['viol']/sw['1.03']['new']['viol']:.0f}× less damage. The old engine also opens an
 airwire at +3% ({sw['1.03']['old']['air']} against a baseline of 54); algorithm A does not
 ({sw['1.03']['new']['air']}).</p>
 
@@ -308,8 +309,8 @@ airwire at +3% ({sw['1.03']['old']['air']} against a baseline of 54); algorithm 
 <strong>{stg['sites']} sites</strong> (median {stg['med']}&nbsp;µm, p90 {stg['p90']}&nbsp;µm, worst
 {stg['mx']}&nbsp;µm), airwires {stg['airwires']} against a baseline of {stg['airwires_base']},
 <code>{html.escape(stg['sync'])}</code>. The prior pipeline handed over {pri['sites']} sites at median
-{pri['med']}&nbsp;µm and worst {pri['mx']}&nbsp;µm, so this is roughly a third of the hand work and a quarter of the
-worst deficit. Work it worst-first with <code>python3 hardware/tools/rubber/status.py --board
+{pri['med']}&nbsp;µm and worst {pri['mx']}&nbsp;µm, so this is {pri['sites']/stg['sites']:.1f}× less hand work at
+{pri['mx']/stg['mx']:.1f}× less worst-case depth. Work it worst-first with <code>python3 hardware/tools/rubber/status.py --board
 hardware/rp2350_driver_rubber_A.kicad_pcb</code>.</p>
 <div class="tablewrap"><table><tr><th>µm</th><th>position</th><th>type</th><th>items</th></tr>
 {site_rows()}</table></div>

@@ -9,12 +9,16 @@ on different nets take unrelated colours and visibly slide past each other,
 which is the F-46 shear; in the right panel colour varies smoothly with
 position, so neighbours move together and gaps survive.
 
-Both engines are exactly linear in (k-1): every pinned residual is
-v_i - ambient(x) = (k-1)(origin_i - x), and both solves are linear.  So each is
+Each engine is drawn with the anchor it actually uses -- the old one translated
+parts by ambient(footprint origin), the new one by ambient(pad centroid) -- so
+this compares them as they are, not a hybrid.
+
+Both are exactly linear in (k-1): every pinned residual is
+v_i - ambient(x) = (k-1)(anchor_i - x), and both solves are linear.  So each is
 solved once at (k-1) = 1 and every frame is a scalar multiple -- the animation
 is exact, not interpolated, and costs two solves in total.  (The courtyard
-relax, which is not linear, is skipped here for that reason; it contributes no
-correction at all below +3% on this board.)
+relax, which is not linear, is skipped here for that reason; it contributes at
+most one sub-micron correction below +3% on this board.)
 
     OUT=... KMAX=0.10 FRAMES=240 FPS=30 H=0.12 python3 animate.py
 """
@@ -53,11 +57,16 @@ def amb1(x, y):                      # ambient at (k-1) = 1
     return (x - CX, y - CY)
 
 # ---- unit footprint vectors -------------------------------------------------
-V1 = {}; npads = {}
+# Each engine gets the anchor it actually uses: the old one translated parts by
+# ambient(footprint origin), the new one by ambient(pad centroid).  Comparing
+# them as they are is the honest comparison.
+V1O = {}; V1 = {}; npads = {}
 for f in bd.GetFootprints():
     r = f.GetReference(); p = f.GetPosition()
-    V1[r] = amb1(p.x * NM, p.y * NM)
-    npads[r] = max(1, len(list(f.Pads())))
+    q = [(pd.GetPosition().x * NM, pd.GetPosition().y * NM) for pd in f.Pads()]
+    V1O[r] = amb1(p.x * NM, p.y * NM)
+    V1[r] = amb1(sum(t[0] for t in q) / len(q), sum(t[1] for t in q) / len(q)) if q else V1O[r]
+    npads[r] = max(1, len(q))
 
 # ---- copper graph (shared by both engines) ----------------------------------
 tracks = [t for t in bd.GetTracks() if t.GetClass() == 'PCB_TRACK']
@@ -73,14 +82,16 @@ for f in bd.GetFootprints():
     for p in f.Pads():
         pb = p.GetBoundingBox()
         pads.append(((pb.GetLeft() * NM, pb.GetTop() * NM,
-                      pb.GetRight() * NM, pb.GetBottom() * NM), p, V1[f.GetReference()]))
+                      pb.GetRight() * NM, pb.GetBottom() * NM), p,
+                     V1[f.GetReference()], V1O[f.GetReference()]))
 
-def pad_hit(x, y, layer, nc):
-    for pb, p, v in pads:
+def pad_hit(x, y, layer, nc, old=False):
+    for pb, p, v, vo in pads:
         if not (pb[0] - 1e-4 <= x <= pb[2] + 1e-4 and pb[1] - 1e-4 <= y <= pb[3] + 1e-4): continue
         if layer is not None and not p.IsOnLayer(layer): continue
         if p.GetNetCode() != nc: continue
-        if p.HitTest(pcbnew.VECTOR2I(int(round(x / NM)), int(round(y / NM)))): return v
+        if p.HitTest(pcbnew.VECTOR2I(int(round(x / NM)), int(round(y / NM)))):
+            return vo if old else v
     return None
 
 via_index = collections.defaultdict(list)
@@ -104,9 +115,9 @@ def find_via(x, y, nc):
     return None
 
 conn = bd.GetConnectivity()
-pad_vec = {}
+pad_vec_old = {}
 for f in bd.GetFootprints():
-    for p in f.Pads(): pad_vec[p.m_Uuid.AsString()] = V1[f.GetReference()]
+    for p in f.Pads(): pad_vec_old[p.m_Uuid.AsString()] = V1O[f.GetReference()]
 
 for t in tracks:
     s, e = t.GetStart(), t.GetEnd(); lay = t.GetLayer(); nc = t.GetNetCode()
@@ -131,13 +142,16 @@ for t in tracks:
 print(f'graph: {len(nodes)} nodes, {len(tracks)} tracks, {len(vias)} vias')
 
 # ---- engine 1: graph-harmonic (the old one, faithful incl. overlap pinning) --
-old_pin = [n['pin'] for n in nodes]
+old_pin = [None] * len(nodes)
+for i, n in enumerate(nodes):
+    if n['pin'] is not None:
+        old_pin[i] = pad_hit(n['x'], n['y'], None, n['net'], old=True)
 for (t, na, nb) in tnodes:
     s, e = t.GetStart(), t.GetEnd()
     try: cpads = list(conn.GetConnectedPads(t))
     except Exception: cpads = []
     for cp in cpads:
-        pv = pad_vec.get(cp.m_Uuid.AsString())
+        pv = pad_vec_old.get(cp.m_Uuid.AsString())
         if pv is None: continue
         pc = cp.GetPosition(); pcx, pcy = pc.x * NM, pc.y * NM
         da = math.hypot(s.x * NM - pcx, s.y * NM - pcy)
@@ -266,7 +280,8 @@ for f in bd.GetFootprints():
             pad_ref.append(r)
         except Exception:
             pass
-PADV = np.array([V1[r] for r in pad_ref]) if pad_ref else np.zeros((0, 2))
+PADV = {'new': np.array([V1[r] for r in pad_ref]) if pad_ref else np.zeros((0, 2)),
+        'old': np.array([V1O[r] for r in pad_ref]) if pad_ref else np.zeros((0, 2))}
 
 edges = []
 for d in bd.GetDrawings():
@@ -353,7 +368,7 @@ def draw(eps):
         art[key]['lc'].set_color(ramp((lag[seg_a] + lag[seg_b]) / 2))
         art[key]['vc'].set_offsets(np.column_stack([px[via_id], py[via_id]]))
         art[key]['vc'].set_color(ramp(lag[via_id]))
-        art[key]['pc'].set_verts([pp + eps * PADV[i] for i, pp in enumerate(pad_polys_view)])
+        art[key]['pc'].set_verts([pp + eps * PADV[key][i] for i, pp in enumerate(pad_polys_view)])
         art[key]['ec'].set_segments([np.column_stack([CX + (e[:, 0] - CX) * (1 + eps),
                                                       CY + (e[:, 1] - CY) * (1 + eps)]) for e in edges])
     sub.set_text(f'{LAYER_NAME}   stretch +{eps*100:5.2f}%   '
