@@ -11,6 +11,7 @@ ROOT = os.path.dirname(HW); REV = os.path.join(ROOT, 'review')
 R = json.load(open(os.path.join(S, 'field_results.json')))
 sw, eng, stg, pri = R['sweep'], R['engine'], R['staged'], R['prior']
 abl = R['ablation']
+prof = R['sigma_profile']
 ks = sorted(sw, key=float)
 
 STYLE = open(os.path.join(REV, 'modules.html')).read()
@@ -81,6 +82,24 @@ def layer_table():
         o.append(f"<tr><td class='mono'>{name}</td><td class='num'>{d['sigma_min']:.3f}</td>"
                  f"<td class='num'>{d['p01']:.4f}</td><td class='num'>{d['p50']:.4f}</td>"
                  f"<td class='num'>{100.0*d['contracting']/max(d['cells'],1):.1f}%</td></tr>")
+    o.append('</table></div>')
+    return '\n'.join(o)
+
+
+def sigma_table():
+    g = R['sigma_profile_gap_mm']
+    o = ['<div class="tablewrap"><table><tr><th>distance from<br>nearest pad</th>'
+         + ''.join(f'<th colspan="3">{n}</th>' for n in prof) + '</tr><tr>'
+         + ''.join('<th>share of<br>contracting</th><th>worst σ</th>'
+                   f'<th>worst loss on<br>a {g} mm gap</th>' for _ in prof) + '</tr>']
+    for i, b in enumerate(prof[list(prof)[0]]['bins']):
+        cells = ''
+        for n in prof:
+            d = prof[n]['bins'][i]
+            cells += (f"<td class='num'>{d['share_bad']:.1f}%</td>"
+                      f"<td class='num'>{d['worst']:.3f}</td>"
+                      f"<td class='num'>{d['loss_um']:.1f} µm</td>")
+        o.append(f"<tr><td class='num'>&gt; {b['thr']:.2f} mm</td>{cells}</tr>")
     o.append('</table></div>')
     return '\n'.join(o)
 
@@ -208,8 +227,29 @@ the global minimum is a corner artifact that gets <em>worse</em> as the grid is 
 sits just above 1.</p>
 {layer_table()}
 <p class="small">Grid {eng['h']} mm. The median is above 1 on every layer — the board is expanding almost
-everywhere — and the sub-1 tail is concentrated on pad rims and in the seams between adjacent pads of different
-parts, where nothing but those two pads lives and they are moving apart anyway.</p>
+everywhere.</p>
+<p>A share of contracting cells is not by itself alarming, because σ<sub>min</sub> = 0.9999 and
+σ<sub>min</sub> = 0.53 both count. What matters is <em>how deep</em> the dip is and <em>where</em> it sits, so
+<code>sigma_probe.py</code> bins it by distance from the nearest rigid territory and converts the depth into what it
+would actually cost a {R['sigma_profile_gap_mm']}&nbsp;mm clearance:</p>
+{sigma_table()}
+<p class="small">The probe solves the <em>pad-only</em> field, without the via inclusions of the second pass, which
+is what isolates the contribution of the rigid parts. That is why its F.Cu minimum reads
+{prof['F.Cu']['bins'][0]['worst']:.3f} where the table above reads {eng['layers']['F.Cu']['sigma_min']:.3f}: the
+difference is entirely the corners of the via octagons, the same artifact and just as shallow in extent. B.Cu is
+dominated by pads either way and reads {prof['B.Cu']['bins'][0]['worst']:.3f} in both.</p>
+<p>Two populations, and only one of them is a pad rim. Contraction <em>is</em> concentrated near pads — on B.Cu only
+{prof['B.Cu']['bins'][-1]['share_bad']:.1f}% of contracting cells lie more than 2&nbsp;mm from one, against
+{prof['B.Cu']['bins'][-1]['share_all']:.1f}% of all cells — but between a tenth and a quarter of it is genuinely out
+in open routing space, so "it is all pad rims" would have been wrong. What makes it harmless there is depth, not
+location: out beyond 1&nbsp;mm the <em>worst</em> cell on either layer costs
+{max(prof[l]['bins'][4]['loss_um'] for l in prof):.0f}&nbsp;µm of a {R['sigma_profile_gap_mm']}&nbsp;mm gap and the
+median costs about {(1-prof['F.Cu']['bins'][4]['median'])*R['sigma_profile_gap_mm']*1000:.1f}&nbsp;µm. The deep
+values — {prof['B.Cu']['bins'][0]['worst']:.2f} on B.Cu — live hard against pad rims, in seams where nothing but
+those two pads lives and they are moving apart anyway.</p>
+<p class="small">This is the map earning its keep as an oracle: it predicts a median cost of well under a micron and
+a worst case of a few tens, and the DRC that follows reports a median deficit of {sw['1.01']['new']['med']}&nbsp;µm
+and a worst of {sw['1.01']['new']['mx']}&nbsp;µm. A proposed field can be judged before it is applied.</p>
 
 <h2 id="sweep">5 · Tolerance sweep, head to head</h2>
 {sweep_table()}

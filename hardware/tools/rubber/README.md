@@ -28,6 +28,9 @@ current engine), `review/rubber.html` (the first attempt and the F-46 census).
                  list worst-first, airwires, check_sync.
     animate.py   side-by-side mp4 of both engines, 0 -> +KMAX -> 0.
                    OUT=... KMAX=0.10 FRAMES=240 ZOOM=cx,cy,width_mm LAYER=F.Cu
+    sigma_probe.py  admissibility: bins sigma_min by distance from the nearest rigid
+                 territory and converts depth into um lost on a reference gap.
+                   KX=1.01 LAYER=F.Cu,B.Cu OUTJ=... python3 sigma_probe.py
     gaps.py      payoff probe: pad gaps at the F-25 boxed-in blockers.
     render_field_page.py + field_results.json  ->  review/field.html
 

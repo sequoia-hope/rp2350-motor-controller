@@ -135,8 +135,36 @@ sits just above 1.</p>
 <tr><td class='mono'>B.Cu</td><td class='num'>0.528</td><td class='num'>0.9573</td><td class='num'>1.0034</td><td class='num'>26.1%</td></tr>
 </table></div>
 <p class="small">Grid 0.12 mm. The median is above 1 on every layer — the board is expanding almost
-everywhere — and the sub-1 tail is concentrated on pad rims and in the seams between adjacent pads of different
-parts, where nothing but those two pads lives and they are moving apart anyway.</p>
+everywhere.</p>
+<p>A share of contracting cells is not by itself alarming, because σ<sub>min</sub> = 0.9999 and
+σ<sub>min</sub> = 0.53 both count. What matters is <em>how deep</em> the dip is and <em>where</em> it sits, so
+<code>sigma_probe.py</code> bins it by distance from the nearest rigid territory and converts the depth into what it
+would actually cost a 0.2&nbsp;mm clearance:</p>
+<div class="tablewrap"><table><tr><th>distance from<br>nearest pad</th><th colspan="3">F.Cu</th><th colspan="3">B.Cu</th></tr><tr><th>share of<br>contracting</th><th>worst σ</th><th>worst loss on<br>a 0.2 mm gap</th><th>share of<br>contracting</th><th>worst σ</th><th>worst loss on<br>a 0.2 mm gap</th></tr>
+<tr><td class='num'>&gt; 0.00 mm</td><td class='num'>83.0%</td><td class='num'>0.938</td><td class='num'>12.3 µm</td><td class='num'>76.2%</td><td class='num'>0.527</td><td class='num'>94.5 µm</td></tr>
+<tr><td class='num'>&gt; 0.15 mm</td><td class='num'>69.7%</td><td class='num'>0.950</td><td class='num'>10.1 µm</td><td class='num'>59.5%</td><td class='num'>0.767</td><td class='num'>46.7 µm</td></tr>
+<tr><td class='num'>&gt; 0.30 mm</td><td class='num'>57.1%</td><td class='num'>0.958</td><td class='num'>8.3 µm</td><td class='num'>45.1%</td><td class='num'>0.881</td><td class='num'>23.8 µm</td></tr>
+<tr><td class='num'>&gt; 0.60 mm</td><td class='num'>37.1%</td><td class='num'>0.970</td><td class='num'>5.9 µm</td><td class='num'>24.9%</td><td class='num'>0.931</td><td class='num'>13.7 µm</td></tr>
+<tr><td class='num'>&gt; 1.00 mm</td><td class='num'>23.1%</td><td class='num'>0.982</td><td class='num'>3.7 µm</td><td class='num'>11.3%</td><td class='num'>0.970</td><td class='num'>6.0 µm</td></tr>
+<tr><td class='num'>&gt; 2.00 mm</td><td class='num'>4.8%</td><td class='num'>0.994</td><td class='num'>1.2 µm</td><td class='num'>0.7%</td><td class='num'>0.994</td><td class='num'>1.2 µm</td></tr>
+</table></div>
+<p class="small">The probe solves the <em>pad-only</em> field, without the via inclusions of the second pass, which
+is what isolates the contribution of the rigid parts. That is why its F.Cu minimum reads
+0.938 where the table above reads 0.632: the
+difference is entirely the corners of the via octagons, the same artifact and just as shallow in extent. B.Cu is
+dominated by pads either way and reads 0.527 in both.</p>
+<p>Two populations, and only one of them is a pad rim. Contraction <em>is</em> concentrated near pads — on B.Cu only
+0.7% of contracting cells lie more than 2&nbsp;mm from one, against
+7.8% of all cells — but between a tenth and a quarter of it is genuinely out
+in open routing space, so "it is all pad rims" would have been wrong. What makes it harmless there is depth, not
+location: out beyond 1&nbsp;mm the <em>worst</em> cell on either layer costs
+6&nbsp;µm of a 0.2&nbsp;mm gap and the
+median costs about 0.2&nbsp;µm. The deep
+values — 0.53 on B.Cu — live hard against pad rims, in seams where nothing but
+those two pads lives and they are moving apart anyway.</p>
+<p class="small">This is the map earning its keep as an oracle: it predicts a median cost of well under a micron and
+a worst case of a few tens, and the DRC that follows reports a median deficit of 4&nbsp;µm
+and a worst of 36&nbsp;µm. A proposed field can be judged before it is applied.</p>
 
 <h2 id="sweep">5 · Tolerance sweep, head to head</h2>
 <div class="tablewrap"><table>
