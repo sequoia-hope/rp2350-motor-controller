@@ -1,5 +1,6 @@
-production
+hardware/encoder/production
 rp2350_driver-backups
+hardware/rev-A/
 tmp/
 __pycache__/
 rp2350_driver_jiggle2*
