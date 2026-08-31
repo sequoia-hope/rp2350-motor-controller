@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rev A — The Board That Shipped — RP2350 Motor Controller</title>
+<style>
+  :root { --bg:#f7f6f3; --panel:#fff; --ink:#1e2126; --muted:#5b6470; --line:#d9d5cc; --accent:#6b4fa0; --good:#2c7a4b; --warn:#a05a00; --bad:#b03434; --code-bg:#efede8; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#16181d; --panel:#1e2128; --ink:#e8e6e1; --muted:#9aa3af; --line:#343945; --accent:#a98fd8; --good:#5cb884; --warn:#e0a44c; --bad:#e06c6c; --code-bg:#262a33; } }
+  * { box-sizing:border-box; } html,body { margin:0; padding:0; }
+  body { background:var(--bg); color:var(--ink); font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  main { max-width:1040px; margin:0 auto; padding:2rem 1.25rem 5rem; }
+  header.masthead { border-bottom:3px solid var(--accent); padding:2.2rem 0 1rem; margin-bottom:1.5rem; }
+  h1 { font-size:1.9rem; line-height:1.2; margin:0 0 .4rem; } .subtitle { color:var(--muted); margin:0; }
+  h2 { font-size:1.45rem; margin:2.8rem 0 .8rem; padding-top:1rem; border-top:1px solid var(--line); } h3 { font-size:1.12rem; margin:1.8rem 0 .5rem; }
+  p { margin:.6rem 0; } a { color:var(--accent); }
+  code,.mono { font-family:ui-monospace,"SF Mono",Consolas,monospace; font-size:.92em; background:var(--code-bg); padding:.08em .35em; border-radius:4px; }
+  pre { background:var(--code-bg); border:1px solid var(--line); border-radius:8px; padding:.8rem 1rem; overflow-x:auto; font-family:ui-monospace,"SF Mono",Consolas,monospace; font-size:.86rem; line-height:1.5; }
+  pre code { background:none; padding:0; }
+  table { border-collapse:collapse; width:100%; margin:1rem 0; font-size:.92rem; } th,td { text-align:left; padding:.4rem .6rem; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); } td.num { text-align:right; font-family:ui-monospace,monospace; }
+  .tablewrap { overflow-x:auto; } .small { font-size:.85rem; color:var(--muted); }
+  .sev { display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.05em; padding:.12em .55em; border-radius:99px; white-space:nowrap; }
+  .sev.high { background:color-mix(in srgb,var(--bad) 16%,transparent); color:var(--bad); } .sev.med { background:color-mix(in srgb,var(--warn) 18%,transparent); color:var(--warn); }
+  .sev.low { background:color-mix(in srgb,var(--muted) 18%,transparent); color:var(--muted); } .sev.good { background:color-mix(in srgb,var(--good) 16%,transparent); color:var(--good); }
+  figure { margin:1.2rem 0; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:1rem; } figure img { max-width:100%; height:auto; display:block; margin:0 auto; border-radius:4px; }
+  figcaption { color:var(--muted); font-size:.88rem; margin-top:.6rem; text-align:center; }
+  .callout { border-left:4px solid var(--accent); background:var(--panel); border-radius:0 8px 8px 0; padding:.8rem 1rem; margin:1rem 0; } .callout.warn { border-left-color:var(--warn); } .callout.good { border-left-color:var(--good); } .callout.bad { border-left-color:var(--bad); }
+  .cols2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; } @media (max-width:760px) { .cols2 { grid-template-columns:1fr; } }
+</style></head><body><main>
+<header class="masthead"><p style="margin:0 0 .4rem"><a href="index.html" style="text-decoration:none">← project hub</a></p>
+<h1>Rev A — The Board That Shipped</h1>
+<p class="subtitle">The fabricated design, pinned and verified against the gerbers actually sent out · tag <code>rev-A-fab</code> · fab export 2026-05-28</p></header>
+
+<div class="callout">
+<strong>In one paragraph.</strong> The shipped design is commit <code>c6b9b75</code> (2026-05-26), now tagged <strong><code>rev-A-fab</code></strong>. The gerbers that were actually manufactured live in <code>hardware/production/</code> — until 2026-08-30 that directory was <em>gitignored</em>, so the shipped board existed in exactly one untracked copy on one disk. It is now tracked. The mainline board file on branch <code>rev-b-fixes</code> is <strong>not</strong> this design: it carries 33 added parts, ~1000 extra track segments and a 1&nbsp;mm wider outline, and is not fully routed.
+</div>
+
+<h2 id="what">1 · What shipped, and where it lives</h2>
+<div class="tablewrap"><table>
+<tr><th>Thing</th><th>Where</th><th>Detail</th></tr>
+<tr><td>Fab package</td><td class="mono">hardware/production/RP2350_Integrated_Driver_1.zip</td><td>17 files: 6 copper layers, silk/mask/paste both sides, Edge.Cuts, PTH + NPTH drills &amp; maps. Exported 2026-05-28 10:19.<br><span class="small mono">sha256 ddc0767d1ee1334dfa10a62f1e53c09607a79368606ddec4929adee6a5f0e5a8</span></td></tr>
+<tr><td>Assembly data</td><td class="mono">hardware/production/</td><td><code>bom.csv</code>, <code>positions.csv</code> (245 placed parts, DNP excluded), <code>designators.csv</code>, <code>netlist.ipc</code></td></tr>
+<tr><td>Prior fab runs</td><td class="mono">hardware/production/backups/</td><td>17 earlier exports, 2024-11-16 → 2026-05-28</td></tr>
+<tr><td>Source board</td><td class="mono">git show rev-A-fab:hardware/rp2350_driver.kicad_pcb</td><td>tag → <code>c6b9b75</code> "remove incorrect max voltage silk", 2026-05-26 23:47</td></tr>
+</table></div>
+
+<h3>Getting the board file back</h3>
+<pre><code>mkdir -p hardware/rev-A
+git show rev-A-fab:hardware/rp2350_driver.kicad_pcb &gt; hardware/rev-A/rp2350_driver.kicad_pcb
+git show rev-A-fab:hardware/rp2350_driver.kicad_pro &gt; hardware/rev-A/rp2350_driver.kicad_pro   # DRC needs this
+pcbnew hardware/rev-A/rp2350_driver.kicad_pcb</code></pre>
+<p class="small"><code>hardware/rev-A/</code> is gitignored on purpose — it is fully reproducible from the tag, so it should never become a second source of truth.</p>
+
+<h2 id="verify">2 · Proof the tag is the fab source</h2>
+<p>Two independent checks. First, every one of the <strong>245 designators</strong> in the shipped <code>positions.csv</code> resolves to a footprint on the tagged board — nothing placed was missing from it.</p>
+<p>Second, the gerbers were <strong>re-plotted from the tagged board</strong> with KiCad 9.0.8 and compared to the ones in the shipped zip, coordinate stream only (headers and aperture-table ordering ignored, since they carry timestamps and plotter-version detail):</p>
+<div class="tablewrap"><table>
+<tr><th>Layer</th><th class="num">Coord lines</th><th>Result</th></tr>
+<tr><td class="mono">Edge_Cuts</td><td class="num">15</td><td><span class="sev good">IDENTICAL</span></td></tr>
+<tr><td class="mono">B_Cu</td><td class="num">5754</td><td><span class="sev good">IDENTICAL</span></td></tr>
+<tr><td class="mono">In1_Cu</td><td class="num">13502</td><td><span class="sev good">IDENTICAL</span></td></tr>
+<tr><td class="mono">In2_Cu</td><td class="num">2111</td><td><span class="sev good">IDENTICAL</span></td></tr>
+<tr><td class="mono">In3_Cu</td><td class="num">2208</td><td><span class="sev good">IDENTICAL</span></td></tr>
+<tr><td class="mono">In4_Cu</td><td class="num">13502</td><td><span class="sev good">IDENTICAL</span></td></tr>
+<tr><td class="mono">F_Silkscreen</td><td class="num">4751</td><td><span class="sev good">IDENTICAL</span></td></tr>
+<tr><td class="mono">B_Silkscreen</td><td class="num">7282</td><td><span class="sev good">IDENTICAL</span></td></tr>
+<tr><td class="mono">F_Mask</td><td class="num">375</td><td><span class="sev good">IDENTICAL</span></td></tr>
+<tr><td class="mono">B_Mask</td><td class="num">619</td><td><span class="sev good">IDENTICAL</span></td></tr>
+<tr><td class="mono">F_Paste</td><td class="num">413</td><td><span class="sev good">IDENTICAL</span></td></tr>
+<tr><td class="mono">B_Paste</td><td class="num">543</td><td><span class="sev good">IDENTICAL</span></td></tr>
+<tr><td class="mono">F_Cu</td><td class="num">14391</td><td><span class="sev low">61 vertices differ</span></td></tr>
+</table></div>
+<div class="callout warn">
+<strong>The one difference, stated honestly.</strong> F.Cu differs at <strong>61 vertices out of 14,391</strong>, all inside a single 21.2 × 3.2&nbsp;mm strip (X 164.6–185.8, Y 119.3–122.5&nbsp;mm) near the bottom edge. The deviations are ~5&nbsp;µm vertex shifts plus a few added/dropped points along a fill boundary — the signature of a <strong>zone re-fill under a different KiCad point release</strong>, not a design edit. All 56 zones are otherwise bit-identical across six copper layers, and no track, pad, drill or outline coordinate moved anywhere on the board. Worth knowing if you ever re-plot rev A: <em>plot from the shipped zip, not from a re-fill</em>, if you want the exact manufactured artwork.
+</div>
+
+<h2 id="board">3 · The board</h2>
+<div class="cols2">
+<figure><img src="img/revA/revA_3d_top.png" alt="3D render of the rev-A board, top side"><figcaption>Rev A, top — rendered from the tagged board file. Note the <code>80V max</code> silk near J9: <code>c6b9b75</code> removed a duplicate <code>53V max</code> label, not this one.</figcaption></figure>
+<figure><img src="img/revA/revA_3d_bottom.png" alt="3D render of the rev-A board, bottom side"><figcaption>Rev A, bottom — the dense side: the four EG3113 gate loops, INA240s, encoder fabric and RP2350.</figcaption></figure>
+</div>
+<div class="cols2">
+<figure><img src="img/revA/revA_front.svg" alt="rev-A front copper, silk and mask plot"><figcaption>Front: F.Cu + F.Silkscreen + F.Mask + Edge.Cuts, plotted from the tag.</figcaption></figure>
+<figure><img src="img/revA/revA_back.svg" alt="rev-A back copper, silk and mask plot, mirrored"><figcaption>Back (mirrored): B.Cu + B.Silkscreen + B.Mask + Edge.Cuts.</figcaption></figure>
+</div>
+
+<h2 id="vitals">4 · Vitals, and what rev-B has changed since</h2>
+<div class="tablewrap"><table>
+<tr><th>Measure</th><th class="num">Rev A (shipped)</th><th class="num">rev-b-fixes @ dc01bf7</th><th>Delta</th></tr>
+<tr><td>Footprints</td><td class="num">291</td><td class="num">323</td><td>+33 added, −1 removed</td></tr>
+<tr><td>Track segments</td><td class="num">3984</td><td class="num">4940</td><td>+956</td></tr>
+<tr><td>Vias</td><td class="num">493</td><td class="num">617</td><td>+124</td></tr>
+<tr><td>Board outline</td><td class="num">76.0 × 46.4 mm</td><td class="num">77.0 × 46.4 mm</td><td>west edge 112.5 → 111.5 mm</td></tr>
+<tr><td>Copper layers</td><td class="num">6</td><td class="num">6</td><td>—</td></tr>
+<tr><td>Routing state</td><td>complete, manufactured</td><td>54 airwires open</td><td><span class="sev med">not fab-ready</span></td></tr>
+</table></div>
+<p><strong>Added on rev-b-fixes:</strong> <code class="mono">U30 U31 U32 U33</code> (encoder termination switches), <code class="mono">Q6</code> (E-stop FET, DNP), <code class="mono">JP2</code>, <code class="mono">D30 D31</code>, <code class="mono">R97–R115</code>, <code class="mono">C110–C115</code>. <strong>Removed:</strong> <code class="mono">C79</code>.</p>
+<p>The 1&nbsp;mm outline extension came from <code>1dd84be</code> (encoder-edge extension for the morph gate). It alone makes the current file a different physical part — it will not panelize or fit a rev-A enclosure.</p>
+
+<div class="callout bad">
+<strong>Do not fabricate from <code>hardware/rp2350_driver.kicad_pcb</code> on this branch.</strong> Rev-B work has been landing in the mainline filename since 2026-08-08. The fab-ready design is the tag, and the fab-ready <em>artwork</em> is the zip.
+</div>
+
+<footer style="margin-top:3rem; color:var(--muted); font-size:.85rem; border-top:1px solid var(--line); padding-top:1rem">
+Page generated 2026-08-30. Verification re-runnable from the repo: extract the tag, re-plot with <code>kicad-cli pcb export gerbers</code>, compare coordinate streams against <code>hardware/production/RP2350_Integrated_Driver_1.zip</code>.
+</footer>
+</main></body></html>
