@@ -1,0 +1,88 @@
+(footprint "TestPoint_Pad_D1.5mm_no_courtyard"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(descr "1.5 mm probe pad, no courtyard")
+	(tags "test point SMD pad")
+	(property "Reference" "REF**"
+		(at -2.85 -0.098 0)
+		(layer "F.SilkS")
+		(uuid "ff938e65-05bc-4466-8cc6-87fa949c3fd9")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "TestPoint"
+		(at 0 1.75 0)
+		(layer "F.Fab")
+		(uuid "31807e15-7fb6-44da-bd46-b5f8b7ed98e1")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" "~"
+		(at 0 0 180)
+		(unlocked yes)
+		(layer "B.Fab")
+		(hide yes)
+		(uuid "a304b009-f62f-420a-9288-0198135ba1e5")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 180)
+		(unlocked yes)
+		(layer "B.Fab")
+		(hide yes)
+		(uuid "5d855830-f2e8-49cd-b8e1-a067fc2f9165")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(attr exclude_from_pos_files dnp)
+	(fp_circle
+		(center 0 0)
+		(end 0 0.95)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.SilkS")
+		(uuid "c3affc2e-35e7-4517-9dd0-ce510de99784")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 -1.65 0)
+		(layer "F.Fab")
+		(uuid "a5de96c2-1549-429e-adaf-143f4b5c626c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd circle
+		(at 0 0)
+		(size 1.5 1.5)
+		(layers "F.Cu" "F.Mask")
+		(uuid "5b7fd194-a8f1-426e-ba31-5aded914b5dd")
+	)
+	(embedded_fonts no)
+)
