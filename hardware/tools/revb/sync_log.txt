@@ -1,0 +1,15 @@
+loaded /home/sequoia/pcb/rp2350-motor-controller-rev-b-lean/hardware/rp2350_driver.kicad_pcb
+1. ripped 60 segments/vias on ['Net-(JP1-A)', 'Net-(Q5-G)', 'Net-(U29-VCAP)', 'VBUS'] in the work box
+2. deleted C79 and 0 adjacent stub segments
+3. removing old U29 (Package_TO_SOT_SMD:SOT-23-6)
+  placed U29  Package_SO:MSOP-8_3x3mm_P0.65mm        at (167.745,95.825) rot 0 B.Cu
+3. removing old Q5 (Package_TO_SOT_SMD:SOT-89-3)
+  placed Q5   parts:PowerPAK_SO-8_123                at (170.400,103.325) rot 180 B.Cu
+  placed D31  Diode_SMD:D_SOD-123F                   at (183.725,111.605) rot 180 F.Cu
+5. U11 pad 5: VBUS -> +3V3
+6. moved TP15 (173.375,105.825) -> (170.375,107.325) d=3.35mm, ripped 6 stub segs
+6. moved TP17 (174.075,100.975) -> (172.825,97.975) d=3.25mm, ripped 2 stub segs
+7. ripped 16 further segments crossing the new pads
+8. pad-level verification: 0 conflict(s)
+9. refilled 34 zones
+saved /home/sequoia/pcb/rp2350-motor-controller-rev-b-lean/hardware/rp2350_driver.kicad_pcb
