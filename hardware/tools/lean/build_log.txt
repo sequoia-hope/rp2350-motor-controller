@@ -1,0 +1,349 @@
+loaded /home/sequoia/pcb/rp2350-motor-controller-rev-b-lean/hardware/rp2350_driver.kicad_pcb: 291 footprints, 4393 tracks/vias; netlist 323 components
+A. net renames
+   Net-(U18-A) -> /ENC_A_TRX_A: 9 items
+   Net-(U18-B) -> /ENC_A_TRX_B: 9 items
+   Net-(U19-A) -> /ENC_B_TRX_A: 8 items
+   Net-(U19-B) -> /ENC_B_TRX_B: 10 items
+   Net-(U20-A) -> /ENC_C_TRX_A: 10 items
+   Net-(U20-B) -> /ENC_C_TRX_B: 9 items
+   Net-(U21-A) -> /ENC_D_TRX_A: 9 items
+   Net-(U21-B) -> /ENC_D_TRX_B: 7 items
+   Net-(U8-GPIO38) -> /TERM_SW: 19 items
+B. pad re-nets (copper on the old net touching the pad is cut)
+   rip B.Cu [/ENC_A_TRX_A] 0.04 mm at (117.465,107.334): R82.2 /ENC_A_TRX_A -> /TERM_A_R
+   rip B.Cu [/ENC_A_TRX_A] 0.78 mm at (117.280,107.480): R82.2 /ENC_A_TRX_A -> /TERM_A_R
+   rip B.Cu [/ENC_A_TRX_A] 0.85 mm at (118.066,107.935): R82.2 /ENC_A_TRX_A -> /TERM_A_R
+   rip B.Cu [/ENC_A_TRX_A] 0.26 mm at (117.465,107.295): R82.2 /ENC_A_TRX_A -> /TERM_A_R
+   R82.2: /ENC_A_TRX_A -> /TERM_A_R, 4 segment(s) cut
+   rip B.Cu [/ENC_B_TRX_A] 0.68 mm at (117.237,125.863): R83.2 /ENC_B_TRX_A -> /TERM_B_R
+   rip B.Cu [/ENC_B_TRX_A] 0.82 mm at (117.715,125.385): R83.2 /ENC_B_TRX_A -> /TERM_B_R
+   R83.2: /ENC_B_TRX_A -> /TERM_B_R, 2 segment(s) cut
+   rip B.Cu [/ENC_C_TRX_A] 0.07 mm at (121.163,105.967): R84.2 /ENC_C_TRX_A -> /TERM_C_R
+   rip B.Cu [/ENC_C_TRX_A] 0.30 mm at (121.215,105.615): R84.2 /ENC_C_TRX_A -> /TERM_C_R
+   rip B.Cu [/ENC_C_TRX_A] 0.62 mm at (121.000,105.400): R84.2 /ENC_C_TRX_A -> /TERM_C_R
+   rip B.Cu [/ENC_C_TRX_A] 0.97 mm at (121.163,106.935): R84.2 /ENC_C_TRX_A -> /TERM_C_R
+   rip B.Cu [/ENC_C_TRX_A] 0.30 mm at (121.215,105.915): R84.2 /ENC_C_TRX_A -> /TERM_C_R
+   R84.2: /ENC_C_TRX_A -> /TERM_C_R, 5 segment(s) cut
+   rip B.Cu [/ENC_D_TRX_A] 0.38 mm at (117.387,103.243): R85.2 /ENC_D_TRX_A -> /TERM_D_R
+   rip B.Cu [/ENC_D_TRX_A] 0.78 mm at (117.115,103.515): R85.2 /ENC_D_TRX_A -> /TERM_D_R
+   rip B.Cu [/ENC_D_TRX_A] 0.85 mm at (117.387,102.397): R85.2 /ENC_D_TRX_A -> /TERM_D_R
+   R85.2: /ENC_D_TRX_A -> /TERM_D_R, 3 segment(s) cut
+   rip F.Cu [Vdrive] 0.66 mm at (179.750,112.200): D1.3 Vdrive -> /LED_VDD
+   rip F.Cu [Vdrive] 0.29 mm at (179.286,111.736): D1.3 Vdrive -> /LED_VDD
+   D1.3: Vdrive -> /LED_VDD, 2 segment(s) cut
+C. values
+   AH1: MOSFETSO-8 -> BSC030N08NS5
+   AL1: MOSFETSO-8 -> BSC030N08NS5
+   BH1: MOSFETSO-8 -> BSC030N08NS5
+   BL1: MOSFETSO-8 -> BSC030N08NS5
+   CH1: MOSFETSO-8 -> BSC030N08NS5
+   CH2: MOSFETSO-8 -> BSC030N08NS5
+   CL1: MOSFETSO-8 -> BSC030N08NS5
+   CL2: MOSFETSO-8 -> BSC030N08NS5
+   D5: SMDJ85A -> SMDJ64A
+   D9: SMAJ51A -> SMAJ64A
+   D13: SMAJ51A -> SMAJ64A
+   D17: SMAJ51A -> SMAJ64A
+   D21: SMAJ51A -> SMAJ64A
+D. footprint swaps to the rev-b-lean library parts
+   C10   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 0
+   C105  Capacitor_SMD:C_0805_2012Metric          -> parts:C_0805_2012Metric_JLC rot 90
+   C106  Capacitor_SMD:C_0805_2012Metric          -> parts:C_0805_2012Metric_JLC rot -90
+   C107  Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 90
+   C108  Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C12   Capacitor_SMD:C_0805_2012Metric          -> parts:C_0805_2012Metric_JLC rot 90
+   C13   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -45
+   C14   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 135
+   C15   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 0
+   C16   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0402_1005Metric_JLC rot 0
+   C19   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C2    Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 90
+   C20   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -45
+   C21   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 45
+   C22   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 45
+   C23   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 0
+   C24   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 135
+   C25   Capacitor_SMD:C_0805_2012Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C26   Capacitor_SMD:C_0805_2012Metric          -> parts:C_0402_1005Metric_JLC rot -90
+   C27   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 0
+   C28   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 0
+   C29   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0402_1005Metric_JLC rot 0
+   C3    Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C30   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -135
+   C31   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 0
+   C32   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 45
+   C33   Capacitor_SMD:C_0805_2012Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C34   Capacitor_SMD:C_0805_2012Metric          -> parts:C_0402_1005Metric_JLC rot -90
+   C35   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -45
+   C36   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 0
+   C37   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -45
+   C38   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 135
+   C4    Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -45
+   C40   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C41   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -45
+   C43   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 90
+   C45   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 135
+   C46   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -45
+   C47   Capacitor_SMD:C_0805_2012Metric          -> parts:C_0805_2012Metric_JLC rot 180
+   C48   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot -90
+   C49   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C5    Capacitor_SMD:C_0805_2012Metric          -> parts:C_0805_2012Metric_JLC rot 0
+   C50   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C51   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 0
+   C52   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -90
+   C53   Capacitor_SMD:C_0805_2012Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C54   Capacitor_SMD:C_0805_2012Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C55   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 0
+   C56   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C57   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 180
+   C58   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot -90
+   C59   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -90
+   C6    Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 0
+   C60   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -90
+   C61   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 0
+   C62   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 90
+   C63   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 90
+   C64   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 90
+   C65   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 90
+   C66   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 0
+   C67   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 90
+   C68   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -90
+   C69   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 90
+   C7    Capacitor_SMD:C_0805_2012Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C70   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot -90
+   C71   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 0
+   C72   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 90
+   C73   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -90
+   C74   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot -90
+   C75   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot -90
+   C76   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C77   Capacitor_SMD:C_0402_1005Metric          -> parts:C_0402_1005Metric_JLC rot 180
+   C78   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 0
+   C81   Capacitor_SMD:C_0603_1608Metric          -> parts:C_0603_1608Metric_JLC rot 45
+   C9    Capacitor_SMD:C_0805_2012Metric          -> parts:C_0402_1005Metric_JLC rot -90
+   D1    RP2040_minimal:LED_WS2812_3528_3.5x2.8mm_P1.5mm -> parts:LED_WS2812B-2020_PLCC4_2.0x2.0mm_MotorBuck rot -90
+   R1    Resistor_SMD:R_0603_1608Metric           -> parts:R_0402_1005Metric_JLC rot 105
+   R10   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R11   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R12   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot -90
+   R13   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 0
+   R14   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R15   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 0
+   R17   Resistor_SMD:R_0805_2012Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R18   Resistor_SMD:R_0805_2012Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R2    Resistor_SMD:R_0603_1608Metric           -> parts:R_0402_1005Metric_JLC rot 135
+   R21   Resistor_SMD:R_0603_1608Metric           -> parts:R_0402_1005Metric_JLC rot 135
+   R22   Resistor_SMD:R_0603_1608Metric           -> parts:R_0402_1005Metric_JLC rot 135
+   R24   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 180
+   R25   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R26   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 45
+   R27   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R28   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot -90
+   R29   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R30   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R31   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot -90
+   R32   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 45
+   R33   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 0
+   R34   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 45
+   R35   Resistor_SMD:R_0603_1608Metric           -> parts:R_0402_1005Metric_JLC rot 135
+   R36   Resistor_SMD:R_0603_1608Metric           -> parts:R_0402_1005Metric_JLC rot 135
+   R37   Resistor_SMD:R_0805_2012Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R38   Resistor_SMD:R_0805_2012Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R41   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R42   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R43   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot -90
+   R44   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R45   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R46   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot -90
+   R47   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 0
+   R48   Resistor_SMD:R_0805_2012Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R49   Resistor_SMD:R_0603_1608Metric           -> parts:R_0402_1005Metric_JLC rot 180
+   R5    Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 0
+   R50   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 45
+   R51   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 45
+   R52   Resistor_SMD:R_0805_2012Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R53   Resistor_SMD:R_0603_1608Metric           -> parts:R_0402_1005Metric_JLC rot -90
+   R54   Resistor_SMD:R_0603_1608Metric           -> parts:R_0402_1005Metric_JLC rot 0
+   R57   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 0
+   R58   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 0
+   R59   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R6    Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot -90
+   R60   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R61   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R62   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R63   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R64   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R65   Resistor_SMD:R_0603_1608Metric           -> parts:R_0402_1005Metric_JLC rot 135
+   R66   Resistor_SMD:R_0603_1608Metric           -> parts:R_0402_1005Metric_JLC rot 135
+   R67   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R68   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R69   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R70   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R71   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R72   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R73   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R74   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R75   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot -90
+   R76   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 90
+   R77   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R78   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 0
+   R79   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 0
+   R8    Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 180
+   R80   Resistor_SMD:R_0805_2012Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R81   Resistor_SMD:R_0805_2012Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R82   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 90
+   R83   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 90
+   R84   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 0
+   R85   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 0
+   R86   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 180
+   R87   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 180
+   R88   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot -90
+   R89   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot -90
+   R9    Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 180
+   R90   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 0
+   R91   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot -90
+   R92   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 180
+   R93   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 90
+   R94   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot 90
+   R95   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot -90
+   R96   Resistor_SMD:R_0402_1005Metric           -> parts:R_0402_1005Metric_JLC rot -90
+   TH1   Resistor_SMD:R_0603_1608Metric           -> parts:R_0603_1608Metric_JLC rot 0
+   TP12  TestPoint:TestPoint_Pad_D1.0mm           -> parts:TestPoint_Pad_D1.0mm_no_courtyard rot 180
+   TP13  TestPoint:TestPoint_Pad_D1.0mm           -> parts:TestPoint_Pad_D1.0mm_no_courtyard rot 180
+   TP14  TestPoint:TestPoint_Pad_D1.0mm           -> parts:TestPoint_Pad_D1.0mm_no_courtyard rot 180
+   TP15  TestPoint:TestPoint_Pad_D1.0mm           -> parts:TestPoint_Pad_D1.0mm_no_courtyard rot 180
+   TP16  TestPoint:TestPoint_Pad_D1.0mm           -> parts:TestPoint_Pad_D1.0mm_no_courtyard rot 180
+   TP17  TestPoint:TestPoint_Pad_D1.0mm           -> parts:TestPoint_Pad_D1.0mm_no_courtyard rot 180
+   TP18  TestPoint:TestPoint_Pad_D1.0mm           -> parts:TestPoint_Pad_D1.0mm_no_courtyard rot 180
+   TP19  TestPoint:TestPoint_Pad_D1.0mm           -> parts:TestPoint_Pad_D1.0mm_no_courtyard rot 180
+   TP20  TestPoint:TestPoint_Pad_D1.0mm           -> parts:TestPoint_Pad_D1.0mm_no_courtyard rot 180
+   TP8   TestPoint:TestPoint_Keystone_5019_Minature -> parts:TestPoint_Pad_D1.5mm_no_courtyard rot -90
+   U13   Package_TO_SOT_SMD:SOT-363_SC-70-6       -> parts:SOT-363_SC-70-6_JLC rot 90
+   U14   Package_TO_SOT_SMD:SOT-363_SC-70-6       -> parts:SOT-363_SC-70-6_JLC rot 90
+   U15   Package_TO_SOT_SMD:SOT-363_SC-70-6       -> parts:SOT-363_SC-70-6_JLC rot 0
+   U17   Package_TO_SOT_SMD:SOT-363_SC-70-6       -> parts:SOT-363_SC-70-6_JLC rot 180
+   U22   Package_TO_SOT_SMD:SOT-363_SC-70-6       -> parts:SOT-363_SC-70-6_JLC rot 0
+   U23   Package_TO_SOT_SMD:SOT-363_SC-70-6       -> parts:SOT-363_SC-70-6_JLC rot 0
+   U24   Package_TO_SOT_SMD:SOT-363_SC-70-6       -> parts:SOT-363_SC-70-6_JLC rot -90
+   U25   Package_TO_SOT_SMD:SOT-363_SC-70-6       -> parts:SOT-363_SC-70-6_JLC rot -90
+   U26   Package_TO_SOT_SMD:SOT-363_SC-70-6       -> parts:SOT-363_SC-70-6_JLC rot 0
+   U27   Package_TO_SOT_SMD:SOT-363_SC-70-6       -> parts:SOT-363_SC-70-6_JLC rot 0
+   stub C16.1 [+3V3] B.Cu (128.925,108.079) -> pad, w=0.56
+   stub C16.1 [+3V3] B.Cu (129.185,107.819) -> pad, w=0.56
+   stub C16.2 [GND] B.Cu (130.735,107.819) -> pad, w=0.56
+   stub C19.1 [+3V3] B.Cu (147.420,84.295) -> pad, w=0.56
+   stub C19.2 [GND] B.Cu (145.870,84.295) -> pad, w=0.56
+   stub C25.1 [Net-(C25-Pad1)] F.Cu (144.419,103.520) -> pad, w=0.56
+   stub C25.1 [Net-(C25-Pad1)] F.Cu (144.519,103.420) -> pad, w=0.56
+   stub C25.2 [/B_P] F.Cu (142.619,103.420) -> pad, w=0.56
+   stub C26.1 [Net-(C26-Pad1)] F.Cu (137.445,103.181) -> pad, w=0.56
+   stub C26.1 [Net-(C26-Pad1)] F.Cu (137.564,103.300) -> pad, w=0.56
+   stub C29.1 [+3V3] B.Cu (131.765,95.400) -> pad, w=0.40
+   stub C29.1 [+3V3] B.Cu (131.830,95.465) -> pad, w=0.56
+   stub C29.2 [GND] B.Cu (133.380,95.465) -> pad, w=0.40
+   stub C33.1 [Net-(C33-Pad1)] F.Cu (144.396,91.805) -> pad, w=0.56
+   stub C33.1 [Net-(C33-Pad1)] F.Cu (144.566,91.635) -> pad, w=0.56
+   stub C33.2 [/C_P] F.Cu (142.591,91.710) -> pad, w=0.56
+   stub C33.2 [/C_P] F.Cu (142.666,91.635) -> pad, w=0.56
+   stub C34.1 [Net-(C34-Pad1)] F.Cu (137.509,91.455) -> pad, w=0.56
+   stub C34.1 [Net-(C34-Pad1)] F.Cu (137.684,91.630) -> pad, w=0.56
+   stub C40.1 [+3V3] B.Cu (126.438,84.354) -> pad, w=0.56
+   stub C40.1 [+3V3] B.Cu (126.438,84.790) -> pad, w=0.56
+   stub C40.2 [GND] B.Cu (124.535,84.790) -> pad, w=0.40
+   stub C40.2 [GND] B.Cu (124.888,84.790) -> pad, w=0.40
+   stub C53.1 [Net-(C53-Pad1)] F.Cu (143.645,127.020) -> pad, w=0.56
+   stub C53.2 [/D] F.Cu (141.645,127.120) -> pad, w=0.56
+   stub C53.2 [/D] F.Cu (141.745,127.020) -> pad, w=0.56
+   stub C54.1 [Net-(C54-Pad1)] F.Cu (136.330,127.120) -> pad, w=0.56
+   stub C54.2 [GND] F.Cu (134.430,127.120) -> pad, w=0.56
+   stub C7.1 [Net-(C7-Pad1)] F.Cu (144.491,115.250) -> pad, w=0.56
+   stub C7.2 [/A_P] F.Cu (142.561,115.220) -> pad, w=0.56
+   stub C7.2 [/A_P] F.Cu (142.591,115.250) -> pad, w=0.56
+   stub C9.1 [Net-(C9-Pad1)] F.Cu (137.309,115.000) -> pad, w=0.56
+   stub D1.1 [GND] F.Cu (177.050,110.700) -> pad, w=0.20
+   stub D1.2 [/LED] F.Cu (177.050,112.200) -> pad, w=0.30
+   stub R1.1 [GND] B.Cu (175.005,110.118) -> pad, w=0.20
+   stub R1.1 [GND] B.Cu (175.105,110.218) -> pad, w=0.20
+   stub R1.2 [A_PWM_H] B.Cu (174.578,108.525) -> pad, w=0.20
+   stub R2.1 [GND] B.Cu (178.057,111.198) -> pad, w=0.20
+   stub R2.2 [A_PWM_L\] B.Cu (176.890,110.032) -> pad, w=0.16
+   stub R21.1 [GND] B.Cu (179.143,110.112) -> pad, w=0.20
+   stub R21.2 [B_PWM_H] B.Cu (177.932,108.990) -> pad, w=0.20
+   stub R21.2 [B_PWM_H] B.Cu (177.977,108.946) -> pad, w=0.20
+   stub R22.1 [GND] B.Cu (180.646,109.380) -> pad, w=0.20
+   stub R22.2 [B_PWM_L\] B.Cu (179.479,108.213) -> pad, w=0.20
+   stub R35.1 [GND] B.Cu (181.763,108.333) -> pad, w=0.20
+   stub R35.1 [GND] B.Cu (181.771,108.342) -> pad, w=0.20
+   stub R35.1 [GND] B.Cu (181.771,108.474) -> pad, w=0.20
+   stub R35.1 [GND] B.Cu (181.832,108.535) -> pad, w=0.20
+   stub R35.2 [C_PWM_H] B.Cu (180.420,107.342) -> pad, w=0.20
+   stub R35.2 [C_PWM_H] B.Cu (180.596,107.166) -> pad, w=0.20
+   stub R36.1 [GND] B.Cu (182.415,106.841) -> pad, w=0.20
+   stub R36.2 [C_PWM_L\] B.Cu (181.248,105.674) -> pad, w=0.20
+   stub R49.1 [/TH1_SENSE] B.Cu (165.315,92.610) -> pad, w=0.20
+   stub R49.2 [GND] B.Cu (163.665,92.610) -> pad, w=0.20
+   stub R49.2 [GND] B.Cu (163.678,92.610) -> pad, w=0.20
+   stub R49.2 [GND] B.Cu (164.018,92.950) -> pad, w=0.20
+   stub R53.1 [Net-(U8-GPIO1)] B.Cu (172.710,115.110) -> pad, w=0.20
+   stub R53.2 [RXI_DEBUG] B.Cu (172.710,116.760) -> pad, w=0.20
+   stub R54.1 [Net-(U8-GPIO0)] B.Cu (168.410,114.430) -> pad, w=0.20
+   stub R54.2 [TXO_DEBUG] B.Cu (170.060,114.339) -> pad, w=0.20
+   stub R54.2 [TXO_DEBUG] B.Cu (170.060,114.430) -> pad, w=0.20
+   stub R65.1 [GND] B.Cu (183.501,105.755) -> pad, w=0.20
+   stub R65.2 [D_PWM_H] B.Cu (182.069,104.853) -> pad, w=0.20
+   stub R65.2 [D_PWM_H] B.Cu (182.334,104.588) -> pad, w=0.20
+   stub R66.1 [GND] B.Cu (184.273,104.472) -> pad, w=0.20
+   stub R66.1 [GND] B.Cu (184.273,104.677) -> pad, w=0.20
+   stub R66.1 [GND] B.Cu (184.331,104.415) -> pad, w=0.20
+   stub R66.1 [GND] B.Cu (184.474,104.559) -> pad, w=0.20
+   stub R66.2 [D_PWM_L\] B.Cu (183.113,103.248) -> pad, w=0.16
+   stub R66.2 [D_PWM_L\] B.Cu (183.164,103.248) -> pad, w=0.16
+   182 swapped; 955 endpoints were on-pad, 105 stranded, 70 stub(s) added
+   rip B.Cu [GND] 0.85 mm at (118.000,106.645): R82 pads changed
+   rip B.Cu [GND_ISO] 2.55 mm at (172.121,115.900): R53 pads changed
+   rip F.Cu [GND] 0.93 mm at (178.500,110.700): D1 pads changed
+   rip F.Cu [GND] 1.45 mm at (177.050,110.700): D1 pads changed
+   rip via [GND] at (178.796,112.469): D1 pads changed
+   rip F.Cu [Vdrive] 0.33 mm at (178.999,111.736): D1 pads changed
+   rip B.Cu [C_SENSE] 0.78 mm at (125.727,84.435): C40 pads changed
+   rip B.Cu [C_SENSE] 1.04 mm at (125.727,85.470): C40 pads changed
+   55 footprint(s) changed pad geometry; 8 foreign track(s)/via(s) ripped
+E. new parts
+   C110  no clean pose within 3.0 mm (['edge']); parking
+   C111  moved 0.25 mm to (126.000,123.250) rot 0: clean (rev-b-fixes pose had ['via:/V_ENC'])
+   C112  at rev-b-fixes pose (124.125,100.125) rot 0 B: clean
+   C113  at rev-b-fixes pose (114.000,91.225) rot 0 B: clean
+   C114  moved 0.25 mm to (180.000,87.250) rot 0: clean (rev-b-fixes pose had ['track:+3V3', 'track:+3V3', 'track:+3V3', 'via:+3V3'])
+   C115  at rev-b-fixes pose (180.200,119.500) rot 90 F: clean
+   D30   at rev-b-fixes pose (184.000,85.500) rot 0 B: clean
+   JP2   at rev-b-fixes pose (169.000,125.550) rot 90 B: clean
+   Q6    at rev-b-fixes pose (178.750,122.500) rot 180 B: clean
+   R97   no clean pose within 3.0 mm (['edge']); parking
+   R98   no clean pose within 3.0 mm (['courtyard:R83', 'courtyard:U19', 'pad:R83.1', 'pad:U19.6', 'pad:U19.7', 'track:/ENC_B_TRX_A']); parking
+   R99   at rev-b-fixes pose (124.000,105.000) rot 0 B: clean
+   R100  no clean pose within 3.0 mm (['courtyard:R91', 'courtyard:R90', 'courtyard:C63', 'pad:R90.1', 'pad:R91.2', 'pad:R90.1']); parking
+   R101  at rev-b-fixes pose (134.500,117.500) rot -90 B: clean
+   R102  at rev-b-fixes pose (131.500,118.000) rot 90 B: clean
+   R103  at rev-b-fixes pose (143.750,107.750) rot 180 B: clean
+   R104  moved 2.36 mm to (128.250,104.250) rot 180: clean (rev-b-fixes pose had ['track:A_SENSE', 'track:A_SENSE', 'track:A_SENSE', 'track:A_SENSE', 'track:A_SENSE', 'track:/EXT_ANALOG_SW'])
+   R105  at rev-b-fixes pose (133.750,127.000) rot 90 B: clean
+   R106  moved 0.75 mm to (130.500,125.750) rot 180: clean (rev-b-fixes pose had ['pad:H4.'])
+   R107  at rev-b-fixes pose (129.000,95.000) rot 90 B: clean
+   R108  at rev-b-fixes pose (161.500,115.000) rot 0 B: clean
+   R109  moved 0.71 mm to (131.000,84.500) rot 180: clean (rev-b-fixes pose had ['pad:H3.'])
+   R110  at rev-b-fixes pose (173.700,125.742) rot 90 B: clean
+   R111  moved 0.25 mm to (177.000,125.750) rot 180: clean (rev-b-fixes pose had ['pad:H2.'])
+   R112  moved 0.50 mm to (176.500,84.500) rot 180: clean (rev-b-fixes pose had ['pad:H1.'])
+   R113  at rev-b-fixes pose (180.000,85.000) rot 0 B: clean
+   R114  at rev-b-fixes pose (177.600,117.500) rot 90 B: clean
+   R115  moved 1.00 mm to (175.250,124.000) rot 0: clean (rev-b-fixes pose had ['courtyard:Q6'])
+   U30   no clean pose within 3.0 mm (['edge']); parking
+   U31   moved 0.25 mm to (126.125,119.500) rot 90: clean (rev-b-fixes pose had ['track:/ENC_C_P', 'track:/ENC_C_P', 'via:/ENC_C_P', 'track:/ENC_C_P', 'via:/ENC_C_P', 'track:/ENC_C_P'])
+   U32   no clean pose within 3.0 mm (['track:+3V3', 'track:+3V3', 'track:B_SENSE', 'track:B_SENSE']); parking
+   U33   no clean pose within 3.0 mm (['edge']); parking
+   parked encoder-termination: U30 U32 U33 R97 R98 R100 C110 at y=131.4
+   placed 25, parked 7
+F. schematic paths
+   35 path(s) set
+G. refilled 34 zones
+saved /home/sequoia/pcb/rp2350-motor-controller-rev-b-lean/hardware/rp2350_driver.kicad_pcb

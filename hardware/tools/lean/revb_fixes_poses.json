@@ -1,0 +1,585 @@
+[
+ {
+  "ref": "C115",
+  "fpid": "Capacitor_SMD:C_1206_3216Metric",
+  "value": "1n 2kV",
+  "x": 180.2,
+  "y": 119.5,
+  "rot": 90.0,
+  "back": false,
+  "path": "/889c04f7-ab14-429c-99d2-ed773c17e58f/ae141d75-9eb1-4e28-bacd-1d40256c5a77",
+  "nets": {
+   "1": "GND_ISO",
+   "2": "Net-(C115-Pad2)"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "D31",
+  "fpid": "Diode_SMD:D_SOD-123F",
+  "value": "SMF24A",
+  "x": 183.725,
+  "y": 111.605,
+  "rot": 180.0,
+  "back": false,
+  "path": "",
+  "nets": {
+   "1": "VBUS",
+   "2": "GND"
+  },
+  "fields": {
+   "LCSC": "C169430"
+  }
+ },
+ {
+  "ref": "R101",
+  "fpid": "R_0402_1005Metric",
+  "value": "100k",
+  "x": 134.5,
+  "y": 117.5,
+  "rot": -90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/V_SW",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R99",
+  "fpid": "R_0402_1005Metric",
+  "value": "10k",
+  "x": 124.0,
+  "y": 105.0,
+  "rot": 0.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "+3V3",
+   "2": "/ENC_C_P_SW"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R107",
+  "fpid": "R_0402_1005Metric",
+  "value": "100k",
+  "x": 129.0,
+  "y": 95.0,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/TH_SW_1",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "Q5",
+  "fpid": "parts:PowerPAK_SO-8_123",
+  "value": "E100N4P0HL1",
+  "x": 170.4,
+  "y": 103.325,
+  "rot": 180.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "VBUS",
+   "2": "Net-(Q5-G)",
+   "3": "Net-(JP1-A)"
+  },
+  "fields": {
+   "LCSC": "C29781176"
+  }
+ },
+ {
+  "ref": "R106",
+  "fpid": "R_0402_1005Metric",
+  "value": "100k",
+  "x": 130.5,
+  "y": 126.5,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/EXT_ANALOG_SW",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "C112",
+  "fpid": "C_0402_1005Metric",
+  "value": "100n",
+  "x": 124.125,
+  "y": 100.125,
+  "rot": 0.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "Vdrive",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "JP2",
+  "fpid": "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm",
+  "value": "Jumper_2_Open",
+  "x": 169.0,
+  "y": 125.55,
+  "rot": 90.0,
+  "back": true,
+  "path": "/889c04f7-ab14-429c-99d2-ed773c17e58f/1ee3dbff-caa8-4c17-8200-1d2715803e8e",
+  "nets": {
+   "1": "Net-(JP2-A)",
+   "2": "/CAN0_N"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R98",
+  "fpid": "R_0402_1005Metric",
+  "value": "10k",
+  "x": 117.5,
+  "y": 126.9,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "+3V3",
+   "2": "/ENC_B_P_SW"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R114",
+  "fpid": "Resistor_SMD:R_0603_1608Metric",
+  "value": "120R",
+  "x": 177.6,
+  "y": 117.5,
+  "rot": 90.0,
+  "back": true,
+  "path": "/889c04f7-ab14-429c-99d2-ed773c17e58f/6c2db0e3-8f5f-49ad-9c16-35b501b5b764",
+  "nets": {
+   "1": "/CAN0_P",
+   "2": "Net-(JP2-A)"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "C113",
+  "fpid": "C_0402_1005Metric",
+  "value": "100n",
+  "x": 114.0,
+  "y": 91.225,
+  "rot": 0.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "Vdrive",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R110",
+  "fpid": "R_0402_1005Metric",
+  "value": "100k",
+  "x": 173.7,
+  "y": 125.742,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/ENC_C_SW",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R104",
+  "fpid": "R_0402_1005Metric",
+  "value": "100k",
+  "x": 130.25,
+  "y": 105.5,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/H2_SW",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "TP17",
+  "fpid": "TestPoint:TestPoint_Pad_D1.0mm",
+  "value": "TestPoint",
+  "x": 172.825,
+  "y": 97.975,
+  "rot": 180.0,
+  "back": true,
+  "path": "/5648ba9e-55e1-4831-94e1-a8e954a44a09",
+  "nets": {
+   "1": "B_PWM_H"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R112",
+  "fpid": "R_0402_1005Metric",
+  "value": "100k",
+  "x": 176.5,
+  "y": 84.0,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/TERM_SW",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "C114",
+  "fpid": "C_0402_1005Metric",
+  "value": "100n",
+  "x": 180.0,
+  "y": 87.5,
+  "rot": 0.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/LED_VDD",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "Q6",
+  "fpid": "Package_TO_SOT_SMD:SOT-23",
+  "value": "Q_NMOS_GDS",
+  "x": 178.75,
+  "y": 122.5,
+  "rot": 180.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/E-STOP",
+   "2": "/RUN",
+   "3": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R102",
+  "fpid": "R_0402_1005Metric",
+  "value": "100k",
+  "x": 131.5,
+  "y": 118.0,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/I2C_SW",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R113",
+  "fpid": "R_0402_1005Metric",
+  "value": "10k",
+  "x": 180.0,
+  "y": 85.0,
+  "rot": 0.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "+3V3",
+   "2": "/E-STOP"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R103",
+  "fpid": "R_0402_1005Metric",
+  "value": "100k",
+  "x": 143.75,
+  "y": 107.75,
+  "rot": 180.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/H1_SW",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R115",
+  "fpid": "Resistor_SMD:R_0603_1608Metric",
+  "value": "100R",
+  "x": 176.25,
+  "y": 124.0,
+  "rot": 0.0,
+  "back": true,
+  "path": "/889c04f7-ab14-429c-99d2-ed773c17e58f/03cfdb86-af1c-4aa6-9bc9-e5e3755e5868",
+  "nets": {
+   "1": "Net-(C115-Pad2)",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "U29",
+  "fpid": "Package_SO:MSOP-8_3x3mm_P0.65mm",
+  "value": "LTC4359CMS8",
+  "x": 167.745,
+  "y": 95.825,
+  "rot": 0.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "Net-(Q5-G)",
+   "2": "VBUS",
+   "3": "unconnected-(U29-NC-Pad3)",
+   "4": "VBUS",
+   "5": "VBUS",
+   "6": "GND",
+   "7": "unconnected-(U29-NC-Pad7)",
+   "8": "Net-(JP1-A)"
+  },
+  "fields": {
+   "LCSC": "C688235"
+  }
+ },
+ {
+  "ref": "R105",
+  "fpid": "R_0402_1005Metric",
+  "value": "100k",
+  "x": 133.75,
+  "y": 127.0,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/H3_SW",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "U30",
+  "fpid": "SOT-363_SC-70-6",
+  "value": "TS5A3159DCK",
+  "x": 113.125,
+  "y": 108.0,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/TERM_A_R",
+   "2": "GND",
+   "3": "",
+   "4": "/ENC_A_TRX_A",
+   "5": "Vdrive",
+   "6": "/TERM_SW"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "C110",
+  "fpid": "C_0402_1005Metric",
+  "value": "100n",
+  "x": 113.0,
+  "y": 110.875,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "Vdrive",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "U32",
+  "fpid": "SOT-363_SC-70-6",
+  "value": "TS5A3159DCK",
+  "x": 124.375,
+  "y": 98.3,
+  "rot": 0.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/TERM_C_R",
+   "2": "GND",
+   "3": "",
+   "4": "/ENC_C_TRX_A",
+   "5": "Vdrive",
+   "6": "/TERM_SW"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R108",
+  "fpid": "R_0402_1005Metric",
+  "value": "100k",
+  "x": 161.5,
+  "y": 115.0,
+  "rot": 0.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/ENC_A_SW",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R97",
+  "fpid": "R_0402_1005Metric",
+  "value": "10k",
+  "x": 112.75,
+  "y": 112.4,
+  "rot": 180.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "+3V3",
+   "2": "/ENC_A_P_SW"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "D30",
+  "fpid": "D_SOD-123F",
+  "value": "DSS110",
+  "x": 184.0,
+  "y": 85.5,
+  "rot": 0.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/LED_VDD",
+   "2": "Vdrive"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "C111",
+  "fpid": "C_0402_1005Metric",
+  "value": "100n",
+  "x": 126.0,
+  "y": 123.5,
+  "rot": 0.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "Vdrive",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "U31",
+  "fpid": "SOT-363_SC-70-6",
+  "value": "TS5A3159DCK",
+  "x": 126.125,
+  "y": 119.75,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/TERM_B_R",
+   "2": "GND",
+   "3": "",
+   "4": "/ENC_B_TRX_A",
+   "5": "Vdrive",
+   "6": "/TERM_SW"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R109",
+  "fpid": "R_0402_1005Metric",
+  "value": "100k",
+  "x": 131.5,
+  "y": 84.0,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/ENC_B_SW",
+   "2": "GND"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R100",
+  "fpid": "R_0402_1005Metric",
+  "value": "10k",
+  "x": 114.2,
+  "y": 103.0,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "+3V3",
+   "2": "/ENC_D_P"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "U33",
+  "fpid": "SOT-363_SC-70-6",
+  "value": "TS5A3159DCK",
+  "x": 114.0,
+  "y": 93.6,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/TERM_D_R",
+   "2": "GND",
+   "3": "",
+   "4": "/ENC_D_TRX_A",
+   "5": "Vdrive",
+   "6": "/TERM_SW"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "TP15",
+  "fpid": "TestPoint:TestPoint_Pad_D1.0mm",
+  "value": "TestPoint",
+  "x": 170.375,
+  "y": 107.325,
+  "rot": 180.0,
+  "back": true,
+  "path": "/652bcca6-b184-483f-b8b2-3e6fa7830c2e",
+  "nets": {
+   "1": "A_PWM_L\\"
+  },
+  "fields": {}
+ },
+ {
+  "ref": "R111",
+  "fpid": "R_0402_1005Metric",
+  "value": "100k",
+  "x": 177.0,
+  "y": 126.0,
+  "rot": 90.0,
+  "back": true,
+  "path": "",
+  "nets": {
+   "1": "/ENC_D_SW",
+   "2": "GND"
+  },
+  "fields": {}
+ }
+]
