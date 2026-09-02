@@ -4563,6 +4563,144 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Diode:SMAJ24A"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "D"
+				(at 0 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SMAJ24A"
+				(at 0 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Diode_SMD:D_SMA"
+				(at 0 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.littelfuse.com/media?resourcetype=datasheets&itemid=75e32973-b177-4ee3-a0ff-cedaf1abdb93&filename=smaj-datasheet"
+				(at -1.27 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "400W unidirectional Transient Voltage Suppressor, 24.0Vr, SMA(DO-214AC)"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "unidirectional diode TVS voltage suppressor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "D*SMA*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "SMAJ24A_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27) (xy -1.27 1.27) (xy -1.27 -1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 1.27) (xy 1.27 -1.27) (xy -1.27 0) (xy 1.27 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "SMAJ24A_1_1"
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "A1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 0 180)
+					(length 2.54)
+					(name "A2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Diode:SMF54A"
 			(pin_numbers
 				(hide yes)
@@ -8353,28 +8491,40 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Power_Management:LM74700"
+(symbol "Power_Management:LTC4359-MS8"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "U"
-				(at -9.525 -8.89 0)
+				(at -5.08 8.89 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Value" "LM74700"
-				(at 7.62 -8.89 0)
+			(property "Value" "LTC4359-MS8"
+				(at 6.35 -6.35 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
-				(at -9.525 -8.89 0)
+			(property "Footprint" "Package_SO:MSOP-8_3x3mm_P0.65mm"
+				(at 6.35 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.analog.com/media/en/technical-documentation/data-sheets/ltc4359.pdf"
+				(at 0 -6.35 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -8382,16 +8532,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "http://www.ti.com/lit/gpn/LM74700-Q1"
-				(at -9.525 -8.89 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Low Iq reverse battery protection ideal diode controller, SOT-23-6"
+			(property "Description" "Ideal diode controller with reverse input protection, MSOP-8"
 				(at 0 0 0)
 				(effects
 					(font
@@ -8400,7 +8541,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "ideal-diode or-ing"
+			(property "ki_keywords" "ideal-diode or-ing reverse-protection"
 				(at 0 0 0)
 				(effects
 					(font
@@ -8409,7 +8550,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_fp_filters" "SOT?23*"
+			(property "ki_fp_filters" "MSOP*3x3mm*P0.65mm*"
 				(at 0 0 0)
 				(effects
 					(font
@@ -8418,10 +8559,10 @@
 					(hide yes)
 				)
 			)
-			(symbol "LM74700_0_1"
+			(symbol "LTC4359-MS8_0_1"
 				(rectangle
-					(start -10.16 7.62)
-					(end 10.16 -7.62)
+					(start -5.08 7.62)
+					(end 5.08 -7.62)
 					(stroke
 						(width 0.254)
 						(type default)
@@ -8431,18 +8572,18 @@
 					)
 				)
 			)
-			(symbol "LM74700_1_1"
-				(pin passive line
-					(at -12.7 -2.54 0)
+			(symbol "LTC4359-MS8_1_1"
+				(pin power_in line
+					(at -7.62 0 0)
 					(length 2.54)
-					(name "VCAP"
+					(name "IN"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "1"
+					(number "4"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -8451,9 +8592,28 @@
 					)
 				)
 				(pin input line
-					(at -12.7 -5.08 0)
+					(at -7.62 -2.54 0)
 					(length 2.54)
-					(name "EN"
+					(name "~{SHDN}"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at -2.54 -7.62 90)
+					(length 2.54)
+					(hide yes)
+					(name "NC"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -8468,10 +8628,28 @@
 						)
 					)
 				)
-				(pin power_in line
-					(at -7.62 10.16 270)
+				(pin input line
+					(at 0 10.16 270)
 					(length 2.54)
-					(name "ANODE"
+					(name "SRC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -10.16 90)
+					(length 2.54)
+					(name "Vss"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -8487,7 +8665,7 @@
 					)
 				)
 				(pin output line
-					(at 0 10.16 270)
+					(at 2.54 10.16 270)
 					(length 2.54)
 					(name "GATE"
 						(effects
@@ -8496,7 +8674,7 @@
 							)
 						)
 					)
-					(number "5"
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -8504,17 +8682,18 @@
 						)
 					)
 				)
-				(pin power_in line
-					(at 0 -10.16 90)
+				(pin no_connect line
+					(at 2.54 -7.62 90)
 					(length 2.54)
-					(name "GND"
+					(hide yes)
+					(name "NC"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "2"
+					(number "7"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -8523,16 +8702,16 @@
 					)
 				)
 				(pin input line
-					(at 7.62 10.16 270)
+					(at 7.62 0 180)
 					(length 2.54)
-					(name "CATHODE"
+					(name "OUT"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "4"
+					(number "8"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -12264,12 +12443,6 @@
 		(uuid "023b88f6-5913-4e4a-902b-fbb9e2d774d5")
 	)
 	(junction
-		(at 193.04 86.36)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "02ac1167-a251-47d6-8dec-cb856abe91a2")
-	)
-	(junction
 		(at 226.06 86.36)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -12534,6 +12707,18 @@
 		(uuid "36134fec-81fd-4651-aac8-fb9eaebe0475")
 	)
 	(junction
+		(at 99.06 93.98)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "96c17c0f-4a88-4737-9f9c-47c239509cf4")
+	)
+	(junction
+		(at 106.68 118.11)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "09b3fd2e-411c-4e4d-be5f-d68c4d1807a6")
+	)
+	(junction
 		(at 129.54 96.52)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -12604,6 +12789,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3f462e67-3508-45ec-966b-1cead40e92e9")
+	)
+	(junction
+		(at 185.42 106.68)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6ee8e67d-8a70-4cf3-bfa1-c38c63b511e4")
 	)
 	(junction
 		(at 185.42 86.36)
@@ -15103,16 +15294,6 @@
 	)
 	(wire
 		(pts
-			(xy 194.31 109.22) (xy 193.04 109.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "20ac822b-3db8-4bf0-9d85-8191f163f748")
-	)
-	(wire
-		(pts
 			(xy 471.17 458.47) (xy 471.17 464.82)
 		)
 		(stroke
@@ -16721,16 +16902,7 @@
 		)
 		(uuid "4c41feee-a1fe-4f04-bb63-ac3856e907ec")
 	)
-	(wire
-		(pts
-			(xy 60.96 271.78) (xy 60.96 273.05)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4cf3c0b9-7ae0-4a03-a257-efe075592b87")
-	)
+	
 	(wire
 		(pts
 			(xy 618.49 370.84) (xy 618.49 372.11)
@@ -17160,6 +17332,46 @@
 			(type default)
 		)
 		(uuid "54fa2844-b1d9-4989-a74f-d26eccd6f8bd")
+	)
+	(wire
+		(pts
+			(xy 99.06 93.98) (xy 106.68 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cb2a5251-f294-4cde-afc4-94f54bef85a5")
+	)
+	(wire
+		(pts
+			(xy 99.06 93.98) (xy 99.06 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "458a4cae-e324-4eb5-b78f-f9f7fe34c910")
+	)
+	(wire
+		(pts
+			(xy 99.06 109.22) (xy 99.06 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ded87888-8212-4d30-9631-edcae727bd3b")
+	)
+	(wire
+		(pts
+			(xy 99.06 118.11) (xy 106.68 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bf1f8050-6e6d-46de-a5f9-5d9bdac314ae")
 	)
 	(wire
 		(pts
@@ -17793,7 +18005,7 @@
 	)
 	(wire
 		(pts
-			(xy 214.63 86.36) (xy 214.63 96.52)
+			(xy 214.63 86.36) (xy 214.63 106.68)
 		)
 		(stroke
 			(width 0)
@@ -20363,16 +20575,6 @@
 	)
 	(wire
 		(pts
-			(xy 193.04 86.36) (xy 193.04 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9f250205-f4f4-4dc4-95b0-446b7c50d7fe")
-	)
-	(wire
-		(pts
 			(xy 297.18 436.88) (xy 306.07 436.88)
 		)
 		(stroke
@@ -21843,16 +22045,6 @@
 	)
 	(wire
 		(pts
-			(xy 193.04 109.22) (xy 193.04 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c38e7c34-4d11-447b-a65b-46b7e19adac1")
-	)
-	(wire
-		(pts
 			(xy 415.29 154.94) (xy 415.29 153.67)
 		)
 		(stroke
@@ -23113,6 +23305,46 @@
 	)
 	(wire
 		(pts
+			(xy 199.39 96.52) (xy 204.47 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d0ae8f00-e86f-47f7-8872-3048e5765510")
+	)
+	(wire
+		(pts
+			(xy 214.63 106.68) (xy 212.09 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "39ca9546-189e-49c2-92fa-dd3e07f87e48")
+	)
+	(wire
+		(pts
+			(xy 185.42 106.68) (xy 185.42 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5c1f0b7a-9d24-4e8b-bd31-6f0a2c7e4419")
+	)
+	(wire
+		(pts
+			(xy 185.42 106.68) (xy 196.85 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c558a118-ea6e-4028-a6d5-b155ae5a3683")
+	)
+	(wire
+		(pts
 			(xy 383.54 306.07) (xy 383.54 306.705)
 		)
 		(stroke
@@ -23723,7 +23955,7 @@
 	)
 	(wire
 		(pts
-			(xy 185.42 111.76) (xy 185.42 86.36)
+			(xy 185.42 109.22) (xy 185.42 106.68)
 		)
 		(stroke
 			(width 0)
@@ -23933,7 +24165,7 @@
 	)
 	(wire
 		(pts
-			(xy 85.09 93.98) (xy 106.68 93.98)
+			(xy 85.09 93.98) (xy 99.06 93.98)
 		)
 		(stroke
 			(width 0)
@@ -24193,7 +24425,7 @@
 	)
 	(wire
 		(pts
-			(xy 194.31 111.76) (xy 185.42 111.76)
+			(xy 196.85 109.22) (xy 185.42 109.22)
 		)
 		(stroke
 			(width 0)
@@ -26945,7 +27177,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Small")
-		(at 618.49 313.69 180)
+		(at 742.95 516.89 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -26953,7 +27185,7 @@
 		(dnp no)
 		(uuid "0120db63-dfe7-482f-812e-6a483404a6a0")
 		(property "Reference" "R83"
-			(at 619.76 312.4199 0)
+			(at 744.855 513.715 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26962,7 +27194,7 @@
 			)
 		)
 		(property "Value" "100R 0402"
-			(at 613.41 308.6099 0)
+			(at 744.855 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26970,8 +27202,8 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 618.49 313.69 0)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 742.95 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26980,7 +27212,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 618.49 313.69 0)
+			(at 742.95 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26989,7 +27221,7 @@
 			)
 		)
 		(property "Description" "Resistor, small symbol"
-			(at 618.49 313.69 0)
+			(at 742.95 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26998,7 +27230,7 @@
 			)
 		)
 		(property "LCSC" "C106232"
-			(at 618.49 313.69 0)
+			(at 742.95 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -27112,7 +27344,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 225.0948 87.63 0)
 			(effects
 				(font
@@ -27190,7 +27422,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 472.44 481.33 0)
 			(effects
 				(font
@@ -27651,7 +27883,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 229.87 433.07 0)
 			(effects
 				(font
@@ -27729,7 +27961,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 424.18 323.215 0)
 			(effects
 				(font
@@ -27808,7 +28040,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 688.0352 254 0)
 			(effects
 				(font
@@ -27965,7 +28197,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 305.1048 439.42 0)
 			(effects
 				(font
@@ -28035,7 +28267,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "BSC030N08NS5"
 			(at 110.998 426.974 0)
 			(effects
 				(font
@@ -28257,7 +28489,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 319.0748 417.83 0)
 			(effects
 				(font
@@ -28336,7 +28568,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Keystone_5019_Minature"
+		(property "Footprint" "parts:TestPoint_Pad_D1.5mm_no_courtyard"
 			(at 389.89 448.31 0)
 			(effects
 				(font
@@ -28476,7 +28708,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0805_2012Metric_JLC"
 			(at 115.2652 109.22 0)
 			(effects
 				(font
@@ -28528,7 +28760,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Small")
-		(at 617.22 407.67 180)
+		(at 811.5300000000001 516.89 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -28536,7 +28768,7 @@
 		(dnp no)
 		(uuid "0847bdd4-3fab-4645-bc57-fef0fa78a77e")
 		(property "Reference" "R85"
-			(at 618.49 406.3999 0)
+			(at 813.4350000000001 513.715 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28545,7 +28777,7 @@
 			)
 		)
 		(property "Value" "100R 0402"
-			(at 614.172 403.3519 0)
+			(at 813.4350000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28553,8 +28785,8 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 617.22 407.67 0)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 811.5300000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28563,7 +28795,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 617.22 407.67 0)
+			(at 811.5300000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28572,7 +28804,7 @@
 			)
 		)
 		(property "Description" "Resistor, small symbol"
-			(at 617.22 407.67 0)
+			(at 811.5300000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28581,7 +28813,7 @@
 			)
 		)
 		(property "LCSC" "C106232"
-			(at 617.22 407.67 0)
+			(at 811.5300000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28630,7 +28862,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 692.912 285.75 90)
 			(effects
 				(font
@@ -28902,7 +29134,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 658.368 415.29 90)
 			(effects
 				(font
@@ -28980,7 +29212,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 464.82 464.82 0)
 			(effects
 				(font
@@ -29121,7 +29353,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 124.1552 82.55 0)
 			(effects
 				(font
@@ -29264,7 +29496,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 212.09 169.418 90)
 			(effects
 				(font
@@ -29409,7 +29641,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 308.102 417.83 90)
 			(effects
 				(font
@@ -30186,7 +30418,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 668.9852 490.22 0)
 			(effects
 				(font
@@ -30264,7 +30496,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 120.9548 101.6 0)
 			(effects
 				(font
@@ -30341,7 +30573,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 457.2 458.47 0)
 			(effects
 				(font
@@ -30568,7 +30800,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 698.8048 426.72 0)
 			(effects
 				(font
@@ -30646,7 +30878,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 115.2652 267.97 0)
 			(effects
 				(font
@@ -30977,7 +31209,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SMAJ51A"
+		(property "Value" "SMAJ64A"
 			(at 325.755 447.675 90)
 			(effects
 				(font
@@ -31013,7 +31245,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C366557"
+		(property "LCSC" "LCSC-TBD-SMAJ64A"
 			(at 323.85 441.96 90)
 			(effects
 				(font
@@ -31213,7 +31445,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 122.8852 49.53 0)
 			(effects
 				(font
@@ -31509,7 +31741,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 63.8048 407.67 0)
 			(effects
 				(font
@@ -31671,7 +31903,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+		(property "Footprint" "parts:TestPoint_Pad_D1.0mm_no_courtyard"
 			(at 345.44 285.75 0)
 			(effects
 				(font
@@ -31925,7 +32157,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "BSC030N08NS5"
 			(at 488.188 480.314 0)
 			(effects
 				(font
@@ -32110,7 +32342,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
 			(at 722.376 307.594 0)
 			(effects
 				(font
@@ -32277,7 +32509,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 462.28 481.33 0)
 			(effects
 				(font
@@ -32356,7 +32588,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 688.0352 326.39 0)
 			(effects
 				(font
@@ -32434,7 +32666,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 212.09 509.27 0)
 			(effects
 				(font
@@ -32512,7 +32744,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
 			(at 773.684 288.544 0)
 			(effects
 				(font
@@ -32763,7 +32995,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 414.02 461.01 0)
 			(effects
 				(font
@@ -33118,7 +33350,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0805_2012Metric_JLC"
 			(at 403.5552 219.71 0)
 			(effects
 				(font
@@ -33194,7 +33426,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 328.93 191.008 90)
 			(effects
 				(font
@@ -33337,7 +33569,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
 			(at 659.384 514.604 0)
 			(effects
 				(font
@@ -33743,7 +33975,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+		(property "Footprint" "parts:TestPoint_Pad_D1.0mm_no_courtyard"
 			(at 66.04 419.1 0)
 			(effects
 				(font
@@ -33874,7 +34106,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 225.7552 147.32 0)
 			(effects
 				(font
@@ -34555,7 +34787,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "BSC030N08NS5"
 			(at 224.028 508.254 0)
 			(effects
 				(font
@@ -34777,7 +35009,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 271.78 455.93 0)
 			(effects
 				(font
@@ -35052,7 +35284,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 619.4552 425.45 0)
 			(effects
 				(font
@@ -35121,7 +35353,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "BSC030N08NS5"
 			(at 224.028 493.014 0)
 			(effects
 				(font
@@ -35438,7 +35670,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 333.7052 147.32 0)
 			(effects
 				(font
@@ -35516,7 +35748,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 439.42 323.215 0)
 			(effects
 				(font
@@ -35594,7 +35826,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 57.15 422.91 0)
 			(effects
 				(font
@@ -35730,7 +35962,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "BSC030N08NS5"
 			(at 292.608 428.244 0)
 			(effects
 				(font
@@ -35822,7 +36054,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 501.142 471.17 90)
 			(effects
 				(font
@@ -35892,7 +36124,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 695.6552 289.56 0)
 			(effects
 				(font
@@ -36075,84 +36307,6 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 193.04 95.25 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "3e224cbb-b4e5-472c-942f-2c1b38e7d21b")
-		(property "Reference" "C79"
-			(at 190.754 96.4184 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "100n"
-			(at 190.754 94.107 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 192.0748 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 193.04 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 193.04 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC" "C131394"
-			(at 193.04 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "747ae8d3-af9e-463e-bbf2-794f4a3e1ed1")
-		)
-		(pin "2"
-			(uuid "a663f80a-ccd1-44f4-8e85-5ffed6be8b7d")
-		)
-		(instances
-			(project "rp2350_driver"
-				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
-					(reference "C79")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
 		(at 238.76 509.27 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -36178,7 +36332,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 239.7252 513.08 0)
 			(effects
 				(font
@@ -36247,7 +36401,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 407.67 311.785 0)
 			(effects
 				(font
@@ -36457,7 +36611,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+		(property "Footprint" "parts:TestPoint_Pad_D1.0mm_no_courtyard"
 			(at 424.18 457.2 0)
 			(effects
 				(font
@@ -36498,7 +36652,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Small")
-		(at 617.22 361.95 180)
+		(at 777.2400000000001 516.89 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -36506,7 +36660,7 @@
 		(dnp no)
 		(uuid "434a975b-0c48-4f88-b3eb-ee448a316f63")
 		(property "Reference" "R84"
-			(at 618.49 360.6799 0)
+			(at 779.1450000000001 513.715 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -36515,7 +36669,7 @@
 			)
 		)
 		(property "Value" "100R 0402"
-			(at 614.172 357.3779 0)
+			(at 779.1450000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -36523,8 +36677,8 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 617.22 361.95 0)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 777.2400000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -36533,7 +36687,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 617.22 361.95 0)
+			(at 777.2400000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -36542,7 +36696,7 @@
 			)
 		)
 		(property "Description" "Resistor, small symbol"
-			(at 617.22 361.95 0)
+			(at 777.2400000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -36551,7 +36705,7 @@
 			)
 		)
 		(property "LCSC" "C106232"
-			(at 617.22 361.95 0)
+			(at 777.2400000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -36667,7 +36821,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 273.05 436.88 0)
 			(effects
 				(font
@@ -37162,7 +37316,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+		(property "Footprint" "parts:TestPoint_Pad_D1.0mm_no_courtyard"
 			(at 237.49 420.37 0)
 			(effects
 				(font
@@ -37228,7 +37382,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
 			(at 660.654 481.584 0)
 			(effects
 				(font
@@ -37400,7 +37554,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 383.54 300.99 0)
 			(effects
 				(font
@@ -37570,7 +37724,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 167.9448 474.98 0)
 			(effects
 				(font
@@ -37646,7 +37800,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 660.908 369.57 90)
 			(effects
 				(font
@@ -37875,7 +38029,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 320.04 170.942 90)
 			(effects
 				(font
@@ -38103,7 +38257,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SMAJ51A"
+		(property "Value" "SMAJ64A"
 			(at 511.175 484.505 90)
 			(effects
 				(font
@@ -38139,7 +38293,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C366557"
+		(property "LCSC" "LCSC-TBD-SMAJ64A"
 			(at 509.27 478.79 90)
 			(effects
 				(font
@@ -38264,7 +38418,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 83.82 407.67 0)
 			(effects
 				(font
@@ -38514,7 +38668,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
 			(at 708.406 451.104 0)
 			(effects
 				(font
@@ -38801,7 +38955,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 198.12 486.41 0)
 			(effects
 				(font
@@ -39001,7 +39155,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 214.3252 147.32 0)
 			(effects
 				(font
@@ -39288,7 +39442,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+		(property "Footprint" "parts:TestPoint_Pad_D1.0mm_no_courtyard"
 			(at 236.22 443.23 0)
 			(effects
 				(font
@@ -39421,7 +39575,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 695.6552 326.39 0)
 			(effects
 				(font
@@ -39499,7 +39653,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 322.2752 147.32 0)
 			(effects
 				(font
@@ -39575,7 +39729,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 370.078 214.63 90)
 			(effects
 				(font
@@ -39653,7 +39807,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 383.54 311.785 0)
 			(effects
 				(font
@@ -39797,7 +39951,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 318.4652 447.04 0)
 			(effects
 				(font
@@ -40051,7 +40205,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+		(property "Footprint" "parts:TestPoint_Pad_D1.0mm_no_courtyard"
 			(at 162.56 486.41 0)
 			(effects
 				(font
@@ -40115,7 +40269,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 659.638 275.59 90)
 			(effects
 				(font
@@ -40194,7 +40348,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 714.0448 318.77 0)
 			(effects
 				(font
@@ -40403,7 +40557,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 345.1352 147.32 0)
 			(effects
 				(font
@@ -40868,7 +41022,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 424.18 311.785 0)
 			(effects
 				(font
@@ -40944,7 +41098,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 658.368 406.4 90)
 			(effects
 				(font
@@ -41089,7 +41243,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 154.94 313.3852 0)
 			(effects
 				(font
@@ -41336,7 +41490,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 196.85 501.65 0)
 			(effects
 				(font
@@ -41481,7 +41635,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 224.4852 176.53 0)
 			(effects
 				(font
@@ -41626,7 +41780,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 695.6552 254 0)
 			(effects
 				(font
@@ -41770,7 +41924,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 122.2248 436.88 0)
 			(effects
 				(font
@@ -41911,7 +42065,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 117.348 54.61 90)
 			(effects
 				(font
@@ -42269,7 +42423,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+		(property "Footprint" "parts:TestPoint_Pad_D1.0mm_no_courtyard"
 			(at 63.5 441.96 0)
 			(effects
 				(font
@@ -42336,7 +42490,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+		(property "Footprint" "parts:TestPoint_Pad_D1.0mm_no_courtyard"
 			(at 160.02 508 0)
 			(effects
 				(font
@@ -42402,7 +42556,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 504.4948 454.66 0)
 			(effects
 				(font
@@ -42612,7 +42766,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 126.492 415.29 90)
 			(effects
 				(font
@@ -42746,7 +42900,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 490.5248 476.25 0)
 			(effects
 				(font
@@ -42880,7 +43034,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "BSC030N08NS5"
 			(at 119.888 442.214 0)
 			(effects
 				(font
@@ -43037,7 +43191,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 355.6 415.5948 0)
 			(effects
 				(font
@@ -43122,7 +43276,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
 			(at 721.106 272.034 0)
 			(effects
 				(font
@@ -43275,7 +43429,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 190.5 240.792 90)
 			(effects
 				(font
@@ -43419,7 +43573,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 483.5652 246.38 0)
 			(effects
 				(font
@@ -43628,7 +43782,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 310.8452 429.26 0)
 			(effects
 				(font
@@ -43695,7 +43849,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 381.508 214.63 90)
 			(effects
 				(font
@@ -43773,7 +43927,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 287.02 444.5 0)
 			(effects
 				(font
@@ -43852,7 +44006,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 236.982 500.38 90)
 			(effects
 				(font
@@ -44063,7 +44217,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SMAJ51A"
+		(property "Value" "SMAJ64A"
 			(at 144.78 445.77 90)
 			(effects
 				(font
@@ -44099,7 +44253,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C366557"
+		(property "LCSC" "LCSC-TBD-SMAJ64A"
 			(at 143.51 439.42 90)
 			(effects
 				(font
@@ -44237,7 +44391,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 670.2552 457.2 0)
 			(effects
 				(font
@@ -44315,7 +44469,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 314.96 316.23 0)
 			(effects
 				(font
@@ -44391,7 +44545,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 657.098 321.31 90)
 			(effects
 				(font
@@ -44811,6 +44965,83 @@
 		)
 	)
 	(symbol
+		(lib_id "Diode:SMAJ24A")
+		(at 99.06 105.41 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e31b6abd-f854-4aba-a747-659f894b2820")
+		(property "Reference" "D31"
+			(at 93.98 101.6 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SMF24A"
+			(at 93.98 104.14 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SOD-123F"
+			(at 99.06 105.41 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.littelfuse.com/assetdocs/tvs-diodes-smf-datasheet?assetguid=7eb8a5b6-bdd0-4561-8f19-0c3cc6f9b2af"
+			(at 99.06 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "200W unidirectional TVS, 24 V standoff, SOD-123FL - VBUS surge clamp at J3"
+			(at 99.06 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C169430"
+			(at 99.06 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1bff0737-35d2-4632-8cc8-fee972461eba")
+		)
+		(pin "2"
+			(uuid "cd577859-ab6b-42f2-ae1d-f5670636c0cb")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "D31")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C")
 		(at 106.68 105.41 0)
 		(unit 1)
@@ -44837,7 +45068,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0805_2012Metric_JLC"
 			(at 107.6452 109.22 0)
 			(effects
 				(font
@@ -44914,7 +45145,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 92.71 434.34 0)
 			(effects
 				(font
@@ -45307,7 +45538,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 57.15 431.8 0)
 			(effects
 				(font
@@ -45358,72 +45589,7 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "power:Vdrive")
-		(at 60.96 271.78 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "8417268a-fe91-4999-806b-d4658a5f4d60")
-		(property "Reference" "#PWR06"
-			(at 60.96 275.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "Vdrive"
-			(at 60.96 266.7 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 60.96 271.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 60.96 271.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
-			(at 60.96 271.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "40c80e7c-f49d-42ff-ae7a-3d7daf2a264b")
-		)
-		(instances
-			(project "integrated_driver"
-				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
-					(reference "#PWR06")
-					(unit 1)
-				)
-			)
-		)
-	)
+	
 	(symbol
 		(lib_id "MotorController:TAYLOR_RESISTOR")
 		(at 151.13 422.91 90)
@@ -45527,7 +45693,7 @@
 				)
 			)
 		)
-		(property "Footprint" "RP2040_minimal:LED_WS2812_3528_3.5x2.8mm_P1.5mm"
+		(property "Footprint" "parts:LED_WS2812B-2020_PLCC4_2.0x2.0mm_MotorBuck"
 			(at 62.23 288.29 0)
 			(effects
 				(font
@@ -45613,7 +45779,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 130.5052 82.55 0)
 			(effects
 				(font
@@ -45691,7 +45857,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 246.6848 482.6 0)
 			(effects
 				(font
@@ -45836,7 +46002,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
 			(at 723.646 344.424 0)
 			(effects
 				(font
@@ -46050,7 +46216,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "BSC030N08NS5"
 			(at 478.028 465.074 0)
 			(effects
 				(font
@@ -46263,7 +46429,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SMAJ51A"
+		(property "Value" "SMAJ64A"
 			(at 248.285 509.27 90)
 			(effects
 				(font
@@ -46299,7 +46465,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C366557"
+		(property "LCSC" "LCSC-TBD-SMAJ64A"
 			(at 246.38 506.73 90)
 			(effects
 				(font
@@ -46566,7 +46732,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 620.7252 285.75 0)
 			(effects
 				(font
@@ -46644,7 +46810,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 497.5352 184.15 0)
 			(effects
 				(font
@@ -46961,7 +47127,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0805_2012Metric_JLC"
 			(at 194.0052 49.53 0)
 			(effects
 				(font
@@ -47260,7 +47426,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 99.06 426.72 0)
 			(effects
 				(font
@@ -47551,7 +47717,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 390.8552 147.32 0)
 			(effects
 				(font
@@ -47958,7 +48124,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 383.54 323.215 0)
 			(effects
 				(font
@@ -48179,7 +48345,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 712.7748 281.94 0)
 			(effects
 				(font
@@ -48255,7 +48421,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 320.04 179.832 90)
 			(effects
 				(font
@@ -48325,7 +48491,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SMDJ85A"
+		(property "Value" "SMDJ64A"
 			(at 101.6 485.775 90)
 			(effects
 				(font
@@ -48361,7 +48527,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2990214"
+		(property "LCSC" "LCSC-TBD-SMDJ64A"
 			(at 99.06 483.87 90)
 			(effects
 				(font
@@ -48609,7 +48775,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0805_2012Metric_JLC"
 			(at 166.0652 49.53 0)
 			(effects
 				(font
@@ -48753,7 +48919,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 379.4252 147.32 0)
 			(effects
 				(font
@@ -48831,7 +48997,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
 			(at 459.994 197.104 0)
 			(effects
 				(font
@@ -49188,7 +49354,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "MOSFETSO-8"
+		(property "Value" "BSC030N08NS5"
 			(at 302.768 443.484 0)
 			(effects
 				(font
@@ -49279,7 +49445,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 279.4 479.0948 0)
 			(effects
 				(font
@@ -49357,7 +49523,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 457.2 492.76 0)
 			(effects
 				(font
@@ -49410,7 +49576,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Small")
-		(at 618.49 267.97 180)
+		(at 708.6600000000001 516.89 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -49418,7 +49584,7 @@
 		(dnp no)
 		(uuid "a115579d-193b-4150-b67d-21f4b7bdcc98")
 		(property "Reference" "R82"
-			(at 619.76 266.9539 0)
+			(at 710.565 513.715 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49427,7 +49593,7 @@
 			)
 		)
 		(property "Value" "100R"
-			(at 619.76 268.9859 0)
+			(at 710.565 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49435,8 +49601,8 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 618.49 267.97 0)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 708.6600000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49445,7 +49611,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 618.49 267.97 0)
+			(at 708.6600000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49454,7 +49620,7 @@
 			)
 		)
 		(property "Description" "Resistor, small symbol"
-			(at 618.49 267.97 0)
+			(at 708.6600000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49463,7 +49629,7 @@
 			)
 		)
 		(property "LCSC" "C106232"
-			(at 618.49 267.97 0)
+			(at 708.6600000000001 516.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -49487,7 +49653,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Transistor_FET:Q_NMOS_GDS")
+		(lib_id "Device:Q_NMOS_SGD")
 		(at 207.01 88.9 270)
 		(mirror x)
 		(unit 1)
@@ -49504,7 +49670,7 @@
 				)
 			)
 		)
-		(property "Value" "Q_NMOS_GDS"
+		(property "Value" "E100N4P0HL1"
 			(at 207.01 82.55 90)
 			(effects
 				(font
@@ -49512,7 +49678,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-89-3"
+		(property "Footprint" "parts:PowerPAK_SO-8_123"
 			(at 209.55 83.82 0)
 			(effects
 				(font
@@ -49521,7 +49687,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://datasheet.lcsc.com/lcsc/E100N4P0HL1.pdf"
 			(at 207.01 88.9 0)
 			(effects
 				(font
@@ -49530,7 +49696,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "N-MOSFET transistor, gate/drain/source"
+		(property "Description" "N-MOSFET 100V 4mOhm 83A, source/gate/drain, PDFN5x6"
 			(at 207.01 88.9 0)
 			(effects
 				(font
@@ -49539,7 +49705,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7422896"
+		(property "LCSC" "C29781176"
 			(at 207.01 88.9 0)
 			(effects
 				(font
@@ -49789,7 +49955,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 242.8748 410.21 0)
 			(effects
 				(font
@@ -50144,7 +50310,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 692.912 322.58 90)
 			(effects
 				(font
@@ -50375,7 +50541,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 117.348 45.72 90)
 			(effects
 				(font
@@ -50530,7 +50696,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 154.94 303.2252 0)
 			(effects
 				(font
@@ -50608,7 +50774,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 138.7348 415.29 0)
 			(effects
 				(font
@@ -50686,7 +50852,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 517.1948 248.92 0)
 			(effects
 				(font
@@ -50764,7 +50930,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 153.67 488.95 0)
 			(effects
 				(font
@@ -50970,7 +51136,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 323.85 193.548 90)
 			(effects
 				(font
@@ -51216,7 +51382,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+		(property "Footprint" "parts:TestPoint_Pad_D1.0mm_no_courtyard"
 			(at 421.64 480.06 0)
 			(effects
 				(font
@@ -51348,7 +51514,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 428.2948 447.04 0)
 			(effects
 				(font
@@ -51661,7 +51827,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 200.66 509.27 0)
 			(effects
 				(font
@@ -51737,7 +51903,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 191.77 310.642 90)
 			(effects
 				(font
@@ -51881,7 +52047,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 271.78 421.64 0)
 			(effects
 				(font
@@ -52120,7 +52286,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 696.2648 359.41 0)
 			(effects
 				(font
@@ -52326,7 +52492,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 85.09 282.702 90)
 			(effects
 				(font
@@ -52471,7 +52637,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 129.2352 427.99 0)
 			(effects
 				(font
@@ -52540,7 +52706,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 458.47 473.71 0)
 			(effects
 				(font
@@ -52702,7 +52868,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 472.44 170.18 0)
 			(effects
 				(font
@@ -52780,7 +52946,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 424.18 300.99 0)
 			(effects
 				(font
@@ -53054,7 +53220,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 447.04 445.77 0)
 			(effects
 				(font
@@ -53342,7 +53508,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 276.86 444.5 0)
 			(effects
 				(font
@@ -53420,7 +53586,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 620.7252 331.47 0)
 			(effects
 				(font
@@ -53857,7 +54023,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 439.42 300.99 0)
 			(effects
 				(font
@@ -53935,7 +54101,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 356.5652 147.32 0)
 			(effects
 				(font
@@ -54145,7 +54311,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 134.112 433.07 90)
 			(effects
 				(font
@@ -54817,7 +54983,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 261.62 408.94 0)
 			(effects
 				(font
@@ -54895,7 +55061,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 107.95 441.96 0)
 			(effects
 				(font
@@ -55039,7 +55205,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 493.522 454.66 90)
 			(effects
 				(font
@@ -55173,7 +55339,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 711.5048 245.11 0)
 			(effects
 				(font
@@ -55317,7 +55483,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 526.0848 248.92 0)
 			(effects
 				(font
@@ -55404,7 +55570,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 226.3648 504.19 0)
 			(effects
 				(font
@@ -55482,7 +55648,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 92.71 454.66 0)
 			(effects
 				(font
@@ -55626,7 +55792,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 204.1652 453.39 0)
 			(effects
 				(font
@@ -55704,7 +55870,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 503.8852 483.87 0)
 			(effects
 				(font
@@ -55957,7 +56123,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 279.4 427.99 0)
 			(effects
 				(font
@@ -56194,7 +56360,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 236.982 482.6 90)
 			(effects
 				(font
@@ -56425,7 +56591,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 239.7252 494.03 0)
 			(effects
 				(font
@@ -56560,7 +56726,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 315.722 434.34 90)
 			(effects
 				(font
@@ -56777,7 +56943,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 657.098 312.42 90)
 			(effects
 				(font
@@ -56856,7 +57022,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
 			(at 705.866 383.794 0)
 			(effects
 				(font
@@ -57076,7 +57242,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 77.1652 49.53 0)
 			(effects
 				(font
@@ -57154,7 +57320,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 208.28 492.76 0)
 			(effects
 				(font
@@ -57445,7 +57611,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 136.8552 444.5 0)
 			(effects
 				(font
@@ -57719,7 +57885,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 659.638 266.7 90)
 			(effects
 				(font
@@ -57797,7 +57963,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 439.42 311.785 0)
 			(effects
 				(font
@@ -58618,7 +58784,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 207.01 116.84 0)
+		(at 204.47 116.84 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -58627,7 +58793,7 @@
 		(fields_autoplaced yes)
 		(uuid "dd8e89e0-2a19-474c-b3d4-0a066f5e5de0")
 		(property "Reference" "#PWR0202"
-			(at 207.01 123.19 0)
+			(at 204.47 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -58636,7 +58802,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 207.01 121.92 0)
+			(at 204.47 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -58773,7 +58939,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 367.9952 147.32 0)
 			(effects
 				(font
@@ -58851,7 +59017,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 299.4152 147.32 0)
 			(effects
 				(font
@@ -58929,7 +59095,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 99.06 441.96 0)
 			(effects
 				(font
@@ -59007,7 +59173,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 91.44 420.37 0)
 			(effects
 				(font
@@ -59086,7 +59252,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 496.2652 466.09 0)
 			(effects
 				(font
@@ -59154,7 +59320,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 692.912 250.19 90)
 			(effects
 				(font
@@ -59361,7 +59527,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 660.908 360.68 90)
 			(effects
 				(font
@@ -59505,7 +59671,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 196.85 519.43 0)
 			(effects
 				(font
@@ -59676,7 +59842,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 153.67 497.84 0)
 			(effects
 				(font
@@ -59754,7 +59920,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 228.6 424.18 0)
 			(effects
 				(font
@@ -60238,8 +60404,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Power_Management:LM74700")
-		(at 207.01 106.68 0)
+		(lib_id "Power_Management:LTC4359-MS8")
+		(at 204.47 106.68 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -60248,7 +60414,7 @@
 		(fields_autoplaced yes)
 		(uuid "e8c314bd-ba6d-48af-af19-87af87553620")
 		(property "Reference" "U29"
-			(at 218.44 105.4099 0)
+			(at 215.9 105.4099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -60256,8 +60422,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "LM74700"
-			(at 218.44 107.9499 0)
+		(property "Value" "LTC4359CMS8"
+			(at 215.9 107.9499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -60265,8 +60431,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
-			(at 197.485 115.57 0)
+		(property "Footprint" "Package_SO:MSOP-8_3x3mm_P0.65mm"
+			(at 194.945 115.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -60274,8 +60440,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "http://www.ti.com/lit/gpn/LM74700-Q1"
-			(at 197.485 115.57 0)
+		(property "Datasheet" "https://www.analog.com/media/en/technical-documentation/data-sheets/ltc4359.pdf"
+			(at 194.945 115.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -60283,8 +60449,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Low Iq reverse battery protection ideal diode controller, SOT-23-6"
-			(at 207.01 106.68 0)
+		(property "Description" "Ideal diode controller with reverse input protection, 4V-80V, 100V abs max, MSOP-8"
+			(at 204.47 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -60292,32 +60458,38 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2941042"
-			(at 207.01 106.68 0)
+		(property "LCSC" "C688235"
+			(at 204.47 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
-		)
-		(pin "4"
-			(uuid "a9191d77-13e0-4b3f-bf55-693dfb5da3ff")
-		)
-		(pin "3"
-			(uuid "59526865-d7a7-403d-8933-33f7d6298403")
-		)
-		(pin "2"
-			(uuid "8eebb9bb-e39c-4dbe-87e0-56ee18c13ca3")
-		)
-		(pin "5"
-			(uuid "e001e957-9057-4e4a-884d-3777c39ba163")
 		)
 		(pin "1"
-			(uuid "1a24a3cd-99ba-45ef-8b6a-695d8e7debd2")
+			(uuid "7ca3f444-752a-4377-8aa9-ef33c192c860")
+		)
+		(pin "2"
+			(uuid "acd65d87-9a85-4772-bff3-908e4f8aa94a")
+		)
+		(pin "3"
+			(uuid "992ce891-37d6-47bf-838a-fb88cafad233")
+		)
+		(pin "4"
+			(uuid "3a037524-06f0-4b38-8e37-d9cf3dae8b46")
+		)
+		(pin "5"
+			(uuid "472c61be-b29e-4f86-a5fd-fe52f0aa6818")
 		)
 		(pin "6"
-			(uuid "aa8a572d-d5a2-44fc-ac75-c4b62a4059bc")
+			(uuid "fb7dd988-dbea-4001-b5e1-cf93911f9302")
+		)
+		(pin "7"
+			(uuid "be7da2be-4fc3-49ae-ba8e-87afe4893f6f")
+		)
+		(pin "8"
+			(uuid "47e5b34b-98d0-4383-9c86-b6f23a695a7d")
 		)
 		(instances
 			(project ""
@@ -60805,7 +60977,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 407.67 300.99 0)
 			(effects
 				(font
@@ -61169,7 +61341,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 173.99 411.7848 0)
 			(effects
 				(font
@@ -61253,7 +61425,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 619.4552 379.73 0)
 			(effects
 				(font
@@ -61627,7 +61799,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 783.2852 261.62 0)
 			(effects
 				(font
@@ -61770,7 +61942,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 310.8452 147.32 0)
 			(effects
 				(font
@@ -61941,7 +62113,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
 			(at 707.136 416.814 0)
 			(effects
 				(font
@@ -62276,7 +62448,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 407.67 323.215 0)
 			(effects
 				(font
@@ -62485,7 +62657,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:VBUS")
+		(lib_id "power:+3V3")
 		(at 365.76 175.26 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -62502,7 +62674,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "VBUS"
+		(property "Value" "+3V3"
 			(at 364.871 171.3738 0)
 			(effects
 				(font
@@ -62576,7 +62748,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 237.1852 147.32 0)
 			(effects
 				(font
@@ -62719,7 +62891,7 @@
 				(justify left top)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 415.29 469.9 0)
 			(effects
 				(font
@@ -63062,7 +63234,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "parts:C_0603_1608Metric_JLC"
 			(at 688.0352 289.56 0)
 			(effects
 				(font
@@ -63216,7 +63388,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "parts:R_0603_1608Metric_JLC"
 			(at 187.96 473.71 0)
 			(effects
 				(font
@@ -63295,7 +63467,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 697.5348 392.43 0)
 			(effects
 				(font
@@ -63371,7 +63543,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
 			(at 215.9 198.882 90)
 			(effects
 				(font
@@ -63449,7 +63621,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
 			(at 128.5748 101.6 0)
 			(effects
 				(font
@@ -63571,4 +63743,6486 @@
 		)
 	)
 	(embedded_fonts no)
+
+	(label "ENC_A_TRX_A"
+		(at 614.68 265.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1a82ca4c-9199-4c8f-8305-c6cd6e7a9469")
+	)
+	(label "ENC_A_TRX_B"
+		(at 614.68 270.51 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "3ec0d001-a35d-4bf0-af6d-fcf2bcfc4581")
+	)
+	(label "ENC_B_TRX_A"
+		(at 614.68 311.15 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "04908fe2-ef08-48a8-aae9-d45c5eb58528")
+	)
+	(label "ENC_B_TRX_B"
+		(at 614.68 316.23 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "99953d95-592c-4255-9761-596ad158c259")
+	)
+	(label "ENC_C_TRX_A"
+		(at 613.41 359.41 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "e64b671e-3f11-4811-857c-a7c3b261bd65")
+	)
+	(label "ENC_C_TRX_B"
+		(at 613.41 364.49 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "337d889d-bd36-4acb-b7f2-98e423f59681")
+	)
+	(label "ENC_D_TRX_A"
+		(at 613.41 405.13 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "3421b631-9b13-4379-92a1-32a251ce14d3")
+	)
+	(label "ENC_D_TRX_B"
+		(at 613.41 410.21 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "dbab4cf9-8dbd-4487-9cb9-5929f43e14aa")
+	)
+	(label "TERM_SW"
+		(at 340.36 285.75 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "31ce75fe-bb29-4eaa-b72a-1efdcd07db91")
+	)
+(symbol
+		(lib_id "integrated:TS5A3159")
+		(at 694.69 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "9308dbd5-7361-4e3f-bf68-7f1b7c4d7481")
+		(property "Reference" "U30"
+			(at 695.96 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TS5A3159DCK"
+			(at 695.96 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
+			(at 694.69 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 694.69 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 694.69 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C46388"
+			(at 694.69 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "5"
+			(uuid "14217469-e402-4470-806f-23c9cef021fc")
+		)
+		(pin "4"
+			(uuid "ffa3790a-cd2f-4c89-a300-85c221a51724")
+		)
+		(pin "6"
+			(uuid "31fbc769-a6ce-4bda-83b1-08e4827708c3")
+		)
+		(pin "3"
+			(uuid "98fcac0c-c599-40ce-be34-10dc4293a32c")
+		)
+		(pin "1"
+			(uuid "0ff67028-c4a9-435b-ab04-702839640da3")
+		)
+		(pin "2"
+			(uuid "d4e25a6b-2d92-4c71-8c9e-6ab4b60680d6")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "U30")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 685.8000000000001 515.62) (xy 688.34 515.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d9e7f1fc-49d0-47e7-bba6-8f8200ba05ee")
+	)
+	(label "ENC_A_TRX_A"
+		(at 685.8000000000001 515.62 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "686812f3-fa16-4343-ae88-5add12332b72")
+	)
+	(wire
+		(pts
+			(xy 701.0400000000001 518.16) (xy 703.58 518.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "edc31e90-6ee5-4485-8ccf-5536d83b380f")
+	)
+	(label "TERM_A_R"
+		(at 703.58 518.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a3656fd3-6da6-4c88-aa17-ce8587190170")
+	)
+	(no_connect
+		(at 701.0400000000001 515.62)
+		(uuid "d418d021-2c97-4f33-a71f-26d90448fa0d")
+	)
+	(wire
+		(pts
+			(xy 685.8000000000001 519.43) (xy 688.34 519.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1da018b0-74a6-4a9f-8008-fd9740c86f77")
+	)
+	(label "TERM_SW"
+		(at 685.8000000000001 519.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "41356bd9-654c-4a7d-be32-f17004caad43")
+	)
+	(wire
+		(pts
+			(xy 697.23 506.72999999999996) (xy 697.23 509.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "182e53b8-2e4f-4f67-aa09-f24f41735079")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 697.23 506.72999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7e2f741d-40ae-4ba5-bf5a-7bce7041ac5d")
+		(property "Reference" "#PWR0300"
+			(at 698.5 500.37999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 698.5 513.0799999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 697.23 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 697.23 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9e1f1e1e-ec98-4a0f-8622-948cd4d11454")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0300")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 695.96 524.51) (xy 695.96 527.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8bfdc06d-d28b-4b52-8a20-1a0408130056")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 695.96 527.05 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ffa66d9c-bf32-4285-8605-ad3d596f9dda")
+		(property "Reference" "#PWR0310"
+			(at 697.23 520.6999999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 697.23 533.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 695.96 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 695.96 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 695.96 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fe03efac-2d7b-452a-81d0-ee7a7862e094")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0310")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 708.6600000000001 514.35) (xy 708.6600000000001 511.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "90d0559d-ffd2-475e-80f2-7bbf0801b967")
+	)
+	(label "ENC_A_TRX_B"
+		(at 708.6600000000001 511.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b6ec3bd9-cc2d-4018-a051-55be0da4d34f")
+	)
+	(wire
+		(pts
+			(xy 708.6600000000001 519.43) (xy 708.6600000000001 521.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7cb439f5-c261-4e59-9a45-913cab54da0d")
+	)
+	(label "TERM_A_R"
+		(at 708.6600000000001 521.97 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1e479651-a59d-4a4d-9ffa-6cad4ce3aaed")
+	)
+(symbol
+		(lib_id "Device:C")
+		(at 716.2800000000001 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "3b25c94a-7ef1-4147-a8b4-0b3bebe84926")
+		(property "Reference" "C110"
+			(at 717.5500000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100n"
+			(at 717.5500000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
+			(at 716.2800000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 716.2800000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 716.2800000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C131394"
+			(at 716.2800000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bb25a2c1-23c0-496d-82ee-8312d96ce6d7")
+		)
+		(pin "2"
+			(uuid "9a5ef44d-be74-43d6-bfb5-fc65e7b7c558")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "C110")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 716.2800000000001 513.08) (xy 716.2800000000001 510.53999999999996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ed0428ac-8f29-41de-b0cc-fcf52f9b9d03")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 716.2800000000001 510.53999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6cbb2139-701b-46f2-8ed2-98e41533da74")
+		(property "Reference" "#PWR0320"
+			(at 717.5500000000001 504.18999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 717.5500000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 716.2800000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 716.2800000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fe7ed7e9-5ebd-4c7c-af9a-1fbdf9f48b0c")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0320")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 716.2800000000001 520.6999999999999) (xy 716.2800000000001 523.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "006a344f-25c3-44be-a322-f4c3c165ffbe")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 716.2800000000001 523.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b771a2ec-c06e-4a29-ae87-d9a845b7c3ae")
+		(property "Reference" "#PWR0330"
+			(at 717.5500000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 717.5500000000001 529.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 716.2800000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 716.2800000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 716.2800000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9bb4ce58-b327-44e0-a1de-64553eec06c8")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0330")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 694.69 541.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0f32a2c0-aea4-48b4-b82e-66dae4a5ff92")
+		(property "Reference" "R97"
+			(at 695.96 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 695.96 547.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 694.69 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 694.69 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 694.69 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C60490"
+			(at 694.69 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "91321f57-896d-4fc7-8ca7-ed5a41139092")
+		)
+		(pin "2"
+			(uuid "37420c4f-5020-4200-8d57-ab2080a38a1f")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R97")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 694.69 537.21) (xy 694.69 534.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "688e41d7-a5ca-411a-b13e-2af4ab8bb31b")
+	)
+(symbol
+		(lib_id "power:+3V3")
+		(at 694.69 534.67 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "965af872-a6db-4a2b-813f-619f7cfaea74")
+		(property "Reference" "#PWR0340"
+			(at 695.96 528.3199999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 695.96 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 694.69 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 694.69 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 694.69 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1fb98d1f-d68c-455b-84e3-d32d1e5f607b")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0340")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 694.69 544.8299999999999) (xy 694.69 547.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8a2303a1-8f90-4205-86ed-d01e1f3c10c3")
+	)
+	(label "ENC_A_P_SW"
+		(at 694.69 547.37 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "90405c47-6a57-4420-b06d-8994d402022e")
+	)
+(symbol
+		(lib_id "integrated:TS5A3159")
+		(at 728.98 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e4054711-6f39-497e-84ac-41859c2a609c")
+		(property "Reference" "U31"
+			(at 730.25 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TS5A3159DCK"
+			(at 730.25 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
+			(at 728.98 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 728.98 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 728.98 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C46388"
+			(at 728.98 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "5"
+			(uuid "bbc3e66b-8f4b-41fc-ac3f-8c247de63001")
+		)
+		(pin "4"
+			(uuid "04a9ac75-ef1e-469f-989c-35dd1c22cdd9")
+		)
+		(pin "6"
+			(uuid "e287b8b8-d8f5-4c0d-91b2-8b1874b8b55a")
+		)
+		(pin "3"
+			(uuid "9c1d38e9-d006-42ad-9dbd-21e7744db722")
+		)
+		(pin "1"
+			(uuid "48163861-17bd-4df3-8bb2-c7c583f74017")
+		)
+		(pin "2"
+			(uuid "2cdb52c7-f3a1-49d3-9a66-2ecba47b1188")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "U31")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 720.09 515.62) (xy 722.63 515.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "118c2d30-1a60-468a-8812-fbb7944fa524")
+	)
+	(label "ENC_B_TRX_A"
+		(at 720.09 515.62 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "84c95d7e-8e6a-4353-807f-a134bc28b995")
+	)
+	(wire
+		(pts
+			(xy 735.33 518.16) (xy 737.87 518.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cd1eecc6-2842-4fa6-87b2-9b13bb113645")
+	)
+	(label "TERM_B_R"
+		(at 737.87 518.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "45005954-3229-4bef-9108-523cc86476a7")
+	)
+	(no_connect
+		(at 735.33 515.62)
+		(uuid "f8edf7f5-1f91-4236-bb30-ab48552ce76a")
+	)
+	(wire
+		(pts
+			(xy 720.09 519.43) (xy 722.63 519.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3bbe1b3f-c7a0-4937-b203-396b10226cb0")
+	)
+	(label "TERM_SW"
+		(at 720.09 519.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "190fca2b-bf66-41ec-886e-f399ebb77ea7")
+	)
+	(wire
+		(pts
+			(xy 731.52 506.72999999999996) (xy 731.52 509.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1e468606-75f2-4471-8a6a-fa2d1db191cb")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 731.52 506.72999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "5f97b037-e0b0-487c-a9eb-ff6c036a990e")
+		(property "Reference" "#PWR0301"
+			(at 732.79 500.37999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 732.79 513.0799999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 731.52 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 731.52 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bea18de7-c56d-457e-b0f6-c59a172bd0dd")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0301")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 730.25 524.51) (xy 730.25 527.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "00a98d73-6c8b-49b4-984a-d65498ed1f40")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 730.25 527.05 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "87e55bdb-bb4c-4304-b067-5f60543e7df6")
+		(property "Reference" "#PWR0311"
+			(at 731.52 520.6999999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 731.52 533.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 730.25 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 730.25 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 730.25 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "75599a64-255e-4f1c-943d-8ccf5b12acf2")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0311")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 742.95 514.35) (xy 742.95 511.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "12509377-e705-493e-ae01-1c8df939ca95")
+	)
+	(label "ENC_B_TRX_B"
+		(at 742.95 511.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "2085e331-5282-4a58-b4b7-2b5bc22648c2")
+	)
+	(wire
+		(pts
+			(xy 742.95 519.43) (xy 742.95 521.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ac3e68e7-9639-476f-ab20-1b5885937a51")
+	)
+	(label "TERM_B_R"
+		(at 742.95 521.97 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b0615131-41c8-4adf-99eb-587d8eaaa020")
+	)
+(symbol
+		(lib_id "Device:C")
+		(at 750.57 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0e059c07-0279-4e4d-9329-2b9ff67596ac")
+		(property "Reference" "C111"
+			(at 751.84 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100n"
+			(at 751.84 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
+			(at 750.57 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 750.57 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 750.57 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C131394"
+			(at 750.57 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bff88e8b-8b6f-49db-91d7-6f6d3557a579")
+		)
+		(pin "2"
+			(uuid "c485a2dd-a5ae-4e4e-8031-73b83d7bde6a")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "C111")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 750.57 513.08) (xy 750.57 510.53999999999996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6adf5c23-251c-43fe-b1aa-92905e22c5b1")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 750.57 510.53999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "74f67011-197c-45ac-ac9e-43dcbd4ff052")
+		(property "Reference" "#PWR0321"
+			(at 751.84 504.18999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 751.84 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 750.57 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 750.57 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "95185fad-9a0a-4954-8e2f-4783c1c18ff7")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0321")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 750.57 520.6999999999999) (xy 750.57 523.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "70b5f2c3-1785-4a38-86dc-5010098ce967")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 750.57 523.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "29d44e64-1f71-4bc2-9a1b-6371d7f63801")
+		(property "Reference" "#PWR0331"
+			(at 751.84 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 751.84 529.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 750.57 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 750.57 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 750.57 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1755a933-cdf3-42f0-96ad-01d0501fcabd")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0331")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 728.98 541.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "31f9cdd9-2eff-4862-8759-16741d4bc8a8")
+		(property "Reference" "R98"
+			(at 730.25 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 730.25 547.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 728.98 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 728.98 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 728.98 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C60490"
+			(at 728.98 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9f8b69db-6789-46ac-b240-e156e5cbb5d5")
+		)
+		(pin "2"
+			(uuid "b864a68f-5fe1-45dd-b0a1-3b956c90cc95")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R98")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 728.98 537.21) (xy 728.98 534.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a1c04df3-49a1-43ef-a8fc-078b6c257bad")
+	)
+(symbol
+		(lib_id "power:+3V3")
+		(at 728.98 534.67 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b0d71f8f-804c-4b23-8398-f591a18256e4")
+		(property "Reference" "#PWR0341"
+			(at 730.25 528.3199999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 730.25 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 728.98 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 728.98 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 728.98 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "57d7f14b-fbda-44ce-a2ed-9b59befd27ce")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0341")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 728.98 544.8299999999999) (xy 728.98 547.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "89e2ef9c-2f4c-422d-8f7a-17af4f236594")
+	)
+	(label "ENC_B_P_SW"
+		(at 728.98 547.37 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b4f43c7b-e6e0-4ab3-a301-9ef6e8cdecaa")
+	)
+(symbol
+		(lib_id "integrated:TS5A3159")
+		(at 763.2700000000001 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "86814508-b9ac-4bc5-a6b5-c5846d40fb32")
+		(property "Reference" "U32"
+			(at 764.5400000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TS5A3159DCK"
+			(at 764.5400000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
+			(at 763.2700000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 763.2700000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 763.2700000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C46388"
+			(at 763.2700000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "5"
+			(uuid "ea235847-65b1-4bcf-bbcf-92f5c80a8b33")
+		)
+		(pin "4"
+			(uuid "c4f62f40-a78e-4ded-8130-220d1c14321a")
+		)
+		(pin "6"
+			(uuid "006e33a7-a8e5-4c72-af64-57cc3340b305")
+		)
+		(pin "3"
+			(uuid "1f4cf6c8-c235-4943-8d79-fdf45f1a63bd")
+		)
+		(pin "1"
+			(uuid "138def39-4c56-4b2b-b1eb-5299d1f4cefb")
+		)
+		(pin "2"
+			(uuid "c7323490-abe2-47d8-9402-6804d5f350d8")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "U32")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 754.3800000000001 515.62) (xy 756.9200000000001 515.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c3887ae9-5465-4bcc-8244-9e0003e44743")
+	)
+	(label "ENC_C_TRX_A"
+		(at 754.3800000000001 515.62 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "9c1bfb89-990c-4239-b9d5-fff52466bd27")
+	)
+	(wire
+		(pts
+			(xy 769.6200000000001 518.16) (xy 772.1600000000001 518.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c3d90c7d-7043-4898-b8ad-4080971f33c7")
+	)
+	(label "TERM_C_R"
+		(at 772.1600000000001 518.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "e3520b4e-1af5-4d02-82ca-385c6fa395fe")
+	)
+	(no_connect
+		(at 769.6200000000001 515.62)
+		(uuid "8be788b1-92d9-40ee-9b6e-db00a23e2f01")
+	)
+	(wire
+		(pts
+			(xy 754.3800000000001 519.43) (xy 756.9200000000001 519.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dc78d74d-5333-4eb5-b3d6-66c298a5c3a7")
+	)
+	(label "TERM_SW"
+		(at 754.3800000000001 519.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "f2c963d3-c3c1-411d-bf5d-01b0587445e3")
+	)
+	(wire
+		(pts
+			(xy 765.8100000000001 506.72999999999996) (xy 765.8100000000001 509.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ecf89509-e700-4adc-827c-8d9f6496c136")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 765.8100000000001 506.72999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b4019219-f4fe-45c6-919d-27cca6cb1394")
+		(property "Reference" "#PWR0302"
+			(at 767.08 500.37999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 767.08 513.0799999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 765.8100000000001 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 765.8100000000001 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f69961fc-7509-493c-a80c-ae22971d1eef")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0302")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 764.5400000000001 524.51) (xy 764.5400000000001 527.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ee3eccec-9fe8-4a47-a111-2a23ebae9393")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 764.5400000000001 527.05 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8c3246d5-a1d0-4f6d-b4ba-ce56200aa977")
+		(property "Reference" "#PWR0312"
+			(at 765.8100000000001 520.6999999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 765.8100000000001 533.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 764.5400000000001 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 764.5400000000001 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 764.5400000000001 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e97d6e91-3cf0-4f03-ac79-e493120d8314")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0312")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 777.2400000000001 514.35) (xy 777.2400000000001 511.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c0a0de75-6bf3-4f97-b27f-f075afd4594f")
+	)
+	(label "ENC_C_TRX_B"
+		(at 777.2400000000001 511.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "90fd230f-2c09-492e-a981-378ff5098403")
+	)
+	(wire
+		(pts
+			(xy 777.2400000000001 519.43) (xy 777.2400000000001 521.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0d5ae300-016b-4c02-b06b-4918e180b9ca")
+	)
+	(label "TERM_C_R"
+		(at 777.2400000000001 521.97 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "6e2a315b-b72f-4415-873a-bd25af2d6491")
+	)
+(symbol
+		(lib_id "Device:C")
+		(at 784.8600000000001 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1079096e-df07-407e-b7eb-c197b4351672")
+		(property "Reference" "C112"
+			(at 786.1300000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100n"
+			(at 786.1300000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
+			(at 784.8600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 784.8600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 784.8600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C131394"
+			(at 784.8600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bea1ea9f-7805-4b41-a0a6-949e77a224cc")
+		)
+		(pin "2"
+			(uuid "4a8ab56e-a977-4787-8b75-ad8c0931c2dc")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "C112")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 784.8600000000001 513.08) (xy 784.8600000000001 510.53999999999996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ae821df9-ba00-40e6-9ba0-daacd677ba83")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 784.8600000000001 510.53999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "3bd039d0-e041-4372-a7d6-40a362ba2fa8")
+		(property "Reference" "#PWR0322"
+			(at 786.1300000000001 504.18999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 786.1300000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 784.8600000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 784.8600000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8089bb89-f22b-4d51-9721-4963b4374e6c")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0322")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 784.8600000000001 520.6999999999999) (xy 784.8600000000001 523.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6fe8091f-8e04-47c9-bc2b-bdc0ea418d23")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 784.8600000000001 523.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "f46f5bc8-cfba-4363-ba95-04894e97e862")
+		(property "Reference" "#PWR0332"
+			(at 786.1300000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 786.1300000000001 529.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 784.8600000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 784.8600000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 784.8600000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ac3d9ba5-5bb4-4be8-b4b1-1e17d57a1fca")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0332")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 763.2700000000001 541.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "66ac1a7c-71ec-499c-9e01-71b8e50c6372")
+		(property "Reference" "R99"
+			(at 764.5400000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 764.5400000000001 547.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 763.2700000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 763.2700000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 763.2700000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C60490"
+			(at 763.2700000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "87a62c80-1418-4fe8-ba8c-e23862c74ff0")
+		)
+		(pin "2"
+			(uuid "e94b803b-a123-46e7-ae54-5101d45aac88")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R99")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 763.2700000000001 537.21) (xy 763.2700000000001 534.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c514ae73-2757-4c10-ab16-cb5ad30cbc38")
+	)
+(symbol
+		(lib_id "power:+3V3")
+		(at 763.2700000000001 534.67 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "fdf8c355-aaa0-418d-b4b8-896a726f7f64")
+		(property "Reference" "#PWR0342"
+			(at 764.5400000000001 528.3199999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 764.5400000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 763.2700000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 763.2700000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 763.2700000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3058129c-62fa-4d81-88a1-075fcbd8056d")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0342")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 763.2700000000001 544.8299999999999) (xy 763.2700000000001 547.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8f7f01b6-a628-4f60-83f0-e0bae963acf2")
+	)
+	(label "ENC_C_P_SW"
+		(at 763.2700000000001 547.37 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "088d5ec2-ba12-45b2-a75d-3d6228a3311a")
+	)
+(symbol
+		(lib_id "integrated:TS5A3159")
+		(at 797.5600000000001 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4c470b3b-ab80-493f-bf47-9b1c834db82a")
+		(property "Reference" "U33"
+			(at 798.83 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TS5A3159DCK"
+			(at 798.83 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "parts:SOT-363_SC-70-6_JLC"
+			(at 797.5600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 797.5600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 797.5600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C46388"
+			(at 797.5600000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "5"
+			(uuid "fbb8ff62-ff55-41b6-8da4-48bbb11ee782")
+		)
+		(pin "4"
+			(uuid "021c777c-719d-4e2e-bc89-15e434d74078")
+		)
+		(pin "6"
+			(uuid "889ed577-0241-4533-8581-365aab40fed6")
+		)
+		(pin "3"
+			(uuid "005a2017-676b-4d6f-9bfe-6ee0f0a84587")
+		)
+		(pin "1"
+			(uuid "e6782ba2-f002-4b0a-8581-00548b5cc636")
+		)
+		(pin "2"
+			(uuid "f667c081-ded6-42e6-940a-a45927ebe719")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "U33")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 788.6700000000001 515.62) (xy 791.21 515.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "21ab473b-43cc-4de8-a1a7-f8da9095671a")
+	)
+	(label "ENC_D_TRX_A"
+		(at 788.6700000000001 515.62 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "fb2e4219-7303-4dfb-9f58-a40bf131685f")
+	)
+	(wire
+		(pts
+			(xy 803.9100000000001 518.16) (xy 806.45 518.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c17e8b17-8275-4855-83dc-5c67abd2a99a")
+	)
+	(label "TERM_D_R"
+		(at 806.45 518.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "67d624d7-595e-4713-87e5-d5d4eb27085e")
+	)
+	(no_connect
+		(at 803.9100000000001 515.62)
+		(uuid "0999205f-32a7-435b-b983-15d3e7869320")
+	)
+	(wire
+		(pts
+			(xy 788.6700000000001 519.43) (xy 791.21 519.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "809d3832-be0e-4e3b-89af-fc0ec39128ef")
+	)
+	(label "TERM_SW"
+		(at 788.6700000000001 519.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "df0daa56-45e1-4d7c-b887-5fbdf904b2ca")
+	)
+	(wire
+		(pts
+			(xy 800.1 506.72999999999996) (xy 800.1 509.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5b010381-b5a1-49e0-a5e6-121281f63d13")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 800.1 506.72999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "47879b65-242c-4b47-b1ef-5476c0aecca7")
+		(property "Reference" "#PWR0303"
+			(at 801.37 500.37999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 801.37 513.0799999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 800.1 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 800.1 506.72999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "986dcc9c-a2af-41be-9b29-4e496f0d8e10")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0303")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 798.83 524.51) (xy 798.83 527.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8cc76c69-5b00-49c7-ae74-86963adcbc6b")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 798.83 527.05 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4b755067-3876-4d9b-9ecc-7b6601e7e674")
+		(property "Reference" "#PWR0313"
+			(at 800.1 520.6999999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 800.1 533.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 798.83 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 798.83 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 798.83 527.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c83770da-9872-4935-8f8b-e5aaaeaae8e0")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0313")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 811.5300000000001 514.35) (xy 811.5300000000001 511.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6548f82e-e57e-41e5-adc6-522b63b4dc6e")
+	)
+	(label "ENC_D_TRX_B"
+		(at 811.5300000000001 511.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "15ebc7c5-be71-4940-b7c4-32beb0b7286a")
+	)
+	(wire
+		(pts
+			(xy 811.5300000000001 519.43) (xy 811.5300000000001 521.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "08ba2c20-5d7d-4df7-a33e-c3e66aa23c05")
+	)
+	(label "TERM_D_R"
+		(at 811.5300000000001 521.97 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "d2a7a641-f5c3-4180-9818-26552bc187c8")
+	)
+(symbol
+		(lib_id "Device:C")
+		(at 819.1500000000001 516.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ff2e699b-64b8-41f2-bc99-6de0cd3569de")
+		(property "Reference" "C113"
+			(at 820.4200000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100n"
+			(at 820.4200000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
+			(at 819.1500000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 819.1500000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 819.1500000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C131394"
+			(at 819.1500000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "efc76353-a618-4de9-bbb6-c3c8b8690b7f")
+		)
+		(pin "2"
+			(uuid "b71f0fbc-5daf-462f-9473-ae4dc869d5c5")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "C113")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 819.1500000000001 513.08) (xy 819.1500000000001 510.53999999999996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bcbd8e21-bb06-429d-a802-b92677b8260f")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 819.1500000000001 510.53999999999996 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "aba30159-78ed-4378-bcee-f585222ff842")
+		(property "Reference" "#PWR0323"
+			(at 820.4200000000001 504.18999999999994 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 820.4200000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 819.1500000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 819.1500000000001 510.53999999999996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e8df7774-9947-4a25-8b86-d29bf74ac536")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0323")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 819.1500000000001 520.6999999999999) (xy 819.1500000000001 523.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "61b0e11b-a8bc-4f1c-afbe-d827de6d9e26")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 819.1500000000001 523.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a1350271-0c49-4c00-aec1-d874f34b579c")
+		(property "Reference" "#PWR0333"
+			(at 820.4200000000001 516.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 820.4200000000001 529.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 819.1500000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 819.1500000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 819.1500000000001 523.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e152b084-0fe1-47df-8858-f6dda45242ff")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0333")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 797.5600000000001 541.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1a189fb1-0d50-4657-86a5-b3936c3a0f61")
+		(property "Reference" "R100"
+			(at 798.83 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 798.83 547.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 797.5600000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 797.5600000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 797.5600000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C60490"
+			(at 797.5600000000001 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1950bf62-d2fb-4069-8a32-4273aea22ea2")
+		)
+		(pin "2"
+			(uuid "0d79d03b-b17f-41a6-8cad-5688e7325fb7")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R100")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 797.5600000000001 537.21) (xy 797.5600000000001 534.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "79bdb658-8918-43a7-8b55-77e8ece4880f")
+	)
+(symbol
+		(lib_id "power:+3V3")
+		(at 797.5600000000001 534.67 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7d3d1a17-8fe7-43cc-83f4-b473c5773fdd")
+		(property "Reference" "#PWR0343"
+			(at 798.83 528.3199999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 798.83 541.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 797.5600000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 797.5600000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 797.5600000000001 534.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e0d1cdf4-a793-4751-8072-ab3aa0cac6aa")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0343")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 797.5600000000001 544.8299999999999) (xy 797.5600000000001 547.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "db8fb90e-7721-4c1d-855c-e100572fa564")
+	)
+	(label "ENC_D_P"
+		(at 797.5600000000001 547.37 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "820de9c2-6e47-4916-b7e9-bac0fff6662b")
+	)
+	(text "Rev B: switchable RS-485 termination.\nTERM_SW (GPIO38/TP20) high = 100R termination in circuit (differential encoders).\nLow/boot default = termination open: single-ended signals see the 10k/10k bias\nas a 1.65V threshold. R97-R100 pull P lines up for open-collector encoders."
+		(exclude_from_sim no)
+		(at 690.8800000000001 497.84 0)
+		(effects
+			(font
+				(size 1.6 1.6)
+			)
+			(justify left)
+		)
+		(uuid "f2dd6885-91b5-45e3-8077-b5b0c3afba02")
+	)
+
+	(text "Rev B: defined boot states.\n100k pull-downs: every analog-switch enable + transceiver DE/RE floats\nbetween power-up and firmware init. Defaults: V_ENC=3.3V, transceivers\nin receive, hall/I2C/analog paths off, termination open."
+		(exclude_from_sim no)
+		(at 62.23 143.51 0)
+		(effects
+			(font
+				(size 1.6 1.6)
+			)
+			(justify left)
+		)
+		(uuid "708ee9c0-2383-4ddd-9fe5-8d02bdb18815")
+	)
+(symbol
+		(lib_id "Device:R")
+		(at 63.5 157.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "43c77c52-76fd-496b-aef4-d195f982353b")
+		(property "Reference" "R101"
+			(at 65.405 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 65.405 156.845 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 63.5 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 63.5 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 63.5 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-100k-0402"
+			(at 63.5 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8a59baae-311e-47cd-9b4a-08d02d724b2a")
+		)
+		(pin "2"
+			(uuid "b0096412-df73-400f-9dbe-36e983f62e08")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R101")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 63.5 153.67) (xy 63.5 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "84b07dcd-afc6-4121-9b56-e4413e257b33")
+	)
+	(label "V_SW"
+		(at 63.5 151.13 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "42f89074-242c-4202-b6dc-bb653be39730")
+	)
+	(wire
+		(pts
+			(xy 63.5 161.29) (xy 63.5 163.82999999999998)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "381128d1-b11d-4ac0-840b-93b039a57ec8")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 63.5 163.82999999999998 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "85e95d3f-c265-4df8-aee2-c2c149627941")
+		(property "Reference" "#PWR0350"
+			(at 65.405 160.01999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 65.405 163.195 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 63.5 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 63.5 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 63.5 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9a06f4e2-8b4b-44ed-9bb2-f088b00905f5")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0350")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 73.66 157.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c40980c1-2465-4c08-bf59-606286dce07a")
+		(property "Reference" "R102"
+			(at 75.565 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 75.565 156.845 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 73.66 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 73.66 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 73.66 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-100k-0402"
+			(at 73.66 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9da7250e-49bb-46dc-aaea-2d3e1613a25d")
+		)
+		(pin "2"
+			(uuid "1cf43bf0-0e11-40d1-99ed-2f9ba22c6e6f")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R102")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 73.66 153.67) (xy 73.66 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9ffe8de3-5d9e-4163-8456-737d3389c9b9")
+	)
+	(label "I2C_SW"
+		(at 73.66 151.13 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1b000cd2-e9f9-4e2c-8973-dc706b4ea489")
+	)
+	(wire
+		(pts
+			(xy 73.66 161.29) (xy 73.66 163.82999999999998)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "69d67ebe-6ad2-40ca-a29d-0fb86a730af2")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 73.66 163.82999999999998 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "888b56e3-909f-4bcc-acb4-cf89a5e413f6")
+		(property "Reference" "#PWR0351"
+			(at 75.565 160.01999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 75.565 163.195 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 73.66 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 73.66 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 73.66 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2fa3eb7c-a393-4f4d-ba52-7f38c5d5e6ed")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0351")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 83.82 157.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "aacfc172-ab6d-451c-bcd1-843605eb06f5")
+		(property "Reference" "R103"
+			(at 85.725 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 85.725 156.845 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 83.82 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 83.82 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 83.82 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-100k-0402"
+			(at 83.82 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ebfbf31d-bfd8-4b95-818a-fecae07ba2fc")
+		)
+		(pin "2"
+			(uuid "1935a906-56e6-48a0-8239-21ffce3bef03")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R103")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 83.82 153.67) (xy 83.82 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "85a8064c-f268-4d03-934e-2e08af4eda47")
+	)
+	(label "H1_SW"
+		(at 83.82 151.13 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "2b2a7ff2-4d91-4c8e-968a-fe47791156d3")
+	)
+	(wire
+		(pts
+			(xy 83.82 161.29) (xy 83.82 163.82999999999998)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ba528085-5cae-4390-abe4-0974d705c31e")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 83.82 163.82999999999998 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "925faa7b-bda7-4810-8137-5b40de1cde3f")
+		(property "Reference" "#PWR0352"
+			(at 85.725 160.01999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 85.725 163.195 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 83.82 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 83.82 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 83.82 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "69d4f5ef-00df-4060-a3b9-89cb98aeaed7")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0352")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 93.98 157.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4dcc5c5a-2cd1-489d-9c44-98c7fdba322e")
+		(property "Reference" "R104"
+			(at 95.885 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 95.885 156.845 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 93.98 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 93.98 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 93.98 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-100k-0402"
+			(at 93.98 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "806b7ca2-7f8f-489c-843c-686053b46cdc")
+		)
+		(pin "2"
+			(uuid "9b45802e-f1f7-4459-953a-b58c59c1a12b")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R104")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 93.98 153.67) (xy 93.98 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8a088529-85c1-4c52-a456-7d248e075bfe")
+	)
+	(label "H2_SW"
+		(at 93.98 151.13 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b861f5bd-d2c8-4ff4-9f9d-aa110af65d26")
+	)
+	(wire
+		(pts
+			(xy 93.98 161.29) (xy 93.98 163.82999999999998)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e7b9691e-b10b-4757-a2a6-1114d8098077")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 93.98 163.82999999999998 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e05c0375-60ff-42ef-b5ae-6220e653b559")
+		(property "Reference" "#PWR0353"
+			(at 95.885 160.01999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 95.885 163.195 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 93.98 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 93.98 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 93.98 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e6fee4a3-f6b9-41aa-845c-b5e852920a79")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0353")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 104.14 157.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "cb0c5c31-bf43-4207-b77b-3690103d5c27")
+		(property "Reference" "R105"
+			(at 106.045 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 106.045 156.845 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 104.14 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 104.14 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 104.14 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-100k-0402"
+			(at 104.14 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f0c8f5c8-0c48-4f01-9da3-49e776e3917a")
+		)
+		(pin "2"
+			(uuid "3a318496-9042-40e6-a897-0cf63cb86c8d")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R105")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 104.14 153.67) (xy 104.14 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4f91cf29-3746-4680-b765-2c0030aa687f")
+	)
+	(label "H3_SW"
+		(at 104.14 151.13 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "49408919-46eb-451a-8631-e9da3e18016c")
+	)
+	(wire
+		(pts
+			(xy 104.14 161.29) (xy 104.14 163.82999999999998)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5baae6cd-c21d-4eca-af04-4ccf72cbde34")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 104.14 163.82999999999998 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8d2a60e1-eb4a-4cdb-b4a5-446101b95577")
+		(property "Reference" "#PWR0354"
+			(at 106.045 160.01999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 106.045 163.195 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 104.14 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 104.14 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 104.14 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c7b3cc5c-714b-4a08-a2f3-1839170d1203")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0354")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 114.3 157.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "524c6a06-2043-47d7-8154-cf842c2989e3")
+		(property "Reference" "R106"
+			(at 116.205 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 116.205 156.845 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 114.3 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 114.3 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 114.3 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-100k-0402"
+			(at 114.3 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7f7c4594-d33c-49c8-b20d-d714b8196566")
+		)
+		(pin "2"
+			(uuid "fd3b18bd-983b-4293-bf92-af88097e4378")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R106")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 114.3 153.67) (xy 114.3 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e0adb6c3-eddd-4116-bfb0-43470251ec76")
+	)
+	(label "EXT_ANALOG_SW"
+		(at 114.3 151.13 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "de9101d0-4901-42f8-baa3-49f589f0ec67")
+	)
+	(wire
+		(pts
+			(xy 114.3 161.29) (xy 114.3 163.82999999999998)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b344ad5a-576c-4805-8308-6cf50a4c13e7")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 114.3 163.82999999999998 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7de64276-2329-4c0f-a923-bd06e45dc312")
+		(property "Reference" "#PWR0355"
+			(at 116.205 160.01999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 116.205 163.195 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 114.3 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 114.3 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 114.3 163.82999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "137f61c0-4301-4c4f-ba89-1bed552dcff5")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0355")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 63.5 180.34 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "57800c72-9344-4b7f-b0b6-b4e4eb2b9f6d")
+		(property "Reference" "R107"
+			(at 65.405 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 65.405 179.705 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 63.5 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 63.5 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 63.5 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-100k-0402"
+			(at 63.5 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ee5c2a94-7f60-446c-8519-a5e0bb7d6898")
+		)
+		(pin "2"
+			(uuid "6063800f-b929-41ae-b884-acf77300c980")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R107")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 63.5 176.53) (xy 63.5 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ada75a81-e037-4dcf-94af-e48db3183758")
+	)
+	(label "TH_SW_1"
+		(at 63.5 173.99 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "5cc40fc6-0308-4517-952e-6a59412a8a05")
+	)
+	(wire
+		(pts
+			(xy 63.5 184.15) (xy 63.5 186.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3e93c87e-1024-4ef9-8988-e12f52ef66a2")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 63.5 186.69 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "10b0b199-7b28-419f-927f-6cdbbc5cb02d")
+		(property "Reference" "#PWR0356"
+			(at 65.405 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 65.405 186.055 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 63.5 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 63.5 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 63.5 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8fb6740f-1c7d-49f7-a8af-6343e4c601fc")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0356")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 73.66 180.34 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0b152c61-0d78-4f63-b734-7a2d1f363b4c")
+		(property "Reference" "R108"
+			(at 75.565 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 75.565 179.705 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 73.66 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 73.66 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 73.66 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-100k-0402"
+			(at 73.66 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3be346bb-2e6c-4286-9102-5dc9e4b40f29")
+		)
+		(pin "2"
+			(uuid "321bad73-5986-4eef-b61a-1ce947d1b39a")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R108")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 73.66 176.53) (xy 73.66 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "33ee40bd-22e1-46c1-bdfa-8b484a31dc51")
+	)
+	(label "ENC_A_SW"
+		(at 73.66 173.99 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "e77e84e4-19b8-4c0e-9360-5139d13e10c2")
+	)
+	(wire
+		(pts
+			(xy 73.66 184.15) (xy 73.66 186.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "28d5cd21-4cfe-4e20-bbb8-460b7f73c165")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 73.66 186.69 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ccaf7a9c-e991-46e7-82a1-ba79a100d945")
+		(property "Reference" "#PWR0357"
+			(at 75.565 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 75.565 186.055 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 73.66 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 73.66 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 73.66 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "380668e1-e983-429f-a414-197206a09bbe")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0357")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 83.82 180.34 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "97274b16-f5cd-4189-ab08-25edd5924851")
+		(property "Reference" "R109"
+			(at 85.725 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 85.725 179.705 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 83.82 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 83.82 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 83.82 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-100k-0402"
+			(at 83.82 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "45270f4a-46b9-4bf0-91d5-efb4874135a3")
+		)
+		(pin "2"
+			(uuid "499eca02-c8f6-4675-8434-c69acae25f42")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R109")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 83.82 176.53) (xy 83.82 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "19ea70f2-05c6-4813-90d9-612255c586ae")
+	)
+	(label "ENC_B_SW"
+		(at 83.82 173.99 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "89171310-452a-4048-bdbd-53a7b22ee36c")
+	)
+	(wire
+		(pts
+			(xy 83.82 184.15) (xy 83.82 186.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5c874018-c517-4a04-bfdd-61c76bf07a95")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 83.82 186.69 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "18f2c084-cb8b-4072-8736-138998af38fb")
+		(property "Reference" "#PWR0358"
+			(at 85.725 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 85.725 186.055 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 83.82 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 83.82 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 83.82 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5fa6a55b-8bde-4daa-a865-08d3162d70cd")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0358")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 93.98 180.34 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "751a40e2-edcb-4e85-90dc-957a84a64dcc")
+		(property "Reference" "R110"
+			(at 95.885 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 95.885 179.705 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 93.98 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 93.98 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 93.98 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-100k-0402"
+			(at 93.98 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "18af9c86-ad78-4ea3-83a5-ed08a41d75b4")
+		)
+		(pin "2"
+			(uuid "ffdbc06e-ebcc-4653-9762-0397382d6c08")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R110")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 93.98 176.53) (xy 93.98 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "33b77bdc-8954-4d53-b667-98f66853d87b")
+	)
+	(label "ENC_C_SW"
+		(at 93.98 173.99 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "dffcad72-2ca5-4632-b6e7-e3de96acd3a7")
+	)
+	(wire
+		(pts
+			(xy 93.98 184.15) (xy 93.98 186.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "86a3705e-8f0f-42ff-a819-2edaa68766cd")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 93.98 186.69 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e473ec40-120c-4608-b0ed-8fba20be2e14")
+		(property "Reference" "#PWR0359"
+			(at 95.885 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 95.885 186.055 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 93.98 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 93.98 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 93.98 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ba05d6eb-399a-4a58-b56a-0046c3f83f2b")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0359")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 104.14 180.34 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "18498656-e4dd-47eb-bc98-9dd66b569b12")
+		(property "Reference" "R111"
+			(at 106.045 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 106.045 179.705 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 104.14 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 104.14 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 104.14 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-100k-0402"
+			(at 104.14 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "497fdcfe-515c-4b67-b83f-2a27f710b74b")
+		)
+		(pin "2"
+			(uuid "b54aef0f-2cab-46a5-80c5-0601b4caa8b8")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R111")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 104.14 176.53) (xy 104.14 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "852606ac-807e-4f89-b503-7ae9bd86a819")
+	)
+	(label "ENC_D_SW"
+		(at 104.14 173.99 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "5cfa6a88-6517-4c07-b511-33ca7038fabe")
+	)
+	(wire
+		(pts
+			(xy 104.14 184.15) (xy 104.14 186.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7379f331-df5d-417f-8e08-370d98912026")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 104.14 186.69 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6835c31a-8103-4e4b-b389-3df2555d8a6a")
+		(property "Reference" "#PWR0360"
+			(at 106.045 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 106.045 186.055 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 104.14 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 104.14 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 104.14 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f024cc49-0492-4947-b906-aa82149800eb")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0360")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 114.3 180.34 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "25290b78-f553-4566-b8c2-55484f31467d")
+		(property "Reference" "R112"
+			(at 116.205 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 116.205 179.705 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 114.3 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 114.3 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 114.3 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-100k-0402"
+			(at 114.3 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "92060265-297d-4e2a-a03a-9d234fbc1f9b")
+		)
+		(pin "2"
+			(uuid "17e9239c-7b58-4cc0-90d4-acf5b828c0a2")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R112")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 114.3 176.53) (xy 114.3 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "07a1fa07-118c-4313-9cae-93528b41123e")
+	)
+	(label "TERM_SW"
+		(at 114.3 173.99 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b8f597a9-2f4b-4067-9564-c0678d2cf4b9")
+	)
+	(wire
+		(pts
+			(xy 114.3 184.15) (xy 114.3 186.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0cc42b1c-857f-40b6-a48d-b3637cb71926")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 114.3 186.69 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "821e7629-859c-4554-ad2b-d9ff636fd40e")
+		(property "Reference" "#PWR0361"
+			(at 116.205 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 116.205 186.055 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 114.3 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 114.3 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 114.3 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "db6b4ee4-1806-4fda-907c-49019ac745db")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0361")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 60.96 270.51) (xy 60.96 273.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ba554164-989c-435a-8bc9-874de68c3b81")
+	)
+	(label "LED_VDD"
+		(at 60.96 270.51 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "57821571-74a5-4cd2-95bf-216fa15fe6ca")
+	)
+(symbol
+		(lib_id "Device:D")
+		(at 68.58 200.66 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "73fd0881-859b-4997-98bc-f180f687eb01")
+		(property "Reference" "D30"
+			(at 70.485 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "DSS110"
+			(at 70.485 200.025 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SOD-123F"
+			(at 68.58 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 68.58 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 68.58 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C2923942"
+			(at 68.58 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ee45226c-83fb-46a5-afe2-be5d4a2cf025")
+		)
+		(pin "2"
+			(uuid "4a4d9695-afe9-4d7f-b4ad-c51effdff3a6")
+		)
+		(instances
+			(project "driver_module"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "D30")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 72.39 200.66) (xy 74.92999999999999 200.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "eeac40f7-436a-4c30-960d-a5fd20a92d49")
+	)
+(symbol
+		(lib_id "power:Vdrive")
+		(at 74.92999999999999 200.66 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "31263286-6991-4d00-a984-9fcf5c0d1e2e")
+		(property "Reference" "#PWR0370"
+			(at 76.835 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Vdrive"
+			(at 76.835 200.025 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 74.92999999999999 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 74.92999999999999 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"Vdrive\""
+			(at 243.84 403.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "79302f7f-b20e-4eb3-abe0-77fa08abf068")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0370")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 64.77 200.66) (xy 62.23 200.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c6407eed-b790-417f-b1fe-157b17274c23")
+	)
+	(label "LED_VDD"
+		(at 62.23 200.66 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "0890b3a3-5a45-4068-9602-aac8d0f36264")
+	)
+(symbol
+		(lib_id "Device:C")
+		(at 85.09 205.74 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "fc560faf-bb28-4d57-80e4-a480f95c5d25")
+		(property "Reference" "C114"
+			(at 86.995 201.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100n"
+			(at 86.995 205.10500000000002 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "parts:C_0402_1005Metric_JLC"
+			(at 85.09 205.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 85.09 205.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 85.09 205.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C131394"
+			(at 85.09 205.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c508209d-85f8-43b9-8df8-2a787c6ec0bc")
+		)
+		(pin "2"
+			(uuid "2a802c3d-ce36-48fa-b959-e1cbd368c7b8")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "C114")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 85.09 201.93) (xy 85.09 199.39000000000001)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "11fe8d5f-e00d-476d-a4f3-bd4c23efcbeb")
+	)
+	(label "LED_VDD"
+		(at 85.09 199.39000000000001 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "2f4d4024-58dc-4a34-ac9a-3b9d389ed7bb")
+	)
+	(wire
+		(pts
+			(xy 85.09 209.55) (xy 85.09 212.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e9692343-112b-48b9-8210-36dff552dcd0")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 85.09 212.09 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "9f11b43a-02cd-4bf6-8443-6e5132df8a5a")
+		(property "Reference" "#PWR0371"
+			(at 86.995 208.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 86.995 211.455 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 85.09 212.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 85.09 212.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 85.09 212.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bb899093-fcd2-42d0-a87d-4b5969a7fd44")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0371")
+					(unit 1)
+				)
+			)
+		)
+	)	(text "WS2812 runs from LED_VDD = Vdrive - one Schottky drop (~4.5V),\nso 3.3V data meets VIH = 0.7*VDD with margin."
+		(exclude_from_sim no)
+		(at 62.23 210.82 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "4b6a07b8-e9c8-41c9-a2e9-ab6894bb4baf")
+	)
+(symbol
+		(lib_id "Transistor_FET:Q_NMOS_GDS")
+		(at 106.68 200.66 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp yes)
+		(uuid "fe627f84-f5c6-45b6-a5b1-b326fee42ed4")
+		(property "Reference" "Q6"
+			(at 108.58500000000001 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "2N7002"
+			(at 108.58500000000001 200.025 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+			(at 106.68 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 106.68 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "N-MOSFET transistor, gate/drain/source"
+			(at 106.68 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "LCSC-TBD-2N7002"
+			(at 106.68 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ea39cdd5-79f8-42bc-b81f-91d6886df3b4")
+		)
+		(pin "3"
+			(uuid "966cb00a-89a8-47dd-b351-e2d20f993b3b")
+		)
+		(pin "2"
+			(uuid "59f2a02b-7bac-428f-9f9e-5f6135ff5741")
+		)
+		(instances
+			(project ""
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "Q6")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 101.60000000000001 200.66) (xy 99.06 200.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3080f2d0-c01c-4dd8-8ce1-09e1ae1364ad")
+	)
+	(label "E-STOP"
+		(at 99.06 200.66 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "89454cf6-b2e1-43cf-8fd5-164c293abd42")
+	)
+	(wire
+		(pts
+			(xy 109.22000000000001 195.57999999999998) (xy 109.22000000000001 193.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6d1aaa44-1851-4347-b477-66fafdd24a06")
+	)
+	(label "RUN"
+		(at 109.22000000000001 193.04 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "d3c91e4e-a835-4226-8643-842411869b52")
+	)
+	(wire
+		(pts
+			(xy 109.22000000000001 205.74) (xy 109.22000000000001 208.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7e78e43c-5d08-4f34-9a9d-b6179b0104a7")
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 109.22000000000001 208.28 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e093963b-129c-4779-905f-f10342401d88")
+		(property "Reference" "#PWR0372"
+			(at 111.12500000000001 204.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 111.12500000000001 207.645 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 109.22000000000001 208.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 109.22000000000001 208.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 109.22000000000001 208.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "eecab33f-ebad-44fa-83d9-c94dace07b3c")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0372")
+					(unit 1)
+				)
+			)
+		)
+	)(symbol
+		(lib_id "Device:R")
+		(at 121.92 190.5 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp yes)
+		(uuid "2c036c75-c4fa-4560-8628-60090fe07603")
+		(property "Reference" "R113"
+			(at 123.825 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 123.825 189.865 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "parts:R_0402_1005Metric_JLC"
+			(at 121.92 190.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 121.92 190.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 121.92 190.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C60490"
+			(at 121.92 190.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f18eab21-e519-4a92-9cd7-35f5f3b5e599")
+		)
+		(pin "2"
+			(uuid "3fcd5706-2e82-4014-a7b0-9655ea4b4834")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R113")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 121.92 186.69) (xy 121.92 184.15)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "51e78c10-6389-42c1-bf3c-15101b4d26dc")
+	)
+(symbol
+		(lib_id "power:+3V3")
+		(at 121.92 184.15 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "05fee3c0-59db-41e2-bf2a-6fe1a1c2c080")
+		(property "Reference" "#PWR0373"
+			(at 123.825 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 123.825 183.51500000000001 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 121.92 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 121.92 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 121.92 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b7ca2739-1c57-44a3-bef9-3bc74c7d769e")
+		)
+		(instances
+			(project "rp2350_driver"
+				(path "/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0373")
+					(unit 1)
+				)
+			)
+		)
+	)	(wire
+		(pts
+			(xy 121.92 194.31) (xy 121.92 196.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b4d1f6da-88e5-42c1-8b82-f34aed867e91")
+	)
+	(label "E-STOP"
+		(at 121.92 196.85 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "83710d40-449e-4169-ac4f-c20422ac3fd2")
+	)
+	(text "DNP option: hardware E-stop. Populate Q6 + R113 and an open\nE-stop loop resets the CPU (RUN low) -> gate-driver pulls brake the motor\nwith no firmware in the loop. Unpopulated = current GPIO-only behavior."
+		(exclude_from_sim no)
+		(at 93.98 213.35999999999999 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "9d50d527-0e0e-4a10-ab0f-3a3324fe92df")
+	)
+	(label "CAN0_P"
+		(at 546.1 264.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "7a68f0e7-ffde-46c2-b763-35be6f960e2d")
+	)
+	(wire
+		(pts
+			(xy 546.1 264.16) (xy 546.1 265.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "666f667a-4b25-4d63-8b45-1c0c93fa6c04")
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 546.1 269.24 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6c2db0e3-8f5f-49ad-9c16-35b501b5b764")
+		(property
+			"Reference"
+			"R114"
+			(at 548.64 267.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Value"
+			"120R"
+			(at 548.64 270.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Footprint"
+			"Resistor_SMD:R_0603_1608Metric"
+			(at 546.1 269.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Datasheet"
+			"~"
+			(at 546.1 269.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Description"
+			"Resistor"
+			(at 546.1 269.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"LCSC"
+			""
+			(at 546.1 269.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin
+			"1"
+			(uuid "049fe382-c1e7-455e-9557-517cdcda7874")
+		)
+		(pin
+			"2"
+			(uuid "5a9efefa-8e55-4d4e-84b6-38bbef94f184")
+		)
+		(instances
+			(project
+				"rp2350_driver"
+				(path
+					"/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R114")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 546.1 273.05) (xy 546.1 276.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "60d04834-114f-4fc2-a5bb-da99aad8fc99")
+	)
+	(symbol
+		(lib_id "Jumper:Jumper_2_Open")
+		(at 551.18 276.86 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1ee3dbff-caa8-4c17-8200-1d2715803e8e")
+		(property
+			"Reference"
+			"JP2"
+			(at 551.18 274.066 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Value"
+			"Jumper_2_Open"
+			(at 551.18 280.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Footprint"
+			"Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm"
+			(at 551.18 276.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Datasheet"
+			"~"
+			(at 551.18 276.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Description"
+			"Jumper, 2-pole, open"
+			(at 551.18 276.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"LCSC"
+			""
+			(at 551.18 276.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin
+			"1"
+			(uuid "a112343e-407e-4892-8eb0-ba488adc3cc4")
+		)
+		(pin
+			"2"
+			(uuid "90e7b809-f66d-4dc8-875c-ea789d6d864b")
+		)
+		(instances
+			(project
+				"rp2350_driver"
+				(path
+					"/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "JP2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 556.26 276.86) (xy 556.26 281.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "63656e80-b80a-429c-a521-2d1095a22761")
+	)
+	(label "CAN0_N"
+		(at 556.26 281.94 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a6de9e04-33d9-48a4-8152-79918337fd04")
+	)
+	(symbol
+		(lib_id "motor_parts:GND_ISO")
+		(at 541.02 302.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0b2ae432-87f4-4734-a6da-52a63ee794fc")
+		(property
+			"Reference"
+			"#PWR0374"
+			(at 541.02 308.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Value"
+			"GND_ISO"
+			(at 535.94 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Footprint"
+			""
+			(at 541.02 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Datasheet"
+			""
+			(at 541.02 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Description"
+			""
+			(at 541.02 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin
+			"1"
+			(uuid "512c180a-3fd8-4586-a91d-7dfa6fd7e3de")
+		)
+		(instances
+			(project
+				"rp2350_driver"
+				(path
+					"/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0374")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 541.02 302.26) (xy 541.02 297.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "398620ec-845f-45a0-98f7-59cf309a415b")
+	)
+	(wire
+		(pts
+			(xy 541.02 297.18) (xy 546.1 297.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4461c3b9-4c2b-4e96-8509-d74a5072352a")
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 549.91 297.18 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ae141d75-9eb1-4e28-bacd-1d40256c5a77")
+		(property
+			"Reference"
+			"C115"
+			(at 549.91 293.37 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Value"
+			"1n 2kV"
+			(at 549.91 300.99 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Footprint"
+			"Capacitor_SMD:C_1206_3216Metric"
+			(at 549.91 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Datasheet"
+			"~"
+			(at 549.91 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Description"
+			"Unpolarized capacitor"
+			(at 549.91 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"LCSC"
+			""
+			(at 549.91 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin
+			"1"
+			(uuid "931b918a-91e5-4bb1-b173-cbb8485b2edc")
+		)
+		(pin
+			"2"
+			(uuid "4816a5bd-f81c-4084-ad41-dc00acf663aa")
+		)
+		(instances
+			(project
+				"rp2350_driver"
+				(path
+					"/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "C115")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 553.72 297.18) (xy 558.8 297.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6377259f-6810-4e44-9a62-746b6020f399")
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 562.61 297.18 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "03cfdb86-af1c-4aa6-9bc9-e5e3755e5868")
+		(property
+			"Reference"
+			"R115"
+			(at 562.61 293.37 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Value"
+			"100R"
+			(at 560.07 300.99 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Footprint"
+			"Resistor_SMD:R_0603_1608Metric"
+			(at 562.61 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Datasheet"
+			"~"
+			(at 562.61 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Description"
+			"Resistor"
+			(at 562.61 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"LCSC"
+			""
+			(at 562.61 297.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin
+			"1"
+			(uuid "643f1fff-1cce-4e76-8003-67ffb38e0365")
+		)
+		(pin
+			"2"
+			(uuid "63c4a2b7-7e0c-49e1-ac9a-7defd67b4372")
+		)
+		(instances
+			(project
+				"rp2350_driver"
+				(path
+					"/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "R115")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 566.42 297.18) (xy 571.5 297.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7d30eb9f-30b9-4b61-bd84-325b00f040a5")
+	)
+	(wire
+		(pts
+			(xy 571.5 297.18) (xy 571.5 302.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ecd2c1ec-2385-41b0-acc8-7dd264b31524")
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 571.5 302.26 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2f17a48b-f97e-46ed-87db-b917519e358e")
+		(property
+			"Reference"
+			"#PWR0375"
+			(at 571.5 308.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Value"
+			"GND"
+			(at 566.42 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property
+			"Footprint"
+			""
+			(at 571.5 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Datasheet"
+			""
+			(at 571.5 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property
+			"Description"
+			""
+			(at 571.5 302.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin
+			"1"
+			(uuid "6803d4ff-2702-4d3d-9012-37b0e4ebc40b")
+		)
+		(instances
+			(project
+				"rp2350_driver"
+				(path
+					"/889c04f7-ab14-429c-99d2-ed773c17e58f"
+					(reference "#PWR0375")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(text "F-19 (a): end-of-bus termination. JP2 open = un-terminated, the\nshipping default for a mid-bus node. Bridge JP2 to put R114 (120R)\nacross CANH/CANL when this board sits at a bus end. Termination is\non the isolated side, so it is powered by the harness like U16."
+		(exclude_from_sim no)
+		(at 487.0 312.0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ffa11246-101a-4e40-995e-b1f3c3dac455")
+	)
+	(text "F-19 (b): isolation-barrier stitch. GND_ISO is powered and referenced\nONLY by the CAN harness (J11) -- no board 5V/GND feeds the isolated\nside, so isolation depends on the harness supplying +5V_ISO. C115\nblocks DC so the barrier holds, while giving common-mode current a\ndefined return instead of letting it radiate off the harness. R115\ndamps the C115/trace resonance and limits surge current.\nLAYOUT: C115 must be the ONLY part straddling the barrier gap --\nkeep R115 wholly on the board-GND side of the split."
+		(exclude_from_sim no)
+		(at 487.0 328.0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "f51bbe8f-8098-422a-b966-8a2d59ba42f5")
+	)
 )
