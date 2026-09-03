@@ -260,6 +260,38 @@ def verdict(run):
             (f"{born}/{len(r['ghosts'])} ghosts born, " if born is not None else '') +
             f"{len(r['parts_moved'])} parts moved, gate {ok}/{len(g.get('steps', []))}, check_sync {g.get('check_sync')}")
 
+def after_table():
+    runs = [('enc_corner_wide', 'unsqueezed, radius 14'), ('enc_after_wide', 'squeezed, radius 14'),
+            ('enc_after_narrow', 'squeezed, radius 8'), ('enc_corner', 'unsqueezed, radius 8'),
+            ('enc_ideal', 'ideal sites, whole left half free')]
+    data = {}
+    for name, lab in runs:
+        d = os.path.join(CFG, 'data', name)
+        if not os.path.exists(os.path.join(d, 'settle_report.json')) or not os.path.exists(os.path.join(d, 'model.json')):
+            continue
+        rep = json.load(open(os.path.join(d, 'settle_report.json')))
+        mod = json.load(open(os.path.join(d, 'model.json')))
+        data[name] = (lab, rep, {gh['ref']: gh for gh in mod['ghosts']})
+    if len(data) < 2:
+        return '<p class=small><i>after-squeeze runs not recorded yet</i></p>'
+    refs = [gh['ref'] for gh in W['M']['ghosts']]
+    head = ''.join(f'<th>{E(lab)}<br><span class=small>born / mm to partners</span></th>' for lab, _, _ in data.values())
+    rows = []
+    for ref in refs:
+        cells = []
+        for lab, rep, ghs in data.values():
+            gh = ghs.get(ref)
+            gv = rep['ghosts'].get(ref, {}).get('g', 0)
+            dist = gh['search']['dist'] if gh and gh.get('search') else (0.0 if gh and gh.get('partners') else None)
+            cells.append(f"<td>{'yes' if gv >= 1 else f'no ({gv:.2f})'} / {dist if dist is not None else '–'}</td>")
+        rows.append(f'<tr><td>{E(ref)}</td>' + ''.join(cells) + '</tr>')
+    tot = '<tr><th>born</th>' + ''.join(f"<th>{sum(1 for v in rep['ghosts'].values() if v['g'] >= 1)}/{len(rep['ghosts'])}</th>"
+                                       for _, rep, _ in data.values()) + '</tr>'
+    return f'<table><tr><th>part</th>{head}</tr>{"".join(rows)}{tot}</table>'
+
+after_table = after_table()
+
+
 def squeeze_summary():
     r = S['REP']
     if not r or not r.get('parts_moved'):
@@ -412,7 +444,17 @@ INA240s outside the region.</p>
 {img('squeeze_caps', '')}
 {video('settle_power_squeeze.mp4', 'power_squeeze, one frame every two cycles.')}
 
-<h2>10. What the runs changed in the engine</h2>
+<h2>10. The encoder ICs on the squeezed board</h2>
+<p>The squeeze's last gate-clean board becomes the base for a second encoder run with the power stage locked where the squeeze
+left it (<code>after_squeeze.py</code>). The question is whether the termination switches can now sit closer to their transceivers
+than the wide search found on the unsqueezed board. Distance is from the chosen site to the centroid of the pads the part connects to;
+"born" is whether the ghost reached full size inside the gate.</p>
+{after_table}
+<p>The last column is the direct test of the ideal placement: every ghost seeded at its partner centroid (distance 0) with the
+whole left half of the board free to yield, power stage included, gate loops capped. What it reaches, and what stops it, is the
+answer to "how close can they get".</p>
+{video('settle_enc_ideal.mp4', 'enc_ideal: the seven parts inflating at their partner centroids with 185 movable parts across the encoder corner and the power stage.')}
+<h2>11. What the runs changed in the engine</h2>
 <ul>
 <li>Length caps need an absolute floor (<code>cap_mm</code>).</li>
 <li>The DRC edge is the Edge.Cuts centreline with 1.5 mm corner arcs, not the bounding box; two tracks landed 10 µm inside the clearance before this.</li>

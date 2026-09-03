@@ -117,7 +117,17 @@ INA240s outside the region.</p>
 <figure><img src="img/explain_squeeze_caps.png"><figcaption></figcaption></figure>
 <figure><video controls muted loop playsinline preload="metadata" src="img/settle_power_squeeze.mp4"></video><figcaption>power_squeeze, one frame every two cycles.</figcaption></figure>
 
-<h2>10. What the runs changed in the engine</h2>
+<h2>10. The encoder ICs on the squeezed board</h2>
+<p>The squeeze's last gate-clean board becomes the base for a second encoder run with the power stage locked where the squeeze
+left it (<code>after_squeeze.py</code>). The question is whether the termination switches can now sit closer to their transceivers
+than the wide search found on the unsqueezed board. Distance is from the chosen site to the centroid of the pads the part connects to;
+"born" is whether the ghost reached full size inside the gate.</p>
+<table><tr><th>part</th><th>unsqueezed, radius 14<br><span class=small>born / mm to partners</span></th><th>squeezed, radius 14<br><span class=small>born / mm to partners</span></th><th>squeezed, radius 8<br><span class=small>born / mm to partners</span></th><th>unsqueezed, radius 8<br><span class=small>born / mm to partners</span></th><th>ideal sites, whole left half free<br><span class=small>born / mm to partners</span></th></tr><tr><td>U30</td><td>yes / 11.8</td><td>yes / 11.8</td><td>no (0.27) / 0.0</td><td>no (0.27) / 0.0</td><td>no (0.31) / 0.0</td></tr><tr><td>U32</td><td>yes / 5.81</td><td>yes / 5.81</td><td>yes / 5.81</td><td>yes / 5.81</td><td>no (0.05) / 0.0</td></tr><tr><td>U33</td><td>yes / 7.81</td><td>yes / 7.81</td><td>yes / 7.81</td><td>yes / 7.81</td><td>no (0.23) / 0.0</td></tr><tr><td>R97</td><td>yes / 2.93</td><td>yes / 2.93</td><td>no (0.27) / 3.4</td><td>no (0.27) / 3.4</td><td>no (0.24) / 0.0</td></tr><tr><td>R98</td><td>yes / 7.7</td><td>yes / 7.7</td><td>yes / 7.7</td><td>yes / 7.7</td><td>no (0.05) / 0.0</td></tr><tr><td>R100</td><td>yes / 13.53</td><td>yes / 13.53</td><td>no (0.05) / 1.5</td><td>no (0.05) / 1.5</td><td>no (0.05) / 0.0</td></tr><tr><td>C110</td><td>yes / 3.95</td><td>yes / 6.9</td><td>no (0.91) / 2.46</td><td>no (0.91) / 2.46</td><td>no (0.05) / –</td></tr><tr><th>born</th><th>7/7</th><th>7/7</th><th>3/7</th><th>3/7</th><th>0/7</th></tr></table>
+<p>The last column is the direct test of the ideal placement: every ghost seeded at its partner centroid (distance 0) with the
+whole left half of the board free to yield, power stage included, gate loops capped. What it reaches, and what stops it, is the
+answer to "how close can they get".</p>
+<figure><video controls muted loop playsinline preload="metadata" src="img/settle_enc_ideal.mp4"></video><figcaption>enc_ideal: the seven parts inflating at their partner centroids with 185 movable parts across the encoder corner and the power stage.</figcaption></figure>
+<h2>11. What the runs changed in the engine</h2>
 <ul>
 <li>Length caps need an absolute floor (<code>cap_mm</code>).</li>
 <li>The DRC edge is the Edge.Cuts centreline with 1.5 mm corner arcs, not the bounding box; two tracks landed 10 µm inside the clearance before this.</li>
