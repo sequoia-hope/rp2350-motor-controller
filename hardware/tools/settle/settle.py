@@ -73,6 +73,11 @@ QR = 0.9
 G_MIN = 0.05                                # ghost birth scale
 G_ANCHOR = cfg.get('ghost_anchor', 0.3)     # ghost pull-back toward its site
 NO_RR = '--no-reroute' in sys.argv
+FRAMES = _arg('--frames', 0, int)           # capture full state every N cycles (0 = off)
+frames, chain_sets, ls_traces = [], {}, []
+frame_press = defaultdict(lambda: [0.0, 0.0])
+frame_npress = set()
+chain_ver = 0
 
 
 def net_clr(net):
@@ -144,6 +149,7 @@ for ci, e in enumerate(E):
         chain_segs[ci].append(si)
 NB = len(E)
 via_nids = [i for i in range(len(nodes)) if is_via[i]]
+CHAINS0 = [ids[:] for ids in chains]           # the subdivided start topology (frame replay)
 D = {r: [0.0, 0.0] for r in movable}
 print(f'{len(P)} nodes, {len(segs)} sub-segments, {len(movable)} movable parts '
       f'({len(part_anchors)} with bound copper), {len(fixed)} fixed nodes')
@@ -1083,6 +1089,10 @@ def _push_part(ref, dx, dy, mag):
     pr = ppress[ref]
     pr[0] += dx * mag
     pr[1] += dy * mag
+    if FRAMES:
+        fp = frame_press[ref]
+        fp[0] += dx * mag
+        fp[1] += dy * mag
 
 
 def _push_ghost(gi, dx, dy, mag):
@@ -1103,6 +1113,8 @@ def _push_node(nid, dx, dy, mag, own=None):
     pr = press[nid]
     pr[0] += dx * mag
     pr[1] += dy * mag
+    if FRAMES:
+        frame_npress.add(nid)
     return True
 
 
@@ -1352,6 +1364,19 @@ def ghost_pass():
         mid = ghost_mid(gi)
         mvr = {ref: ('s', mid[0], mid[1], dg / g[gi], 0.0, 0.0)}
         al, clamps = line_search(lambda a: gen_ghost(gi, mvr, a))
+        if FRAMES and al < 1.0 and clamps and len(ls_traces) < 12 and \
+                not any(t['ghost'] == gh['ref'] and cyc - t['cycle'] < 40 for t in ls_traces):
+            alphas = [k / 10 for k in range(11)]
+            keys = {k for k, _, _ in clamps[:6]}
+            rows = {k: [] for k in keys}
+            for a_ in alphas:
+                ev = _eval(gen_ghost(gi, mvr, a_))
+                for k in keys:
+                    rows[k].append(round(ev[k][0], 4) if k in ev else None)
+            ls_traces.append(dict(ghost=gh['ref'], cycle=cyc, scale=round(g[gi], 3), alpha_star=round(al, 3),
+                                  alphas=alphas, pairs=[dict(key=str(k), floor=round(floor_of(k), 4),
+                                                             margins=rows[k], **blk_info(b))
+                                                        for k, _, b in clamps[:6] if k in rows]))
         if al * dg * gh['r'] > 5e-5:
             g[gi] = min(1.0, g[gi] + al * dg)
             set_ghost_geom(gi)
@@ -2043,8 +2068,25 @@ scount = 1
 win = STALL_WIN
 rounds = 0
 relaxing = 0
+def capture_frame(s):
+    blocked = []
+    for name, clamps in blocked_log.items():
+        for key, m, blk in clamps[:3]:
+            info = blk_info(blk)
+            blocked.append([name, info['kind'], info.get('pos'), round(m, 4)])
+    frames.append(dict(cycle=cyc, s=round(s, 4), P=[[round(x, 4), round(y, 4)] for x, y in P],
+                       D={r: [round(D[r][0], 4), round(D[r][1], 4)] for r in D},
+                       G=[round(v, 4) for v in g], T=[[round(a, 4), round(b, 4)] for a, b in T],
+                       cver=chain_ver,
+                       press={r: [round(v[0], 4), round(v[1], 4)] for r, v in frame_press.items()},
+                       npress=sorted(frame_npress)[:600], blocked=blocked,
+                       net_len={n: round(net_len[n], 3) for n in net_len0}))
+
+
 while cyc < CYCLES:
     cyc += 1
+    if FRAMES:
+        frame_press.clear(); frame_npress.clear()
     build_static_grid()
     build_dyn_grids()
     build_cy_pairs()
@@ -2057,6 +2099,8 @@ while cyc < CYCLES:
     arrived = sum(1 for gv in g if gv >= 1.0)
     hist.append(dict(cycle=cyc, s=round(s, 4), ghosts=arrived, blocked=nblk,
                      adv=round(adv, 4), copper=round(cu, 4)))
+    if FRAMES and (cyc % FRAMES == 0 or cyc == 1):
+        capture_frame(s)
     while scount <= SNAPSHOTS and s >= scount / SNAPSHOTS - 1e-9:
         capture()
         scount += 1
@@ -2083,6 +2127,10 @@ while cyc < CYCLES:
                 best_s = s
                 win = RR_WIN
                 capture('reroute')
+                if FRAMES:
+                    chain_ver += 1
+                    chain_sets[chain_ver] = [ids[:] for ids in chains]
+                    capture_frame(s)
                 continue
         print(f'STALL after {cyc} cycles ({win} without advance, {rounds} reroute rounds): '
               f's={s:.3f}, {len(g) - arrived} ghosts unborn')
@@ -2092,6 +2140,14 @@ if not cps or cps[-1]['s'] < progress() - 1e-9 or cps[-1]['tag'] != 'final':
     capture('final')
 
 save_json(cfg, 'traj.json', dict(checkpoints=cps, chains=chains))
+if FRAMES:
+    if not frames or frames[-1]['cycle'] != cyc:
+        capture_frame(progress())
+    chain_sets[0] = None
+    save_json(cfg, 'frames.json', dict(frames=frames, chain_sets={str(k): v for k, v in chain_sets.items()},
+                                       chains0=CHAINS0,
+                                       ls_traces=ls_traces, every=FRAMES))
+    print(f'captured {len(frames)} frames, {len(ls_traces)} line-search traces -> frames.json')
 
 stalled = []
 for name, clamps in blocked_log.items():

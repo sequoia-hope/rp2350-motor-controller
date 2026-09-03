@@ -488,6 +488,7 @@ def site_search(f, side, centre, radius, lam=0.03):
     hh = (max(ys) - min(ys)) / 2 + 0.15
     ox, oy = (max(xs) + min(xs)) / 2 - cx0, (max(ys) + min(ys)) / 2 - cy0   # box centre vs pad centroid
     best = None
+    cands = []
     steps = int(radius / 0.25)
     for di in range(-steps, steps + 1):
         for dj in range(-steps, steps + 1):
@@ -507,8 +508,11 @@ def site_search(f, side, centre, radius, lam=0.03):
             tot = S[j1, i1] - S[j0, i1] - S[j1, i0] + S[j0, i0]
             frac = tot / max(1, (i1 - i0) * (j1 - j0))
             score = frac + lam * d
+            cands.append([round(px, 3), round(py, 3), round(frac, 3)])
             if best is None or score < best[0]:
                 best = (score, px, py, frac, d)
+    if best:
+        best = best + (cands,)
     return best
 for g in ghost_specs:
     ref = g['ref']
@@ -526,6 +530,7 @@ for g in ghost_specs:
         near_search = at.get('search')
         at = [host['at'][0] + off[0], host['at'][1] + off[1]]
     search = at == 'search' or near_search is not None
+    search_info = None
     if near_search is not None:
         g = dict(g, radius=near_search)
     if at in ('auto', 'search'):
@@ -544,6 +549,8 @@ for g in ghost_specs:
         if best:
             print(f'  ghost {ref}: site search {at[0]:.2f},{at[1]:.2f} -> {best[1]:.2f},{best[2]:.2f} '
                   f'(obstruction {best[3]:.2f}, {best[4]:.1f} mm from partners)')
+            search_info = dict(centre=at, radius=g.get('radius', 6.0), obstruction=round(best[3], 3),
+                               dist=round(best[4], 2), cands=best[5])
             at = [best[1], best[2]]
     pos0, rot0, flip0 = f.GetPosition(), f.GetOrientationDegrees(), f.IsFlipped()
     want_side = g.get('side')
@@ -574,7 +581,8 @@ for g in ghost_specs:
                 r = max(r, math.hypot(q[0] - cx, q[1] - cy))
     ghosts.append(dict(ref=ref, at=[cx, cy], origin=[f.GetPosition().x * NM, f.GetPosition().y * NM],
                        rot=f.GetOrientationDegrees(), side='B' if f.IsFlipped() else 'F',
-                       pads=gp, courtyards=gc, r=r, partners=len(partner)))
+                       pads=gp, courtyards=gc, r=r, partners=len(partner),
+                       partner_pads=[[round(x, 3), round(y, 3)] for x, y in partner], search=search_info))
     reserve_site('B' if f.IsFlipped() else 'F', gp, gc)
     # restore (nothing is saved, but keep the live object honest)
     f.SetPosition(pos0); f.SetOrientationDegrees(rot0)
@@ -594,7 +602,13 @@ print(f'bindings: {n_bound} on pads ({n_anchor} on movable parts), '
       f'{n_pin} pinned ({n_out} outside the region)')
 locked_movers = [r for r, p in parts.items() if p['in_region'] and not p['movable']]
 print(f'fixed in region: {len(locked_movers)}: {" ".join(sorted(locked_movers))[:400]}')
-model = dict(name=cfg['name'], board=cfg['board'], region=region, rules=rules,
+import numpy as _np
+rasters = {}
+for side_, (S_, W_, H_) in _free.items():
+    m_ = _np.diff(_np.diff(S_, axis=0), axis=1)
+    rasters[side_] = dict(x0=region[0], y0=region[1], step=_SR, W=W_, H=H_,
+                          data=[round(float(v), 2) for v in m_.ravel()])
+model = dict(name=cfg['name'], board=cfg['board'], region=region, rules=rules, rasters=rasters,
              layers=COPPER_LAYERS, nodes=nodes, edges=edges, pads=pads,
              tracks=tracks_static, vias=vias_static, courtyards=courtyards,
              parts=parts, ghosts=ghosts, nets=nets)

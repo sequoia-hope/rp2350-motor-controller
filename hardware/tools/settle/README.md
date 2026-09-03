@@ -9,6 +9,9 @@ one gate that must always pass is real kicad-cli DRC on every emitted board.
     settle.py CONFIG.json     the engine -> traj.json + settle_report.json
     emit.py   CONFIG.json     every checkpoint as a board + the 5-check gate -> gate.json
     render.py CONFIG.json     figures + review/settle_<name>.html
+    animate.py CONFIG.json    mp4 of a run recorded with `settle.py --frames N` (+ --zoom REF W)
+    explain.py                the narrated page review/settle_explained.html (videos + 11 figures)
+    viz.py                    shared state drawing (collections; ~0.1 s per frame)
 
 Configs live in `configs/`, run data in `configs/data/<name>/` (gitignored).
 The lean-jiggle worktree's `review/` is served on port 8016.
