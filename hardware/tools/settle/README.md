@@ -14,7 +14,7 @@ one gate that must always pass is real kicad-cli DRC on every emitted board.
     viz.py                    shared state drawing (collections; ~0.1 s per frame)
 
 Configs live in `configs/`, run data in `configs/data/<name>/` (gitignored).
-The lean-jiggle worktree's `review/` is served on port 8016.
+The pages are served from the project hub on port 8011 under `review/settle/` (a copy of this worktree's `review/`; refresh it after a rebuild).
 
 ## Config
 
@@ -95,3 +95,18 @@ ghost only ever grows into legal room; the copper under it has to leave first.
 - Sites matter more than force: with the search radius widened from 8 to
   14 mm the encoder corner went from 3/7 to 6/7 ghosts born in 14 s of
   settling; the cost is route length (U30 12 mm from its transceiver).
+- A ghost's stall is local: U32 reached 0.965 by cycle 72 and then waited 230
+  cycles for the global stall to trigger a reroute, because the other ghosts
+  kept progress inching forward. `ghost_stall` (20 cycles) now triggers a
+  reroute of the ghost's own clamping chains. `push_extra` (0.02 mm) pushes
+  a blocker past its deficit so the next growth step is a full one.
+- Zones are absent as obstacles but present as CONNECTORS: a pad fed by a pour
+  must stay inside the pour's outline. `prep.py` records every movable pad
+  that starts inside a same-net zone as a zone attachment (`AZ` key, floor =
+  min(shipped, 0)). Found by the upward power squeeze: AH1/CH2 lost their
+  phase-zone drains after 3 mm.
+- The GND attachment exemption ("the pour reconnects it") is only true where
+  there IS a ground pour on that layer. `held(net, pad)` exempts a GND contact
+  only if the pad has a zone attachment; C27's ground pad under the Vdrive
+  pour slid off its via otherwise.
+

@@ -13,14 +13,14 @@ tearing up copper that already shipped, and what has to move to make room?</b> T
 being settled: every part, trace node, via and unborn part is a unit that moves only as far as the design rules allow, pressure
 propagates through the packing, trace lengths act as springs with hard caps, and the one gate that must always pass is real
 KiCad DRC on every board the engine emits.</p>
-<p class=verdict>enc_corner_wide: 309 cycles, progress 1.0, 7/7 ghosts born, 5 parts moved, gate 13/13, check_sync True<br>enc_corner: 499 cycles, progress 0.6491, 3/7 ghosts born, 19 parts moved, gate 14/14, check_sync True<br>power_squeeze: 500 cycles, progress 0.7418, 112 parts moved, gate 12/12, check_sync True</p>
+<p class=verdict>enc_corner_wide: 105 cycles, progress 1.0, 7/7 ghosts born, 5 parts moved, gate 13/13, check_sync True<br>enc_corner: 253 cycles, progress 0.6426, 3/7 ghosts born, 18 parts moved, gate 14/14, check_sync True<br>power_squeeze: 500 cycles, progress 0.4086, 110 parts moved, gate 11/11, check_sync True</p>
 <p class=small>Branch <code>lean-jiggle</code>, rules 0.10/0.10, region of the encoder corner (left 20 mm of the board) with the F side and the
 connectors locked. Code: <code>hardware/tools/settle/</code>. Per-run detail pages: <a href="settle_enc_corner_wide.html">enc_corner_wide</a>,
 <a href="settle_enc_corner.html">enc_corner</a>, <a href="settle_power_squeeze.html">power_squeeze</a>.</p>
 
 <h2>1. The whole run in one video</h2>
 <figure><video controls muted loop playsinline preload="metadata" src="img/settle_enc_corner_wide.mp4"></video><figcaption>enc_corner_wide, one frame per cycle. Red: the seven unborn parts inflating at their sites. Orange pads: movable parts (dark orange once moved). Grey: fixed parts and static copper. Blue arrows: pressure deposited on a part that cycle; blue dots: copper nodes under pressure; black x: the clamp that stopped a unit. Green arrows: net displacement so far.</figcaption></figure>
-<figure><video controls muted loop playsinline preload="metadata" src="img/settle_enc_corner_wide_zoom_U33.mp4"></video><figcaption>The same run, 8 mm window around U32: the ghost grows step by step, the copper under it is pushed out of the way, a neighbouring part yields when its own room allows, and the ghost reaches full size.</figcaption></figure>
+<figure><video controls muted loop playsinline preload="metadata" src="img/settle_enc_corner_wide_zoom_U32.mp4"></video><figcaption>The same run, 8 mm window around U32: the ghost grows step by step, the copper under it is pushed out of the way, a neighbouring part yields when its own room allows, and the ghost reaches full size.</figcaption></figure>
 
 <h2>2. The model: what moves, what does not</h2>
 <p><code>prep.py</code> reads the board and one JSON config and builds a region-scoped model. A part is <b>movable</b> when its pad centroid
@@ -106,10 +106,13 @@ excluded violations included); unconnected items not above baseline; every stati
 where it was; net growth inside the caps; and check_sync against the schematic on the final board.</p>
 <figure><img src="img/explain_gate.png"><figcaption>Per-checkpoint gate results for the three runs: flat at baseline is the point.</figcaption></figure>
 
-<h2>9. Internal to the power stage: the squeeze</h2>
-<p>The same engine with a different drive. All four half-bridge bands were shoved 1 mm toward their centre line, with gate, bootstrap and
-turn-off nets capped at 0.3 mm of growth. The bands compressed until those caps held and the A-phase sense copper met the fixed INA240 outside
-the region. That is the power stage's internal vertical slack at the new rules with the loops kept short.</p>
+<h2>9. Internal to the power stage: the squeeze toward the top edge</h2>
+<p>The same engine with a different drive. Every movable part of the power stage was given a target 3 mm toward the top board edge,
+with gate, bootstrap and turn-off nets capped at 0.3 mm of growth. The top band meets the edge clearance and the mounting hole at once;
+each band below it moves up by whatever slack lies between it and the band above, so the displacement grows band by band and the
+bottom of the stage frees a strip. What stops it is reported by name: the caps on the gate loops, and the sense copper pinned by the
+INA240s outside the region.</p>
+<table><tr><th>band (by y)</th><th>movable parts</th><th>median move up, mm</th><th>max, mm</th></tr><tr><td>top band</td><td>28</td><td>0.89</td><td>3.00</td></tr><tr><td>second band</td><td>27</td><td>1.38</td><td>3.00</td></tr><tr><td>third band</td><td>28</td><td>1.05</td><td>2.50</td></tr><tr><td>bottom band</td><td>29</td><td>1.24</td><td>2.58</td></tr></table>
 <figure><img src="img/explain_squeeze.png"><figcaption>power_squeeze: cycle 0 and the settled state. Green arrows: how far each part moved.</figcaption></figure>
 <figure><img src="img/explain_squeeze_caps.png"><figcaption></figcaption></figure>
 <figure><video controls muted loop playsinline preload="metadata" src="img/settle_power_squeeze.mp4"></video><figcaption>power_squeeze, one frame every two cycles.</figcaption></figure>

@@ -1,8 +1,19 @@
 <!doctype html><meta charset=utf-8><title>lean-jiggle experiments</title>
-<style>body{font:15px/1.5 system-ui,sans-serif;max-width:900px;margin:2em auto;padding:0 1em}</style>
+<style>body{font:15px/1.5 system-ui,sans-serif;max-width:900px;margin:2em auto;padding:0 1em;color:#222}
+.entry{border-left:4px solid #c0392b;padding:.4em 1em;margin:1em 0;background:#f7f7f7}h2{margin-top:2em}</style>
 <h1>lean-jiggle: settle experiments</h1>
-<p>Branch <code>lean-jiggle</code> off rev-b-lean, rules 0.10/0.10. Engine: <code>hardware/tools/settle/</code>.</p>
+<p>Branch <code>lean-jiggle</code> off rev-b-lean, rules 0.10/0.10. Engine: <code>hardware/tools/settle/</code>.
+Start with <a href="settle_explained.html"><b>the settle engine, explained</b></a> (videos, figures, the algorithm step by step).</p>
+<h2>Pages</h2>
 <ul>
-<li><a href="settle_enc_corner.html">enc_corner</a> — inflate U30/U32/U33/R97/R98/R100/C110 into the encoder corner (F side + J1/J2/J12 locked)</li>
-<li><a href="settle_power_squeeze.html">power_squeeze</a> — internal to the power stage: four half-bridge bands shoved 1 mm toward their centre line, gate and bootstrap nets stiff</li>
+<li><a href="settle_explained.html">The settle engine, explained</a> — step-by-step narrative with four videos and eleven figures</li>
+<li><a href="settle_enc_corner_wide.html">enc_corner_wide</a> — the seven unplaced encoder-corner parts inflated in, search radius 14 mm: 7/7 born</li>
+<li><a href="settle_enc_corner.html">enc_corner</a> — same with search radius 8 mm: 3/7 born, walled by J2's pads and the edge</li>
+<li><a href="settle_power_squeeze.html">power_squeeze</a> — internal to the power stage: every part shoved toward the top board edge, gate nets stiff; the bottom of the stage frees a strip</li>
 </ul>
+<div class=entry><b>2026-09-03 (evening):</b> the power stage is now squeezed toward the <em>top edge</em> (every part given a 3 mm upward target): bands move a median 0.9–1.4 mm up, 3 mm at most, before the 0.3 mm gate-loop caps and the fixed INA240 sense pads hold; 110 parts moved, 11/11 gate. Two more engine fixes found by that run: pads fed by a pour are held inside the pour (AH1/CH2 had lost their phase-zone drains), and the GND attachment exemption applies only where a ground pour actually exists (C27's ground pad slid off its via under the Vdrive pour). Next: the encoder ICs re-placed on the squeezed board (<code>enc_after_*</code>).</div>
+<h2>Log</h2>
+<div class=entry><b>2026-09-03 (later):</b> per-ghost stall: a ghost idle for 20 cycles triggers a local reroute of its own clamping chains instead of waiting for the global stall; blockers are pushed 0.02 mm past their deficit. U32 is born at cycle 89 instead of 308; all three runs re-recorded, videos and the explained page rebuilt.</div>
+<div class=entry><b>2026-09-03:</b> <a href="settle_explained.html">the explained page</a>: every cycle of the three runs recorded (positions, pressure deposits, clamps, net lengths, line-search traces), four videos, eleven figures, the algorithm narrated from the model to the gate. Replay fix: the subdivided start topology now ships with every frames file.</div>
+<div class=entry><b>2026-09-02 (later):</b> front-end fixes found by the gate: real outline (Edge.Cuts centreline + 1.5 mm corner arcs), tracks classified by segment intersection, obstacles by extent, site search avoiding placed ghosts and pad clearances, progress-based stall detection, excluded DRC violations in the gate baseline. Results: enc_corner 3/7, enc_corner_wide 7/7 with five neighbours nudged, power_squeeze 0.74 mm per band held by the 0.3 mm gate-net caps; every emitted board DRC-clean, static copper byte-identical, in sync.</div>
+<div class=entry><b>2026-09-02:</b> the settle engine built on the creep oracle: pressure propagates to parts, ghosts inflate at their sites, per-net length springs with hard caps, non-worsening rule, 5-check gate. Rules 0.10/0.10 applied to the branch's project file (0 clearance errors on the lean board).</div>

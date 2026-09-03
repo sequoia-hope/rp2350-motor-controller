@@ -1,26 +1,26 @@
-<!doctype html><meta charset=utf-8><title>settle: enc_corner_wide</title>
+<!doctype html><meta charset=utf-8><title>settle: enc_after_wide</title>
 <style>body{font:14px/1.45 system-ui,sans-serif;max-width:1400px;margin:1.5em auto;padding:0 1em;color:#222}
 table{border-collapse:collapse;font-size:12px;margin:.5em 0}td,th{border:1px solid #ccc;padding:2px 6px;text-align:left}
 th{background:#f3f3f3}img{max-width:100%}pre{background:#f7f7f7;padding:.6em;font-size:11px;overflow:auto;max-height:22em}
 .small{color:#666;font-size:12px}h2{margin-top:1.6em;border-bottom:1px solid #ddd}</style>
-<h1>settle run: enc_corner_wide</h1>
-<p><b>105</b> cycles in 12.1 s, progress s = <b>1.0</b>; 7/7 ghosts born; 5 parts moved; 2/2 reroutes verified in 0 rounds. Gate: <b>13/13</b> checkpoints pass (baseline 2 violations); length caps hit: 0; check_sync: True.</p>
-<p class=small>Region [112.4, 81.9, 132.5, 128.5]; rules clearance 0.1 mm, hole 0.254, edge 0.3, guard 0.015.
-79 movable parts, 1133 dynamic segments, 1266 nodes, 7 ghosts.
+<h1>settle run: enc_after_wide</h1>
+<p><b>105</b> cycles in 12.5 s, progress s = <b>1.0</b>; 7/7 ghosts born; 5 parts moved; 2/2 reroutes verified in 0 rounds. Gate: <b>13/13</b> checkpoints pass (baseline 3 violations); length caps hit: 0; check_sync: True.</p>
+<p class=small>Region [112.4, 81.9, 149.5, 128.5]; rules clearance 0.1 mm, hole 0.254, edge 0.3, guard 0.015.
+79 movable parts, 1232 dynamic segments, 1408 nodes, 7 ghosts.
 Orange pads = movable parts (dark orange = moved); grey = fixed; red = ghosts at their current scale; blue arrows = part displacement.
 Copper by layer: F red, B blue, In1 green, In2 purple, In3 brown, In4 teal; static copper grey.</p>
-<p><img src="img/settle_enc_corner_wide_region.png"></p><p><img src="img/settle_enc_corner_wide_history.png"></p>
+<p><img src="img/settle_enc_after_wide_region.png"></p><p><img src="img/settle_enc_after_wide_history.png"></p>
 <h2>Gate per checkpoint</h2>
 <table><tr><th>step</th><th>s</th><th>tag</th><th>unconnected</th><th>new_violations</th><th>static_missing</th><th>fixed_moved</th><th>ok</th><th>new_desc</th></tr>
 <tr><td>0</td><td>0.05</td><td>start</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
-<tr><td>1</td><td>0.103</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
-<tr><td>2</td><td>0.224</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>1</td><td>0.119</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>2</td><td>0.221</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
 <tr><td>3</td><td>0.328</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
-<tr><td>4</td><td>0.429</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
-<tr><td>5</td><td>0.502</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
-<tr><td>6</td><td>0.609</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
-<tr><td>7</td><td>0.705</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
-<tr><td>8</td><td>0.805</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>4</td><td>0.402</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>5</td><td>0.519</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>6</td><td>0.629</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>7</td><td>0.701</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>8</td><td>0.807</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
 <tr><td>9</td><td>0.902</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
 <tr><td>10</td><td>0.995</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
 <tr><td>11</td><td>1.0</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
@@ -34,7 +34,7 @@ Copper by layer: F red, B blue, In1 green, In2 purple, In3 brown, In4 teal; stat
 <tr><td>R97</td><td>(120.06, 111.96)</td><td>1.0</td><td>0.0</td><td>0.0</td><td>yes</td></tr>
 <tr><td>R98</td><td>(124.92, 126.77)</td><td>1.0</td><td>0.0</td><td>0.0</td><td>yes</td></tr>
 <tr><td>R100</td><td>(123.72, 98.69)</td><td>1.0</td><td>0.0</td><td>0.0</td><td>yes</td></tr>
-<tr><td>C110</td><td>(125.87, 115.69)</td><td>1.0</td><td>-0.0</td><td>-0.0</td><td>yes</td></tr>
+<tr><td>C110</td><td>(134.12, 122.69)</td><td>1.0</td><td>0.0</td><td>0.0</td><td>yes</td></tr>
 </table>
 <h2>Parts moved</h2>
 <table><tr><th>ref</th><th>dx</th><th>dy</th><th>mm</th><th>group</th></tr>
@@ -42,45 +42,40 @@ Copper by layer: F red, B blue, In1 green, In2 purple, In3 brown, In4 teal; stat
 <tr><td>C16</td><td>0.133</td><td>0.379</td><td>0.402</td><td></td></tr>
 <tr><td>R88</td><td>-0.231</td><td>-0.013</td><td>0.231</td><td></td></tr>
 <tr><td>R60</td><td>0.134</td><td>-0.157</td><td>0.206</td><td></td></tr>
-<tr><td>D27</td><td>-0.107</td><td>-0.077</td><td>0.132</td><td></td></tr>
+<tr><td>D27</td><td>-0.129</td><td>-0.076</td><td>0.15</td><td></td></tr>
 </table>
 <h2>Net length growth (copper inside the region)</h2>
 <table><tr><th>net</th><th>region_mm</th><th>grown_mm</th><th>growth_pct</th><th>allow_mm</th><th>cap_mm</th><th>at_cap</th></tr>
 <tr><td>Net-(R59-Pad2)</td><td>2.32</td><td>0.224</td><td>9.7</td><td>0.2</td><td>0.8</td><td></td></tr>
-<tr><td>A_SENSE</td><td>13.55</td><td>1.061</td><td>7.8</td><td>1.355</td><td>2.711</td><td></td></tr>
-<tr><td>/EXT_ANALOG_SW</td><td>20.73</td><td>1.462</td><td>7.1</td><td>4.146</td><td>10.364</td><td></td></tr>
 <tr><td>/ENC_D_DATA</td><td>42.62</td><td>2.205</td><td>5.2</td><td>8.525</td><td>21.312</td><td></td></tr>
-<tr><td>/ENC_D_SW</td><td>34.22</td><td>1.476</td><td>4.3</td><td>6.843</td><td>17.108</td><td></td></tr>
-<tr><td>/MOT_TH</td><td>32.96</td><td>1.402</td><td>4.2</td><td>6.592</td><td>16.48</td><td></td></tr>
-<tr><td>/A_P</td><td>34.37</td><td>0.892</td><td>2.6</td><td>6.875</td><td>17.187</td><td></td></tr>
-<tr><td>/ENC_C_P</td><td>16.0</td><td>0.266</td><td>1.7</td><td>1.6</td><td>2.4</td><td></td></tr>
-<tr><td>VMOT</td><td>27.38</td><td>0.278</td><td>1.0</td><td>8.213</td><td>27.375</td><td></td></tr>
-<tr><td>VMOT_SENSE</td><td>32.42</td><td>0.106</td><td>0.3</td><td>3.242</td><td>6.484</td><td></td></tr>
-<tr><td>/ENC_A_SW</td><td>41.88</td><td>0.046</td><td>0.1</td><td>8.375</td><td>20.937</td><td></td></tr>
-<tr><td>/H1_SW</td><td>28.48</td><td>0.02</td><td>0.1</td><td>5.697</td><td>14.243</td><td></td></tr>
-<tr><td>GND</td><td>99.96</td><td>0.032</td><td>0.0</td><td>None</td><td>None</td><td></td></tr>
-<tr><td>+3V3</td><td>156.25</td><td>-0.092</td><td>-0.1</td><td>46.876</td><td>156.252</td><td></td></tr>
-<tr><td>/ENC_C_N</td><td>18.39</td><td>-0.019</td><td>-0.1</td><td>1.839</td><td>2.758</td><td></td></tr>
-<tr><td>/I2C_SCL</td><td>27.88</td><td>-0.086</td><td>-0.3</td><td>5.576</td><td>13.939</td><td></td></tr>
+<tr><td>/EXT_ANALOG_SW</td><td>42.08</td><td>1.462</td><td>3.5</td><td>8.415</td><td>21.038</td><td></td></tr>
+<tr><td>/ENC_D_SW</td><td>43.15</td><td>1.476</td><td>3.4</td><td>8.631</td><td>21.577</td><td></td></tr>
+<tr><td>A_SENSE</td><td>38.88</td><td>1.061</td><td>2.7</td><td>3.888</td><td>7.777</td><td></td></tr>
+<tr><td>/A_P</td><td>47.26</td><td>0.892</td><td>1.9</td><td>9.451</td><td>23.628</td><td></td></tr>
+<tr><td>VMOT</td><td>28.91</td><td>0.278</td><td>1.0</td><td>8.672</td><td>28.906</td><td></td></tr>
+<tr><td>VMOT_SENSE</td><td>44.48</td><td>0.106</td><td>0.2</td><td>4.448</td><td>8.895</td><td></td></tr>
+<tr><td>/ENC_A_SW</td><td>45.56</td><td>0.046</td><td>0.1</td><td>9.113</td><td>22.782</td><td></td></tr>
+<tr><td>GND</td><td>140.78</td><td>0.038</td><td>0.0</td><td>None</td><td>None</td><td></td></tr>
+<tr><td>+3V3</td><td>192.33</td><td>-0.092</td><td>-0.1</td><td>57.699</td><td>192.332</td><td></td></tr>
+<tr><td>/I2C_SCL</td><td>45.57</td><td>-0.107</td><td>-0.2</td><td>9.113</td><td>22.784</td><td></td></tr>
+<tr><td>/MOT_TH</td><td>33.89</td><td>-0.144</td><td>-0.4</td><td>6.777</td><td>16.943</td><td></td></tr>
 <tr><td>/ENC_A_N_SW</td><td>8.72</td><td>-0.19</td><td>-2.2</td><td>0.872</td><td>2.0</td><td></td></tr>
 </table>
 <h2>Stalled units and their blockers</h2>
-<table><tr><th>unit</th><th>hard_walled</th><th>blocker</th><th>net</th><th>ref</th><th>margin</th><th>floor</th><th>pos</th></tr>
-<tr><td>D27</td><td></td><td>courtyard</td><td></td><td>GHOST:U30</td><td>-0.05</td><td>0.003</td><td></td></tr>
-</table>
+<p><i>none</i></p>
 <h2>Absorbed pressure (where demand died)</h2>
 <table><tr><th>mover</th><th>blocker</th><th>what</th><th>hits</th></tr>
-<tr><td>node2433</td><td>pad</td><td>J2.2 [/D]</td><td>99</td></tr>
-<tr><td>node1135</td><td>pad</td><td>J2.2 [/D]</td><td>74</td></tr>
+<tr><td>node2902</td><td>pad</td><td>J2.2 [/D]</td><td>99</td></tr>
+<tr><td>node1258</td><td>pad</td><td>J2.2 [/D]</td><td>74</td></tr>
 </table>
 <h2>Config</h2>
 <pre>{
- &quot;name&quot;: &quot;enc_corner_wide&quot;,
- &quot;board&quot;: &quot;/home/sequoia/pcb/rp2350-motor-controller-lean-jiggle/hardware/rp2350_driver.kicad_pcb&quot;,
+ &quot;name&quot;: &quot;enc_after_wide&quot;,
+ &quot;board&quot;: &quot;/home/sequoia/pcb/rp2350-motor-controller-lean-jiggle/hardware/tools/settle/configs/data/boards/power_up.kicad_pcb&quot;,
  &quot;region&quot;: [
   112.4,
   81.9,
-  132.5,
+  149.5,
   128.5
  ],
  &quot;rules&quot;: {
@@ -101,7 +96,14 @@ Copper by layer: F red, B blue, In1 green, In2 purple, In3 brown, In4 teal; stat
    &quot;^/USB_D&quot;,
    &quot;^/CAN0_&quot;
   ],
-  &quot;rects&quot;: []
+  &quot;rects&quot;: [
+   [
+    132.5,
+    81.9,
+    149.6,
+    128.6
+   ]
+  ]
  },
  &quot;mobility&quot;: {
   &quot;default&quot;: 1.0
@@ -147,7 +149,7 @@ Copper by layer: F red, B blue, In1 green, In2 purple, In3 brown, In4 teal; stat
       0.0,
       0.0
      ],
-     &quot;search&quot;: 8.0
+     &quot;search&quot;: 7.0
     }
    }
   ]
@@ -155,7 +157,7 @@ Copper by layer: F red, B blue, In1 green, In2 purple, In3 brown, In4 teal; stat
  &quot;step&quot;: 0.05,
  &quot;snapshots&quot;: 10,
  &quot;cycles&quot;: 600,
- &quot;data&quot;: &quot;/home/sequoia/pcb/rp2350-motor-controller-lean-jiggle/hardware/tools/settle/configs/data/enc_corner_wide&quot;
+ &quot;data&quot;: &quot;/home/sequoia/pcb/rp2350-motor-controller-lean-jiggle/hardware/tools/settle/configs/data/enc_after_wide&quot;
 }</pre>
 <h2>Elastic table</h2>
 <pre>{
@@ -282,33 +284,33 @@ Copper by layer: F red, B blue, In1 green, In2 purple, In3 brown, In4 teal; stat
  }
 }</pre>
 <h2>Log tail</h2>
-<pre>2500 nodes, 2367 sub-segments, 79 movable parts (69 with bound copper), 71 fixed nodes
-grandfathered 171 shipped at/below-guard pairs (73 below model rule), 2125 same-net contacts held as attachments
-margin census over rule (20um bins, &lt;0 first): -20:6 +0:395 +20:92 +40:182 +60:326 +80:653 +100:388 +120:549 +140:746 +160:581 +180:88652
+<pre>2984 nodes, 2808 sub-segments, 79 movable parts (69 with bound copper), 160 fixed nodes
+grandfathered 201 shipped at/below-guard pairs (70 below model rule), 2295 same-net contacts held as attachments
+margin census over rule (20um bins, &lt;0 first): -20:6 +0:453 +20:150 +40:259 +60:612 +80:801 +100:465 +120:602 +140:713 +160:534 +180:96542
   checkpoint 1: s=0.050 start
-cycle 1: s=0.077 ghosts=0/7 blocked=0 adv=0.200mm copper=0.350mm [1s]
-  checkpoint 2: s=0.103 
-cycle 5: s=0.190 ghosts=0/7 blocked=0 adv=0.243mm copper=0.446mm [1s]
-  checkpoint 3: s=0.224 
+cycle 1: s=0.084 ghosts=0/7 blocked=0 adv=0.250mm copper=0.250mm [1s]
+  checkpoint 2: s=0.119 
+  checkpoint 3: s=0.221 
+cycle 5: s=0.221 ghosts=0/7 blocked=0 adv=0.250mm copper=0.346mm [1s]
   checkpoint 4: s=0.328 
-cycle 10: s=0.359 ghosts=0/7 blocked=0 adv=0.242mm copper=0.322mm [2s]
-  checkpoint 5: s=0.429 
-  checkpoint 6: s=0.502 
-cycle 15: s=0.541 ghosts=0/7 blocked=0 adv=0.308mm copper=0.198mm [2s]
-  checkpoint 7: s=0.609 
-cycle 20: s=0.680 ghosts=2/7 blocked=0 adv=0.177mm copper=0.579mm [2s]
-  checkpoint 8: s=0.705 
-cycle 25: s=0.746 ghosts=3/7 blocked=0 adv=0.109mm copper=0.568mm [3s]
-  checkpoint 9: s=0.805 
-cycle 30: s=0.814 ghosts=3/7 blocked=0 adv=0.153mm copper=0.616mm [3s]
-cycle 35: s=0.856 ghosts=5/7 blocked=0 adv=0.117mm copper=0.521mm [4s]
-cycle 40: s=0.881 ghosts=5/7 blocked=0 adv=0.112mm copper=0.244mm [4s]
+  checkpoint 5: s=0.402 
+cycle 10: s=0.402 ghosts=0/7 blocked=0 adv=0.285mm copper=0.222mm [2s]
+  checkpoint 6: s=0.519 
+cycle 15: s=0.597 ghosts=0/7 blocked=0 adv=0.308mm copper=0.198mm [2s]
+  checkpoint 7: s=0.629 
+  checkpoint 8: s=0.701 
+cycle 20: s=0.733 ghosts=3/7 blocked=0 adv=0.127mm copper=0.579mm [2s]
+cycle 25: s=0.780 ghosts=4/7 blocked=0 adv=0.100mm copper=0.368mm [3s]
+  checkpoint 9: s=0.807 
+cycle 30: s=0.823 ghosts=4/7 blocked=0 adv=0.139mm copper=0.294mm [3s]
+cycle 35: s=0.856 ghosts=5/7 blocked=0 adv=0.048mm copper=0.521mm [4s]
+cycle 40: s=0.881 ghosts=5/7 blocked=0 adv=0.092mm copper=0.244mm [4s]
   checkpoint 10: s=0.902 
-cycle 45: s=0.902 ghosts=5/7 blocked=0 adv=0.091mm copper=0.245mm [5s]
-cycle 50: s=0.919 ghosts=5/7 blocked=0 adv=0.077mm copper=0.547mm [6s]
-cycle 55: s=0.935 ghosts=5/7 blocked=1 adv=0.117mm copper=0.711mm [6s]
-cycle 60: s=0.958 ghosts=5/7 blocked=0 adv=0.223mm copper=0.155mm [7s]
-cycle 65: s=0.970 ghosts=5/7 blocked=0 adv=0.094mm copper=0.692mm [8s]
+cycle 45: s=0.902 ghosts=5/7 blocked=0 adv=0.076mm copper=0.245mm [5s]
+cycle 50: s=0.919 ghosts=5/7 blocked=0 adv=0.058mm copper=0.547mm [5s]
+cycle 55: s=0.935 ghosts=5/7 blocked=0 adv=0.115mm copper=0.664mm [6s]
+cycle 60: s=0.958 ghosts=5/7 blocked=0 adv=0.217mm copper=0.155mm [7s]
+cycle 65: s=0.970 ghosts=5/7 blocked=0 adv=0.093mm copper=0.692mm [7s]
 cycle 70: s=0.981 ghosts=5/7 blocked=0 adv=0.017mm copper=0.449mm [8s]
 cycle 75: s=0.993 ghosts=5/7 blocked=0 adv=0.106mm copper=0.131mm [9s]
 cycle 80: s=0.995 ghosts=6/7 blocked=0 adv=0.021mm copper=0.348mm [10s]
@@ -319,10 +321,10 @@ ghost U32 idle 20 cycles at scale 0.965: local reroute of 2 clamping chains
   checkpoint 12: s=1.000 
 all ghosts born / targets reached after 89 cycles; relaxing 25 cycles
 cycle 90: s=1.000 ghosts=7/7 blocked=0 adv=0.010mm copper=0.209mm [11s]
-cycle 95: s=1.000 ghosts=7/7 blocked=0 adv=0.012mm copper=0.006mm [11s]
+cycle 95: s=1.000 ghosts=7/7 blocked=0 adv=0.012mm copper=0.006mm [12s]
 cycle 100: s=1.000 ghosts=7/7 blocked=0 adv=0.005mm copper=0.004mm [12s]
 cycle 105: s=1.000 ghosts=7/7 blocked=0 adv=0.002mm copper=0.002mm [12s]
   checkpoint 13: s=1.000 final
-captured 106 frames, 8 line-search traces -&gt; frames.json
+captured 106 frames, 7 line-search traces -&gt; frames.json
 wrote traj.json (13 checkpoints) + settle_report.json in 12s: 5 parts moved, 1 nets over allowance, 0 length-cap hits, 0 board-edge hits — run emit.py
 </pre>

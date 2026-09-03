@@ -1,9 +1,9 @@
 {
- "name": "power_squeeze",
- "board": "../../../rp2350_driver.kicad_pcb",
+ "name": "enc_after_wide",
+ "board": "data/boards/power_up.kicad_pcb",
  "region": [
-  130.0,
-  82.0,
+  112.4,
+  81.9,
   149.5,
   128.5
  ],
@@ -11,24 +11,28 @@
   "guard": 0.015
  },
  "locked": {
-  "sides": [],
+  "sides": [
+   "F"
+  ],
   "refs": [
-   "H3",
-   "H4",
    "J1",
    "J2",
-   "J9",
-   "J10",
-   "C80",
-   "C39",
-   "C42",
-   "D5"
+   "J12",
+   "H3",
+   "H4"
   ],
   "nets": [
    "^/USB_D",
    "^/CAN0_"
   ],
-  "rects": []
+  "rects": [
+   [
+    132.5,
+    81.9,
+    149.6,
+    128.6
+   ]
+  ]
  },
  "mobility": {
   "default": 1.0
@@ -158,23 +162,51 @@
   }
  },
  "drive": {
-  "inflate": [],
-  "shove": [
+  "inflate": [
    {
-    "rect": [
-     130.0,
-     82.0,
-     149.5,
-     128.5
-    ],
-    "vector": [
-     0.0,
-     -3.0
-    ]
+    "ref": "U30",
+    "at": "search",
+    "radius": 14
+   },
+   {
+    "ref": "U32",
+    "at": "search",
+    "radius": 14
+   },
+   {
+    "ref": "U33",
+    "at": "search",
+    "radius": 14
+   },
+   {
+    "ref": "R97",
+    "at": "search",
+    "radius": 14
+   },
+   {
+    "ref": "R98",
+    "at": "search",
+    "radius": 14
+   },
+   {
+    "ref": "R100",
+    "at": "search",
+    "radius": 14
+   },
+   {
+    "ref": "C110",
+    "at": {
+     "near": "U30",
+     "offset": [
+      0.0,
+      0.0
+     ],
+     "search": 7.0
+    }
    }
   ]
  },
  "step": 0.05,
  "snapshots": 10,
- "cycles": 500
+ "cycles": 600
 }

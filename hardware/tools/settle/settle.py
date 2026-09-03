@@ -72,6 +72,8 @@ CELL = 1.2
 QR = 0.9
 G_MIN = 0.05                                # ghost birth scale
 G_ANCHOR = cfg.get('ghost_anchor', 0.3)     # ghost pull-back toward its site
+PUSH_EXTRA = cfg.get('push_extra', 0.02)    # push a blocker this far past its deficit (mm)
+GHOST_WIN = cfg.get('ghost_stall', 20)      # cycles a ghost may sit unborn before a local reroute
 NO_RR = '--no-reroute' in sys.argv
 FRAMES = _arg('--frames', 0, int)           # capture full state every N cycles (0 = off)
 frames, chain_sets, ls_traces = [], {}, []
@@ -201,6 +203,25 @@ for pi, p in enumerate(pads):
     p['cx0'], p['cy0'] = p['x'], p['y']
     p['pts0'] = [q[:] for q in p['pts']]
     p['layset'] = frozenset(p['layers'])
+
+# zone attachments: pad pi must stay inside zone zi (see prep.py)
+ZONES = M.get('zones', [])
+ZATT = defaultdict(list)
+for pi_, zi_ in M.get('zone_att', []):
+    ZATT[pi_].append(zi_)
+pad_rin = {}
+for pi_ in ZATT:
+    xs_ = [q[0] for q in pads[pi_]['pts0']]; ys_ = [q[1] for q in pads[pi_]['pts0']]
+    pad_rin[pi_] = min(max(xs_) - min(xs_), max(ys_) - min(ys_)) / 2
+if ZATT:
+    print(f'{len(ZATT)} movable pads held inside their pour ({len(ZONES)} zone outlines)')
+
+
+def inside_dist(x, y, pts):
+    """Signed distance from (x,y) to the polygon boundary, positive inside."""
+    n = len(pts)
+    d = min(seg_seg_dist((x, y), (x, y), tuple(pts[i]), tuple(pts[(i + 1) % n])) for i in range(n))
+    return d if point_in_poly(x, y, pts) else -d
 
 cy0, cy = {}, {}
 for r, entry in M['courtyards'].items():
@@ -554,6 +575,18 @@ def at_margin(A, B):
     return -cu_dist(A, B) - OV
 
 
+def held(net, pi=None, pj=None):
+    """Must a same-net contact be held? Always, except GND contacts whose pad(s)
+    sit inside a GND pour (zone attachment) — the pour reconnects those. A GND
+    pad under a Vdrive pour has no such rescue (C27 in the power squeeze)."""
+    if net != 'GND':
+        return True
+    for p_ in (pi, pj):
+        if p_ is not None and p_ not in ZATT:
+            return True
+    return False
+
+
 def _at(base_key, A, B, blk):
     key = ('AT',) + base_key
     if key in gf:
@@ -696,7 +729,7 @@ def gen_seg(si, mvn, mvr, a):
             else:
                 p = pads[idx]
                 if p['net'] and p['net'] == net:
-                    if net != 'GND':
+                    if held(net, idx):
                         yield from _at(('SP', ci, idx), A, pad_desc(idx, mvr, a), ('P', idx))
                     continue
                 for tag, m in pair_margins(A, pad_desc(idx, mvr, a)):
@@ -754,7 +787,7 @@ def gen_via(nid, mvn, mvr, a):
             else:
                 p = pads[idx]
                 if p['net'] and p['net'] == net:
-                    if net != 'GND':
+                    if held(net, idx):
                         yield from _at(('NP', nid, idx), A, pad_desc(idx, mvr, a), ('P', idx))
                     continue
                 for tag, m in pair_margins(A, pad_desc(idx, mvr, a)):
@@ -776,7 +809,7 @@ def gen_pad(pi, mvn, mvr, a, skip_refs=frozenset()):
             seen.add(('S', sj))
             t = segs[sj]
             if net and t['net'] == net:
-                if net != 'GND':
+                if held(net, pi):
                     yield from _at(('SP', t['c'], pi), seg_desc(sj, mvn, a), A, ('S', sj))
                 continue
             for tag, m in pair_margins(seg_desc(sj, mvn, a), A):
@@ -786,7 +819,7 @@ def gen_pad(pi, mvn, mvr, a, skip_refs=frozenset()):
                 continue
             seen.add(('N', nj))
             if net and node_net[nj] == net:
-                if net != 'GND':
+                if held(net, pi):
                     yield from _at(('NP', nj, pi), via_desc(nj, mvn, a), A, ('N', nj))
                 continue
             for tag, m in pair_margins(via_desc(nj, mvn, a), A):
@@ -798,14 +831,14 @@ def gen_pad(pi, mvn, mvr, a, skip_refs=frozenset()):
             if kind == 'T':
                 t = M['tracks'][idx]
                 if net and t['net'] == net:
-                    if net != 'GND':
+                    if held(net, pi):
                         yield from _at(('PT', pi, idx), A, track_desc[idx], ('T', idx))
                     continue
                 for tag, m in pair_margins(A, track_desc[idx]):
                     yield ('PT', pi, idx, tag), m, ('T', idx)
             elif kind == 'V':
                 if net and M['vias'][idx]['net'] == net:
-                    if net != 'GND':
+                    if held(net, pi):
                         yield from _at(('PV', pi, idx), A, svia_desc[idx], ('V', idx))
                     continue
                 for tag, m in pair_margins(A, svia_desc[idx]):
@@ -817,7 +850,7 @@ def gen_pad(pi, mvn, mvr, a, skip_refs=frozenset()):
                 if q['ref'] == ref or q['ref'] in skip_refs:
                     continue
                 if net and q['net'] == net:
-                    if net != 'GND':
+                    if held(net, pi, idx):
                         yield from _at(('PP', min(pi, idx), max(pi, idx)), A, pad_desc(idx, mvr, a), ('P', idx))
                     continue
                 lo, hi = min(pi, idx), max(pi, idx)
@@ -825,6 +858,9 @@ def gen_pad(pi, mvn, mvr, a, skip_refs=frozenset()):
                     yield ('PP', lo, hi, tag), m, ('P', idx)
     if EDGE and not p['npth']:
         yield ('PE', pi), edge_margin(A[1], 0.0), ('E',)
+    for zi in ZATT.get(pi, ()):
+        c = A[2]
+        yield ('AZ', pi, zi), inside_dist(c[0], c[1], ZONES[zi]['pts']) - pad_rin[pi] - OV, ('Z', zi)
 
 
 def crt_margin(A, B):
@@ -883,7 +919,7 @@ gf = {}
 
 
 def floor_of(key):
-    if key[0] == 'AT':
+    if key[0] in ('AT', 'AZ'):
         f = gf.get(key)
         return -1e9 if f is None else min(f, 0.0)
     if key[0] == 'LEN':
@@ -913,30 +949,32 @@ def measure():
                 gf[key] = m
     for si, s in enumerate(segs):
         net, ci, lay = s['net'], s['c'], s['layer']
-        if net == 'GND':
-            continue
+        gnd = net == 'GND'
         A = seg_desc(si, {}, 0)
         bx0, by0, bx1, by1 = _bbox_of(A)
         for cell in cells_for_box(bx0, by0, bx1, by1, 0.1):
-            for sj in seg_grid.get(cell, ()):
-                t = segs[sj]
-                if sj != si and t['c'] != ci and t['net'] == net and t['layer'] == lay:
-                    seed(('SS', min(ci, t['c']), max(ci, t['c'])), A, seg_desc(sj, {}, 0))
-            for nj in vgrid.get(cell, ()):
-                if node_net[nj] == net:
-                    seed(('SN', ci, nj), A, via_desc(nj, {}, 0))
+            if not gnd:
+                for sj in seg_grid.get(cell, ()):
+                    t = segs[sj]
+                    if sj != si and t['c'] != ci and t['net'] == net and t['layer'] == lay:
+                        seed(('SS', min(ci, t['c']), max(ci, t['c'])), A, seg_desc(sj, {}, 0))
+                for nj in vgrid.get(cell, ()):
+                    if node_net[nj] == net:
+                        seed(('SN', ci, nj), A, via_desc(nj, {}, 0))
             for kind, idx in static_grid.get(cell, ()):
+                if gnd and kind != 'P':
+                    continue
                 if kind == 'T' and M['tracks'][idx]['net'] == net and M['tracks'][idx]['layer'] == lay:
                     seed(('ST', ci, idx), A, track_desc[idx])
                 elif kind == 'V' and M['vias'][idx]['net'] == net:
                     seed(('SV', ci, idx), A, svia_desc[idx])
-                elif kind == 'P' and pads[idx]['net'] == net:
+                elif kind == 'P' and pads[idx]['net'] == net and held(net, idx):
                     seed(('SP', ci, idx), A, pad_desc(idx, {}, 0))
     for r in movable:
         for pi in pads_of[r]:
             p = pads[pi]
             net = p['net']
-            if not net or net == 'GND':
+            if not net or not held(net, pi):
                 continue
             A = pad_desc(pi, {}, 0)
             bx0, by0, bx1, by1 = _bbox_of(A)
@@ -949,31 +987,39 @@ def measure():
                         seed(('PT', pi, idx), A, track_desc[idx])
                     elif kind == 'V' and M['vias'][idx]['net'] == net:
                         seed(('PV', pi, idx), A, svia_desc[idx])
+                    elif kind == 'P' and pads[idx]['net'] == net and pads[idx]['ref'] != r and idx != pi:
+                        seed(('PP', min(pi, idx), max(pi, idx)), pad_desc(min(pi, idx), {}, 0), pad_desc(max(pi, idx), {}, 0))
     for nid in via_nids:
         net = node_net[nid]
-        if net == 'GND':
-            continue
+        gnd = net == 'GND'
         A = via_desc(nid, {}, 0)
         x, y = A[1]
         for cell in cells_for_box(x, y, x, y, 0.1):
-            for nj in vgrid.get(cell, ()):
-                if nj != nid and node_net[nj] == net:
-                    seed(('NN', min(nid, nj), max(nid, nj)), via_desc(min(nid, nj), {}, 0),
-                         via_desc(max(nid, nj), {}, 0))
+            if not gnd:
+                for nj in vgrid.get(cell, ()):
+                    if nj != nid and node_net[nj] == net:
+                        seed(('NN', min(nid, nj), max(nid, nj)), via_desc(min(nid, nj), {}, 0),
+                             via_desc(max(nid, nj), {}, 0))
             for kind, idx in static_grid.get(cell, ()):
+                if gnd and kind != 'P':
+                    continue
                 if kind == 'T' and M['tracks'][idx]['net'] == net:
                     seed(('NT', nid, idx), A, track_desc[idx])
                 elif kind == 'V' and M['vias'][idx]['net'] == net:
                     seed(('NV', nid, idx), A, svia_desc[idx])
-                elif kind == 'P' and pads[idx]['net'] == net:
+                elif kind == 'P' and pads[idx]['net'] == net and held(net, idx):
                     seed(('NP', nid, idx), A, pad_desc(idx, {}, 0))
+    for pi_, zis in ZATT.items():
+        A = pad_desc(pi_, {}, 0)
+        for zi_ in zis:
+            gf[('AZ', pi_, zi_)] = inside_dist(A[2][0], A[2][1], ZONES[zi_]['pts']) - pad_rin[pi_] - OV
     n_at = sum(1 for k in gf if k[0] == 'AT')
 
     hist = defaultdict(int)
 
     def rec(gen):
         for key, m, blk in gen:
-            if key[0] in ('AT', 'LEN') or _ghost_blk(blk):
+            if key[0] in ('AT', 'AZ', 'LEN') or _ghost_blk(blk):
                 continue
             hist[min(9, max(-1, int(m / 0.02)))] += 1
             if m < GF_CUT and m < gf.get(key, 1e9):
@@ -1072,6 +1118,8 @@ def blk_info(blk):
         return dict(kind='courtyard', ref=blk[1])
     if k == 'L':
         return dict(kind='length_cap', net=blk[1])
+    if k == 'Z':
+        return dict(kind='zone_edge', net=ZONES[blk[1]]['net'])
     return dict(kind='board_edge')
 
 
@@ -1133,7 +1181,7 @@ def deposit(clamps, mover_mid, fx, fy, mover_name, own=None, reaction=None):
         need = floor_of(key) - m + 0.001
         if need <= 0:
             continue
-        mag = min(STEP, need)
+        mag = min(STEP, need + PUSH_EXTRA)
         k = blk[0]
         is_at = key[0] == 'AT'
         info = blk_info(blk)
@@ -1397,7 +1445,7 @@ def hard_walled(name):
     for key, m, blk in blocked_log.get(name, ()):
         if key[0] == 'AT':
             continue
-        if blk[0] == 'E' or (blk[0] == 'P' and pads[blk[1]]['ref'] not in movable
+        if blk[0] in ('E', 'Z') or (blk[0] == 'P' and pads[blk[1]]['ref'] not in movable
                              and pads[blk[1]].get('ghost') is None):
             return True
     return False
@@ -1963,11 +2011,28 @@ def _rr_noop(tx, tol=0.05):
     return True
 
 
-def reroute_round(rn):
+def clamp_chains(name):
+    """Dynamic chains named by a unit's current clamps."""
+    out = set()
+    for key, m, blk in blocked_log.get(name, ()):
+        if blk[0] == 'S':
+            out.add(segs[blk[1]]['c'])
+        elif blk[0] == 'N':
+            for si in inc.get(blk[1], ()):
+                if not segs[si].get('dead'):
+                    out.add(segs[si]['c'])
+    return out
+
+
+def reroute_round(rn, only=None):
     _rr_masks.clear()
     build_static_grid()
     build_dyn_grids()
     cands = rr_candidates()
+    if only is not None:
+        cands = [c for c in cands if c in only] + [c for c in sorted(only) if c not in cands and rr_ok_count[c] < RR_OK_CAP]
+        if not cands:
+            return 0
     nok = tried = 0
     for ci in cands:
         if tried >= RR_PER_ROUND:
@@ -2063,6 +2128,9 @@ capture('start')
 hist = []
 idle = 0
 best_s = 0.0
+best_g = [0.0] * len(ghosts)
+ghost_idle = [0] * len(ghosts)
+local_rounds = 0
 cyc = 0
 scount = 1
 win = STALL_WIN
@@ -2091,6 +2159,29 @@ while cyc < CYCLES:
     build_dyn_grids()
     build_cy_pairs()
     adv = ghost_pass()
+    # a ghost that has stopped growing while the run as a whole still advances
+    # gets its own reroute of the copper that clamps it, without waiting for
+    # the global stall (U32 waited 230 cycles behind C110 in enc_corner_wide)
+    for gi_, gh_ in enumerate(ghosts):
+        if g[gi_] >= 1.0:
+            continue
+        if g[gi_] > best_g[gi_] + 1e-3:
+            best_g[gi_], ghost_idle[gi_] = g[gi_], 0
+            continue
+        ghost_idle[gi_] += 1
+        if ghost_idle[gi_] >= GHOST_WIN and not NO_RR and local_rounds < 4 * RR_ROUNDS:
+            only = clamp_chains('GHOST:' + gh_['ref'])
+            ghost_idle[gi_] = GHOST_WIN // 2
+            if only:
+                print(f"ghost {gh_['ref']} idle {GHOST_WIN} cycles at scale {g[gi_]:.3f}: "
+                      f"local reroute of {len(only)} clamping chains", flush=True)
+                local_rounds += 1
+                if reroute_round(f'{rounds + 1}.{local_rounds}', only=only):
+                    capture('reroute')
+                    if FRAMES:
+                        chain_ver += 1
+                        chain_sets[chain_ver] = [ids[:] for ids in chains]
+                        capture_frame(progress())
     padv, nblk = part_pass()
     adv += padv
     adv += group_pass()
@@ -2158,7 +2249,7 @@ report = dict(
     cycles=cyc, s=round(progress(), 4), ghosts={gh['ref']: dict(g=round(g[i], 4), T=[round(t, 3) for t in T[i]])
                                                for i, gh in enumerate(ghosts)},
     parts_moved={r: [round(v, 3) for v in D[r]] for r in D if math.hypot(*D[r]) > 1e-3},
-    reroutes=rr_events, reroute_rounds=rounds, stalled=stalled,
+    reroutes=rr_events, reroute_rounds=rounds, local_reroutes=local_rounds, stalled=stalled,
     absorb=[dict(mover=a, blocker=b, what=c, hits=n)
             for (a, b, c), n in sorted(absorb.items(), key=lambda kv: -kv[1])][:60],
     lengths=length_report(), history=hist, seconds=round(time.time() - t0, 1))

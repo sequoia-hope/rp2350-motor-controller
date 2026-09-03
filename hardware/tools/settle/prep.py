@@ -196,6 +196,10 @@ def courtyard_entry(f):
             entry[name] = polys
     return entry
 
+def box_hits(x0, y0, x1, y1):
+    return x0 < region[2] + MARGIN and x1 > region[0] - MARGIN and \
+        y0 < region[3] + MARGIN and y1 > region[1] - MARGIN
+
 pads = []
 pad_objs = []            # parallel: pcbnew pad for binding
 courtyards = {}
@@ -384,6 +388,56 @@ for ref, cnt in static_touch.items():
         parts[ref]['mobility'] = 0.0
         parts[ref]['why_fixed'] = f'{cnt} static copper ends on its pads'
         print(f'  {ref}: fixed — {cnt} static (locked-net or out-of-region) copper ends on its pads')
+
+# ---- zones: a pad fed by a pour must stay inside the pour --------------------
+# The model treats zones as absent obstacles (the filler yields to copper), but
+# they are hard CONNECTORS: AH1/CH2 lost their phase-zone drains after moving
+# 3 mm in the first upward squeeze. Every movable pad sitting inside a same-net
+# zone outline at the start gets a zone attachment.
+
+
+def _point_in_poly(x, y, pts):
+    inside = False
+    j = len(pts) - 1
+    for i in range(len(pts)):
+        xi, yi = pts[i]
+        xj, yj = pts[j]
+        if (yi > y) != (yj > y) and x < (xj - xi) * (y - yi) / (yj - yi + 1e-12) + xi:
+            inside = not inside
+        j = i
+    return inside
+
+zones, zone_att = [], []
+for z in board.Zones():
+    try:
+        if z.GetIsRuleArea():
+            continue
+    except AttributeError:
+        pass
+    znet = z.GetNetname()
+    if not znet:
+        continue
+    zlays = [l for l in COPPER_LAYERS if z.IsOnLayer(l)]
+    ol = z.Outline()
+    for i in range(ol.OutlineCount()):
+        o = ol.Outline(i)
+        pts = [[o.CPoint(j).x * NM, o.CPoint(j).y * NM] for j in range(o.PointCount())]
+        if len(pts) < 3:
+            continue
+        xs = [q[0] for q in pts]; ys = [q[1] for q in pts]
+        if box_hits(min(xs), min(ys), max(xs), max(ys)):
+            zones.append(dict(net=znet, layers=zlays, pts=pts))
+for pi, pe in enumerate(pads):
+    if not parts.get(pe['ref'], {}).get('movable') or not pe['net']:
+        continue
+    for zi, z in enumerate(zones):
+        if z['net'] != pe['net']:
+            continue
+        if not (pe['drill'] or set(pe['layers']) & set(z['layers'])):
+            continue
+        if _point_in_poly(pe['x'], pe['y'], z['pts']):
+            zone_att.append([pi, zi])
+print(f'zones: {len(zones)} outlines in range, {len(zone_att)} movable pads held inside their pour')
 
 # ---- ghosts ------------------------------------------------------------------
 ghosts = []
@@ -609,6 +663,7 @@ for side_, (S_, W_, H_) in _free.items():
     rasters[side_] = dict(x0=region[0], y0=region[1], step=_SR, W=W_, H=H_,
                           data=[round(float(v), 2) for v in m_.ravel()])
 model = dict(name=cfg['name'], board=cfg['board'], region=region, rules=rules, rasters=rasters,
+             zones=zones, zone_att=zone_att,
              layers=COPPER_LAYERS, nodes=nodes, edges=edges, pads=pads,
              tracks=tracks_static, vias=vias_static, courtyards=courtyards,
              parts=parts, ghosts=ghosts, nets=nets)

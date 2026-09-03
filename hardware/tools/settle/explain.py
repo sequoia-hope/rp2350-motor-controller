@@ -228,7 +228,7 @@ if SS:
         fig, ax = plt.subplots(figsize=(7, 2.8))
         ax.barh([r['net'] for r in rows], [r['grown_mm'] for r in rows], color='#c0392b', label='grown')
         ax.barh([r['net'] for r in rows], [r['cap_mm'] for r in rows], fill=False, ec='black', label='hard cap')
-        ax.set_xlabel('mm'); ax.legend(fontsize=7); ax.set_title('Gate and bootstrap nets that reached their cap and stopped the squeeze', fontsize=9)
+        ax.set_xlabel('mm'); ax.legend(fontsize=7); ax.set_title('Nets that reached their hard cap during the squeeze', fontsize=9)
         ax.tick_params(labelsize=7)
         save(fig, 'squeeze_caps')
 
@@ -260,6 +260,24 @@ def verdict(run):
             (f"{born}/{len(r['ghosts'])} ghosts born, " if born is not None else '') +
             f"{len(r['parts_moved'])} parts moved, gate {ok}/{len(g.get('steps', []))}, check_sync {g.get('check_sync')}")
 
+def squeeze_summary():
+    r = S['REP']
+    if not r or not r.get('parts_moved'):
+        return ''
+    parts = S['M']['parts']
+    rows = []
+    bands = [(82.0, 94.5, 'top band'), (94.5, 105.5, 'second band'), (105.5, 117.0, 'third band'), (117.0, 128.5, 'bottom band')]
+    for y0, y1, lab in bands:
+        dys = [-d[1] for ref, d in r['parts_moved'].items() if y0 <= parts[ref]['cy'] < y1]
+        allrefs = [ref for ref, p in parts.items() if p['movable'] and y0 <= p['cy'] < y1]
+        if allrefs:
+            dys += [0.0] * (len(allrefs) - len(dys))
+            dys.sort()
+            rows.append(f'<tr><td>{lab}</td><td>{len(allrefs)}</td><td>{dys[len(dys) // 2]:.2f}</td><td>{max(dys):.2f}</td></tr>')
+    return ('<table><tr><th>band (by y)</th><th>movable parts</th><th>median move up, mm</th><th>max, mm</th></tr>' +
+            ''.join(rows) + '</table>')
+
+squeeze_summary = squeeze_summary()
 el = W['cfg'].get('elastic', {})
 el_rows = ''.join(f'<tr><td><code>{E(k)}</code></td><td>{E(json.dumps(v))}</td></tr>' for k, v in el.get('nets', {}).items())
 inflate_ref = W.get('inflate_ref', 'U33')
@@ -383,10 +401,13 @@ excluded violations included); unconnected items not above baseline; every stati
 where it was; net growth inside the caps; and check_sync against the schematic on the final board.</p>
 {img('gate', 'Per-checkpoint gate results for the three runs: flat at baseline is the point.')}
 
-<h2>9. Internal to the power stage: the squeeze</h2>
-<p>The same engine with a different drive. All four half-bridge bands were shoved 1 mm toward their centre line, with gate, bootstrap and
-turn-off nets capped at 0.3 mm of growth. The bands compressed until those caps held and the A-phase sense copper met the fixed INA240 outside
-the region. That is the power stage's internal vertical slack at the new rules with the loops kept short.</p>
+<h2>9. Internal to the power stage: the squeeze toward the top edge</h2>
+<p>The same engine with a different drive. Every movable part of the power stage was given a target 3 mm toward the top board edge,
+with gate, bootstrap and turn-off nets capped at 0.3 mm of growth. The top band meets the edge clearance and the mounting hole at once;
+each band below it moves up by whatever slack lies between it and the band above, so the displacement grows band by band and the
+bottom of the stage frees a strip. What stops it is reported by name: the caps on the gate loops, and the sense copper pinned by the
+INA240s outside the region.</p>
+{squeeze_summary}
 {img('squeeze', 'power_squeeze: cycle 0 and the settled state. Green arrows: how far each part moved.')}
 {img('squeeze_caps', '')}
 {video('settle_power_squeeze.mp4', 'power_squeeze, one frame every two cycles.')}
