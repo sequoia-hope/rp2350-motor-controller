@@ -38,8 +38,25 @@ rules.setdefault('edge_clearance', ds.get('min_copper_edge_clearance', 0.3))
 rules.setdefault('guard', 0.015)
 bb = board.GetBoardEdgesBoundingBox()
 rules['board_edge'] = [bb.GetLeft() * NM, bb.GetTop() * NM, bb.GetRight() * NM, bb.GetBottom() * NM]
+# the DRC edge is the Edge.Cuts centreline, not the (line-width inflated)
+# bounding box, and the corners are arcs: rect of the straight edges + radius
+_xs, _ys, _r = [], [], 0.0
+for d in board.GetDrawings():
+    if d.GetLayerName() != 'Edge.Cuts':
+        continue
+    shape = d.GetShapeStr() if hasattr(d, 'GetShapeStr') else str(d.GetShape())
+    if shape == 'Arc':
+        _r = max(_r, d.GetRadius() * NM)
+    else:
+        for p in (d.GetStart(), d.GetEnd()):
+            _xs.append(p.x * NM); _ys.append(p.y * NM)
+if _xs:
+    rules['outline'] = dict(rect=[min(_xs), min(_ys), max(_xs), max(_ys)], corner_r=_r)
+else:
+    rules['outline'] = dict(rect=rules['board_edge'], corner_r=0.0)
+print(f"outline rect {rules['outline']['rect']} corner r {rules['outline']['corner_r']}")
 region = cfg.get('region') or rules['board_edge']
-MARGIN = cfg.get('margin', 2.0)
+MARGIN = cfg.get('margin', 3.0)      # obstacle halo around the region: parts may move this far
 
 netclass_of = {}
 for name in board.GetNetsByName().keys():
@@ -185,26 +202,55 @@ courtyards = {}
 for ref, f in fps.items():
     if ref in ghost_refs:
         continue
-    cx, cy = parts[ref]['cx'], parts[ref]['cy']
-    if in_rect(cx, cy, region, 8.0):
-        cy_e = courtyard_entry(f)
-        if cy_e:
-            courtyards[ref] = cy_e
+    cy_e = courtyard_entry(f)
+    # include by EXTENT, not by centroid: a big connector's courtyard reaches
+    # far past its origin (J9 clipped BH1 in the power squeeze, run 2)
+
+    def box_hits(x0, y0, x1, y1):
+        return x0 < region[2] + MARGIN and x1 > region[0] - MARGIN and \
+            y0 < region[3] + MARGIN and y1 > region[1] - MARGIN
+    if cy_e and any(box_hits(min(q[0] for q in poly), min(q[1] for q in poly),
+                             max(q[0] for q in poly), max(q[1] for q in poly))
+                    for polys in cy_e.values() for poly in polys):
+        courtyards[ref] = cy_e
     for pad in f.Pads():
-        px, py = pad.GetPosition().x * NM, pad.GetPosition().y * NM
-        if in_rect(px, py, region, MARGIN) or parts[ref]['movable']:
+        bb_ = pad.GetBoundingBox()
+        if box_hits(bb_.GetLeft() * NM, bb_.GetTop() * NM, bb_.GetRight() * NM, bb_.GetBottom() * NM) \
+                or parts[ref]['movable']:
             pads.append(pad_entry(f, pad))
             pad_objs.append((pad, f.GetReference()))
 
 # ---- copper: dynamic graph vs static obstacles --------------------------------
+def seg_hits_rect(a, b, r, m=0.0):
+    """Segment a-b intersects rect r (inflated by m): an endpoint inside, or
+    the segment crosses one of the rect's edges (Liang-Barsky clip)."""
+    if in_rect(*a, r, m) or in_rect(*b, r, m):
+        return True
+    x0, y0, x1, y1 = r[0] - m, r[1] - m, r[2] + m, r[3] + m
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    t0, t1 = 0.0, 1.0
+    for p, q in ((-dx, a[0] - x0), (dx, x1 - a[0]), (-dy, a[1] - y0), (dy, y1 - a[1])):
+        if abs(p) < 1e-12:
+            if q < 0:
+                return False
+            continue
+        t = q / p
+        if p < 0:
+            t0 = max(t0, t)
+        else:
+            t1 = min(t1, t)
+        if t0 > t1:
+            return False
+    return True
+
 tracks_static, vias_static = [], []
 dyn_t, dyn_v = [], []
 for t in board.GetTracks():
     if t.GetClass() == 'PCB_TRACK':
         s, e = t.GetStart(), t.GetEnd()
         a = (s.x * NM, s.y * NM); b = (e.x * NM, e.y * NM)
-        touch = in_rect(*a, region) or in_rect(*b, region)
-        near = in_rect(*a, region, MARGIN) or in_rect(*b, region, MARGIN)
+        touch = seg_hits_rect(a, b, region)
+        near = seg_hits_rect(a, b, region, MARGIN)
         net = t.GetNetname()
         locked = nets.get(net, {}).get('locked') or \
             any(in_rect(*a, r) and in_rect(*b, r) for r in lk_rects)
@@ -366,9 +412,10 @@ def free_raster(side):
         if i1 >= i0 and j1 >= j0:
             m[j0:j1 + 1, i0:i1 + 1] = np.maximum(m[j0:j1 + 1, i0:i1 + 1], w)
     for pe in pads:
-        if pe['drill'] or lay in pe['layers']:
+        if pe['drill'] or lay in pe['layers'] or pe['npth']:
             xs = [q[0] for q in pe['pts']]; ys = [q[1] for q in pe['pts']]
-            stamp_box(min(xs) - 0.1, min(ys) - 0.1, max(xs) + 0.1, max(ys) + 0.1, 1.0)
+            m_ = 0.1 + max(pe['lc'], rules['clearance'] if not pe['npth'] else rules['hole_clearance'])
+            stamp_box(min(xs) - m_, min(ys) - m_, max(xs) + m_, max(ys) + m_, 1.0)
     for ref, entry in courtyards.items():
         for poly in entry.get(side, []):
             xs = [q[0] for q in poly]; ys = [q[1] for q in poly]

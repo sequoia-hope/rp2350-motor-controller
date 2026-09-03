@@ -1,0 +1,205 @@
+{
+ "name": "enc_corner_wide",
+ "board": "../../../rp2350_driver.kicad_pcb",
+ "region": [
+  112.4,
+  81.9,
+  132.5,
+  128.5
+ ],
+ "rules": {
+  "guard": 0.015
+ },
+ "locked": {
+  "sides": [
+   "F"
+  ],
+  "refs": [
+   "J1",
+   "J2",
+   "J12",
+   "H3",
+   "H4"
+  ],
+  "nets": [
+   "^/USB_D",
+   "^/CAN0_"
+  ],
+  "rects": []
+ },
+ "mobility": {
+  "default": 1.0
+ },
+ "groups": {},
+ "elastic": {
+  "default": {
+   "k": 0.5,
+   "allow": 0.2,
+   "cap": 0.5,
+   "allow_mm": 0.5,
+   "cap_mm": 2.0
+  },
+  "classes": {
+   "VMOT": {
+    "k": 0.2,
+    "allow": 0.3,
+    "cap": 1.0,
+    "allow_mm": 1.0,
+    "cap_mm": 6.0
+   },
+   "power": {
+    "k": 0.2,
+    "allow": 0.3,
+    "cap": 1.0,
+    "allow_mm": 1.0,
+    "cap_mm": 6.0
+   },
+   "usb_5A": {
+    "k": 0.2,
+    "allow": 0.3,
+    "cap": 1.0,
+    "allow_mm": 1.0,
+    "cap_mm": 6.0
+   },
+   "low_power": {
+    "k": 0.2,
+    "allow": 0.3,
+    "cap": 1.0,
+    "allow_mm": 1.0,
+    "cap_mm": 6.0
+   }
+  },
+  "nets": {
+   "^GND": {
+    "k": 0.0,
+    "allow": 1000000000.0,
+    "cap": 1000000000.0
+   },
+   "^(VMOT|Vdrive|VBUS|\\+3V3|\\+1V1|\\+5V_ISO|/V_ENC|/V_SW)$": {
+    "k": 0.2,
+    "allow": 0.3,
+    "cap": 1.0,
+    "allow_mm": 1.0,
+    "cap_mm": 6.0
+   },
+   "^Net-\\(U(1|6|7|12)-(HO|LO|VB)\\)$": {
+    "k": 4.0,
+    "allow": 0.0,
+    "cap": 0.05,
+    "allow_mm": 0.0,
+    "cap_mm": 0.3
+   },
+   "^/2[ABCD]G[HL]$": {
+    "k": 4.0,
+    "allow": 0.0,
+    "cap": 0.05,
+    "allow_mm": 0.0,
+    "cap_mm": 0.3
+   },
+   "^Net-\\(Q[1-4]-[BE]\\)$": {
+    "k": 4.0,
+    "allow": 0.0,
+    "cap": 0.05,
+    "allow_mm": 0.0,
+    "cap_mm": 0.3
+   },
+   "^Net-\\((R(24|59|62|67|70)|D\\d+)-": {
+    "k": 2.0,
+    "allow": 0.05,
+    "cap": 0.15,
+    "allow_mm": 0.2,
+    "cap_mm": 0.8
+   },
+   "^/USB_D": {
+    "k": 4.0,
+    "allow": 0.0,
+    "cap": 0.02,
+    "allow_mm": 0.0,
+    "cap_mm": 0.1
+   },
+   "^/CAN0_": {
+    "k": 4.0,
+    "allow": 0.0,
+    "cap": 0.02,
+    "allow_mm": 0.0,
+    "cap_mm": 0.1
+   },
+   "^/ENC_[A-D]_(P|N)(_SW)?$": {
+    "k": 1.0,
+    "allow": 0.1,
+    "cap": 0.15,
+    "allow_mm": 0.5,
+    "cap_mm": 2.0
+   },
+   "^/ENC_[A-D]_TRX_": {
+    "k": 1.0,
+    "allow": 0.1,
+    "cap": 0.2,
+    "allow_mm": 0.5,
+    "cap_mm": 2.0
+   },
+   "^[ABCD]_PWM_": {
+    "k": 1.0,
+    "allow": 0.1,
+    "cap": 0.25,
+    "allow_mm": 0.5,
+    "cap_mm": 3.0
+   },
+   "SENSE": {
+    "k": 1.0,
+    "allow": 0.1,
+    "cap": 0.2,
+    "allow_mm": 0.5,
+    "cap_mm": 2.0
+   }
+  }
+ },
+ "drive": {
+  "inflate": [
+   {
+    "ref": "U30",
+    "at": "search",
+    "radius": 14
+   },
+   {
+    "ref": "U32",
+    "at": "search",
+    "radius": 14
+   },
+   {
+    "ref": "U33",
+    "at": "search",
+    "radius": 14
+   },
+   {
+    "ref": "R97",
+    "at": "search",
+    "radius": 14
+   },
+   {
+    "ref": "R98",
+    "at": "search",
+    "radius": 14
+   },
+   {
+    "ref": "R100",
+    "at": "search",
+    "radius": 14
+   },
+   {
+    "ref": "C110",
+    "at": {
+     "near": "U30",
+     "offset": [
+      0.0,
+      0.0
+     ],
+     "search": 8.0
+    }
+   }
+  ]
+ },
+ "step": 0.05,
+ "snapshots": 10,
+ "cycles": 600
+}

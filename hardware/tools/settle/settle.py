@@ -520,9 +520,26 @@ svia_desc = [('disc', (v['x'], v['y']), None, v['dia'] / 2, ALL, ((v['x'], v['y'
               net_clr(v['net'])) for v in M['vias']]
 
 
+OUTLINE = R.get('outline') or dict(rect=EDGE, corner_r=0.0)
+OX0, OY0, OX1, OY1 = OUTLINE['rect']
+OCR = OUTLINE['corner_r']
+
+
+def edge_dist(x, y):
+    """Distance from (x,y) inside the board to the outline: a rectangle
+    with rounded corners of radius OCR (negative outside)."""
+    d = min(x - OX0, OX1 - x, y - OY0, OY1 - y)
+    if OCR <= 0:
+        return d
+    cx = OX0 + OCR if x < OX0 + OCR else (OX1 - OCR if x > OX1 - OCR else None)
+    cy = OY0 + OCR if y < OY0 + OCR else (OY1 - OCR if y > OY1 - OCR else None)
+    if cx is not None and cy is not None:
+        return OCR - math.hypot(x - cx, y - cy)
+    return d
+
+
 def edge_margin(xys, hw):
-    ex0, ey0, ex1, ey1 = EDGE
-    return min(min(x - ex0, ex1 - x, y - ey0, ey1 - y) for x, y in xys) - ECLR - hw
+    return min(edge_dist(x, y) for x, y in xys) - ECLR - hw
 
 # ---- attachment (same-net contact persistence) -------------------------------
 
@@ -1574,18 +1591,15 @@ def rr_mask(lay, net, hw, mm):
     nc = net_clr(net)
     if EDGE:
         em = ECLR + hw + mm
-        ex0, ey0, ex1, ey1 = EDGE
         for j in range(RH):
             cy_ = RY0 + j * RR_GRID
-            if cy_ < ey0 + em or cy_ > ey1 - em:
-                base = j * RW
-                for i in range(RW):
-                    m[base + i] = 1
-        for i in range(RW):
-            cx = RX0 + i * RR_GRID
-            if cx < ex0 + em or cx > ex1 - em:
-                for j in range(RH):
-                    m[j * RW + i] = 1
+            base = j * RW
+            near_y = cy_ < OY0 + em + OCR or cy_ > OY1 - em - OCR
+            for i in range(RW):
+                cx = RX0 + i * RR_GRID
+                if near_y or cx < OX0 + em + OCR or cx > OX1 - em - OCR:
+                    if edge_dist(cx, cy_) < em:
+                        m[base + i] = 1
     for t in M['tracks']:
         if t['layer'] != lay or t['net'] == net:
             continue
@@ -2023,6 +2037,7 @@ capture('start')
 
 hist = []
 idle = 0
+best_s = 0.0
 cyc = 0
 scount = 1
 win = STALL_WIN
@@ -2055,13 +2070,17 @@ while cyc < CYCLES:
         if relaxing >= RELAX or (adv + cu) < IDLE_ADV:
             break
         continue
-    idle = idle + 1 if adv < IDLE_ADV else 0
+    if s > best_s + 1e-3:
+        best_s, idle = s, 0
+    else:
+        idle += 1
     if idle >= win:
         if rounds < RR_ROUNDS:
             print(f'stall at cycle {cyc} (s={s:.3f}): reroute round {rounds + 1}', flush=True)
             if reroute_round(rounds + 1):
                 rounds += 1
                 idle = 0
+                best_s = s
                 win = RR_WIN
                 capture('reroute')
                 continue

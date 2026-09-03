@@ -170,9 +170,15 @@ if '--step' in sys.argv:
     steps = [0] + [s for s in steps if s != 0]      # baseline always first
 
 
-def drc(path, out):
-    subprocess.run(['kicad-cli', 'pcb', 'drc', '--severity-error', '--format', 'json', '-o', out, path],
-                   check=True, capture_output=True)
+def drc(path, out, exclusions=False):
+    """kicad-cli DRC at severity error. The BASELINE run also reports the
+    project's excluded violations: exclusions are position-keyed, so a
+    pre-existing excluded overlap resurfaces as soon as its part moves
+    (J9/BH1 in the power squeeze) — it belongs to the baseline, not the gate."""
+    cmd = ['kicad-cli', 'pcb', 'drc', '--severity-error', '--format', 'json', '-o', out, path]
+    if exclusions:
+        cmd.insert(3, '--severity-exclusions')
+    subprocess.run(cmd, check=True, capture_output=True)
     d = json.load(open(out))
     return d.get('unconnected_items', []), d.get('violations', [])
 
@@ -220,10 +226,14 @@ for k in steps:
     path = os.path.join(STEPS, f'step_{k:02d}.kicad_pcb')
     entry = dict(step=k, s=round(TR['checkpoints'][k]['s'], 3), tag=TR['checkpoints'][k].get('tag', ''))
     if '--no-drc' not in sys.argv:
-        u, viol = drc(path, os.path.join(STEPS, f'drc_{k:02d}.json'))
+        u, viol = drc(path, os.path.join(STEPS, f'drc_{k:02d}.json'), exclusions=base_sigs is None)
         if base_sigs is None:
             base_sigs = {sig(v) for v in viol}
+            n_exc = sum(1 for v in viol if v.get('excluded'))
+            viol = [v for v in viol if not v.get('excluded')]
             base_v, base_unc = len(viol), len(u)
+            if n_exc:
+                print(f'  baseline includes {n_exc} excluded violations', flush=True)
             print(f'  baseline (s=0 roundtrip): {base_v} violations, {base_unc} unconnected', flush=True)
             new = []
         else:

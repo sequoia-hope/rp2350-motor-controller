@@ -80,3 +80,15 @@ ghost only ever grows into legal room; the copper under it has to leave first.
   floor for courtyard pairs is conservative only because the JLC-tight
   courtyards were built with that in mind — watch `courtyards_overlap` in the
   gate when new footprints appear.
+- The DRC edge is the Edge.Cuts CENTRELINE (the edges bounding box is inflated
+  by half the line width) and the corners are 1.5 mm arcs; modelling the edge
+  as a bounding box put two tracks 10 um inside the edge clearance. The model
+  now carries rect + corner radius (`rules.outline`).
+- Classify tracks by segment/rectangle INTERSECTION, not by endpoints: a 36 mm
+  sense track crossing the region with both ends far outside was invisible to
+  the model and got crossed by pushed copper (power_squeeze run 1).
+- Stall detection must be progress-based: springs jitter parts by microns
+  forever, so "advance per cycle" never reaches zero.
+- Sites matter more than force: with the search radius widened from 8 to
+  14 mm the encoder corner went from 3/7 to 6/7 ghosts born in 14 s of
+  settling; the cost is route length (U30 12 mm from its transceiver).
