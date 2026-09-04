@@ -174,6 +174,20 @@
   </a>
 </div>
 
+<div class="board" style="border-left:4px solid var(--warn)">
+  <strong>Status 2026-09-03 (late):</strong> can the encoder section be squeezed toward the board corner to make room for
+  the new chips nearer the connector, with the diff pairs of similar length? <em>No</em>, three gated runs on the settle branch —
+  and the walls are named. The corner squeeze moves 56 parts a median 0.33&nbsp;mm before J2's XT30 pads, J12, H4 and the edge
+  hold (<a href="settle/settle_enc_squeeze.html">enc_squeeze</a>); the seven new parts on that board land at the plan-of-record's
+  sites ±1&nbsp;mm (<a href="settle/settle_enc_squeeze_after.html">after</a>). Re-homing channel D beside its own J12 pins
+  (<a href="settle/settle_enc_d_home.html">enc_d_home</a>, its copper stripped, 3/10 born) runs into J12 being a
+  <em>through-hole</em> header and the /D phase via farm (24 vias) sitting exactly beside the D pins — a power-stage or
+  connector move, not a settle. Vias: the board never had its vias shrunk (255 still 0.5/0.25 against a 0.35/0.20 floor;
+  the experiment bases shrink 190 of them cleanly); via-in-pad moves only 6 of 54 candidates on the existing copper — it is a
+  routing-stage decision. Pair copper today, P/N: A 7.8/15.9, B 16.1/18.4, C 24.4/26.3, D 31.9/36.0&nbsp;mm; the 20&nbsp;mm
+  spread is ~130&nbsp;ps against RS-422 edges. Full log on the <a href="settle/index.html">settle index</a>.
+</div>
+
 <div class="board" style="border-left:4px solid var(--accent)">
   <strong>Status 2026-09-03 (plan of record):</strong> the settle result is adopted as the board rev-B targets — the
   <code>enc_after_wide</code> final checkpoint (squeezed power stage + all seven encoder-corner parts), copied to

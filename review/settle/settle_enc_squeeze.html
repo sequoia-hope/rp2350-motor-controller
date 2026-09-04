@@ -1,0 +1,497 @@
+<!doctype html><meta charset=utf-8><title>settle: enc_squeeze</title>
+<style>body{font:14px/1.45 system-ui,sans-serif;max-width:1400px;margin:1.5em auto;padding:0 1em;color:#222}
+table{border-collapse:collapse;font-size:12px;margin:.5em 0}td,th{border:1px solid #ccc;padding:2px 6px;text-align:left}
+th{background:#f3f3f3}img{max-width:100%}pre{background:#f7f7f7;padding:.6em;font-size:11px;overflow:auto;max-height:22em}
+.small{color:#666;font-size:12px}h2{margin-top:1.6em;border-bottom:1px solid #ddd}</style>
+<h1>settle run: enc_squeeze</h1>
+<p><b>449</b> cycles in 1301.6 s, progress s = <b>0.1496</b>; 0/0 ghosts born; 56 parts moved; 40/192 reroutes verified in 12 rounds. Gate: <b>15/15</b> checkpoints pass (baseline 3 violations); length caps hit: 0; check_sync: True.</p>
+<p class=small>Region [112.4, 96.0, 130.5, 128.5]; rules clearance 0.1 mm, hole 0.254, edge 0.3, guard 0.015.
+57 movable parts, 934 dynamic segments, 1044 nodes, 0 ghosts.
+Orange pads = movable parts (dark orange = moved); grey = fixed; red = ghosts at their current scale; blue arrows = part displacement.
+Copper by layer: F red, B blue, In1 green, In2 purple, In3 brown, In4 teal; static copper grey.</p>
+<p><img src="img/settle_enc_squeeze_region.png"></p><p><img src="img/settle_enc_squeeze_history.png"></p>
+<h2>Gate per checkpoint</h2>
+<table><tr><th>step</th><th>s</th><th>tag</th><th>unconnected</th><th>new_violations</th><th>static_missing</th><th>fixed_moved</th><th>ok</th><th>new_desc</th></tr>
+<tr><td>0</td><td>0.0</td><td>start</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>1</td><td>0.101</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>2</td><td>0.148</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>3</td><td>0.148</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>4</td><td>0.148</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>5</td><td>0.15</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>6</td><td>0.149</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>7</td><td>0.149</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>8</td><td>0.149</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>9</td><td>0.15</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>10</td><td>0.15</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>11</td><td>0.15</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>12</td><td>0.15</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>13</td><td>0.15</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>14</td><td>0.15</td><td>final</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+</table>
+<h2>Ghosts</h2>
+<p><i>none</i></p>
+<h2>Parts moved</h2>
+<table><tr><th>ref</th><th>dx</th><th>dy</th><th>mm</th><th>group</th></tr>
+<tr><td>R104</td><td>-1.5</td><td>2.3</td><td>2.746</td><td></td></tr>
+<tr><td>C67</td><td>-0.254</td><td>2.344</td><td>2.358</td><td></td></tr>
+<tr><td>C74</td><td>-0.581</td><td>2.153</td><td>2.23</td><td></td></tr>
+<tr><td>C69</td><td>-0.464</td><td>2.098</td><td>2.149</td><td></td></tr>
+<tr><td>R96</td><td>-0.442</td><td>1.917</td><td>1.967</td><td></td></tr>
+<tr><td>C63</td><td>-0.25</td><td>1.801</td><td>1.818</td><td></td></tr>
+<tr><td>R91</td><td>-0.079</td><td>1.752</td><td>1.754</td><td></td></tr>
+<tr><td>C75</td><td>-0.317</td><td>1.689</td><td>1.718</td><td></td></tr>
+<tr><td>C68</td><td>-0.402</td><td>1.612</td><td>1.661</td><td></td></tr>
+<tr><td>R95</td><td>-0.716</td><td>1.395</td><td>1.568</td><td></td></tr>
+<tr><td>R90</td><td>-0.394</td><td>1.515</td><td>1.565</td><td></td></tr>
+<tr><td>R87</td><td>-1.308</td><td>0.216</td><td>1.326</td><td></td></tr>
+<tr><td>C70</td><td>-0.435</td><td>1.145</td><td>1.225</td><td></td></tr>
+<tr><td>R86</td><td>-1.207</td><td>0.085</td><td>1.21</td><td></td></tr>
+<tr><td>D27</td><td>-0.014</td><td>1.194</td><td>1.194</td><td></td></tr>
+<tr><td>R85</td><td>-0.685</td><td>0.832</td><td>1.078</td><td></td></tr>
+<tr><td>R93</td><td>-0.288</td><td>0.8</td><td>0.85</td><td></td></tr>
+<tr><td>C73</td><td>-0.732</td><td>0.422</td><td>0.845</td><td></td></tr>
+<tr><td>R83</td><td>-0.532</td><td>0.609</td><td>0.809</td><td></td></tr>
+<tr><td>U19</td><td>-0.759</td><td>0.195</td><td>0.784</td><td></td></tr>
+<tr><td>D25</td><td>-0.689</td><td>0.295</td><td>0.749</td><td></td></tr>
+<tr><td>U20</td><td>-0.128</td><td>0.638</td><td>0.651</td><td></td></tr>
+<tr><td>D26</td><td>-0.115</td><td>0.634</td><td>0.644</td><td></td></tr>
+<tr><td>C62</td><td>0.076</td><td>0.634</td><td>0.639</td><td></td></tr>
+<tr><td>FL4</td><td>-0.095</td><td>0.602</td><td>0.609</td><td></td></tr>
+<tr><td>C71</td><td>-0.31</td><td>0.483</td><td>0.574</td><td></td></tr>
+<tr><td>R82</td><td>-0.151</td><td>0.552</td><td>0.572</td><td></td></tr>
+<tr><td>R89</td><td>-0.185</td><td>0.53</td><td>0.561</td><td></td></tr>
+<tr><td>U31</td><td>-0.455</td><td>0.297</td><td>0.543</td><td></td></tr>
+<tr><td>FL1</td><td>-0.482</td><td>0.221</td><td>0.53</td><td></td></tr>
+<tr><td>R92</td><td>-0.132</td><td>0.484</td><td>0.502</td><td></td></tr>
+<tr><td>C111</td><td>-0.45</td><td>0.172</td><td>0.482</td><td></td></tr>
+<tr><td>C61</td><td>-0.3</td><td>0.357</td><td>0.466</td><td></td></tr>
+<tr><td>C65</td><td>-0.334</td><td>0.304</td><td>0.452</td><td></td></tr>
+<tr><td>C64</td><td>-0.046</td><td>0.424</td><td>0.426</td><td></td></tr>
+<tr><td>U27</td><td>-0.376</td><td>0.181</td><td>0.417</td><td></td></tr>
+<tr><td>C16</td><td>-0.25</td><td>0.295</td><td>0.387</td><td></td></tr>
+<tr><td>C72</td><td>-0.225</td><td>0.284</td><td>0.362</td><td></td></tr>
+<tr><td>U18</td><td>-0.048</td><td>0.353</td><td>0.356</td><td></td></tr>
+<tr><td>R99</td><td>-0.152</td><td>0.309</td><td>0.344</td><td></td></tr>
+</table>
+<p class=small>16 more not shown</p>
+<h2>Net length growth (copper inside the region)</h2>
+<table><tr><th>net</th><th>region_mm</th><th>grown_mm</th><th>growth_pct</th><th>allow_mm</th><th>cap_mm</th><th>at_cap</th></tr>
+<tr><td>/ENC_B_TRX_A</td><td>0.61</td><td>0.852</td><td>139.8</td><td>0.5</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_D_TRX_B</td><td>2.91</td><td>1.161</td><td>39.9</td><td>0.5</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_D_TRX_A</td><td>1.79</td><td>0.658</td><td>36.6</td><td>0.5</td><td>2.0</td><td></td></tr>
+<tr><td>Vdrive</td><td>41.69</td><td>12.778</td><td>30.6</td><td>12.506</td><td>41.686</td><td></td></tr>
+<tr><td>/ENC_B_TRX_B</td><td>2.09</td><td>0.496</td><td>23.8</td><td>0.5</td><td>2.0</td><td></td></tr>
+<tr><td>GND</td><td>77.3</td><td>14.198</td><td>18.4</td><td>None</td><td>None</td><td></td></tr>
+<tr><td>/HALL1</td><td>25.07</td><td>4.128</td><td>16.5</td><td>5.013</td><td>12.533</td><td></td></tr>
+<tr><td>/HALL2</td><td>23.39</td><td>3.49</td><td>14.9</td><td>4.677</td><td>11.693</td><td></td></tr>
+<tr><td>/HALL3</td><td>31.69</td><td>3.843</td><td>12.1</td><td>6.338</td><td>15.844</td><td></td></tr>
+<tr><td>/ENC_A_TRX_A</td><td>2.64</td><td>0.307</td><td>11.6</td><td>0.5</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_C_N_SW</td><td>7.89</td><td>0.794</td><td>10.1</td><td>0.789</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_D_N</td><td>36.05</td><td>3.612</td><td>10.0</td><td>3.605</td><td>5.407</td><td></td></tr>
+<tr><td>/ENC_B_N_SW</td><td>11.77</td><td>1.166</td><td>9.9</td><td>1.177</td><td>2.0</td><td></td></tr>
+<tr><td>+3V3</td><td>119.55</td><td>11.827</td><td>9.9</td><td>35.864</td><td>119.547</td><td></td></tr>
+<tr><td>/I2C_SCL</td><td>14.28</td><td>1.283</td><td>9.0</td><td>2.856</td><td>7.139</td><td></td></tr>
+<tr><td>/MOT_TH</td><td>14.36</td><td>0.986</td><td>6.9</td><td>2.872</td><td>7.179</td><td></td></tr>
+<tr><td>/ENC_B_SW</td><td>28.29</td><td>1.924</td><td>6.8</td><td>5.657</td><td>14.144</td><td></td></tr>
+<tr><td>/ENC_C_DATA</td><td>19.24</td><td>0.888</td><td>4.6</td><td>3.848</td><td>9.62</td><td></td></tr>
+<tr><td>/I2C_SDA</td><td>23.14</td><td>1.023</td><td>4.4</td><td>4.629</td><td>11.571</td><td></td></tr>
+<tr><td>/ENC_A_N_SW</td><td>8.72</td><td>0.355</td><td>4.1</td><td>0.872</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_B_N</td><td>6.6</td><td>0.245</td><td>3.7</td><td>0.66</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_A_DATA</td><td>32.27</td><td>1.073</td><td>3.3</td><td>6.455</td><td>16.136</td><td></td></tr>
+<tr><td>/ENC_B_DATA</td><td>29.04</td><td>0.903</td><td>3.1</td><td>5.807</td><td>14.518</td><td></td></tr>
+<tr><td>/ENC_D_P</td><td>31.86</td><td>0.886</td><td>2.8</td><td>3.186</td><td>4.779</td><td></td></tr>
+<tr><td>/ENC_B_P</td><td>6.85</td><td>0.183</td><td>2.7</td><td>0.685</td><td>2.0</td><td></td></tr>
+<tr><td>/H2_SW</td><td>17.68</td><td>0.455</td><td>2.6</td><td>3.536</td><td>8.841</td><td></td></tr>
+<tr><td>/ENC_C_SW</td><td>16.87</td><td>0.375</td><td>2.2</td><td>3.374</td><td>8.435</td><td></td></tr>
+<tr><td>/ENC_C_P</td><td>16.0</td><td>0.325</td><td>2.0</td><td>1.6</td><td>2.4</td><td></td></tr>
+<tr><td>/I2C_SW</td><td>33.7</td><td>0.662</td><td>2.0</td><td>6.741</td><td>16.851</td><td></td></tr>
+<tr><td>/ENC_A_SW</td><td>26.35</td><td>0.333</td><td>1.3</td><td>5.27</td><td>13.175</td><td></td></tr>
+<tr><td>/EXT_ANALOG_SW</td><td>20.72</td><td>0.216</td><td>1.0</td><td>4.144</td><td>10.359</td><td></td></tr>
+<tr><td>/ENC_A_P</td><td>6.02</td><td>0.036</td><td>0.6</td><td>0.602</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_D_SW</td><td>19.14</td><td>0.082</td><td>0.4</td><td>3.828</td><td>9.571</td><td></td></tr>
+<tr><td>/ENC_D_DATA</td><td>22.92</td><td>0.048</td><td>0.2</td><td>4.583</td><td>11.458</td><td></td></tr>
+<tr><td>A_SENSE</td><td>13.82</td><td>0.014</td><td>0.1</td><td>1.382</td><td>2.764</td><td></td></tr>
+<tr><td>/EXT_ANALOG1</td><td>30.41</td><td>-0.04</td><td>-0.1</td><td>6.082</td><td>15.205</td><td></td></tr>
+<tr><td>/H1_SW</td><td>18.39</td><td>-0.025</td><td>-0.1</td><td>3.677</td><td>9.194</td><td></td></tr>
+<tr><td>/EXT_ANALOG2</td><td>26.56</td><td>-0.041</td><td>-0.1</td><td>5.312</td><td>13.279</td><td></td></tr>
+<tr><td>/H3_SW</td><td>26.96</td><td>-0.045</td><td>-0.2</td><td>5.392</td><td>13.479</td><td></td></tr>
+<tr><td>/ENC_C_P_SW</td><td>8.38</td><td>-0.062</td><td>-0.8</td><td>0.838</td><td>2.0</td><td></td></tr>
+</table>
+<p class=small>6 more not shown</p>
+<h2>Stalled units and their blockers</h2>
+<table><tr><th>unit</th><th>hard_walled</th><th>blocker</th><th>net</th><th>ref</th><th>margin</th><th>floor</th><th>pos</th></tr>
+<tr><td>C73</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>-0.0309</td><td>0.0</td><td>[119.698, 124.112]</td></tr>
+<tr><td>C73</td><td></td><td>courtyard</td><td></td><td>U27</td><td>-0.05</td><td>0.003</td><td></td></tr>
+<tr><td>R106</td><td>yes</td><td>pad</td><td></td><td>H4.</td><td>-0.1866</td><td>-0.1708</td><td>[130.0, 128.4]</td></tr>
+<tr><td>R106</td><td>yes</td><td>pad</td><td></td><td>H4.</td><td>-0.1863</td><td>-0.1821</td><td>[130.0, 128.4]</td></tr>
+<tr><td>R92</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0322</td><td>-0.005</td><td>[117.842, 107.38]</td></tr>
+<tr><td>R92</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0403</td><td>-0.005</td><td>[117.842, 107.38]</td></tr>
+<tr><td>R92</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0403</td><td>0.0093</td><td>[117.842, 107.38]</td></tr>
+<tr><td>R92</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0193</td><td>0.015</td><td>[117.842, 107.38]</td></tr>
+<tr><td>U21</td><td></td><td>dyn_seg</td><td>+3V3</td><td></td><td>0.0039</td><td>0.015</td><td>[115.431, 99.287]</td></tr>
+<tr><td>U21</td><td></td><td>dyn_seg</td><td>+3V3</td><td></td><td>0.0039</td><td>0.015</td><td>[115.431, 99.287]</td></tr>
+<tr><td>U21</td><td></td><td>dyn_seg</td><td>/ENC_D_TRX_B</td><td></td><td>0.0093</td><td>0.015</td><td>[116.429, 103.038]</td></tr>
+<tr><td>U21</td><td></td><td>dyn_seg</td><td>/ENC_D_TRX_B</td><td></td><td>0.0093</td><td>0.015</td><td>[116.429, 103.038]</td></tr>
+<tr><td>U23</td><td></td><td>dyn_seg</td><td>Vdrive</td><td></td><td>-0.0201</td><td>0.015</td><td>[118.072, 118.624]</td></tr>
+<tr><td>U23</td><td></td><td>dyn_seg</td><td>Vdrive</td><td></td><td>-0.0201</td><td>0.015</td><td>[118.072, 118.624]</td></tr>
+<tr><td>U23</td><td></td><td>dyn_seg</td><td>Vdrive</td><td></td><td>-0.0078</td><td>0.015</td><td>[118.072, 118.624]</td></tr>
+<tr><td>U23</td><td></td><td>dyn_seg</td><td>Vdrive</td><td></td><td>-0.011</td><td>0.015</td><td>[118.072, 118.624]</td></tr>
+<tr><td>grp:D23</td><td></td><td>dyn_via</td><td>/HALL2</td><td></td><td>-0.0319</td><td>-0.0123</td><td>[117.402, 118.148]</td></tr>
+<tr><td>grp:D23</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>0.0015</td><td>0.015</td><td>[116.295, 117.122]</td></tr>
+<tr><td>grp:D23</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>-0.0055</td><td>0.015</td><td>[116.295, 117.122]</td></tr>
+<tr><td>grp:D23</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>-0.0055</td><td>0.015</td><td>[116.295, 117.122]</td></tr>
+<tr><td>grp:FL3</td><td></td><td>dyn_seg</td><td>/ENC_C_N_SW</td><td></td><td>-0.0539</td><td>-0.005</td><td>[120.444, 108.228]</td></tr>
+<tr><td>grp:FL3</td><td></td><td>dyn_seg</td><td>/ENC_C_N_SW</td><td></td><td>-0.0587</td><td>-0.0101</td><td>[120.276, 108.058]</td></tr>
+<tr><td>grp:FL3</td><td></td><td>dyn_seg</td><td>/ENC_C_N_SW</td><td></td><td>-0.0539</td><td>-0.005</td><td>[120.346, 108.396]</td></tr>
+<tr><td>grp:FL3</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0308</td><td>0.0</td><td>[118.243, 108.525]</td></tr>
+<tr><td>U22</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>-0.0317</td><td>0.015</td><td>[117.271, 114.262]</td></tr>
+<tr><td>U25</td><td></td><td>dyn_seg</td><td>/ENC_C_P_SW</td><td></td><td>-0.0348</td><td>0.015</td><td>[121.673, 111.0]</td></tr>
+<tr><td>U25</td><td></td><td>dyn_seg</td><td>/ENC_C_P_SW</td><td></td><td>-0.0348</td><td>0.015</td><td>[121.673, 111.0]</td></tr>
+<tr><td>U25</td><td></td><td>dyn_seg</td><td>/ENC_C_P_SW</td><td></td><td>-0.027</td><td>0.015</td><td>[121.673, 111.0]</td></tr>
+<tr><td>U25</td><td></td><td>dyn_seg</td><td>/ENC_C_P_SW</td><td></td><td>-0.0042</td><td>0.015</td><td>[121.673, 111.0]</td></tr>
+<tr><td>D27</td><td></td><td>courtyard</td><td></td><td>U31</td><td>-0.05</td><td>0.003</td><td></td></tr>
+<tr><td>U24</td><td></td><td>dyn_seg</td><td>/ENC_C_P_SW</td><td></td><td>0.0089</td><td>0.015</td><td>[124.332, 110.981]</td></tr>
+<tr><td>U24</td><td></td><td>dyn_seg</td><td>/ENC_C_P_SW</td><td></td><td>-0.0164</td><td>0.015</td><td>[124.332, 110.981]</td></tr>
+<tr><td>U24</td><td></td><td>dyn_seg</td><td>/ENC_C_P_SW</td><td></td><td>-0.0243</td><td>0.015</td><td>[124.332, 110.981]</td></tr>
+<tr><td>U24</td><td></td><td>dyn_seg</td><td>/ENC_C_P_SW</td><td></td><td>-0.0243</td><td>0.015</td><td>[124.332, 110.981]</td></tr>
+<tr><td>C66</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0015</td><td>0.015</td><td>[124.114, 114.156]</td></tr>
+<tr><td>C66</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0145</td><td>0.015</td><td>[124.114, 114.156]</td></tr>
+<tr><td>C66</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0246</td><td>0.015</td><td>[124.114, 114.156]</td></tr>
+<tr><td>C66</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0246</td><td>0.015</td><td>[124.114, 114.156]</td></tr>
+<tr><td>R88</td><td></td><td>dyn_via</td><td>/ENC_A_SW</td><td></td><td>-0.0128</td><td>0.015</td><td>[118.331, 113.197]</td></tr>
+<tr><td>R88</td><td></td><td>dyn_via</td><td>/ENC_A_SW</td><td></td><td>-0.027</td><td>0.015</td><td>[118.331, 113.197]</td></tr>
+<tr><td>R88</td><td></td><td>dyn_via</td><td>/ENC_A_SW</td><td></td><td>-0.027</td><td>0.015</td><td>[118.331, 113.197]</td></tr>
+<tr><td>R88</td><td></td><td>dyn_via</td><td>/ENC_A_SW</td><td></td><td>-0.0114</td><td>0.015</td><td>[118.331, 113.197]</td></tr>
+<tr><td>U26</td><td></td><td>dyn_via</td><td>/HALL2</td><td></td><td>-0.0581</td><td>-0.0123</td><td>[117.402, 118.148]</td></tr>
+<tr><td>U26</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>0.0101</td><td>0.015</td><td>[116.295, 117.122]</td></tr>
+<tr><td>U26</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>0.0072</td><td>0.015</td><td>[116.295, 117.122]</td></tr>
+<tr><td>U26</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>0.0072</td><td>0.015</td><td>[116.295, 117.122]</td></tr>
+<tr><td>grp:D24</td><td></td><td>dyn_seg</td><td>/ENC_B_N</td><td></td><td>-0.0263</td><td>0.0</td><td>[120.214, 121.864]</td></tr>
+<tr><td>grp:D24</td><td></td><td>dyn_via</td><td>/I2C_SDA</td><td></td><td>-0.0263</td><td>0.015</td><td>[117.289, 124.101]</td></tr>
+<tr><td>D23</td><td></td><td>courtyard</td><td></td><td>U26</td><td>-0.05</td><td>0.003</td><td></td></tr>
+<tr><td>grp:C66</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0129</td><td>0.015</td><td>[124.114, 114.156]</td></tr>
+<tr><td>grp:C66</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0238</td><td>0.015</td><td>[124.114, 114.156]</td></tr>
+<tr><td>grp:C66</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0238</td><td>0.015</td><td>[124.114, 114.156]</td></tr>
+<tr><td>grp:C66</td><td></td><td>dyn_seg</td><td>GND</td><td></td><td>-0.0238</td><td>0.015</td><td>[124.114, 114.156]</td></tr>
+<tr><td>C112</td><td>yes</td><td>pad</td><td>/C_N</td><td>J2.1</td><td>0.0129</td><td>0.015</td><td>[124.25, 102.5]</td></tr>
+<tr><td>C112</td><td>yes</td><td>pad</td><td>/C_N</td><td>J2.1</td><td>0.0118</td><td>0.015</td><td>[124.25, 102.5]</td></tr>
+<tr><td>C112</td><td>yes</td><td>pad</td><td>/C_N</td><td>J2.1</td><td>-0.0196</td><td>0.015</td><td>[124.25, 102.5]</td></tr>
+<tr><td>C112</td><td>yes</td><td>pad</td><td>/C_N</td><td>J2.1</td><td>-0.0306</td><td>0.015</td><td>[124.25, 102.5]</td></tr>
+<tr><td>FL3</td><td></td><td>dyn_seg</td><td>/ENC_C_N_SW</td><td></td><td>-0.0447</td><td>-0.005</td><td>[120.444, 108.228]</td></tr>
+<tr><td>FL3</td><td></td><td>dyn_seg</td><td>/ENC_C_N_SW</td><td></td><td>-0.0521</td><td>-0.0101</td><td>[120.276, 108.058]</td></tr>
+<tr><td>FL3</td><td></td><td>dyn_seg</td><td>/ENC_C_N_SW</td><td></td><td>-0.0447</td><td>-0.005</td><td>[120.346, 108.396]</td></tr>
+</table>
+<p class=small>179 more not shown</p>
+<h2>Absorbed pressure (where demand died)</h2>
+<table><tr><th>mover</th><th>blocker</th><th>what</th><th>hits</th></tr>
+<tr><td>C112</td><td>pad</td><td>J2.1 [/C_N]</td><td>6670</td></tr>
+<tr><td>U31</td><td>pad</td><td>J12.6 [/ENC_D_P]</td><td>5664</td></tr>
+<tr><td>R99</td><td>pad</td><td>J2.2 [/D]</td><td>4423</td></tr>
+<tr><td>C111</td><td>pad</td><td>J12.4 [/V_ENC]</td><td>3956</td></tr>
+<tr><td>C71</td><td>pad</td><td>J12.11 [/ENC_A_P]</td><td>3939</td></tr>
+<tr><td>U31</td><td>pad</td><td>J12.8 [/ENC_D_N]</td><td>3923</td></tr>
+<tr><td>R104</td><td>pad</td><td>J2.2 [/D]</td><td>3102</td></tr>
+<tr><td>node1126</td><td>pad</td><td>J2.</td><td>2658</td></tr>
+<tr><td>node1125</td><td>pad</td><td>J2.</td><td>2210</td></tr>
+<tr><td>node1053</td><td>pad</td><td>J12.12 [/MOT_TH]</td><td>1780</td></tr>
+<tr><td>node1054</td><td>pad</td><td>J12.12 [/MOT_TH]</td><td>1338</td></tr>
+<tr><td>R106</td><td>pad</td><td>H4.</td><td>898</td></tr>
+<tr><td>R86</td><td>board_edge</td><td></td><td>848</td></tr>
+<tr><td>node266</td><td>board_edge</td><td></td><td>810</td></tr>
+<tr><td>R93</td><td>dyn_seg</td><td>/ENC_C_N_SW</td><td>798</td></tr>
+<tr><td>node781</td><td>board_edge</td><td></td><td>796</td></tr>
+<tr><td>node253</td><td>board_edge</td><td></td><td>770</td></tr>
+<tr><td>C16</td><td>static_track</td><td>GND</td><td>438</td></tr>
+<tr><td>D25</td><td>pad</td><td>D21.2 [GND]</td><td>429</td></tr>
+<tr><td>node1147</td><td>board_edge</td><td></td><td>421</td></tr>
+<tr><td>node1142</td><td>board_edge</td><td></td><td>379</td></tr>
+<tr><td>node1143</td><td>board_edge</td><td></td><td>378</td></tr>
+<tr><td>node1144</td><td>board_edge</td><td></td><td>378</td></tr>
+<tr><td>node1141</td><td>board_edge</td><td></td><td>377</td></tr>
+<tr><td>node1145</td><td>board_edge</td><td></td><td>376</td></tr>
+</table>
+<h2>Config</h2>
+<pre>{
+ &quot;name&quot;: &quot;enc_squeeze&quot;,
+ &quot;board&quot;: &quot;/home/sequoia/pcb/rp2350-motor-controller-lean-jiggle/hardware/tools/settle/configs/data/boards/enc_v035.kicad_pcb&quot;,
+ &quot;region&quot;: [
+  112.4,
+  96.0,
+  130.5,
+  128.5
+ ],
+ &quot;rules&quot;: {
+  &quot;guard&quot;: 0.015
+ },
+ &quot;locked&quot;: {
+  &quot;sides&quot;: [
+   &quot;F&quot;
+  ],
+  &quot;refs&quot;: [
+   &quot;J1&quot;,
+   &quot;J2&quot;,
+   &quot;J12&quot;,
+   &quot;H3&quot;,
+   &quot;H4&quot;,
+   &quot;U5&quot;,
+   &quot;U9&quot;,
+   &quot;U10&quot;
+  ],
+  &quot;nets&quot;: [
+   &quot;^/USB_D&quot;,
+   &quot;^/CAN0_&quot;
+  ],
+  &quot;rects&quot;: [
+   [
+    130.5,
+    81.9,
+    149.6,
+    128.6
+   ]
+  ]
+ },
+ &quot;mobility&quot;: {
+  &quot;default&quot;: 1.0
+ },
+ &quot;groups&quot;: {},
+ &quot;drive&quot;: {
+  &quot;inflate&quot;: [],
+  &quot;shove&quot;: [
+   {
+    &quot;rect&quot;: [
+     112.4,
+     96.0,
+     130.5,
+     128.5
+    ],
+    &quot;toward&quot;: [
+     112.5,
+     128.4
+    ],
+    &quot;mm&quot;: 5.0
+   }
+  ]
+ },
+ &quot;step&quot;: 0.05,
+ &quot;snapshots&quot;: 10,
+ &quot;cycles&quot;: 500,
+ &quot;data&quot;: &quot;/home/sequoia/pcb/rp2350-motor-controller-lean-jiggle/hardware/tools/settle/configs/data/enc_squeeze&quot;
+}</pre>
+<h2>Elastic table</h2>
+<pre>{
+ &quot;default&quot;: {
+  &quot;k&quot;: 0.5,
+  &quot;allow&quot;: 0.2,
+  &quot;cap&quot;: 0.5,
+  &quot;allow_mm&quot;: 0.5,
+  &quot;cap_mm&quot;: 2.0
+ },
+ &quot;classes&quot;: {
+  &quot;VMOT&quot;: {
+   &quot;k&quot;: 0.2,
+   &quot;allow&quot;: 0.3,
+   &quot;cap&quot;: 1.0,
+   &quot;allow_mm&quot;: 1.0,
+   &quot;cap_mm&quot;: 6.0
+  },
+  &quot;power&quot;: {
+   &quot;k&quot;: 0.2,
+   &quot;allow&quot;: 0.3,
+   &quot;cap&quot;: 1.0,
+   &quot;allow_mm&quot;: 1.0,
+   &quot;cap_mm&quot;: 6.0
+  },
+  &quot;usb_5A&quot;: {
+   &quot;k&quot;: 0.2,
+   &quot;allow&quot;: 0.3,
+   &quot;cap&quot;: 1.0,
+   &quot;allow_mm&quot;: 1.0,
+   &quot;cap_mm&quot;: 6.0
+  },
+  &quot;low_power&quot;: {
+   &quot;k&quot;: 0.2,
+   &quot;allow&quot;: 0.3,
+   &quot;cap&quot;: 1.0,
+   &quot;allow_mm&quot;: 1.0,
+   &quot;cap_mm&quot;: 6.0
+  }
+ },
+ &quot;nets&quot;: {
+  &quot;^GND&quot;: {
+   &quot;k&quot;: 0.0,
+   &quot;allow&quot;: 1000000000.0,
+   &quot;cap&quot;: 1000000000.0
+  },
+  &quot;^(VMOT|Vdrive|VBUS|\\+3V3|\\+1V1|\\+5V_ISO|/V_ENC|/V_SW)$&quot;: {
+   &quot;k&quot;: 0.2,
+   &quot;allow&quot;: 0.3,
+   &quot;cap&quot;: 1.0,
+   &quot;allow_mm&quot;: 1.0,
+   &quot;cap_mm&quot;: 6.0
+  },
+  &quot;^Net-\\(U(1|6|7|12)-(HO|LO|VB)\\)$&quot;: {
+   &quot;k&quot;: 4.0,
+   &quot;allow&quot;: 0.0,
+   &quot;cap&quot;: 0.05,
+   &quot;allow_mm&quot;: 0.0,
+   &quot;cap_mm&quot;: 0.3
+  },
+  &quot;^/2[ABCD]G[HL]$&quot;: {
+   &quot;k&quot;: 4.0,
+   &quot;allow&quot;: 0.0,
+   &quot;cap&quot;: 0.05,
+   &quot;allow_mm&quot;: 0.0,
+   &quot;cap_mm&quot;: 0.3
+  },
+  &quot;^Net-\\(Q[1-4]-[BE]\\)$&quot;: {
+   &quot;k&quot;: 4.0,
+   &quot;allow&quot;: 0.0,
+   &quot;cap&quot;: 0.05,
+   &quot;allow_mm&quot;: 0.0,
+   &quot;cap_mm&quot;: 0.3
+  },
+  &quot;^Net-\\((R(24|59|62|67|70)|D\\d+)-&quot;: {
+   &quot;k&quot;: 2.0,
+   &quot;allow&quot;: 0.05,
+   &quot;cap&quot;: 0.15,
+   &quot;allow_mm&quot;: 0.2,
+   &quot;cap_mm&quot;: 0.8
+  },
+  &quot;^/USB_D&quot;: {
+   &quot;k&quot;: 4.0,
+   &quot;allow&quot;: 0.0,
+   &quot;cap&quot;: 0.02,
+   &quot;allow_mm&quot;: 0.0,
+   &quot;cap_mm&quot;: 0.1
+  },
+  &quot;^/CAN0_&quot;: {
+   &quot;k&quot;: 4.0,
+   &quot;allow&quot;: 0.0,
+   &quot;cap&quot;: 0.02,
+   &quot;allow_mm&quot;: 0.0,
+   &quot;cap_mm&quot;: 0.1
+  },
+  &quot;^/ENC_[A-D]_(P|N)(_SW)?$&quot;: {
+   &quot;k&quot;: 1.0,
+   &quot;allow&quot;: 0.1,
+   &quot;cap&quot;: 0.15,
+   &quot;allow_mm&quot;: 0.5,
+   &quot;cap_mm&quot;: 2.0
+  },
+  &quot;^/ENC_[A-D]_TRX_&quot;: {
+   &quot;k&quot;: 1.0,
+   &quot;allow&quot;: 0.1,
+   &quot;cap&quot;: 0.2,
+   &quot;allow_mm&quot;: 0.5,
+   &quot;cap_mm&quot;: 2.0
+  },
+  &quot;^[ABCD]_PWM_&quot;: {
+   &quot;k&quot;: 1.0,
+   &quot;allow&quot;: 0.1,
+   &quot;cap&quot;: 0.25,
+   &quot;allow_mm&quot;: 0.5,
+   &quot;cap_mm&quot;: 3.0
+  },
+  &quot;SENSE&quot;: {
+   &quot;k&quot;: 1.0,
+   &quot;allow&quot;: 0.1,
+   &quot;cap&quot;: 0.2,
+   &quot;allow_mm&quot;: 0.5,
+   &quot;cap_mm&quot;: 2.0
+  }
+ }
+}</pre>
+<h2>Log tail</h2>
+<pre>8mm [440s]
+cycle 165: s=0.149 ghosts=0/0 blocked=57 adv=0.052mm copper=1.082mm [454s]
+cycle 170: s=0.148 ghosts=0/0 blocked=56 adv=0.060mm copper=1.025mm [468s]
+cycle 175: s=0.148 ghosts=0/0 blocked=56 adv=0.106mm copper=0.734mm [482s]
+cycle 180: s=0.148 ghosts=0/0 blocked=57 adv=0.072mm copper=0.987mm [496s]
+stall at cycle 183 (s=0.148): reroute round 3
+  reroute round 3: 7/16 chains rerouted (140 candidates)
+  checkpoint 5: s=0.148 reroute
+cycle 185: s=0.148 ghosts=0/0 blocked=56 adv=0.069mm copper=1.196mm [513s]
+cycle 190: s=0.148 ghosts=0/0 blocked=56 adv=0.073mm copper=1.007mm [527s]
+cycle 195: s=0.148 ghosts=0/0 blocked=56 adv=0.107mm copper=1.022mm [541s]
+cycle 200: s=0.149 ghosts=0/0 blocked=55 adv=0.118mm copper=0.933mm [555s]
+cycle 205: s=0.149 ghosts=0/0 blocked=55 adv=0.097mm copper=0.798mm [569s]
+cycle 210: s=0.149 ghosts=0/0 blocked=55 adv=0.093mm copper=0.901mm [583s]
+cycle 215: s=0.149 ghosts=0/0 blocked=55 adv=0.100mm copper=0.762mm [598s]
+cycle 220: s=0.150 ghosts=0/0 blocked=57 adv=0.017mm copper=0.806mm [612s]
+stall at cycle 224 (s=0.150): reroute round 4
+  reroute round 4: 5/16 chains rerouted (140 candidates)
+  checkpoint 6: s=0.150 reroute
+cycle 225: s=0.150 ghosts=0/0 blocked=57 adv=0.032mm copper=1.057mm [628s]
+cycle 230: s=0.150 ghosts=0/0 blocked=56 adv=0.048mm copper=0.853mm [642s]
+cycle 235: s=0.150 ghosts=0/0 blocked=56 adv=0.099mm copper=0.959mm [656s]
+cycle 240: s=0.150 ghosts=0/0 blocked=57 adv=0.052mm copper=0.702mm [670s]
+cycle 245: s=0.149 ghosts=0/0 blocked=56 adv=0.051mm copper=0.589mm [683s]
+stall at cycle 249 (s=0.149): reroute round 5
+  reroute round 5: 1/16 chains rerouted (130 candidates)
+  checkpoint 7: s=0.149 reroute
+cycle 250: s=0.150 ghosts=0/0 blocked=55 adv=0.100mm copper=0.701mm [699s]
+cycle 255: s=0.150 ghosts=0/0 blocked=56 adv=0.058mm copper=0.622mm [713s]
+cycle 260: s=0.150 ghosts=0/0 blocked=55 adv=0.079mm copper=0.575mm [727s]
+cycle 265: s=0.150 ghosts=0/0 blocked=57 adv=0.053mm copper=0.678mm [741s]
+cycle 270: s=0.149 ghosts=0/0 blocked=55 adv=0.071mm copper=0.588mm [756s]
+stall at cycle 274 (s=0.149): reroute round 6
+  reroute round 6: 3/16 chains rerouted (122 candidates)
+  checkpoint 8: s=0.149 reroute
+cycle 275: s=0.149 ghosts=0/0 blocked=56 adv=0.084mm copper=0.806mm [772s]
+cycle 280: s=0.149 ghosts=0/0 blocked=56 adv=0.057mm copper=0.946mm [787s]
+cycle 285: s=0.149 ghosts=0/0 blocked=55 adv=0.071mm copper=0.874mm [801s]
+cycle 290: s=0.149 ghosts=0/0 blocked=56 adv=0.071mm copper=0.916mm [816s]
+cycle 295: s=0.150 ghosts=0/0 blocked=56 adv=0.021mm copper=0.955mm [830s]
+stall at cycle 299 (s=0.149): reroute round 7
+  reroute round 7: 3/16 chains rerouted (119 candidates)
+  checkpoint 9: s=0.149 reroute
+cycle 300: s=0.150 ghosts=0/0 blocked=54 adv=0.118mm copper=1.013mm [847s]
+cycle 305: s=0.150 ghosts=0/0 blocked=56 adv=0.062mm copper=0.956mm [862s]
+cycle 310: s=0.150 ghosts=0/0 blocked=56 adv=0.062mm copper=0.768mm [877s]
+cycle 315: s=0.150 ghosts=0/0 blocked=56 adv=0.090mm copper=0.795mm [891s]
+cycle 320: s=0.150 ghosts=0/0 blocked=55 adv=0.069mm copper=0.755mm [906s]
+stall at cycle 324 (s=0.150): reroute round 8
+  reroute round 8: 2/16 chains rerouted (114 candidates)
+  checkpoint 10: s=0.150 reroute
+cycle 325: s=0.150 ghosts=0/0 blocked=57 adv=0.036mm copper=0.896mm [923s]
+cycle 330: s=0.150 ghosts=0/0 blocked=57 adv=0.033mm copper=0.828mm [938s]
+cycle 335: s=0.150 ghosts=0/0 blocked=57 adv=0.074mm copper=0.685mm [952s]
+cycle 340: s=0.150 ghosts=0/0 blocked=57 adv=0.071mm copper=0.898mm [967s]
+cycle 345: s=0.150 ghosts=0/0 blocked=56 adv=0.084mm copper=0.818mm [982s]
+stall at cycle 349 (s=0.150): reroute round 9
+  reroute round 9: 2/16 chains rerouted (112 candidates)
+  checkpoint 11: s=0.150 reroute
+cycle 350: s=0.150 ghosts=0/0 blocked=56 adv=0.084mm copper=0.706mm [999s]
+cycle 355: s=0.150 ghosts=0/0 blocked=56 adv=0.056mm copper=0.706mm [1013s]
+cycle 360: s=0.150 ghosts=0/0 blocked=56 adv=0.062mm copper=0.678mm [1028s]
+cycle 365: s=0.150 ghosts=0/0 blocked=56 adv=0.074mm copper=0.772mm [1043s]
+cycle 370: s=0.150 ghosts=0/0 blocked=56 adv=0.079mm copper=0.819mm [1058s]
+stall at cycle 374 (s=0.150): reroute round 10
+  reroute round 10: 2/16 chains rerouted (109 candidates)
+  checkpoint 12: s=0.150 reroute
+cycle 375: s=0.150 ghosts=0/0 blocked=56 adv=0.072mm copper=0.763mm [1075s]
+cycle 380: s=0.150 ghosts=0/0 blocked=55 adv=0.100mm copper=0.661mm [1090s]
+cycle 385: s=0.150 ghosts=0/0 blocked=57 adv=0.061mm copper=0.649mm [1104s]
+cycle 390: s=0.150 ghosts=0/0 blocked=56 adv=0.055mm copper=0.919mm [1119s]
+cycle 395: s=0.150 ghosts=0/0 blocked=55 adv=0.069mm copper=0.781mm [1133s]
+stall at cycle 399 (s=0.150): reroute round 11
+  reroute round 11: 3/16 chains rerouted (106 candidates)
+  checkpoint 13: s=0.150 reroute
+cycle 400: s=0.150 ghosts=0/0 blocked=55 adv=0.070mm copper=0.681mm [1153s]
+cycle 405: s=0.150 ghosts=0/0 blocked=55 adv=0.100mm copper=0.703mm [1168s]
+cycle 410: s=0.150 ghosts=0/0 blocked=56 adv=0.064mm copper=0.782mm [1182s]
+cycle 415: s=0.150 ghosts=0/0 blocked=57 adv=0.042mm copper=0.769mm [1197s]
+cycle 420: s=0.150 ghosts=0/0 blocked=57 adv=0.066mm copper=0.863mm [1212s]
+stall at cycle 424 (s=0.150): reroute round 12
+  reroute round 12: 2/16 chains rerouted (105 candidates)
+  checkpoint 14: s=0.150 reroute
+cycle 425: s=0.150 ghosts=0/0 blocked=57 adv=0.042mm copper=1.091mm [1229s]
+cycle 430: s=0.150 ghosts=0/0 blocked=57 adv=0.037mm copper=0.854mm [1244s]
+cycle 435: s=0.150 ghosts=0/0 blocked=55 adv=0.082mm copper=0.883mm [1259s]
+cycle 440: s=0.150 ghosts=0/0 blocked=56 adv=0.099mm copper=0.861mm [1274s]
+cycle 445: s=0.150 ghosts=0/0 blocked=55 adv=0.100mm copper=1.049mm [1289s]
+STALL after 449 cycles (25 without advance, 12 reroute rounds): s=0.150, 0 ghosts unborn
+  checkpoint 15: s=0.150 final
+captured 103 frames, 0 line-search traces -&gt; frames.json
+wrote traj.json (15 checkpoints) + settle_report.json in 1302s: 56 parts moved, 6 nets over allowance, 0 length-cap hits, 6559 board-edge hits — run emit.py
+</pre>
