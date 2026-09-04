@@ -1,0 +1,458 @@
+<!doctype html><meta charset=utf-8><title>settle: enc_corner</title>
+<style>body{font:14px/1.45 system-ui,sans-serif;max-width:1400px;margin:1.5em auto;padding:0 1em;color:#222}
+table{border-collapse:collapse;font-size:12px;margin:.5em 0}td,th{border:1px solid #ccc;padding:2px 6px;text-align:left}
+th{background:#f3f3f3}img{max-width:100%}pre{background:#f7f7f7;padding:.6em;font-size:11px;overflow:auto;max-height:22em}
+.small{color:#666;font-size:12px}h2{margin-top:1.6em;border-bottom:1px solid #ddd}</style>
+<h1>settle run: enc_corner</h1>
+<p><b>253</b> cycles in 269.0 s, progress s = <b>0.6426</b>; 3/7 ghosts born; 18 parts moved; 14/157 reroutes verified in 5 rounds. Gate: <b>14/14</b> checkpoints pass (baseline 2 violations); length caps hit: 0; check_sync: True.</p>
+<p class=small>Region [112.4, 81.9, 132.5, 128.5]; rules clearance 0.1 mm, hole 0.254, edge 0.3, guard 0.015.
+79 movable parts, 1133 dynamic segments, 1266 nodes, 7 ghosts.
+Orange pads = movable parts (dark orange = moved); grey = fixed; red = ghosts at their current scale; blue arrows = part displacement.
+Copper by layer: F red, B blue, In1 green, In2 purple, In3 brown, In4 teal; static copper grey.</p>
+<p><img src="img/settle_enc_corner_region.png"></p><p><img src="img/settle_enc_corner_history.png"></p>
+<h2>Gate per checkpoint</h2>
+<table><tr><th>step</th><th>s</th><th>tag</th><th>unconnected</th><th>new_violations</th><th>static_missing</th><th>fixed_moved</th><th>ok</th><th>new_desc</th></tr>
+<tr><td>0</td><td>0.05</td><td>start</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>1</td><td>0.11</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>2</td><td>0.204</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>3</td><td>0.323</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>4</td><td>0.404</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>5</td><td>0.502</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>6</td><td>0.6</td><td></td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>7</td><td>0.637</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>8</td><td>0.643</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>9</td><td>0.643</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>10</td><td>0.643</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>11</td><td>0.643</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>12</td><td>0.643</td><td>reroute</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+<tr><td>13</td><td>0.643</td><td>final</td><td>103</td><td>0</td><td>0</td><td>[]</td><td>True</td><td>[]</td></tr>
+</table>
+<h2>Ghosts</h2>
+<table><tr><th>ref</th><th>site</th><th>scale</th><th>drift_x</th><th>drift_y</th><th>born</th></tr>
+<tr><td>U30</td><td>(119.62, 110.94)</td><td>0.2661</td><td>0.0</td><td>0.0</td><td>no</td></tr>
+<tr><td>U32</td><td>(127.76, 106.55)</td><td>1.0</td><td>0.0</td><td>0.0</td><td>yes</td></tr>
+<tr><td>U33</td><td>(120.57, 99.73)</td><td>1.0</td><td>0.0</td><td>0.0</td><td>yes</td></tr>
+<tr><td>R97</td><td>(114.06, 111.96)</td><td>0.2749</td><td>0.01</td><td>0.026</td><td>no</td></tr>
+<tr><td>R98</td><td>(124.92, 126.77)</td><td>1.0</td><td>0.0</td><td>0.0</td><td>yes</td></tr>
+<tr><td>R100</td><td>(117.47, 109.19)</td><td>0.05</td><td>0.0</td><td>0.0</td><td>no</td></tr>
+<tr><td>C110</td><td>(120.62, 113.19)</td><td>0.9068</td><td>0.0</td><td>0.0</td><td>no</td></tr>
+</table>
+<h2>Parts moved</h2>
+<table><tr><th>ref</th><th>dx</th><th>dy</th><th>mm</th><th>group</th></tr>
+<tr><td>R59</td><td>-0.15</td><td>-0.653</td><td>0.67</td><td></td></tr>
+<tr><td>C64</td><td>-0.351</td><td>0.389</td><td>0.524</td><td></td></tr>
+<tr><td>C16</td><td>0.133</td><td>0.379</td><td>0.402</td><td></td></tr>
+<tr><td>C60</td><td>-0.283</td><td>-0.241</td><td>0.372</td><td></td></tr>
+<tr><td>FL2</td><td>-0.111</td><td>0.261</td><td>0.284</td><td></td></tr>
+<tr><td>U18</td><td>-0.096</td><td>-0.23</td><td>0.249</td><td></td></tr>
+<tr><td>R60</td><td>0.139</td><td>-0.164</td><td>0.215</td><td></td></tr>
+<tr><td>C71</td><td>0.195</td><td>0.066</td><td>0.206</td><td></td></tr>
+<tr><td>R88</td><td>-0.11</td><td>0.161</td><td>0.195</td><td></td></tr>
+<tr><td>R89</td><td>-0.082</td><td>-0.126</td><td>0.15</td><td></td></tr>
+<tr><td>U25</td><td>0.062</td><td>-0.095</td><td>0.113</td><td></td></tr>
+<tr><td>D26</td><td>-0.047</td><td>-0.08</td><td>0.093</td><td></td></tr>
+<tr><td>C72</td><td>0.084</td><td>-0.009</td><td>0.084</td><td></td></tr>
+<tr><td>FL4</td><td>0.013</td><td>-0.077</td><td>0.078</td><td></td></tr>
+<tr><td>U22</td><td>-0.022</td><td>0.052</td><td>0.056</td><td></td></tr>
+<tr><td>D23</td><td>0.007</td><td>0.056</td><td>0.056</td><td></td></tr>
+<tr><td>C69</td><td>0.007</td><td>0.05</td><td>0.05</td><td></td></tr>
+<tr><td>U26</td><td>-0.01</td><td>0.044</td><td>0.045</td><td></td></tr>
+</table>
+<h2>Net length growth (copper inside the region)</h2>
+<table><tr><th>net</th><th>region_mm</th><th>grown_mm</th><th>growth_pct</th><th>allow_mm</th><th>cap_mm</th><th>at_cap</th></tr>
+<tr><td>/ENC_A_TRX_B</td><td>3.44</td><td>0.394</td><td>11.4</td><td>0.5</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_A_TRX_A</td><td>2.64</td><td>0.27</td><td>10.2</td><td>0.5</td><td>2.0</td><td></td></tr>
+<tr><td>Vdrive</td><td>52.9</td><td>5.391</td><td>10.2</td><td>15.871</td><td>52.903</td><td></td></tr>
+<tr><td>Net-(R59-Pad2)</td><td>2.32</td><td>0.205</td><td>8.8</td><td>0.2</td><td>0.8</td><td></td></tr>
+<tr><td>A_SENSE</td><td>13.55</td><td>1.061</td><td>7.8</td><td>1.355</td><td>2.711</td><td></td></tr>
+<tr><td>/ENC_A_N_SW</td><td>8.72</td><td>0.67</td><td>7.7</td><td>0.872</td><td>2.0</td><td></td></tr>
+<tr><td>/EXT_ANALOG_SW</td><td>20.73</td><td>1.336</td><td>6.5</td><td>4.146</td><td>10.364</td><td></td></tr>
+<tr><td>/ENC_D_DATA</td><td>42.62</td><td>2.205</td><td>5.2</td><td>8.525</td><td>21.312</td><td></td></tr>
+<tr><td>/ENC_D_N</td><td>36.05</td><td>1.665</td><td>4.6</td><td>3.605</td><td>5.407</td><td></td></tr>
+<tr><td>/ENC_D_SW</td><td>34.22</td><td>1.476</td><td>4.3</td><td>6.843</td><td>17.108</td><td></td></tr>
+<tr><td>/A_P</td><td>34.37</td><td>0.892</td><td>2.6</td><td>6.875</td><td>17.187</td><td></td></tr>
+<tr><td>/ENC_D_P</td><td>31.86</td><td>0.751</td><td>2.4</td><td>3.186</td><td>4.779</td><td></td></tr>
+<tr><td>+3V3</td><td>156.25</td><td>3.547</td><td>2.3</td><td>46.876</td><td>156.252</td><td></td></tr>
+<tr><td>VMOT</td><td>27.38</td><td>0.279</td><td>1.0</td><td>8.213</td><td>27.375</td><td></td></tr>
+<tr><td>/ENC_C_N_SW</td><td>7.89</td><td>0.079</td><td>1.0</td><td>0.789</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_A_SW</td><td>41.88</td><td>0.324</td><td>0.8</td><td>8.375</td><td>20.937</td><td></td></tr>
+<tr><td>/ENC_A_P</td><td>6.02</td><td>0.043</td><td>0.7</td><td>0.602</td><td>2.0</td><td></td></tr>
+<tr><td>VMOT_SENSE</td><td>32.42</td><td>0.114</td><td>0.4</td><td>3.242</td><td>6.484</td><td></td></tr>
+<tr><td>/ENC_A_DATA</td><td>48.91</td><td>0.129</td><td>0.3</td><td>9.783</td><td>24.457</td><td></td></tr>
+<tr><td>/HALL2</td><td>30.51</td><td>0.054</td><td>0.2</td><td>6.102</td><td>15.255</td><td></td></tr>
+<tr><td>/ENC_C_N</td><td>18.39</td><td>0.031</td><td>0.2</td><td>1.839</td><td>2.758</td><td></td></tr>
+<tr><td>/EXT_ANALOG2</td><td>46.08</td><td>0.02</td><td>0.0</td><td>9.215</td><td>23.038</td><td></td></tr>
+<tr><td>/H2_SW</td><td>42.78</td><td>0.015</td><td>0.0</td><td>8.556</td><td>21.389</td><td></td></tr>
+<tr><td>GND</td><td>99.96</td><td>-0.088</td><td>-0.1</td><td>None</td><td>None</td><td></td></tr>
+<tr><td>/H1_SW</td><td>28.48</td><td>-0.03</td><td>-0.1</td><td>5.697</td><td>14.243</td><td></td></tr>
+<tr><td>/HALL1</td><td>39.44</td><td>-0.064</td><td>-0.2</td><td>7.888</td><td>19.721</td><td></td></tr>
+<tr><td>/ENC_C_P_SW</td><td>8.38</td><td>-0.06</td><td>-0.7</td><td>0.838</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_A_N</td><td>7.39</td><td>-0.076</td><td>-1.0</td><td>0.739</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_D_TRX_B</td><td>2.91</td><td>-0.076</td><td>-2.6</td><td>0.5</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_D_TRX_A</td><td>1.79</td><td>-0.062</td><td>-3.5</td><td>0.5</td><td>2.0</td><td></td></tr>
+<tr><td>/ENC_A_P_SW</td><td>1.77</td><td>-0.191</td><td>-10.8</td><td>0.5</td><td>2.0</td><td></td></tr>
+</table>
+<h2>Stalled units and their blockers</h2>
+<table><tr><th>unit</th><th>hard_walled</th><th>blocker</th><th>net</th><th>ref</th><th>margin</th><th>floor</th><th>pos</th></tr>
+<tr><td>GHOST:R100</td><td></td><td>dyn_seg</td><td>/ENC_A_TRX_B</td><td></td><td>-0.0165</td><td>0.015</td><td>[117.14, 109.977]</td></tr>
+<tr><td>GHOST:R100</td><td></td><td>dyn_seg</td><td>/ENC_A_TRX_B</td><td></td><td>-0.0218</td><td>0.015</td><td>[117.14, 109.977]</td></tr>
+<tr><td>GHOST:R100</td><td></td><td>dyn_seg</td><td>/ENC_A_TRX_B</td><td></td><td>-0.0263</td><td>0.015</td><td>[117.14, 109.977]</td></tr>
+<tr><td>GHOST:R100</td><td></td><td>dyn_seg</td><td>/ENC_A_TRX_B</td><td></td><td>-0.0291</td><td>0.015</td><td>[117.14, 109.977]</td></tr>
+<tr><td>GHOST:U30</td><td></td><td>courtyard</td><td></td><td>R88</td><td>-0.05</td><td>0.003</td><td></td></tr>
+<tr><td>R88</td><td></td><td>dyn_via</td><td>/ENC_A_SW</td><td></td><td>0.0055</td><td>0.015</td><td>[118.291, 113.165]</td></tr>
+<tr><td>R88</td><td></td><td>dyn_via</td><td>/ENC_A_SW</td><td></td><td>-0.0272</td><td>0.015</td><td>[118.291, 113.165]</td></tr>
+<tr><td>R88</td><td></td><td>dyn_via</td><td>/ENC_A_SW</td><td></td><td>-0.0346</td><td>0.015</td><td>[118.291, 113.165]</td></tr>
+<tr><td>R88</td><td></td><td>dyn_via</td><td>/ENC_A_SW</td><td></td><td>-0.0346</td><td>0.015</td><td>[118.291, 113.165]</td></tr>
+<tr><td>C60</td><td></td><td>dyn_via</td><td>+3V3</td><td></td><td>-0.0117</td><td>0.0</td><td>[116.058, 109.869]</td></tr>
+<tr><td>FL2</td><td></td><td>dyn_seg</td><td>/ENC_A_N_SW</td><td></td><td>-0.0239</td><td>0.015</td><td>[116.776, 111.391]</td></tr>
+<tr><td>FL2</td><td></td><td>dyn_seg</td><td>/ENC_A_N_SW</td><td></td><td>-0.0334</td><td>0.015</td><td>[116.776, 111.391]</td></tr>
+<tr><td>FL2</td><td></td><td>dyn_seg</td><td>/ENC_A_N_SW</td><td></td><td>-0.0327</td><td>0.015</td><td>[116.776, 111.391]</td></tr>
+<tr><td>FL2</td><td></td><td>dyn_seg</td><td>/ENC_A_N_SW</td><td></td><td>-0.033</td><td>0.015</td><td>[117.279, 111.392]</td></tr>
+<tr><td>U22</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>0.0115</td><td>0.015</td><td>[117.271, 114.262]</td></tr>
+<tr><td>U22</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>0.0115</td><td>0.015</td><td>[117.271, 114.262]</td></tr>
+<tr><td>U22</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>-0.0175</td><td>0.015</td><td>[117.271, 114.262]</td></tr>
+<tr><td>GHOST:R97</td><td></td><td>dyn_seg</td><td>+3V3</td><td></td><td>-0.0238</td><td>0.015</td><td>[113.349, 112.013]</td></tr>
+<tr><td>GHOST:R97</td><td></td><td>dyn_seg</td><td>+3V3</td><td></td><td>-0.0249</td><td>0.015</td><td>[113.349, 112.013]</td></tr>
+<tr><td>GHOST:R97</td><td></td><td>dyn_seg</td><td>+3V3</td><td></td><td>-0.0249</td><td>0.015</td><td>[113.349, 112.013]</td></tr>
+<tr><td>GHOST:R97</td><td></td><td>dyn_seg</td><td>+3V3</td><td></td><td>-0.0192</td><td>0.015</td><td>[113.349, 112.013]</td></tr>
+<tr><td>GHOST:C110</td><td></td><td>dyn_seg</td><td>Vdrive</td><td></td><td>0.0023</td><td>0.015</td><td>[121.247, 112.54]</td></tr>
+<tr><td>GHOST:C110</td><td></td><td>dyn_seg</td><td>Vdrive</td><td></td><td>-0.0165</td><td>0.015</td><td>[121.247, 112.54]</td></tr>
+<tr><td>GHOST:C110</td><td></td><td>dyn_seg</td><td>Vdrive</td><td></td><td>-0.0165</td><td>0.015</td><td>[121.247, 112.54]</td></tr>
+<tr><td>GHOST:C110</td><td></td><td>dyn_seg</td><td>Vdrive</td><td></td><td>-0.0048</td><td>0.015</td><td>[121.247, 112.54]</td></tr>
+<tr><td>U25</td><td></td><td>dyn_seg</td><td>/EXT_ANALOG_SW</td><td></td><td>-0.0269</td><td>0.015</td><td>[123.035, 111.531]</td></tr>
+<tr><td>U25</td><td></td><td>dyn_seg</td><td>/EXT_ANALOG_SW</td><td></td><td>-0.0175</td><td>0.015</td><td>[123.035, 111.531]</td></tr>
+<tr><td>U25</td><td></td><td>dyn_seg</td><td>/EXT_ANALOG_SW</td><td></td><td>0.0065</td><td>0.015</td><td>[123.035, 111.531]</td></tr>
+<tr><td>U25</td><td></td><td>dyn_seg</td><td>/EXT_ANALOG_SW</td><td></td><td>-0.0064</td><td>0.015</td><td>[123.035, 111.531]</td></tr>
+<tr><td>D23</td><td></td><td>courtyard</td><td></td><td>U26</td><td>-0.05</td><td>0.003</td><td></td></tr>
+<tr><td>U26</td><td></td><td>dyn_via</td><td>/HALL2</td><td></td><td>-0.0436</td><td>-0.0123</td><td>[117.441, 118.079]</td></tr>
+<tr><td>U26</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>0.0064</td><td>0.015</td><td>[116.32, 117.121]</td></tr>
+<tr><td>U26</td><td></td><td>dyn_seg</td><td>Vdrive</td><td></td><td>-0.0148</td><td>0.015</td><td>[118.135, 116.868]</td></tr>
+<tr><td>U26</td><td></td><td>dyn_seg</td><td>Vdrive</td><td></td><td>0.0046</td><td>0.015</td><td>[118.135, 116.868]</td></tr>
+<tr><td>grp:C64</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>-0.0005</td><td>0.0</td><td>[119.48, 113.43]</td></tr>
+<tr><td>grp:C64</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>0.0028</td><td>0.015</td><td>[117.271, 114.262]</td></tr>
+<tr><td>grp:C64</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>-0.0054</td><td>-0.001</td><td>[116.32, 117.121]</td></tr>
+<tr><td>U18</td><td></td><td>dyn_seg</td><td>/ENC_A_DATA</td><td></td><td>-0.0099</td><td>0.015</td><td>[114.355, 106.214]</td></tr>
+<tr><td>U18</td><td></td><td>dyn_seg</td><td>/ENC_A_DATA</td><td></td><td>-0.0099</td><td>0.015</td><td>[114.355, 106.214]</td></tr>
+<tr><td>U18</td><td></td><td>dyn_seg</td><td>/ENC_A_DATA</td><td></td><td>0.0058</td><td>0.015</td><td>[115.705, 106.0]</td></tr>
+<tr><td>C64</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>-0.0272</td><td>0.0</td><td>[119.48, 113.43]</td></tr>
+<tr><td>C64</td><td></td><td>pad</td><td>/H1_SW</td><td>U22.6</td><td>0.0007</td><td>0.015</td><td>[118.763, 114.997]</td></tr>
+<tr><td>C64</td><td></td><td>pad</td><td>/H1_SW</td><td>U22.6</td><td>-0.0252</td><td>0.015</td><td>[118.763, 114.997]</td></tr>
+<tr><td>C64</td><td></td><td>pad</td><td>/H1_SW</td><td>U22.6</td><td>-0.0317</td><td>0.015</td><td>[118.763, 114.997]</td></tr>
+<tr><td>D26</td><td></td><td>dyn_seg</td><td>/ENC_D_N</td><td></td><td>0.0102</td><td>0.015</td><td>[113.439, 104.829]</td></tr>
+<tr><td>D26</td><td></td><td>dyn_seg</td><td>/ENC_D_N</td><td></td><td>0.0102</td><td>0.015</td><td>[113.439, 104.829]</td></tr>
+<tr><td>D26</td><td></td><td>dyn_seg</td><td>/ENC_D_N</td><td></td><td>0.0111</td><td>0.015</td><td>[113.439, 104.829]</td></tr>
+<tr><td>C72</td><td></td><td>dyn_via</td><td>GND</td><td></td><td>-0.0395</td><td>0.0</td><td>[119.644, 116.582]</td></tr>
+</table>
+<h2>Absorbed pressure (where demand died)</h2>
+<table><tr><th>mover</th><th>blocker</th><th>what</th><th>hits</th></tr>
+<tr><td>node311</td><td>pad</td><td>J2.</td><td>944</td></tr>
+<tr><td>node1326</td><td>pad</td><td>J2.</td><td>711</td></tr>
+<tr><td>node346</td><td>board_edge</td><td></td><td>486</td></tr>
+<tr><td>node959</td><td>pad</td><td>J2.</td><td>243</td></tr>
+<tr><td>node952</td><td>pad</td><td>J2.</td><td>197</td></tr>
+<tr><td>node951</td><td>pad</td><td>J2.</td><td>168</td></tr>
+<tr><td>node2433</td><td>pad</td><td>J2.2 [/D]</td><td>99</td></tr>
+<tr><td>node1135</td><td>pad</td><td>J2.2 [/D]</td><td>74</td></tr>
+</table>
+<h2>Config</h2>
+<pre>{
+ &quot;name&quot;: &quot;enc_corner&quot;,
+ &quot;board&quot;: &quot;/home/sequoia/pcb/rp2350-motor-controller-lean-jiggle/hardware/rp2350_driver.kicad_pcb&quot;,
+ &quot;region&quot;: [
+  112.4,
+  81.9,
+  132.5,
+  128.5
+ ],
+ &quot;rules&quot;: {
+  &quot;guard&quot;: 0.015
+ },
+ &quot;locked&quot;: {
+  &quot;sides&quot;: [
+   &quot;F&quot;
+  ],
+  &quot;refs&quot;: [
+   &quot;J1&quot;,
+   &quot;J2&quot;,
+   &quot;J12&quot;,
+   &quot;H3&quot;,
+   &quot;H4&quot;
+  ],
+  &quot;nets&quot;: [
+   &quot;^/USB_D&quot;,
+   &quot;^/CAN0_&quot;
+  ],
+  &quot;rects&quot;: []
+ },
+ &quot;mobility&quot;: {
+  &quot;default&quot;: 1.0
+ },
+ &quot;groups&quot;: {},
+ &quot;drive&quot;: {
+  &quot;inflate&quot;: [
+   {
+    &quot;ref&quot;: &quot;U30&quot;,
+    &quot;at&quot;: &quot;search&quot;,
+    &quot;radius&quot;: 8
+   },
+   {
+    &quot;ref&quot;: &quot;U32&quot;,
+    &quot;at&quot;: &quot;search&quot;,
+    &quot;radius&quot;: 8
+   },
+   {
+    &quot;ref&quot;: &quot;U33&quot;,
+    &quot;at&quot;: &quot;search&quot;,
+    &quot;radius&quot;: 8
+   },
+   {
+    &quot;ref&quot;: &quot;R97&quot;,
+    &quot;at&quot;: &quot;search&quot;,
+    &quot;radius&quot;: 8
+   },
+   {
+    &quot;ref&quot;: &quot;R98&quot;,
+    &quot;at&quot;: &quot;search&quot;,
+    &quot;radius&quot;: 8
+   },
+   {
+    &quot;ref&quot;: &quot;R100&quot;,
+    &quot;at&quot;: &quot;search&quot;,
+    &quot;radius&quot;: 8
+   },
+   {
+    &quot;ref&quot;: &quot;C110&quot;,
+    &quot;at&quot;: {
+     &quot;near&quot;: &quot;U30&quot;,
+     &quot;offset&quot;: [
+      0.0,
+      0.0
+     ],
+     &quot;search&quot;: 4.0
+    }
+   }
+  ]
+ },
+ &quot;step&quot;: 0.05,
+ &quot;snapshots&quot;: 10,
+ &quot;cycles&quot;: 600,
+ &quot;data&quot;: &quot;/home/sequoia/pcb/rp2350-motor-controller-lean-jiggle/hardware/tools/settle/configs/data/enc_corner&quot;
+}</pre>
+<h2>Elastic table</h2>
+<pre>{
+ &quot;default&quot;: {
+  &quot;k&quot;: 0.5,
+  &quot;allow&quot;: 0.2,
+  &quot;cap&quot;: 0.5,
+  &quot;allow_mm&quot;: 0.5,
+  &quot;cap_mm&quot;: 2.0
+ },
+ &quot;classes&quot;: {
+  &quot;VMOT&quot;: {
+   &quot;k&quot;: 0.2,
+   &quot;allow&quot;: 0.3,
+   &quot;cap&quot;: 1.0,
+   &quot;allow_mm&quot;: 1.0,
+   &quot;cap_mm&quot;: 6.0
+  },
+  &quot;power&quot;: {
+   &quot;k&quot;: 0.2,
+   &quot;allow&quot;: 0.3,
+   &quot;cap&quot;: 1.0,
+   &quot;allow_mm&quot;: 1.0,
+   &quot;cap_mm&quot;: 6.0
+  },
+  &quot;usb_5A&quot;: {
+   &quot;k&quot;: 0.2,
+   &quot;allow&quot;: 0.3,
+   &quot;cap&quot;: 1.0,
+   &quot;allow_mm&quot;: 1.0,
+   &quot;cap_mm&quot;: 6.0
+  },
+  &quot;low_power&quot;: {
+   &quot;k&quot;: 0.2,
+   &quot;allow&quot;: 0.3,
+   &quot;cap&quot;: 1.0,
+   &quot;allow_mm&quot;: 1.0,
+   &quot;cap_mm&quot;: 6.0
+  }
+ },
+ &quot;nets&quot;: {
+  &quot;^GND&quot;: {
+   &quot;k&quot;: 0.0,
+   &quot;allow&quot;: 1000000000.0,
+   &quot;cap&quot;: 1000000000.0
+  },
+  &quot;^(VMOT|Vdrive|VBUS|\\+3V3|\\+1V1|\\+5V_ISO|/V_ENC|/V_SW)$&quot;: {
+   &quot;k&quot;: 0.2,
+   &quot;allow&quot;: 0.3,
+   &quot;cap&quot;: 1.0,
+   &quot;allow_mm&quot;: 1.0,
+   &quot;cap_mm&quot;: 6.0
+  },
+  &quot;^Net-\\(U(1|6|7|12)-(HO|LO|VB)\\)$&quot;: {
+   &quot;k&quot;: 4.0,
+   &quot;allow&quot;: 0.0,
+   &quot;cap&quot;: 0.05,
+   &quot;allow_mm&quot;: 0.0,
+   &quot;cap_mm&quot;: 0.3
+  },
+  &quot;^/2[ABCD]G[HL]$&quot;: {
+   &quot;k&quot;: 4.0,
+   &quot;allow&quot;: 0.0,
+   &quot;cap&quot;: 0.05,
+   &quot;allow_mm&quot;: 0.0,
+   &quot;cap_mm&quot;: 0.3
+  },
+  &quot;^Net-\\(Q[1-4]-[BE]\\)$&quot;: {
+   &quot;k&quot;: 4.0,
+   &quot;allow&quot;: 0.0,
+   &quot;cap&quot;: 0.05,
+   &quot;allow_mm&quot;: 0.0,
+   &quot;cap_mm&quot;: 0.3
+  },
+  &quot;^Net-\\((R(24|59|62|67|70)|D\\d+)-&quot;: {
+   &quot;k&quot;: 2.0,
+   &quot;allow&quot;: 0.05,
+   &quot;cap&quot;: 0.15,
+   &quot;allow_mm&quot;: 0.2,
+   &quot;cap_mm&quot;: 0.8
+  },
+  &quot;^/USB_D&quot;: {
+   &quot;k&quot;: 4.0,
+   &quot;allow&quot;: 0.0,
+   &quot;cap&quot;: 0.02,
+   &quot;allow_mm&quot;: 0.0,
+   &quot;cap_mm&quot;: 0.1
+  },
+  &quot;^/CAN0_&quot;: {
+   &quot;k&quot;: 4.0,
+   &quot;allow&quot;: 0.0,
+   &quot;cap&quot;: 0.02,
+   &quot;allow_mm&quot;: 0.0,
+   &quot;cap_mm&quot;: 0.1
+  },
+  &quot;^/ENC_[A-D]_(P|N)(_SW)?$&quot;: {
+   &quot;k&quot;: 1.0,
+   &quot;allow&quot;: 0.1,
+   &quot;cap&quot;: 0.15,
+   &quot;allow_mm&quot;: 0.5,
+   &quot;cap_mm&quot;: 2.0
+  },
+  &quot;^/ENC_[A-D]_TRX_&quot;: {
+   &quot;k&quot;: 1.0,
+   &quot;allow&quot;: 0.1,
+   &quot;cap&quot;: 0.2,
+   &quot;allow_mm&quot;: 0.5,
+   &quot;cap_mm&quot;: 2.0
+  },
+  &quot;^[ABCD]_PWM_&quot;: {
+   &quot;k&quot;: 1.0,
+   &quot;allow&quot;: 0.1,
+   &quot;cap&quot;: 0.25,
+   &quot;allow_mm&quot;: 0.5,
+   &quot;cap_mm&quot;: 3.0
+  },
+  &quot;SENSE&quot;: {
+   &quot;k&quot;: 1.0,
+   &quot;allow&quot;: 0.1,
+   &quot;cap&quot;: 0.2,
+   &quot;allow_mm&quot;: 0.5,
+   &quot;cap_mm&quot;: 2.0
+  }
+ }
+}</pre>
+<h2>Log tail</h2>
+<pre>ocal reroute of 2 clamping chains
+  reroute round 1.27: 0/2 chains rerouted (2 candidates)
+cycle 120: s=0.643 ghosts=3/7 blocked=6 adv=0.001mm copper=0.100mm [112s]
+ghost R100 idle 20 cycles at scale 0.050: local reroute of 1 clamping chains
+  reroute round 1.28: 0/1 chains rerouted (1 candidates)
+ghost C110 idle 20 cycles at scale 0.907: local reroute of 2 clamping chains
+  reroute round 1.29: 0/2 chains rerouted (2 candidates)
+cycle 125: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.100mm [118s]
+ghost R97 idle 20 cycles at scale 0.275: local reroute of 2 clamping chains
+  reroute round 1.30: 0/2 chains rerouted (2 candidates)
+stall at cycle 128 (s=0.643): reroute round 1
+  reroute round 1: 4/16 chains rerouted (35 candidates)
+  checkpoint 9: s=0.643 reroute
+cycle 130: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.100mm [127s]
+ghost R100 idle 20 cycles at scale 0.050: local reroute of 1 clamping chains
+  reroute round 2.31: 0/1 chains rerouted (1 candidates)
+ghost C110 idle 20 cycles at scale 0.907: local reroute of 2 clamping chains
+  reroute round 2.32: 0/2 chains rerouted (2 candidates)
+cycle 135: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.000mm [133s]
+ghost R97 idle 20 cycles at scale 0.275: local reroute of 2 clamping chains
+  reroute round 2.33: 0/2 chains rerouted (2 candidates)
+cycle 140: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.000mm [138s]
+ghost R100 idle 20 cycles at scale 0.050: local reroute of 1 clamping chains
+  reroute round 2.34: 0/1 chains rerouted (1 candidates)
+ghost C110 idle 20 cycles at scale 0.907: local reroute of 2 clamping chains
+  reroute round 2.35: 0/2 chains rerouted (2 candidates)
+cycle 145: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.000mm [144s]
+ghost R97 idle 20 cycles at scale 0.275: local reroute of 2 clamping chains
+  reroute round 2.36: 0/2 chains rerouted (2 candidates)
+cycle 150: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.000mm [149s]
+ghost R100 idle 20 cycles at scale 0.050: local reroute of 1 clamping chains
+  reroute round 2.37: 0/1 chains rerouted (1 candidates)
+stall at cycle 153 (s=0.643): reroute round 2
+  reroute round 2: 4/16 chains rerouted (28 candidates)
+  checkpoint 10: s=0.643 reroute
+ghost C110 idle 20 cycles at scale 0.907: local reroute of 2 clamping chains
+  reroute round 3.38: 0/2 chains rerouted (2 candidates)
+cycle 155: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.373mm [159s]
+ghost R97 idle 20 cycles at scale 0.275: local reroute of 2 clamping chains
+  reroute round 3.39: 0/2 chains rerouted (2 candidates)
+cycle 160: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.050mm [164s]
+ghost R100 idle 20 cycles at scale 0.050: local reroute of 1 clamping chains
+  reroute round 3.40: 0/1 chains rerouted (1 candidates)
+ghost C110 idle 20 cycles at scale 0.907: local reroute of 2 clamping chains
+  reroute round 3.41: 0/2 chains rerouted (2 candidates)
+cycle 165: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.050mm [170s]
+ghost R97 idle 20 cycles at scale 0.275: local reroute of 2 clamping chains
+  reroute round 3.42: 0/2 chains rerouted (2 candidates)
+cycle 170: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.050mm [175s]
+ghost R100 idle 20 cycles at scale 0.050: local reroute of 1 clamping chains
+  reroute round 3.43: 0/1 chains rerouted (1 candidates)
+ghost C110 idle 20 cycles at scale 0.907: local reroute of 2 clamping chains
+  reroute round 3.44: 0/2 chains rerouted (2 candidates)
+cycle 175: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.100mm [181s]
+ghost R97 idle 20 cycles at scale 0.275: local reroute of 2 clamping chains
+  reroute round 3.45: 0/2 chains rerouted (2 candidates)
+stall at cycle 178 (s=0.643): reroute round 3
+  reroute round 3: 1/16 chains rerouted (22 candidates)
+  checkpoint 11: s=0.643 reroute
+cycle 180: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.190mm [190s]
+ghost R100 idle 20 cycles at scale 0.050: local reroute of 1 clamping chains
+  reroute round 4.46: 0/1 chains rerouted (1 candidates)
+ghost C110 idle 20 cycles at scale 0.907: local reroute of 2 clamping chains
+  reroute round 4.47: 0/2 chains rerouted (2 candidates)
+cycle 185: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.059mm [196s]
+ghost R97 idle 20 cycles at scale 0.275: local reroute of 2 clamping chains
+  reroute round 4.48: 0/2 chains rerouted (2 candidates)
+cycle 190: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.096mm [201s]
+cycle 195: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.031mm [206s]
+cycle 200: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.092mm [211s]
+stall at cycle 203 (s=0.643): reroute round 4
+  reroute round 4: 2/15 chains rerouted (15 candidates)
+  checkpoint 12: s=0.643 reroute
+cycle 205: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.029mm [218s]
+cycle 210: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.074mm [223s]
+cycle 215: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.034mm [228s]
+cycle 220: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.075mm [232s]
+cycle 225: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.035mm [237s]
+stall at cycle 228 (s=0.643): reroute round 5
+  reroute round 5: 1/8 chains rerouted (8 candidates)
+  checkpoint 13: s=0.643 reroute
+cycle 230: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.023mm [245s]
+cycle 235: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.106mm [249s]
+cycle 240: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.115mm [254s]
+cycle 245: s=0.643 ghosts=3/7 blocked=7 adv=0.000mm copper=0.029mm [259s]
+cycle 250: s=0.643 ghosts=3/7 blocked=6 adv=0.000mm copper=0.041mm [263s]
+stall at cycle 253 (s=0.643): reroute round 6
+  reroute round 6: 0/7 chains rerouted (7 candidates)
+STALL after 253 cycles (25 without advance, 5 reroute rounds): s=0.643, 4 ghosts unborn
+  checkpoint 14: s=0.643 final
+captured 259 frames, 12 line-search traces -&gt; frames.json
+wrote traj.json (14 checkpoints) + settle_report.json in 269s: 18 parts moved, 1 nets over allowance, 0 length-cap hits, 486 board-edge hits — run emit.py
+</pre>

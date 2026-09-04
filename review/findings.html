@@ -63,12 +63,12 @@
   <h1>Findings Register</h1>
   <p class="subtitle">Every finding from the 2026-08-08 reviews (schematic · PCB · power) with disposition,
   plus dated amendments and later findings (F-39 from the F-27 rescope; F-40/F-41 from the 2026-08-11
-  <a href="gan.html">GaN power-stage eval</a>). Stable IDs for cross-reference. Branch
+  <a href="gan.html">GaN power-stage eval</a>; F-47/F-48 from the 2026-09-01 <a href="shrink.html">space-budget study</a>). Stable IDs for cross-reference. Branch
   <code>rev-b-fixes</code>.</p>
 </header>
 
 <div class="summary">
-  <div><strong>42</strong>findings recorded</div>
+  <div><strong>48</strong>findings recorded</div>
   <div><strong>14</strong>fixed on rev-b-fixes</div>
   <div><strong>9</strong>rev-C candidates</div>
   <div><strong>1</strong>re-route session (board)</div>
@@ -76,6 +76,7 @@
   <div><strong>2</strong>firmware backlog</div>
   <div><strong>2</strong>power stage, from the GaN eval — F-40 blocks ordering</div>
   <div><strong>11</strong>documented / verify / decided</div>
+  <div><strong>2</strong>space budget — parts &amp; JLCPCB process (F-47/F-48)</div>
 </div>
 
 <p>Status legend:
@@ -233,6 +234,14 @@ rows are never renumbered.</p>
   <td>Rubber-stretch feasibility: dilating the board ×k with footprints as rigid bodies is illegal at <em>any</em> k&nbsp;&gt;&nbsp;1 if positions are simply scaled — pad copper lags full dilation by (k−1)·|pad offset from footprint origin| (~10&nbsp;mm on J12-class connectors), and the sign is geometric: any at-limit copper sitting <em>between a footprint's origin and one of its pads</em> loses clearance at every k. Measured census (smooth-rubber engine, strain routed around the inclusions): the violating-site count is nearly <strong>flat in k</strong> — 68 sites at +0.25%, 91 at +1% — while deficits scale ∝&nbsp;k (median 8&nbsp;→&nbsp;15&nbsp;µm). The at-limit pair set, not the stretch amount, is the price. Uniform stretch also does <em>not</em> unbox the <a href="#f-25">F-25</a> placement blockers (R111 stays inside H2's ring at any small k)</td>
   <td><span class="st doc">DOC</span></td>
   <td>Engine + tolerance pipeline in <code>hardware/tools/rubber/</code> (<code>stretch.py</code> dilation warp with glued trace ends; <code>nudge.py</code> DRC-refereed local repair with tee/via-rim ride constraints — absorbs ~⅔ of the damage; <code>status.py</code> hand-repair loop), full story on the <a href="rubber.html">rubber page</a>. The +1% board is staged as <code>rp2350_driver_rubber.kicad_pcb</code>: 92 sites (median 15&nbsp;µm) for hand repair, airwires 54 preserved, <code>check_sync</code> IN SYNC</td></tr>
+<tr id="f-47"><td class="id"><a href="#f-47">F-47</a></td><td><span class="sev med">MED</span></td>
+  <td>Space budget, component side (2026-09-01 study, <a href="shrink.html">full page</a>): the bottom side carries four driver blocks, three INA240s, the buck and the isolated CAN transceiver in packages 2–4× larger than in-stock alternatives, and the top side holds 16 DNP snubber footprints (104&nbsp;mm², empty since rev&nbsp;A), six 2512 shunts and four SMA phase clamps. Free tier (snubbers to 0402/0603, no-courtyard test points, SC-70 courtyard harmonisation, WS2812 2020): F&nbsp;−76 / B&nbsp;−62&nbsp;mm². Same-function package swaps: SMAJ64A → TPSMF4L64A (SOD-123FL, still 400&nbsp;W, −57), INA240A1D → INA241A1 SOT-23-8 (−87), CA-IS3052CG → ISO1044BDR narrow SOIC (−42; C41784142 is absent from the JLC in-stock listing today), 3225 → 2520 crystal, 1206/0805 → 0805/0603 ceramics: F&nbsp;−76 / B&nbsp;−134. Architectural: EG3113 + bootstrap diode + PNP/diode turn-off network → LMG1205 (2×2&nbsp;mm DSBGA, VDD 4.5–5.5&nbsp;V, integrated bootstrap, split outputs; −292&nbsp;mm², −24 parts, +$8/board, locks the gate drive at 5&nbsp;V), XL7005A stage → LMR38010 sync buck (−70, also closes F-29), four switch pairs → TS5A23159 (−34), 2512 → 2010 shunts (−76). Courtyard margins are 2× JLCPCB's SMT spacing minimums (−117&nbsp;mm² of placement freedom for a library edit). Recommended set: F&nbsp;−228 (−8&nbsp;%), B&nbsp;−592 (−39&nbsp;%), −26 parts, ≈&nbsp;+$16/board</td>
+  <td><span class="st open">OPEN</span></td>
+  <td>Order: design rules first (F-48), then the free tier with <code>shrink_0402.py</code> / <code>place_scan.py</code>, then B1/B4–B6 values, then INA241 + ISO1044 symbols, then LMG1205 bundled with the F-40/F-41 decision and LMR38010 with F-29. Bulk-cap 3→2 (−86, regen 0.22→0.15&nbsp;J) and every connector change are product decisions, listed on the page for scale only. Side note for F-40: the JLC mirror shows EG3113 C480666 at 965 units / $0.45 on 2026-09-01 — re-verify before treating the driver swap as forced</td></tr>
+<tr id="f-48"><td class="id"><a href="#f-48">F-48</a></td><td><span class="sev med">MED</span></td>
+  <td>Space budget, process side (<a href="shrink.html#process">page §6</a>): the board is 6-layer and JLCPCB fills and copper-caps via-in-pad (POFV) <strong>for free on 6–20 layer boards</strong> (hole 0.2–0.5&nbsp;mm, ring ≥&nbsp;0.05, hole-to-hole ≥&nbsp;0.45); the design rules sit at 0.16/0.18&nbsp;mm and 0.25/0.5 vias on a fab that builds 0.09/0.09 and 0.15/0.25, with 4&nbsp;mil (0.10) the free floor (3.0–3.5&nbsp;mil is +20&nbsp;%). Signal route pitch 0.38 → 0.20&nbsp;mm is 1.9× the tracks per channel — the rule-pitch bundles F-44/creep/morph hit are this rule. 137 vias sit within 1.2&nbsp;mm of FET/shunt pad edges and 88 in the U8 halo; both farms can move into pads under POFV. Blind/buried/HDI vias are not offered (capability page; 2025-02 Q&amp;A unanswered). 0201 and 0.35&nbsp;mm-pitch parts need Standard (not Economic) PCBA</td>
+  <td><span class="st open">OPEN</span></td>
+  <td>Decide the rule set before any further placement/routing run: 0.10/0.10 signal class, 0.2/0.35 vias, POFV on or off. POFV is board-wide, so 253 existing via pairs closer than 0.45&nbsp;mm hole-to-hole and the one 0.6&nbsp;mm drill must be respaced if it is chosen; via hole-to-hole 0.2 (denser farms) and POFV (0.45) are mutually exclusive. Every morph/creep/field baseline is keyed to the current pitch and will need re-running</td></tr>
 </table>
 </div>
 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan of Record — the settled board, rendered</title>
+<style>
+  :root { --bg:#f7f6f3; --panel:#fff; --ink:#1e2126; --muted:#5b6470; --line:#d9d5cc; --accent:#6b4fa0; --good:#2c7a4b; --warn:#a05a00; --bad:#b03434; --code-bg:#efede8; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#16181d; --panel:#1e2128; --ink:#e8e6e1; --muted:#9aa3af; --line:#343945; --accent:#a98fd8; --good:#5cb884; --warn:#e0a44c; --bad:#e06c6c; --code-bg:#262a33; } }
+  *{box-sizing:border-box} html,body{margin:0;padding:0} body{background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  main{max-width:1180px;margin:0 auto;padding:2rem 1.25rem 5rem} header.masthead{border-bottom:3px solid var(--accent);padding:1.6rem 0 1rem;margin-bottom:1.2rem}
+  h1{font-size:1.9rem;line-height:1.2;margin:0 0 .4rem} h2{font-size:1.35rem;margin:2.4rem 0 .8rem;border-bottom:1px solid var(--line);padding-bottom:.3rem} h3{font-size:1.1rem;margin:1.6rem 0 .5rem}
+  .subtitle{color:var(--muted);margin:0} a{color:var(--accent)} code{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:.92em;background:var(--code-bg);padding:.08em .35em;border-radius:4px}
+  pre{background:var(--code-bg);padding:.8rem 1rem;border-radius:8px;overflow-x:auto;font-size:.85rem}
+  figure{margin:1.2rem 0;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:1rem} figure img{max-width:100%;height:auto;display:block;margin:0 auto;border-radius:4px}
+  figcaption{color:var(--muted);font-size:.9rem;margin-top:.6rem} .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem} @media(max-width:820px){.two{grid-template-columns:1fr}}
+  table{border-collapse:collapse;font-size:.9rem;margin:.6rem 0;width:100%} td,th{border:1px solid var(--line);padding:.3rem .6rem;text-align:left;vertical-align:top} th{background:var(--code-bg)}
+  .note{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:.9rem 1.2rem;margin:1.2rem 0} .note.warn{border-left-color:var(--warn)} .note.good{border-left-color:var(--good)} .note.bad{border-left-color:var(--bad)}
+  .cmp{position:relative;overflow:hidden;border-radius:6px;background:#111;user-select:none} .cmp img{display:block;width:100%;height:auto}
+  .cmp .a{position:absolute;inset:0} .cmp .a img{width:100%;height:auto;display:block} .cmp .bar{position:absolute;top:0;bottom:0;width:3px;background:#fff;box-shadow:0 0 6px #000;transform:translateX(-1px);pointer-events:none}
+  .cmp .lab{position:absolute;top:.5rem;padding:.15em .6em;font-size:.8rem;font-weight:700;border-radius:99px;background:rgba(0,0,0,.65);color:#fff;pointer-events:none} .cmp .la{left:.5rem} .cmp .lb{right:.5rem}
+  .cmp input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize}
+  .layers a{display:inline-block;margin:.2rem .6rem .2rem 0}
+  .ok{color:var(--good);font-weight:700} .no{color:var(--bad);font-weight:700}
+</style></head><body><main>
+<header class="masthead">
+<h1>Plan of Record — the settled board, rendered</h1>
+<p class="subtitle">Rev-A copper · rev-B schematic · Tier-A footprints · settle-engine placement (power stage squeezed, seven encoder-corner parts born) · 2026-09-03 · <a href="index.html">settle log</a> · <a href="../index.html">hub</a></p>
+</header>
+
+<div class="note good"><b>What this is.</b> The board that the rev-B work now targets: branch <code>lean-jiggle</code>, run <code>enc_after_wide</code>, checkpoint <code>step_12</code> (final). It is the shipped rev-A copper with the rev-B schematic on it, the Tier-A footprint swaps, the power stage settled toward the top edge, and the seven parts that had no room now placed — every checkpoint on the way DRC-gated against the shipped baseline, static copper byte-identical, <code>check_sync</code> IN SYNC. Adopted as plan of record on 2026-09-03 (the alternative was to keep it as one experiment among several). Nothing has been merged to <code>rev-b-lean</code> yet; the file is copied to <code>hardware/tools/settle/candidates/plan_of_record.kicad_pcb</code> in the lean-jiggle worktree (untracked), and regenerates with <code>pipeline.py configs/enc_after_wide.json</code>.</div>
+
+<h2>The board</h2>
+<table>
+<tr><th>Outline</th><td>76.05 × 46.45 mm, 6 copper layers, rev-A outline unchanged (no west-edge extension)</td></tr>
+<tr><th>Parts</th><td>323 footprints — 94 top, 229 bottom. vs rev-A: +33 (U30–U33, Q6, JP2, D30/D31, R97–R115, C110–C115), −1 (C79)</td></tr>
+<tr><th>Footprints changed vs rev-A</th><td>184: 140 courtyard-only <code>_JLC</code> variants, 15 × 0603→0402, 8 × 0805→0402, 8 × 0805→0603, 10 test points without courtyards, plus D1 LED_WS2812_3528_3.5x2.8mm_P1.5mm → LED_WS2812B-2020_PLCC4_2.0x2.0mm_MotorBuck; Q5 SOT-89-3 → PowerPAK_SO-8_123; U29 SOT-23-6 → MSOP-8_3x3mm_P0.65mm</td></tr>
+<tr><th>Copper</th><td>4558 track segments (the lean board had 3951 — the settle engine re-emits the copper it moved as shorter segments, same geometry), 488 vias</td></tr>
+<tr><th>Rules</th><td>min clearance 0.10 mm, min track 0.10 mm, via 0.35 / 0.20 mm, hole clearance 0.254, edge clearance 0.30 (the <a href="../shrink.html">space-budget</a> rule set, applied on lean-jiggle)</td></tr>
+<tr><th>DRC (kicad-cli, all severities)</th><td><span class="no">3 errors</span>, all courtyard overlaps: D23/U22 and J7/C38 inherited from the lean board; J9/BH1 was an <em>excluded</em> pair on the lean board and BH1 moved 0.66 mm in the squeeze, so the exclusion no longer matches and needs re-marking. Excluded: 9 padstack, 4 courtyard, 2 starved-thermal (all rev-A inheritances). Warnings: silk overlap 69 (lean 56), silk over copper 41 (lean 22), dangling track 29 (30) — the moved parts owe a silkscreen pass.</td></tr>
+<tr><th>Unconnected</th><td><span class="no">103 airwires</span>, unchanged from the lean board: rev-B nets on rev-A copper. Routing them is the next stage; the placement here is what they route to.</td></tr>
+<tr><th>Gate</th><td>13/13 checkpoints: 0 new violations vs the checkpoint-0 baseline, 0 static copper missing, 0 fixed footprints moved, length caps respected, <span class="ok">check_sync True</span> (<a href="settle_enc_after_wide.html">run page</a>)</td></tr>
+</table>
+
+<h2>3D renders</h2>
+<p>Rendered with <code>kicad-cli pcb render</code> 9.0.8 from the candidate file, KiCad 6/8 model paths pointed at the system library so the passives resolve (the DFN transceivers and a few connectors have uncoloured STEP models and render white; the FETs' models are placeholders). Orthographic views at 3200 × 2000; click any image for full size.</p>
+<div class="two">
+<figure><a href="img/por_top.png"><img src="img/por_top.png" alt="Plan-of-record board, top side, orthographic"></a><figcaption>Top. The top side is connectors, FETs, bulk capacitors and the RP2350; the squeeze moved 34 top-side parts of the power stage upward by up to 2.4 mm (C1, R37, C54 …).</figcaption></figure>
+<figure><a href="img/por_bottom.png"><img src="img/por_bottom.png" alt="Plan-of-record board, bottom side, orthographic"></a><figcaption>Bottom. The dense side: gate drivers, INA240s, encoder fabric, the seven new parts along the west edge (left here — the view is mirrored), and the strip freed under the power stage.</figcaption></figure>
+</div>
+<div class="two">
+<figure><a href="img/por_iso_top.png"><img src="img/por_iso_top.png" alt="Plan-of-record board, top, perspective"></a><figcaption>Top, perspective (raytraced, floor shadows on).</figcaption></figure>
+<figure><a href="img/por_iso_bottom.png"><img src="img/por_iso_bottom.png" alt="Plan-of-record board, bottom, perspective"></a><figcaption>Bottom, perspective.</figcaption></figure>
+</div>
+
+<h2>Before / after: rev A → plan of record</h2>
+<p>Drag the divider. Left is the shipped rev-A board (tag <code>rev-A-fab</code>), right is the candidate, both rendered with identical camera parameters so every pixel lines up; only the parts that changed move.</p>
+<figure><div class="cmp" data-a="img/revA_top.png" data-b="img/por_top.png" data-la="rev A (shipped)" data-lb="plan of record"></div><figcaption>Top side. Differences are the power-stage squeeze (everything in the stage moved toward the top edge), the 0402 shrinks, and the WS2812B-2020 LED.</figcaption></figure>
+<figure><div class="cmp" data-a="img/revA_bottom.png" data-b="img/por_bottom.png" data-la="rev A (shipped)" data-lb="plan of record"></div><figcaption>Bottom side. The seven new parts along the west edge, the encoder neighbours nudged, the squeeze, and the +33/−1 part delta of the rev-B schematic.</figcaption></figure>
+
+<h2>The encoder corner</h2>
+<p>Bottom side, zoom on the corner the settle engine was built for (x 110–137 mm, mirrored: the board's west edge is on the right). Red circles are the seven parts that rev-A's copper had no room for; orange marks the five neighbours the engine nudged to make that room; blue lines run from each new part to the nearest pad on each of its signal nets, labelled with the airwire length that routing will have to cover.</p>
+<div class="two">
+<figure><a href="img/revA_enc_bottom_annot.png"><img src="img/revA_enc_bottom_annot.png" alt="rev-A encoder corner with the seven sites marked"></a><figcaption>Rev A, same camera: the sites are bare — the vias and the two SC-70 switches of the existing fabric sit where the circles are.</figcaption></figure>
+<figure><a href="img/por_enc_bottom_annot.png"><img src="img/por_enc_bottom_annot.png" alt="Plan-of-record encoder corner, annotated"></a><figcaption>Plan of record: all seven born at scale 1.0. U30 and R100 are the far ones (the trade this placement makes); C110 landed in the strip the squeeze freed, not next to U30.</figcaption></figure>
+</div>
+<figure><div class="cmp" data-a="img/revA_enc_bottom.png" data-b="img/por_enc_bottom.png" data-la="rev A" data-lb="plan of record"></div><figcaption>The same two renders without annotation, as a slider.</figcaption></figure>
+<h3>Where the seven landed</h3>
+<table><tr><th>Part</th><th>What</th><th>Site (mm)</th><th>Signal nets → nearest partner pad</th></tr>
+<tr><td><b>U33</b></td><td>TS5A3159 (SC-70)</td><td>(120.57, 99.73) B</td><td>TERM_D_R → R85 4.0 mm; ENC_D_TRX_A → U21 5.3 mm; TERM_SW → U32 9.9 mm</td></tr>
+<tr><td><b>R100</b></td><td>10 k (0402)</td><td>(123.72, 98.69) B</td><td>ENC_D_P → FL4 11.3 mm</td></tr>
+<tr><td><b>U32</b></td><td>TS5A3159 (SC-70)</td><td>(127.76, 106.55) B</td><td>TERM_C_R → R84 5.7 mm; ENC_C_TRX_A → FL3 7.7 mm; TERM_SW → U33 9.9 mm</td></tr>
+<tr><td><b>R97</b></td><td>10 k (0402)</td><td>(120.06, 111.97) B</td><td>ENC_A_P_SW → FL2 2.9 mm</td></tr>
+<tr><td><b>U30</b></td><td>TS5A3159 (SC-70)</td><td>(129.12, 117.94) B</td><td>TERM_A_R → R82 15.6 mm; ENC_A_TRX_A → FL2 14.1 mm; TERM_SW → U31 3.3 mm</td></tr>
+<tr><td><b>R98</b></td><td>10 k (0402)</td><td>(124.92, 126.77) B</td><td>ENC_B_P_SW → FL1 5.3 mm</td></tr>
+<tr><td><b>C110</b></td><td>100 n (0402)</td><td>(134.12, 122.69) B</td><td>power/GND only — 6.9 mm from U30, the part it decouples</td></tr>
+</table>
+<div class="note warn"><b>The trade, in numbers.</b> U30's termination-switch nets reach R82 and FL2 at 15.6 and 14.1 mm, R100's pull-up reaches FL4 at 11.3 mm, and C110 sits 6.9 mm from U30 rather than against it. The settle engine's answer to "how close can they get" is this placement (<a href="settle_enc_ideal.html">enc_ideal</a> showed the switch fabric gridlocks at half a millimetre of compaction); closer needs the atomic group jump or a hand rework of the fabric's corridors. Accepting these lengths is what adopting this board means for the encoder corner.</div>
+<h3>The five nudged neighbours</h3>
+<table><tr><th>Part</th><th>Moved</th><th>(dx, dy) mm</th></tr><tr><td>R59</td><td>0.68 mm</td><td>(-0.15, -0.66)</td></tr>
+<tr><td>C16</td><td>0.40 mm</td><td>(+0.13, +0.38)</td></tr>
+<tr><td>R88</td><td>0.23 mm</td><td>(-0.23, -0.01)</td></tr>
+<tr><td>R60</td><td>0.21 mm</td><td>(+0.13, -0.16)</td></tr>
+<tr><td>D27</td><td>0.15 mm</td><td>(-0.13, -0.08)</td></tr>
+</table>
+
+<h2>The power stage</h2>
+<p>Every part of the power region was given a 3 mm target toward the top edge and let the length springs, the 0.3 mm gate-loop caps, the fixed INA240 sense pads and the zone attachments hold it (<a href="settle_power_squeeze.html">power_squeeze</a>). 110 parts moved — 76 bottom, 34 top — all of them upward, median 1.22 mm, maximum 3.00 mm.</p>
+<table><tr><th>Displacement</th><th>Parts</th></tr><tr><td>under 0.5 mm</td><td>22</td></tr><tr><td>0.5 – 1 mm</td><td>22</td></tr><tr><td>1 – 2 mm</td><td>45</td></tr><tr><td>2 – 3 mm</td><td>21</td></tr></table>
+<figure><div class="cmp" data-a="img/revA_power_bottom.png" data-b="img/por_power_bottom.png" data-la="rev A" data-lb="plan of record"></div><figcaption>Bottom side, x 130–150 mm, same camera. The gate drivers and their loops barely move (the 0.3 mm caps); the passives above and between them ride up; the bottom of the stage empties.</figcaption></figure>
+<details><summary>Largest twelve moves</summary><table><tr><th>Part</th><th>mm</th><th>Side</th></tr><tr><td>TP3</td><td>3.00</td><td>B</td></tr><tr><td>D10</td><td>3.00</td><td>B</td></tr><tr><td>TP5</td><td>3.00</td><td>B</td></tr><tr><td>R25</td><td>3.00</td><td>B</td></tr><tr><td>R41</td><td>2.99</td><td>B</td></tr><tr><td>D15</td><td>2.70</td><td>B</td></tr><tr><td>R75</td><td>2.58</td><td>B</td></tr><tr><td>C15</td><td>2.50</td><td>B</td></tr><tr><td>C1</td><td>2.42</td><td>F</td></tr><tr><td>C51</td><td>2.39</td><td>B</td></tr><tr><td>R37</td><td>2.32</td><td>F</td></tr><tr><td>TP4</td><td>2.29</td><td>B</td></tr></table></details>
+
+<h2>2D plots</h2>
+<p>Straight <code>kicad-cli pcb export svg</code> plots of the candidate, board area only; the back is mirrored. Copper, silkscreen, mask and edge cuts per side.</p>
+<figure><a href="img/por_front.svg"><img src="img/por_front.svg" alt="front copper, silk, mask and edge plot"></a><figcaption>Front: F.Cu + F.Silkscreen + F.Mask + Edge.Cuts.</figcaption></figure>
+<figure><a href="img/por_back.svg"><img src="img/por_back.svg" alt="back copper, silk, mask and edge plot, mirrored"></a><figcaption>Back (mirrored): B.Cu + B.Silkscreen + B.Mask + Edge.Cuts.</figcaption></figure>
+<p class="layers">Single copper layers, unmirrored, with the outline: <a href="img/por_F.svg">F.Cu</a> <a href="img/por_In1.svg">In1.Cu</a> <a href="img/por_In2.svg">In2.Cu</a> <a href="img/por_In3.svg">In3.Cu</a> <a href="img/por_In4.svg">In4.Cu</a> <a href="img/por_B.svg">B.Cu</a></p>
+
+<h2>What adopting it commits to, and what is still open</h2>
+<ul>
+<li><b>Routing:</b> 103 airwires, the rev-B nets on rev-A copper — the F-19 CAN parts, the USB power path (F-27/F-39), the termination switches and their pull-ups, E-stop, LED_VDD. This placement fixes where they go; nothing is routed yet.</li>
+<li><b>Silkscreen:</b> the moved parts left 13 more silk overlaps and 19 more silk-over-copper warnings than the lean board. Cosmetic, but a fab-file pass.</li>
+<li><b>DRC housekeeping:</b> re-mark the J9/BH1 exclusion; D23/U22 and J7/C38 were already open on the lean board and want a look.</li>
+<li><b>The encoder trade:</b> U30 / R100 / C110 distances above. If they are not acceptable the alternatives are the atomic group jump (not built) or hand rework of the switch fabric.</li>
+<li><b>Rules:</b> this board is DRC-clean at 0.10/0.10 only. The <a href="../findings.html#f-47">F-47</a>/<a href="../findings.html#f-48">F-48</a> decision (rules, via-in-pad) is baked in.</li>
+<li><b>Ordering blockers</b> are unchanged: EG3113 stock (<a href="../findings.html#f-40">F-40</a>), gate drive at 5 V (<a href="../findings.html#f-41">F-41</a>).</li>
+</ul>
+<h3>How to land it</h3>
+<pre>cd ~/pcb/rp2350-motor-controller-lean-jiggle
+cp hardware/tools/settle/candidates/plan_of_record.kicad_pcb hardware/rp2350_driver.kicad_pcb   # keeps the 0.10/0.10 .kicad_pro
+python3 hardware/tools/revb/check_sync.py                                                        # expect IN SYNC
+git add hardware/rp2350_driver.kicad_pcb hardware/tools/settle/candidates && git commit           # then merge lean-jiggle → rev-b-lean</pre>
+<p class="subtitle">Renders regenerate from the scratch recipe in this session's notes: <code>kicad-cli pcb render -D KICAD6_3DMODEL_DIR=/usr/share/kicad/3dmodels -D KICAD8_3DMODEL_DIR=/usr/share/kicad/3dmodels --background opaque --quality basic -w 3200 -h 2000 --side top|bottom</code>; corner zoom <code>--side bottom -w 1500 -h 2400 --zoom 2.0 --pivot "-2.7,0,0"</code>; power zoom <code>--pivot "-1.05,0,0"</code>; perspective <code>--quality high --perspective --rotate "-40,0,30"</code> (top) / <code>"-40,0,-30"</code> (bottom). Annotation fits pixels to millimetres from the four XT30 pin pads (61 px/mm, residual under 0.1 px).</p>
+</main><script>
+document.querySelectorAll('.cmp').forEach(c=>{
+  const b=document.createElement('img'); b.src=c.dataset.b; b.alt=c.dataset.lb;
+  const a=document.createElement('div'); a.className='a'; const ai=document.createElement('img'); ai.src=c.dataset.a; ai.alt=c.dataset.la; a.appendChild(ai);
+  const bar=document.createElement('div'); bar.className='bar';
+  const la=document.createElement('span'); la.className='lab la'; la.textContent=c.dataset.la;
+  const lb=document.createElement('span'); lb.className='lab lb'; lb.textContent=c.dataset.lb;
+  const r=document.createElement('input'); r.type='range'; r.min=0; r.max=100; r.value=50; r.step=0.1;
+  c.append(b,a,bar,la,lb,r);
+  const set=()=>{a.style.clipPath='inset(0 '+(100-r.value)+'% 0 0)'; bar.style.left=r.value+'%';};
+  r.addEventListener('input',set); set();
+});
+</script></body></html>

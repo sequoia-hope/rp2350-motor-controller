@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Space Budget: Smaller Parts &amp; JLCPCB Process Options — RP2350 Motor Controller</title>
+<style>
+  :root {
+    --bg: #f7f6f3; --panel: #ffffff; --ink: #1e2126; --muted: #5b6470;
+    --line: #d9d5cc; --accent: #6b4fa0; --good: #2c7a4b; --warn: #a05a00;
+    --bad: #b03434; --code-bg: #efede8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d; --panel: #1e2128; --ink: #e8e6e1; --muted: #9aa3af;
+      --line: #343945; --accent: #a98fd8; --good: #5cb884; --warn: #e0a44c;
+      --bad: #e06c6c; --code-bg: #262a33;
+    }
+    img.schcrop { filter: invert(0.92) hue-rotate(180deg); }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+  header.masthead { border-bottom: 3px solid var(--accent); padding: 2.2rem 0 1rem; margin-bottom: 1.5rem; }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 .4rem; }
+  .subtitle { color: var(--muted); margin: 0; }
+  h2 { font-size: 1.45rem; margin: 2.8rem 0 .8rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.12rem; margin: 1.8rem 0 .5rem; }
+  p { margin: .6rem 0; }
+  a { color: var(--accent); }
+  code, .mono { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .92em; background: var(--code-bg); padding: .08em .35em; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
+  th, td { text-align: left; padding: .45rem .65rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  th.num { text-align: right; }
+  .tablewrap { overflow-x: auto; }
+  .sev { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; padding: .12em .55em; border-radius: 99px; white-space: nowrap; }
+  .sev.high { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); }
+  .sev.med  { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+  .sev.low  { background: color-mix(in srgb, var(--muted) 18%, transparent); color: var(--muted); }
+  .sev.good { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+  figure { margin: 1.2rem 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; }
+  figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 4px; }
+  figure svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+  figcaption { color: var(--muted); font-size: .88rem; margin-top: .6rem; text-align: center; }
+  .callout { border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 8px 8px 0; padding: .8rem 1rem; margin: 1rem 0; }
+  .callout.bad { border-left-color: var(--bad); }
+  .callout.good { border-left-color: var(--good); }
+  .callout.warn { border-left-color: var(--warn); }
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 760px) { .cols2 { grid-template-columns: 1fr; } }
+  ul.tight li { margin: .3rem 0; }
+</style>
+</head>
+<body>
+<main>
+
+<header class="masthead">
+  <p style="margin:0 0 .4rem"><a href="index.html" style="text-decoration:none">← project hub</a></p>
+  <h1>Space Budget — Smaller Parts &amp; JLCPCB Process Options</h1>
+  <p class="subtitle">Every footprint on the rev-B board asked whether a smaller, buyable part does the same job · what JLCPCB will build for free that the design rules don't use yet (capped via-in-pad, 4-mil traces, 0.2 mm vias) · branch <code>rev-b-fixes</code> @ <code>ed7808b</code> · 2026-09-01</p>
+</header>
+
+<div class="callout">
+<strong>In one paragraph.</strong> The board is 77.05 × 46.45 mm (3,579 mm²), 323 footprints, 617 vias. Connectors own
+<strong>43 %</strong> of the top side outright and are an interface promise, so the recoverable space is elsewhere:
+on the <strong>bottom side</strong>, where the four half-bridge driver blocks, three current-sense amplifiers, the buck and the
+isolated CAN transceiver are all in packages two to four times larger than in-stock alternatives, and on the top side in
+16 DNP snubber footprints that have been empty since rev A, six 2512 shunts and four SMA phase clamps. Adding up
+only the changes with no electrical downside (<a href="#tierA">Tier A</a>, <a href="#tierB">Tier B</a>) and the three
+architectural swaps worth doing (<a href="#tierC">C1–C3</a>) frees about <strong>230 mm² of top-side and
+600 mm² of bottom-side courtyard</strong> — the bottom side drops from 1,523 to ~920 mm² of parts, <strong>−40 %</strong> —
+plus ~120 mm² of pure placement freedom from courtyard margins that are twice JLCPCB's own spacing minimum.
+On the process side the single most valuable fact is that <strong>JLCPCB caps and fills via-in-pad for free on 6-layer boards</strong>
+(this board is 6-layer) and the design rules sit at 0.16/0.18 mm on a fab that builds 0.09/0.09 — the "topological wall" that
+F-44 measured is a rule-pitch wall, and the rule pitch can drop from 0.38 to 0.20 mm without paying anything. Blind/buried
+vias are <em>not</em> on offer; don't plan around them.
+</div>
+
+<h2 id="where">1 · Where the area goes today</h2>
+
+<p>Courtyard polygon areas from pcbnew 9.0.8 on <code>hardware/rp2350_driver.kicad_pcb</code>. Top side: 2,949 mm² of
+courtyard on 3,579 mm² of board (82 %). Bottom: 1,523 mm² (43 %). Of the 162 mm² of DNP courtyard, 104 mm² is the
+top-side snubber set. Passives: 104 × 0402 = 173 mm², 62 × 0603 = 265 mm², 21 × 0805 = 137 mm².</p>
+
+<div class="tablewrap">
+<table>
+<tr><th>Block</th><th>Parts</th><th>Side</th><th class="num">mm²</th><th class="num">% board</th><th>Note</th></tr>
+<tr><td>XT30PW ×4 (J1, J2, J9, J10)</td><td>4</td><td>F</td><td class="num">892</td><td class="num">24.9</td><td>phase + bus in/out — interface promise</td></tr>
+<tr><td>Encoder J12 (Molex 3.0 mm 12-pin)</td><td>1</td><td>F</td><td class="num">217</td><td class="num">6.1</td><td>interface promise</td></tr>
+<tr><td>Interboard J7 + J8 (2.54 mm horizontal header/socket)</td><td>2</td><td>F</td><td class="num">213</td><td class="num">5.9</td><td>side-by-side daisy chain; see <a href="#interfaces">§5</a></td></tr>
+<tr><td>Bulk caps C39/C42/C80 (100 µF/100 V polymer, Ø10)</td><td>3</td><td>F</td><td class="num">259</td><td class="num">7.2</td><td>regen headroom (F-28)</td></tr>
+<tr><td>FETs BSC030N08NS5 (PowerPAK SO-8)</td><td>8</td><td>F</td><td class="num">311</td><td class="num">8.7</td><td>keep — thermal, see §4</td></tr>
+<tr><td>Shunts 8 mΩ 2512 (3 W)</td><td>6</td><td>F</td><td class="num">175</td><td class="num">4.9</td><td>2-per-phase is the 10 A mode</td></tr>
+<tr><td>Mounting holes (#6 Plastite, Ø3.9)</td><td>4</td><td>F</td><td class="num">167</td><td class="num">4.7</td><td>enclosure decision</td></tr>
+<tr><td>RP2350B QFN-80</td><td>1</td><td>F</td><td class="num">123</td><td class="num">3.4</td><td>53 GPIO-class nets in use — the 7×7 RP2350A (30 GPIO) is out</td></tr>
+<tr><td>Snubber footprints (DNP since rev A), 0805</td><td>16</td><td>F</td><td class="num">104</td><td class="num">2.9</td><td>never populated</td></tr>
+<tr><td>Phase TVS SMAJ64A (SMA)</td><td>4</td><td>F</td><td class="num">98</td><td class="num">2.7</td><td>same rating exists in SOD-123FL</td></tr>
+<tr><td>Other connectors J3 (USB-C, B), J11, J5, J4, J6</td><td>5</td><td>F/B</td><td class="num">318</td><td class="num">8.9</td><td>J3 stays 16-pin for 5 A PD</td></tr>
+<tr><td>Gate drivers EG3113 (SOIC-8)</td><td>4</td><td>B</td><td class="num">159</td><td class="num">4.5</td><td>F-40 replacement pending</td></tr>
+<tr><td>Gate network (10.2 Ω ×12, 0 Ω ×8, 100 Ω ×4, SOD-523 ×8, PNP ×4)</td><td>36</td><td>B</td><td class="num">183</td><td class="num">5.1</td><td>most of it exists to fix a weak driver sink</td></tr>
+<tr><td>Bootstrap DSS110 ×4 + 4.7 Ω ×4</td><td>8</td><td>B</td><td class="num">57</td><td class="num">1.6</td><td>gone with an integrated-diode driver</td></tr>
+<tr><td>Buck U28 + L3 + D4 + C11 + C3</td><td>5</td><td>B</td><td class="num">132</td><td class="num">3.7</td><td>150 kHz async, 0.4 A (F-29)</td></tr>
+<tr><td>INA240A1D ×3 (SOIC-8)</td><td>3</td><td>B</td><td class="num">120</td><td class="num">3.3</td><td>same die family ships in SOT-23-8</td></tr>
+<tr><td>Analog switches TS5A3159 ×14 (SC-70)</td><td>14</td><td>B(13)/F(1)</td><td class="num">107</td><td class="num">3.0</td><td>10 of them carry an oversize courtyard</td></tr>
+<tr><td>Isolated CAN U16 CA-IS3052CG (wide SOIC-8)</td><td>1</td><td>B</td><td class="num">82</td><td class="num">2.3</td><td>narrow-body equivalent in stock</td></tr>
+<tr><td>Bus TVS D5 SMDJ64A (SMC)</td><td>1</td><td>B</td><td class="num">66</td><td class="num">1.8</td><td>keep — 3 kW is the point</td></tr>
+<tr><td>Test points with courtyards TP8, TP12–TP20</td><td>10</td><td>F/B</td><td class="num">41</td><td class="num">1.2</td><td>DNP, yet they block placement</td></tr>
+</table>
+</div>
+
+<h2 id="tierA">2 · Tier A — free: no BOM change, no electrical change</h2>
+
+<div class="tablewrap">
+<table>
+<tr><th>ID</th><th>Change</th><th>Side</th><th class="num">Δ mm²</th><th>Notes</th></tr>
+<tr><td>A1</td><td><strong>Snubber footprints</strong> R17/R18/R37/R38/R48/R52/R80/R81 + C7/C9/C25/C26/C33/C34/C53/C54: 0805 → C in 0402 (1 nF/100 V X7R is a stock 0402 value), R in 0603 (75 V rating for a 60 V bus; 0402 is 50 V). They are RC snubbers VMOT→phase and phase→GND on all four legs, DNP since rev A and absent from the rev-A BOM.</td><td>F</td><td class="num">−56<br><span style="color:var(--muted)">(−104 if deleted)</span></td><td>Sits exactly in the half-bridge bands that F-44 measured at 0.0–0.5 mm slack. Deleting keeps the option only in the schematic; shrinking keeps it on the board.</td></tr>
+<tr><td>A2</td><td><strong>Test points</strong> TP12–TP20 (Ø1.0 pad with a 3.1 mm² courtyard each, B) and TP8 (Keystone 5019 loop, 13.6 mm², F) → the no-courtyard pad footprint TP1–TP10 already use.</td><td>B / F</td><td class="num">−28 / −14</td><td>TP8/J5 is one of the tight seams in the module-stretch result; TP15/TP17 had to be shoved 3 mm to place Q5 (F-27).</td></tr>
+<tr><td>A3</td><td><strong>SC-70 courtyard harmonisation</strong>: U13, U14, U15, U17, U24, U25, U30–U33 carry 8.4 mm² courtyards; U22, U23, U26, U27 carry the KiCad-standard 5.0 mm² for the same TS5A3159DCK. Point all 14 at one footprint.</td><td>B (U15 F)</td><td class="num">−34</td><td>Encoder fabric = zero slack in every direction (F-44). This is 30 % of the switch area for a footprint-library edit.</td></tr>
+<tr><td>A4</td><td><strong>Courtyard margins to JLCPCB's own minimums.</strong> JLCPCB's SMT spacing table: 0402–0402 0.18 mm, 0603–0603 0.25 mm, 0201–0201 0.15 mm. The library courtyards used here give 0.38 mm between two 0402s and 0.60 mm between two 0603s. Tight-courtyard variants: 0402 1.66 → 1.37 mm², 0603 4.28 → 3.24 mm², 0805 6.61 → 5.5 mm².</td><td>both</td><td class="num">−117<br><span style="color:var(--muted)">placement freedom</span></td><td>Not area — but every placement/morph/creep tool on this repo treats the courtyard polygon as the wall, so this is the wall moving. Costs hand-rework convenience; JLCPCB calls its table "recommended".</td></tr>
+<tr><td>A5</td><td><strong>WS2812B 3528 → 2020</strong> addressable LED (any stocked 2020 variant; WS2812B-2020-V6 C52917434 shows only 5 in stock today, pick a stocked equivalent).</td><td>F</td><td class="num">−6</td><td>D30's LED_VDD drop diode stays unless a 3.3 V-logic "V" variant is chosen.</td></tr>
+<tr><td colspan="3"><strong>Tier A total</strong></td><td class="num"><strong>F −76 · B −62</strong> (+117 margin)</td><td>Tooling exists: <code>hardware/tools/revb/shrink_0402.py</code> preserves the schematic path link and re-bridges stranded track ends; <code>hardware/tools/modules/place_scan.py</code> does footprint swaps on real geometry.</td></tr>
+</table>
+</div>
+
+<h2 id="tierB">3 · Tier B — same function, smaller package (BOM change, no topology change)</h2>
+
+<div class="tablewrap">
+<table>
+<tr><th>ID</th><th>Change</th><th>Side</th><th class="num">Δ mm²</th><th>Stock / price (JLC mirror, 2026-09-01)</th><th>Notes</th></tr>
+<tr><td>B1</td><td><strong>Phase TVS</strong> D9/D13/D17/D21 SMAJ64A (SMA, 400 W) → <strong>TPSMF4L64A</strong> (SOD-123FL, <em>400 W</em>, same 64 V standoff / 71–79 V breakdown).</td><td>F</td><td class="num">−57</td><td>C53278604: 3,000 @ $0.06</td><td>No rating loss — the SMF4L series is Littelfuse's 400 W SOD-123FL. SMF64A (200 W) is the fallback with &gt;10 k in stock across vendors. The voltage philosophy (clamp below the 80 V FETs) is unchanged.</td></tr>
+<tr><td>B2</td><td><strong>Current sense</strong> U5/U9/U10 INA240A1D (SOIC-8) → <strong>INA241A1IDDFR</strong> (SOT-23-8, 2.9 × 2.8 mm body): same 20 V/V gain, −5…110 V common mode, 1.1 MHz, plus <em>enhanced PWM rejection</em> (the dV/dt worry the GaN eval raised) and lower offset.</td><td>B</td><td class="num">−87</td><td>C19712054: 797 @ $3.02 (INA240A1DR is $1.02, 30 k)</td><td>Pinout differs → new symbol + footprint; +$6/board. Cheaper middle step: INA240A1QPWRQ1 TSSOP-8 (C553123, 1,770 @ $1.54) → −48 mm².</td></tr>
+<tr><td>B3</td><td><strong>Isolated CAN</strong> U16 CA-IS3052CG (wide SOIC-8, 7.5 mm body) → <strong>ISO1044BDR</strong> (narrow SOIC-8, 4.90 × 3.91 mm body): 3 kVrms isolation, 450 Vrms working, ±58 V bus fault, 5 Mbps FD, VCC1 1.71–5.5 V, VCC2 4.5–5.5 V.</td><td>B</td><td class="num">−42</td><td>C2878225: 7,698 @ $1.79</td><td>Bus-side pin order differs (ISO1044: 5 CANL, 6 CANH, 7 GND2; the CA-IS3052 has GND2 on 5). The barrier under the package narrows from ~8 mm to ~4 mm creepage — fine for a harness-referenced ground break, but F-42's plane cut must follow the new footprint. <strong>Also:</strong> C41784142 does not appear in the JLC in-stock mirror at all today — verify at LCSC before assuming U16 is buyable as drawn.</td></tr>
+<tr><td>B4</td><td><strong>Crystal</strong> Y1 ABM8-272 (3225) → 12 MHz 2520, e.g. TXM12M0004252FBCEO00T (12 pF).</td><td>F</td><td class="num">−7</td><td>C284155: 85 k @ $0.10</td><td>In the MCU halo (zero slack). ESR is 120 Ω against 50 Ω on the Pi reference part — check RP2350 XOSC start-up margin before committing. <em>No 12 MHz 2016 crystal is stocked at JLC</em>, so 2520 is the floor.</td></tr>
+<tr><td>B5</td><td><strong>VMOT ceramics</strong> C1/C8/C44 2.2 µF/100 V 1206 → 0805 (100 V X7R 2.2 µF exists in 0805).</td><td>F</td><td class="num">−12</td><td>—</td><td>DC-bias derating is worse in 0805; they are local HF bypass next to the bulk polymers, not energy storage.</td></tr>
+<tr><td>B6</td><td>C105/C106 4.7 µF/50 V 0805 → 0603 (VBUS ≤ 20 V); C5/C12/C47 10 µF/25 V 0805 → 0603.</td><td>B (C47 F)</td><td class="num">−5 / −7</td><td>—</td><td>C105/C106 are two of the named tight seams against J3 in the module-stretch result.</td></tr>
+<tr><td>B7</td><td>Bootstrap diodes D3/D10/D14/D18 DSS110 (SOD-123F, 1 A) → BAT46WJ-class 100 V Schottky (SOD-323F, 250 mA, Vf 0.45 V).</td><td>B</td><td class="num">−22</td><td>—</td><td>Moot under C1 (integrated bootstrap diode). Keep Schottky: a silicon diode would cost 0.3–0.5 V of the 5 V gate drive F-41 is already short of.</td></tr>
+<tr><td>B8</td><td>Turn-off PNPs Q1–Q4 FMMT591 (SOT-23) → SOT-323 PNP (BC807-40W class, 0.5 A / 1 A peak).</td><td>B</td><td class="num">−32</td><td>—</td><td>Moot under C1 (5 A sink makes the PNP redundant).</td></tr>
+<tr><td>B9</td><td>Gate anti-parallel diodes D6/D7/D11/D12/D15/D16/D19/D20 SOD-523 → SOD-923.</td><td>B</td><td class="num">−16</td><td>—</td><td>Moot under C1 (split outputs).</td></tr>
+<tr><td>B10</td><td>Bootstrap caps C10/C28/C36/C55 and Vdrive caps C2/C15/C27/C48 (0603, 35 V) → 0402, 10 V.</td><td>B</td><td class="num">−21</td><td>—</td><td><strong>Policy question, not a recommendation.</strong> F-43's audit kept these 0603 because "capacitance/voltage not available in 0402" — but both nodes sit at Vdrive ≈ 5 V (the bootstrap cap floats on the phase; it sees 5 V, not 35 V), so a 10 V 0402 is electrically fine. Raised so the policy is revisited on its real premise.</td></tr>
+<tr><td colspan="3"><strong>Tier B total</strong> (B1–B6; B7–B9 fold into C1; B10 excluded)</td><td class="num"><strong>F −76 · B −134</strong></td><td colspan="2"></td></tr>
+</table>
+</div>
+
+<h2 id="tierC">4 · Tier C — architectural swaps</h2>
+
+<h3 id="c1">C1 · Gate-driver block → LMG1205 (−306 mm², −24 parts, all bottom side)</h3>
+
+<p>Every one of the four half-bridge blocks today is 99.7 mm² of bottom-side courtyard around a SOIC-8 EG3113: the driver
+(39.8), a bootstrap diode + 4.7 Ω (14.3), two 0 Ω + two anti-parallel SOD-523 diodes for fast turn-off (15.5), three 10.2 Ω gate
+resistors (12.8), and a PNP + 100 Ω low-side turn-off booster (17.3). Most of that network exists because the EG3113's
+sink is weak. The <strong>TI LMG1205</strong> (C2653814, 1,028 @ $2.55) is a 100 V half-bridge driver in a 2.0 × 2.0 mm
+DSBGA-12 that was designed for exactly the operating point this board is already at:</p>
+
+<ul class="tight">
+<li><strong>VDD 4.5–5.5 V</strong> — it runs from Vdrive (5.04 V) as-is; no UVLO gamble.</li>
+<li><strong>Integrated 100 V bootstrap diode</strong> with a 5 V clamp → D3/D10/D14/D18 and R9/R25/R41/R73 go.</li>
+<li><strong>Split outputs</strong> (LOH/LOL, HOH/HOL) → separate turn-on and turn-off resistors, so the 0 Ω + diode pairs and the PNP booster go, and F-41's gate-resistor sweep gets independent on/off knobs for free.</li>
+<li><strong>1.2 A source / 5 A sink</strong>, 35 ns propagation, TTL inputs (3.3 V-compatible), independent HI/LI — same control model as today.</li>
+<li>All 12 balls are on the perimeter of the 4 × 4 grid (A1–A4, B1, B4, C1, C4, D1–D4; A3/C4 and C1/D4 are internally paired), so every ball escapes outward — no between-ball routing at 0.4 mm pitch.</li>
+</ul>
+
+<p>Per bridge the block becomes ~6 mm² (BGA) + four 0603 gate resistors (17.1) + the bootstrap cap (4.28, unchanged) ≈ 27 mm²:
+<strong>−73 mm² per bridge, −292 mm² for four</strong>, and 11 parts out / 5 in per bridge (−24 net). Cost +$8.4/board (4 × $2.55 − 4 × $0.45 − removed passives).</p>
+
+<div class="callout warn">
+<strong>What it locks in.</strong> VDD max is 5.5 V. Choosing the LMG1205 makes the 5 V gate drive permanent and kills F-41's
+last-resort 10–12 V rail — the same ceiling the fourteen TS5A3159s (5.5 V max) already impose, so nothing new is lost, but it
+should be said out loud. Needs Standard PCBA (≥ 0.35 mm pitch; JLCPCB adds X-ray automatically) and 0.1 mm traces from the
+0.2 mm ball pads, i.e. the design-rule move in <a href="#process">§6</a>. Bench-check the 5 V clamp behaviour with a silicon
+FET's larger Qg before committing four of them.
+</div>
+
+<p><strong>Alternatives ranked.</strong> LM5113 (WSON-10 4 × 4, C2677036, 821 @ $4.09) is the same feature set in a leaded
+package: −60 mm²/bridge, no BGA. UCC27282DRCR (VSON-10 3 × 3, 1,797 @ $3.29, 5.5–16 V, integrated bootstrap) is the right part
+<em>only if</em> the 10–12 V rail lands: its VDD UVLO rising threshold is 4.7–5.4 V, so at 5.04 V a fraction of units never
+start. <strong>F-40 note:</strong> the JLC in-stock mirror shows EG3113 C480666 at 965 units / $0.45 today against the 9 units
+recorded on 2026-08-11 — re-verify F-40 before treating the driver swap as forced; as a space decision it stands either way.</p>
+
+<h3 id="c2">C2 · Buck → 80 V synchronous (−70 mm², bottom side)</h3>
+
+<p>U28 XL7005A (150 kHz, 0.4 A, async) + L3 47 µH 5 × 5 + D4 SS210 (SMA) + C11 100 µF electrolytic = 132 mm². A synchronous
+80 V part at ≥ 400 kHz — <strong>LMR38010SDDAR</strong> (80 V in, 1 A, HSOIC-8, C5219310, 2,014 @ $0.92) — deletes the catch
+diode and the electrolytic and drops the inductor to 22–33 µH in a 4 × 4 case with 2 × 22 µF 0805 ceramics: ~60 mm², −2 parts.
+It also retires <a href="findings.html#f-29">F-29</a> (0.45 A budget vs a 0.4 A part, inductor near saturation). Pick the
+FPWM/PFM variant deliberately and re-check the 5.04 V set point; the buck module is one of F-44's zero-slack blocks.</p>
+
+<h3 id="c3">C3 · Encoder switch pairs → dual SPDT (−34 mm², encoder fabric)</h3>
+
+<p>Four pairs are already neighbours on B.Cu: U13+U14 (EXT_ANALOG_SW, 3 mm apart), U24+U25 (EXT_ANALOG_SW, 3 mm),
+U22+U26 (H1_SW / H2_SW, 2.8 mm), U23+U27 (H3_SW / I2C_SW, 2.8 mm). Each pair → one <strong>TS5A23159RSER</strong>
+(dual SPDT, independent controls, UQFN-10 1.5 × 2.0 mm, C138710, 1,112 @ $0.91): 53.6 → ~20 mm². U30–U33 (terminations)
+stay single — they sit at their own transceiver by design and a shared quad would put the 100 Ω termination at the end of a
+stub. The WCSP TS5A3159AYZPR (1.4 × 0.9 mm) exists but at 335 units it can't cover 14 per board.</p>
+
+<h3 id="c4">C4 · Shunts 2512 → 2010 (−76 mm², top side)</h3>
+
+<p>The two-shunts-per-phase scheme is the 10 A precision mode, so six parts stay six. A 2010 2 W 8 mΩ dissipates 0.8 W at
+20 A (each shunt carries 10 A): 40 % of rating, same margin class as today's 3 W 2512 at 27 %. 1206 1 W parts (−130 mm²)
+would run at rating — no. Keep the Kelvin taps.</p>
+
+<h3 id="c5">C5 · Bulk caps 3 → 2 (−86 mm², top side) — a decision, not a recommendation</h3>
+
+<p>C39/C42/C80 are 100 µF/100 V polymer Ø10 × 12 (C2887236). Dropping one takes the regen headroom from 0.22 J to
+0.15 J between 60 V and TVS breakdown; <a href="findings.html#f-28">F-28</a>'s bus guard and chopper are what make that
+survivable. No smaller 100 V/100 µF case is stocked.</p>
+
+<div class="tablewrap">
+<table>
+<tr><th>Tier</th><th class="num">Top (F)</th><th class="num">Bottom (B)</th><th>Parts</th><th>Cost/board</th></tr>
+<tr><td>A (free)</td><td class="num">−76</td><td class="num">−62</td><td>0</td><td>$0</td></tr>
+<tr><td>B (B1–B6)</td><td class="num">−76</td><td class="num">−134</td><td>0</td><td>≈ +$6.5 (INA241), else ≈ $0</td></tr>
+<tr><td>C1 + C2 + C3</td><td class="num">0</td><td class="num">−396</td><td>−26</td><td>≈ +$9</td></tr>
+<tr><td>C4</td><td class="num">−76</td><td class="num">0</td><td>0</td><td>≈ $0</td></tr>
+<tr><td><strong>Recommended set</strong></td><td class="num"><strong>−228</strong> (2,949 → 2,721, −8 %)</td><td class="num"><strong>−592</strong> (1,523 → 931, −39 %)</td><td><strong>−26</strong></td><td><strong>≈ +$16</strong></td></tr>
+<tr><td>+ A4 courtyard margins</td><td class="num" colspan="2">−117 placement freedom, both sides</td><td>0</td><td>$0</td></tr>
+<tr><td>+ C5 (decision)</td><td class="num">−86</td><td class="num">0</td><td>−1</td><td>−$0.5</td></tr>
+</table>
+</div>
+
+<h2 id="interfaces">5 · Interfaces — listed for scale, not proposed</h2>
+
+<p>Connectors are 1,640 mm² (46 % of the board). None of these is a component choice in the sense above; each changes what
+the board mates with.</p>
+<ul class="tight">
+<li><strong>J7/J8 interboard serial (213 mm²)</strong> — the horizontal 2.54 mm header/socket pair is the largest non-power item on the board. A 1.27 mm horizontal pair is ≈ −140 mm²; giving up direct board-to-board mating for a cable pair (JST SH horizontal like J4/J6) ≈ −124 mm². Worth a decision if the side-by-side pitch is not yet promised.</li>
+<li><strong>J11 CAN (76 mm²)</strong> 2.54 mm vertical → JST GH/SH ≈ −50; <strong>J5 E-stop (58)</strong> → SH ≈ −14.</li>
+<li><strong>Mounting holes (167 mm²)</strong>: #6 Plastite Ø3.9 → M2.5 ≈ −55; M3 barely moves it.</li>
+<li><strong>XT30 ×4 (892) and J12 (217)</strong>: the adapter-PCB promise in the README depends on them — untouched.</li>
+<li><strong>J3 USB-C (95, bottom)</strong>: 6-pin receptacles are 3 A parts; the 5 A PD contract (F-27) needs the 16-pin's paralleled VBUS/GND pins — keep.</li>
+</ul>
+
+<h2 id="process">6 · JLCPCB process options this board does not use yet</h2>
+
+<p>Rules on the board today: 0.16 mm minimum track (0.2 default), 0.18 mm clearance, 0.25/0.5 mm default via (386 of 617),
+0.3/0.7 (157), 0.4/0.8 (57), 0.25/0.6 (16), one 0.6/1.0; hole-to-hole 0.254 mm. Numbers below are from JLCPCB's capability,
+via-covering, assembly and extra-cost pages fetched 2026-09-01 (links in <a href="#sources">§8</a>).</p>
+
+<div class="tablewrap">
+<table>
+<tr><th>Option</th><th>JLCPCB status</th><th>What it buys on this board</th><th>Cost / catch</th></tr>
+<tr><td><strong>Via-in-pad, epoxy filled &amp; copper capped (POFV)</strong></td>
+<td><strong>Free on 6–20 layer boards</strong> since 2022-11 (4-layer still charged). Rules: hole 0.2–0.5 mm, annular ring ≥ 0.05 mm (0.075 preferred → 0.2/0.35 via), ≥ 0.45 mm hole-to-hole.</td>
+<td>(a) <strong>137 vias</strong> sit within 1.2 mm of a FET or shunt pad edge — the top-side stitching farms around the eight PowerPAKs and six shunts can move <em>into</em> the drain/source/shunt pads (better thermal, ~1 mm² of F copper freed per via including clearance). (b) <strong>36 0402s and 88 vias</strong> within 4 mm of U8 — a 0.2/0.35 via inside each decoupling pad removes the via and its stub from the halo. (c) Exposed pads (U28, U101, four SIT3088, RP2350 EP) stitched without solder voids.</td>
+<td>$0. But the option is board-wide: <strong>253 via pairs</strong> today are closer than 0.45 mm hole-to-hole and the single 0.6 mm drill exceeds 0.5 — farms get sparser, not denser. Plan via spacing for POFV before routing, not after.</td></tr>
+<tr><td><strong>Trace/space 0.10/0.10 mm</strong></td>
+<td>Multilayer 1 oz allows 0.09/0.09; the 3.0–3.5 mil band carries +20 % on 4–8 layers, so 4 mil (0.10) is the free floor.</td>
+<td>Signal route pitch 0.38 → 0.20 mm: <strong>1.9× the tracks per channel</strong>. F-44 and the creep/morph pages found the wall is rule-pitch bundles between fixed pads — this is the rule.</td>
+<td>$0 at 0.10; +20 % at 0.09. Keep 0.16/0.18 on the power and gate classes; only the signal class moves.</td></tr>
+<tr><td><strong>Smaller vias</strong> 0.2/0.35 (POFV-compatible) or 0.15/0.25</td>
+<td>Multilayer minimum 0.15 hole / 0.25 diameter. Drills &lt; 0.3 mm are a surcharge tier — one this board's 0.25 mm defaults already sit in.</td>
+<td>Via footprint incl. clearance 0.68 → 0.53 (0.35 pad, 0.18 clr) → 0.43 mm (0.25 pad); ×617 vias ≈ 100–150 mm² of routing-layer copper.</td>
+<td>Check the quote tool for the 0.2 vs 0.15 tier; POFV needs ≥ 0.2.</td></tr>
+<tr><td>Via hole-to-hole 0.2 mm</td><td>Allowed (board rule 0.254).</td><td>Denser stitching — conflicts with POFV's 0.45.</td><td>Choose one.</td></tr>
+<tr><td>0201 passives</td><td>Standard PCBA only (Economic PCBA minimum is 0402); 01005 also on Standard.</td><td>~30 × 100 nF decouplers −0.9 mm² each ≈ −27 in the halo/fabric.</td><td>Standard PCBA pricing; hand rework gets hard. Last, not first.</td></tr>
+<tr><td>Fine-pitch BGA/CSP</td><td>Standard 0.35 mm, Economic 0.5 mm; X-ray added automatically.</td><td>Enables C1's DSBGA (0.4) and the WCSP switches.</td><td>Standard PCBA.</td></tr>
+<tr><td><strong>Blind / buried / HDI microvias</strong></td><td><strong>Not offered</strong>: capability page says "we don't support blind/buried vias, only through holes"; the 2025-02 Q&amp;A asking is unanswered.</td><td>—</td><td>Don't design for it.</td></tr>
+<tr><td>2 oz outer copper</td><td>Available, but minimum trace/space becomes 0.15/0.15.</td><td>Wrong direction for the bottom-side logic.</td><td>No.</td></tr>
+<tr><td>2 oz inner copper</td><td>Inner layers 0.5/1/2 oz, independent of outer rules.</td><td>Carry phase/VMOT on In2/In3 pours and narrow the top pours.</td><td>Small; only if F-side copper turns out to be the blocker after the above.</td></tr>
+<tr><td>Larger outline</td><td>Flat price up to 100 × 100 mm.</td><td>77 × 46.5 → anything to 100 × 100 costs nothing at the fab; the +1 mm encoder-edge extension was this lever.</td><td>Product decision (daisy-chain pitch, enclosure).</td></tr>
+</table>
+</div>
+
+<h2 id="sequence">7 · Suggested order</h2>
+<ol>
+<li><strong>Design rules first</strong> — 0.10/0.10 signal class, 0.2/0.35 vias, and the POFV decision. Every placement tool on this repo is keyed to rule pitch and courtyards; changing them after re-running morph/creep/field wastes the runs.</li>
+<li><strong>Tier A</strong> (A1–A3, A5) with the existing scripts, then A4 as a library edit.</li>
+<li><strong>B1, B4–B6</strong> — value/footprint swaps, no symbol work.</li>
+<li><strong>B2 + B3</strong> — new symbols/footprints; both land in the zero-slack bottom-side blocks, and B3 also resolves a possibly-unbuyable U16.</li>
+<li><strong>C1</strong> bundled with the F-40/F-41 decision; <strong>C2</strong> bundled with F-29; <strong>C3</strong>.</li>
+<li>C4, C5 and anything in §5 only as product decisions.</li>
+</ol>
+
+<h2 id="method">8 · Method &amp; sources</h2>
+<p id="sources">Areas are KiCad courtyard polygons (<code>GetCourtyard().Area()</code>, pcbnew 9.0.8) on
+<code>hardware/rp2350_driver.kicad_pcb</code> at <code>ed7808b</code>; replacement areas are KiCad library courtyards or body + 0.25 mm.
+Roles were read from pad nets on the board, not guessed. Stock and prices are from the unofficial JLCPCB in-stock mirror
+(<a href="https://jlcsearch.tscircuit.com/">jlcsearch.tscircuit.com</a>) on 2026-09-01 — confirm at LCSC before ordering.
+Datasheet facts: TI LMG1205 (SNOSD07), UCC27282 (SNVSAQ5B), INA241A, ISO1044. JLCPCB rules:
+<a href="https://jlcpcb.com/capabilities/pcb-capabilities">PCB capabilities</a>,
+<a href="https://jlcpcb.com/help/article/pcb-via-covering">via covering</a>,
+<a href="https://jlcpcb.com/blog/Free-Via-in-Pad-on-6-20-Layer-PCBs-with-POFV">free POFV on 6–20 layers</a>,
+<a href="https://jlcpcb.com/capabilities/pcb-assembly-capabilities">assembly capabilities</a>,
+<a href="https://jlcpcb.com/help/article/minimum-spacing-for-smd-components">SMD spacing</a>,
+<a href="https://jlcpcb.com/help/article/in-what-cases-will-there-be-charged-extra">extra charges</a>.
+Registered as <a href="findings.html#f-47">F-47</a> (parts) and <a href="findings.html#f-48">F-48</a> (process).</p>
+
+</main>
+</body>
+</html>

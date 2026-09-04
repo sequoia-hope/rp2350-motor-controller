@@ -1,0 +1,140 @@
+<!doctype html><meta charset=utf-8><title>settle, explained</title>
+<style>
+body{font:15px/1.55 system-ui,sans-serif;max-width:1100px;margin:1.5em auto;padding:0 1em;color:#222}
+h1{font-size:1.7em}h2{margin-top:2em;border-bottom:1px solid #ddd;padding-bottom:.2em}h3{margin-top:1.4em}
+figure{margin:1em 0}figcaption{font-size:12.5px;color:#555;margin-top:.3em}img,video{max-width:100%;border:1px solid #eee}
+table{border-collapse:collapse;font-size:12.5px;margin:.6em 0}td,th{border:1px solid #ccc;padding:3px 7px;text-align:left;vertical-align:top}th{background:#f3f3f3}
+code{background:#f4f4f4;padding:0 3px}.small{color:#666;font-size:12.5px}.verdict{background:#f7f7f7;padding:.6em 1em;border-left:4px solid #c0392b}
+.math{font-family:Georgia,serif;font-style:italic}
+</style>
+<h1>The settle engine, step by step</h1>
+<p>The question this tool answers: <b>rev-B needs parts that rev-A's copper has no room for. Where can they go without
+tearing up copper that already shipped, and what has to move to make room?</b> The engine treats the board like a bag of chips
+being settled: every part, trace node, via and unborn part is a unit that moves only as far as the design rules allow, pressure
+propagates through the packing, trace lengths act as springs with hard caps, and the one gate that must always pass is real
+KiCad DRC on every board the engine emits.</p>
+<p class=verdict>enc_corner_wide: 105 cycles, progress 1.0, 7/7 ghosts born, 5 parts moved, gate 13/13, check_sync True<br>enc_corner: 253 cycles, progress 0.6426, 3/7 ghosts born, 18 parts moved, gate 14/14, check_sync True<br>power_squeeze: 500 cycles, progress 0.4086, 110 parts moved, gate 11/11, check_sync True</p>
+<p class=small>Branch <code>lean-jiggle</code>, rules 0.10/0.10, region of the encoder corner (left 20 mm of the board) with the F side and the
+connectors locked. Code: <code>hardware/tools/settle/</code>. Per-run detail pages: <a href="settle_enc_corner_wide.html">enc_corner_wide</a>,
+<a href="settle_enc_corner.html">enc_corner</a>, <a href="settle_power_squeeze.html">power_squeeze</a>.</p>
+
+<h2>1. The whole run in one video</h2>
+<figure><video controls muted loop playsinline preload="metadata" src="img/settle_enc_corner_wide.mp4"></video><figcaption>enc_corner_wide, one frame per cycle. Red: the seven unborn parts inflating at their sites. Orange pads: movable parts (dark orange once moved). Grey: fixed parts and static copper. Blue arrows: pressure deposited on a part that cycle; blue dots: copper nodes under pressure; black x: the clamp that stopped a unit. Green arrows: net displacement so far.</figcaption></figure>
+<figure><video controls muted loop playsinline preload="metadata" src="img/settle_enc_corner_wide_zoom_U32.mp4"></video><figcaption>The same run, 8 mm window around U32: the ghost grows step by step, the copper under it is pushed out of the way, a neighbouring part yields when its own room allows, and the ghost reaches full size.</figcaption></figure>
+
+<h2>2. The model: what moves, what does not</h2>
+<p><code>prep.py</code> reads the board and one JSON config and builds a region-scoped model. A part is <b>movable</b> when its pad centroid
+is inside the region and it is not locked (by reference, side, or rectangle). Every track or via whose segment intersects the region
+and whose net is not locked becomes <b>dynamic copper</b>: a graph of nodes (track endpoints and vias) and edges (one per original segment).
+An endpoint that lies on a pad is <b>bound</b> to that pad: if the part is movable the node rides with it, otherwise it is fixed.
+An endpoint that meets copper outside the region, or copper that stays static, is <b>pinned</b> so a junction can never open.
+Everything else within a 3 mm halo of the region is a <b>static obstacle</b>: pads at their true polygons with local clearances, tracks, vias.</p>
+<figure><img src="img/explain_model.png"><figcaption>The enc_corner_wide model at cycle 0. Each red cross is a site where an unplaced part will be born.</figcaption></figure>
+<p>The parts to be born are <b>ghosts</b>: the real footprint placed at its target pose, its pads and courtyard scaled about the pad
+centroid by a factor <span class=math>g</span> that starts at 0.05 and must reach 1. A ghost's pads carry no net while it inflates,
+so every pair it forms is a clearance pair; nothing may be inside it when it is full size.</p>
+
+<h3>2a. Where to seed a ghost</h3>
+<p>The site matters more than any amount of force. With <code>at: "search"</code> the model rasterizes the ghost's side at 0.1 mm
+(pads and courtyards weight 1, copper that can be pushed 0.3), then scores every candidate centre within a radius of the partner-pad
+centroid by the obstruction under the footprint's courtyard box plus 0.03 per mm of distance, and takes the minimum. Placed ghosts are
+stamped into the raster so later ghosts avoid them. At 8 mm radius four of the seven parts were seeded into the dense switch fabric and
+never got out; at 14 mm all seven found pockets.</p>
+<figure><img src="img/explain_sites.png"><figcaption>Site search for the two parts that travelled furthest. Grey: obstruction raster. Coloured dots: candidate scores (green = free). Dashed circle: search radius around the partner centroid (+). Star: the chosen site.</figcaption></figure>
+
+<h2>3. Admissibility: the DRC geometry as a set of margins</h2>
+<p>Every pair of objects that could interact has a <b>margin</b>: its distance minus the clearance the rules demand. Track-track,
+track-via, track-pad, via-via, pad-pad, hole-to-copper and hole-to-hole pairs use true pad polygons, netclass clearances with max semantics,
+per-pad local overrides, the board outline (centreline plus the corner arcs) and courtyards. Pad polygons are keyed per edge, because within one
+straight edge the model is exact and the polygonization bias only jumps between edges.</p>
+<p>A move is admissible when every margin stays above its <b>floor</b>. The floor is the rule plus a 15 µm guard for pairs that had room on the
+shipped board, and the <em>shipped margin itself</em> for pairs the shipped board carried tighter than that: proof by shipping. Same-net contacts
+(a stub ending on a pad, a T junction) are held as <b>attachments</b>: at least one contact point of the pair must survive every move, so a part
+cannot slide off its own copper. GND is exempt because the pour reconnects it.</p>
+<figure><img src="img/explain_census.png"><figcaption>The shipped margins of every pair the movable copper can meet, at the new 0.10 mm rule. The pile at 0–20 µm is the JLC-tight courtyard pairs and copper that shipped at rule pitch.</figcaption></figure>
+<p>Two rules keep the engine honest on an imperfect start. <b>Non-worsening:</b> a pair that is already below its floor (a pre-existing
+overlap, or a ghost speck born on top of a trace) is admissible as long as the move does not reduce its margin. <b>Ghost pairs are never
+grandfathered:</b> a ghost only ever grows into legal room; the copper under it has to leave first.</p>
+
+<h2>4. One move: the line search</h2>
+<p>Each unit proposes a step of at most 0.05 mm (for a ghost: 0.05 mm at its perimeter). The engine evaluates every margin at the full step;
+if all pass the step is taken. Otherwise the failing pairs are the <b>clamps</b>, and a bisection finds the largest fraction α whose margins
+all stay above floor. α = 0 means the unit waits. Because a step is far below any rule corridor, endpoint feasibility is sufficient: nothing can
+tunnel through a trace between two admissible positions.</p>
+<figure><img src="img/explain_linesearch.png"><figcaption>Margins of the clamping pairs against the fraction of one growth step, for a ghost stopped mid-inflation. Each pair must stay above its own floor (dotted); the accepted fraction is where the first one would cross.</figcaption></figure>
+
+<h2>5. Inflation, and where the pressure goes</h2>
+<p>A ghost that could only take a fraction of its step <b>deposits pressure</b> on what stopped it: the displacement each blocker would need,
+directed away from the ghost's centre. A copper node receives it directly; a node bound to a part hands it to the part; a courtyard clamp goes to
+the part. If the blocker is unmovable (a locked part's pad, the board edge) the demand is <b>absorbed</b> and counted, and the ghost gets a
+push-back so it slides off walls toward open space. A ghost also feels a weak spring back to its site.</p>
+<figure><img src="img/explain_inflate.png"><figcaption>U32 being born. Its pads (red) grow, the trace beneath is pushed out (blue dots), the neighbour yields (dark orange), and the courtyard (dashed) clears.</figcaption></figure>
+<p>Parts move by the same rule. A part's drive is its target term (if it has one), the pressure it accumulated this cycle, and the tension of its
+own copper; it is line-searched over all of its pads, its bound copper, its courtyard, the outline and the length caps of every net it touches.
+Blocked parts deposit pressure on their blockers in turn, so a packed corridor creeps like a traffic jam instead of shearing. Mutually wedged
+units are detected from the clamp graph and stepped jointly, and declared rigid groups always move as one.</p>
+<figure><img src="img/explain_pressure.png"><figcaption>The cycle with the most pressure in flight: blue arrows on parts, blue dots on copper nodes, black x at the clamps.</figcaption></figure>
+<p>After the units, the <b>copper pass</b>: pressured nodes yield as far as their own floors allow, sub-segments longer than 1.3 mm are pulled
+straight, and nodes of nets over their allowance are pulled toward their neighbours.</p>
+
+<h2>6. Springs and caps: the elastic modifier</h2>
+<p>For every net the engine tracks the copper length inside the region. Growth beyond an <b>allowance</b>
+(<span class=math>max(allow·L, allow_mm)</span>) pulls the net's nodes toward their neighbours and its end parts toward their copper with stiffness
+<span class=math>k</span>. Growth beyond a <b>cap</b> (<span class=math>max(cap·L, cap_mm)</span>) enters the line search as one more margin, so no
+step can exceed it; a unit that would has to wait, and the cap shows up in the stall report by net name. The table is the tunable part:</p>
+<table><tr><th>net pattern</th><th>k, allow, cap, allow_mm, cap_mm</th></tr><tr><td><code>^GND</code></td><td>{&quot;k&quot;: 0.0, &quot;allow&quot;: 1000000000.0, &quot;cap&quot;: 1000000000.0}</td></tr><tr><td><code>^(VMOT|Vdrive|VBUS|\+3V3|\+1V1|\+5V_ISO|/V_ENC|/V_SW)$</code></td><td>{&quot;k&quot;: 0.2, &quot;allow&quot;: 0.3, &quot;cap&quot;: 1.0, &quot;allow_mm&quot;: 1.0, &quot;cap_mm&quot;: 6.0}</td></tr><tr><td><code>^Net-\(U(1|6|7|12)-(HO|LO|VB)\)$</code></td><td>{&quot;k&quot;: 4.0, &quot;allow&quot;: 0.0, &quot;cap&quot;: 0.05, &quot;allow_mm&quot;: 0.0, &quot;cap_mm&quot;: 0.3}</td></tr><tr><td><code>^/2[ABCD]G[HL]$</code></td><td>{&quot;k&quot;: 4.0, &quot;allow&quot;: 0.0, &quot;cap&quot;: 0.05, &quot;allow_mm&quot;: 0.0, &quot;cap_mm&quot;: 0.3}</td></tr><tr><td><code>^Net-\(Q[1-4]-[BE]\)$</code></td><td>{&quot;k&quot;: 4.0, &quot;allow&quot;: 0.0, &quot;cap&quot;: 0.05, &quot;allow_mm&quot;: 0.0, &quot;cap_mm&quot;: 0.3}</td></tr><tr><td><code>^Net-\((R(24|59|62|67|70)|D\d+)-</code></td><td>{&quot;k&quot;: 2.0, &quot;allow&quot;: 0.05, &quot;cap&quot;: 0.15, &quot;allow_mm&quot;: 0.2, &quot;cap_mm&quot;: 0.8}</td></tr><tr><td><code>^/USB_D</code></td><td>{&quot;k&quot;: 4.0, &quot;allow&quot;: 0.0, &quot;cap&quot;: 0.02, &quot;allow_mm&quot;: 0.0, &quot;cap_mm&quot;: 0.1}</td></tr><tr><td><code>^/CAN0_</code></td><td>{&quot;k&quot;: 4.0, &quot;allow&quot;: 0.0, &quot;cap&quot;: 0.02, &quot;allow_mm&quot;: 0.0, &quot;cap_mm&quot;: 0.1}</td></tr><tr><td><code>^/ENC_[A-D]_(P|N)(_SW)?$</code></td><td>{&quot;k&quot;: 1.0, &quot;allow&quot;: 0.1, &quot;cap&quot;: 0.15, &quot;allow_mm&quot;: 0.5, &quot;cap_mm&quot;: 2.0}</td></tr><tr><td><code>^/ENC_[A-D]_TRX_</code></td><td>{&quot;k&quot;: 1.0, &quot;allow&quot;: 0.1, &quot;cap&quot;: 0.2, &quot;allow_mm&quot;: 0.5, &quot;cap_mm&quot;: 2.0}</td></tr><tr><td><code>^[ABCD]_PWM_</code></td><td>{&quot;k&quot;: 1.0, &quot;allow&quot;: 0.1, &quot;cap&quot;: 0.25, &quot;allow_mm&quot;: 0.5, &quot;cap_mm&quot;: 3.0}</td></tr><tr><td><code>SENSE</code></td><td>{&quot;k&quot;: 1.0, &quot;allow&quot;: 0.1, &quot;cap&quot;: 0.2, &quot;allow_mm&quot;: 0.5, &quot;cap_mm&quot;: 2.0}</td></tr></table>
+<p class=small>Default {&quot;k&quot;: 0.5, &quot;allow&quot;: 0.2, &quot;cap&quot;: 0.5, &quot;allow_mm&quot;: 0.5, &quot;cap_mm&quot;: 2.0}. The absolute floors matter: 15 % of a 4 mm stub is 0.6 mm, and without
+<code>cap_mm</code> the first run froze the encoder fabric after half a millimetre.</p>
+<figure><img src="img/explain_springs.png"><figcaption>Copper grown per net over the run for the six nets that grew most. None reached a cap in this run; the squeeze below did.</figcaption></figure>
+
+<h2>7. Stalls, reroutes, and what remains</h2>
+<p>When progress (ghost scale plus target progress) has not improved for 40 cycles the run has stalled and the clamp set names the wall.
+Chains on that wall get an <b>atomic reroute</b>: A* on a 0.1 mm grid re-plans the chain between its current endpoints through the current
+geometry (ghosts stamped at full size so the corridor is pre-cleared), the chain is re-subdivided, and the same oracle verifies it, attachments
+included; a rejected route rolls back bit-perfectly and its blockers are stamped wider for the retry. A route that merely retraces the old path
+is a no-op and is retired. Each round is a topology-change checkpoint at unchanged progress: both neighbouring boards are legal, the rip
+happens between boards, never on one.</p>
+<figure><img src="img/explain_reroute.png"><figcaption>A reroute round in the narrow enc_corner run: the re-planned chains in magenta, before and after.</figcaption></figure>
+<p>What is left after the last round is the honest residue, reported by unit and blocker: in the narrow run, pressure absorbed by J2's
+mounting pads and the board edge. That table is the input to the next decision: a different site, a hand reroute, or a board stretch.</p>
+
+<h2>8. The gate</h2>
+<p>Every checkpoint is emitted as a complete board in its own pcbnew process: the dynamic originals are stripped once, the deformed chains and
+vias are added back, moved parts sit at origin plus displacement, ghosts at full scale are placed as real footprints, zones refill. Then, in order:
+KiCad DRC at severity error with nothing new versus the checkpoint-0 baseline (footprint pairs keyed by name, copper by position, the project's
+excluded violations included); unconnected items not above baseline; every static copper object present byte for byte and every fixed footprint
+where it was; net growth inside the caps; and check_sync against the schematic on the final board.</p>
+<figure><img src="img/explain_gate.png"><figcaption>Per-checkpoint gate results for the three runs: flat at baseline is the point.</figcaption></figure>
+
+<h2>9. Internal to the power stage: the squeeze toward the top edge</h2>
+<p>The same engine with a different drive. Every movable part of the power stage was given a target 3 mm toward the top board edge,
+with gate, bootstrap and turn-off nets capped at 0.3 mm of growth. The top band meets the edge clearance and the mounting hole at once;
+each band below it moves up by whatever slack lies between it and the band above, so the displacement grows band by band and the
+bottom of the stage frees a strip. What stops it is reported by name: the caps on the gate loops, and the sense copper pinned by the
+INA240s outside the region.</p>
+<table><tr><th>band (by y)</th><th>movable parts</th><th>median move up, mm</th><th>max, mm</th></tr><tr><td>top band</td><td>28</td><td>0.89</td><td>3.00</td></tr><tr><td>second band</td><td>27</td><td>1.38</td><td>3.00</td></tr><tr><td>third band</td><td>28</td><td>1.05</td><td>2.50</td></tr><tr><td>bottom band</td><td>29</td><td>1.24</td><td>2.58</td></tr></table>
+<figure><img src="img/explain_squeeze.png"><figcaption>power_squeeze: cycle 0 and the settled state. Green arrows: how far each part moved.</figcaption></figure>
+<figure><img src="img/explain_squeeze_caps.png"><figcaption></figcaption></figure>
+<figure><video controls muted loop playsinline preload="metadata" src="img/settle_power_squeeze.mp4"></video><figcaption>power_squeeze, one frame every two cycles.</figcaption></figure>
+
+<h2>10. The encoder ICs on the squeezed board</h2>
+<p>The squeeze's last gate-clean board becomes the base for a second encoder run with the power stage locked where the squeeze
+left it (<code>after_squeeze.py</code>). The question is whether the termination switches can now sit closer to their transceivers
+than the wide search found on the unsqueezed board. Distance is from the chosen site to the centroid of the pads the part connects to;
+"born" is whether the ghost reached full size inside the gate.</p>
+<table><tr><th>part</th><th>unsqueezed, radius 14<br><span class=small>born / mm to partners</span></th><th>squeezed, radius 14<br><span class=small>born / mm to partners</span></th><th>squeezed, radius 8<br><span class=small>born / mm to partners</span></th><th>unsqueezed, radius 8<br><span class=small>born / mm to partners</span></th><th>ideal sites, whole left half free<br><span class=small>born / mm to partners</span></th></tr><tr><td>U30</td><td>yes / 11.8</td><td>yes / 11.8</td><td>no (0.27) / 0.0</td><td>no (0.27) / 0.0</td><td>no (0.31) / 0.0</td></tr><tr><td>U32</td><td>yes / 5.81</td><td>yes / 5.81</td><td>yes / 5.81</td><td>yes / 5.81</td><td>no (0.05) / 0.0</td></tr><tr><td>U33</td><td>yes / 7.81</td><td>yes / 7.81</td><td>yes / 7.81</td><td>yes / 7.81</td><td>no (0.23) / 0.0</td></tr><tr><td>R97</td><td>yes / 2.93</td><td>yes / 2.93</td><td>no (0.27) / 3.4</td><td>no (0.27) / 3.4</td><td>no (0.24) / 0.0</td></tr><tr><td>R98</td><td>yes / 7.7</td><td>yes / 7.7</td><td>yes / 7.7</td><td>yes / 7.7</td><td>no (0.05) / 0.0</td></tr><tr><td>R100</td><td>yes / 13.53</td><td>yes / 13.53</td><td>no (0.05) / 1.5</td><td>no (0.05) / 1.5</td><td>no (0.05) / 0.0</td></tr><tr><td>C110</td><td>yes / 3.95</td><td>yes / 6.9</td><td>no (0.91) / 2.46</td><td>no (0.91) / 2.46</td><td>no (0.05) / –</td></tr><tr><th>born</th><th>7/7</th><th>7/7</th><th>3/7</th><th>3/7</th><th>0/7</th></tr></table>
+<p>The last column is the direct test of the ideal placement: every ghost seeded at its partner centroid (distance 0) with the
+whole left half of the board free to yield, power stage included, gate loops capped. What it reaches, and what stops it, is the
+answer to "how close can they get".</p>
+<figure><video controls muted loop playsinline preload="metadata" src="img/settle_enc_ideal.mp4"></video><figcaption>enc_ideal: the seven parts inflating at their partner centroids with 185 movable parts across the encoder corner and the power stage.</figcaption></figure>
+<h2>11. What the runs changed in the engine</h2>
+<ul>
+<li>Length caps need an absolute floor (<code>cap_mm</code>).</li>
+<li>The DRC edge is the Edge.Cuts centreline with 1.5 mm corner arcs, not the bounding box; two tracks landed 10 µm inside the clearance before this.</li>
+<li>Tracks are classified by segment intersection with the region, not by endpoints: a 36 mm sense track crossing the power region was invisible.</li>
+<li>Obstacles are included by extent, not centroid: J9's courtyard reaches BH1 from 9 mm away.</li>
+<li>DRC exclusions are position-keyed; a pre-existing excluded overlap resurfaces the moment its part moves and belongs to the baseline.</li>
+<li>Stall detection is progress-based; springs jitter parts by microns forever.</li>
+<li>Sites matter more than force: widening the search radius did what no pressure did.</li>
+</ul>
+<figure><video controls muted loop playsinline preload="metadata" src="img/settle_enc_corner.mp4"></video><figcaption>The narrow enc_corner run (search radius 8 mm) for comparison: four ghosts never get out of the switch fabric.</figcaption></figure>

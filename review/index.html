@@ -53,17 +53,51 @@
   <p class="subtitle">Running design-review notes for the rp2350-motor-controller project · developer feedback, rich detail in the sub-pages</p>
 </header>
 
-<div class="board">
-  <img src="img/pcb_top.png" alt="3D render of the board, top side">
+<div class="board" style="border-left:4px solid var(--accent)">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+    <a href="settle/renders.html"><img src="settle/img/por_top.png" alt="Plan-of-record board, top side"></a>
+    <a href="settle/renders.html"><img src="settle/img/por_bottom.png" alt="Plan-of-record board, bottom side"></a>
+  </div>
+  <p style="margin:.7rem 0 0;color:var(--muted);font-size:.9rem"><strong style="color:var(--ink)">Plan of record (2026-09-03):</strong> the settled board — shipped rev-A copper, rev-B schematic, Tier-A footprints,
+  the power stage squeezed toward the top edge and all seven encoder-corner parts placed; DRC-gated at every step, in sync, 103 airwires left to route.
+  <a href="settle/renders.html">Detailed renders, rev-A→candidate sliders, the annotated corner, 2D plots →</a> · the shipped board is on <a href="rev-a.html">the rev-A page</a>.</p>
 </div>
 
 <div class="cards">
+  <a class="card" href="settle/renders.html">
+    <h3>Plan of Record — The Settled Board, Rendered →</h3>
+    <p>The board rev-B now targets, adopted 2026-09-03: <code>lean-jiggle</code> run <code>enc_after_wide</code>, final checkpoint.
+    Orthographic and perspective 3D renders, rev-A→candidate sliders shot with identical cameras, the encoder corner annotated with
+    every new part's airwire lengths (U30 15.6&nbsp;mm to R82, R100 11.3&nbsp;mm to FL4 — the trade), the squeeze histogram
+    (110 parts up, median 1.2&nbsp;mm), per-layer plots, and the list of what adopting it commits to: 103 airwires, a silk pass,
+    three courtyard errors, the 0.10/0.10 rules.</p>
+    <p class="date">2026-09-03</p>
+  </a>
+  <a class="card" href="settle/settle_explained.html">
+    <h3>Settle: The Bag-of-Chips Placement Engine →</h3>
+    <p>Rev-B parts that rev-A's copper has no room for, placed by settling: ghosts inflate at searched sites, pressure
+    propagates through copper <em>and</em> parts, trace length is a spring with a hard cap, and every emitted board must pass
+    KiCad DRC against the shipped baseline. Videos of every cycle, the algorithm step by step, and the three gated runs:
+    all seven encoder-corner parts born on the shipped copper (five neighbours nudged), and the power stage squeezed
+    toward the top edge by a median 0.9–1.4&nbsp;mm per band before its gate loops hold. Source of truth: branch <code>lean-jiggle</code>; served here from a copy, with its log on the settle index.</p>
+    <p class="date">2026-09-03</p>
+  </a>
+
   <a class="card" href="rev-a.html">
     <h3>Rev A — The Board That Shipped →</h3>
     <p>The fabricated design, pinned at last: tag <code>rev-A-fab</code>, and <code>hardware/production/</code> tracked in git
     instead of ignored. Verified against the gerbers actually sent out — 12 of 13 layers bit-identical, the 13th a
     5&nbsp;µm zone-refill artifact. Renders, plots, and how rev-B has diverged (+33 parts, 1&nbsp;mm wider outline).</p>
     <p class="date">2026-08-30</p>
+  </a>
+  <a class="card" href="shrink.html">
+    <h3>Space Budget: Smaller Parts &amp; JLCPCB Process →</h3>
+    <p>Every footprint asked whether a smaller in-stock part does the same job, and what JLCPCB builds for free that the
+    rules don't use. Connectors own 43&nbsp;% of the top side; the recoverable space is the bottom-side driver blocks
+    (LMG1205: −292&nbsp;mm², −24 parts), INA241 SOT-23-8, ISO1044 narrow SOIC, a sync buck, plus 104&nbsp;mm² of
+    never-populated snubbers on top. Recommended set: F&nbsp;−8&nbsp;%, B&nbsp;−39&nbsp;%. Capped via-in-pad is free on
+    6-layer; 4-mil traces halve the route pitch; blind vias are not on offer.</p>
+    <p class="date">2026-09-01</p>
   </a>
   <a class="card" href="schematic.html">
     <h3>Schematic Review →</h3>
@@ -140,6 +174,50 @@
   </a>
 </div>
 
+<div class="board" style="border-left:4px solid var(--accent)">
+  <strong>Status 2026-09-03 (plan of record):</strong> the settle result is adopted as the board rev-B targets — the
+  <code>enc_after_wide</code> final checkpoint (squeezed power stage + all seven encoder-corner parts), copied to
+  <code>hardware/tools/settle/candidates/plan_of_record.kicad_pcb</code> in the lean-jiggle worktree, not yet merged to
+  <code>rev-b-lean</code>. <a href="settle/renders.html">Detailed renders</a> are up: full-board and perspective 3D, rev-A→candidate
+  sliders, the corner annotated with the airwire lengths each new part owes, the squeeze histogram, 2D plots. Honest DRC at 0.10/0.10:
+  3 courtyard errors (two inherited from the lean board; J9/BH1's exclusion needs re-marking because BH1 moved 0.66&nbsp;mm),
+  silk warnings 56→69 and 22→41 from the moved parts, 103 airwires unchanged. Next stage: route them.
+</div>
+
+<div class="board" style="border-left:4px solid var(--warn)">
+  <strong>Status 2026-09-03 (night):</strong> can the new encoder ICs sit closer once the bridge is squeezed? <em>No.</em>
+  On the squeezed board the placement runs reproduce the unsqueezed ones exactly (narrow search 3/7 with the same four stuck,
+  wide search the same six sites; only C110 takes the freed strip, which lies 10–20&nbsp;mm from the switches' partners).
+  The direct test — every part inflating at its partner centroid with 185 parts across the whole left half free to yield
+  (<a href="settle/settle_enc_ideal.html">enc_ideal</a>) — stalls at 14&nbsp;% with none born: after half a millimetre of
+  compaction every gap in the switch fabric sits at its floor and the copper corridors, not the parts, are the wall.
+  The engine's answer to "how close" is the wide run's sites (U30 12&nbsp;mm and R100 13.5&nbsp;mm from their partners);
+  closer needs a rework of the fabric's corridors — the atomic group jump, or hand rework of that region.
+  All runs on the <a href="settle/settle_explained.html">explained page</a>, section 10.
+</div>
+
+<div class="board" style="border-left:4px solid var(--good)">
+  <strong>Status 2026-09-03 (later):</strong> settle engine follow-ups. A ghost stalled on its own now gets a local reroute
+  of its clamping chains (U32 born at cycle 89 instead of 308); pads fed by a pour are held inside the pour and the GND
+  attachment exemption applies only where a ground pour exists — both found by the power-stage squeeze, which is now
+  <em>toward the top edge</em> as intended: 110 parts move a median 0.9–1.4&nbsp;mm up (3&nbsp;mm max) before the
+  0.3&nbsp;mm gate-loop caps and the fixed INA240 sense pads hold, 11/11 checkpoints gated
+  (<a href="settle/settle_power_squeeze.html">power_squeeze</a>). The <a href="settle/settle_explained.html">explained page</a>
+  is rebuilt from the final runs. Running now: the encoder ICs re-placed on the squeezed board to see whether they fit closer.
+</div>
+
+<div class="board" style="border-left:4px solid var(--good)">
+  <strong>Status 2026-09-03:</strong> the settle engine is in on branch <code>lean-jiggle</code> (rev-A copper + rev-B
+  schematic, rules 0.10/0.10): a feasibility-projected "bag of chips" settler with ghost inflation, pressure on parts,
+  per-net length springs and a 5-check DRC gate (<a href="settle/settle_explained.html">explained, with videos</a>).
+  Three gated runs: <strong>all 7 unplaced encoder-corner parts born on the shipped copper</strong> with 5 neighbours nudged
+  (<a href="settle/settle_enc_corner_wide.html">enc_corner_wide</a>; sites 12–13&nbsp;mm from their partners for U30/R100
+  are the trade), 3/7 with a tighter site search (<a href="settle/settle_enc_corner.html">enc_corner</a>), and the power
+  stage squeezed toward the centre line by 0.74&nbsp;mm per band in a first, misdirected run (superseded below). Every emitted board DRC-clean vs baseline, static copper
+  byte-identical, <code>check_sync</code> IN SYNC; the 103 airwires are pre-existing (rev-B nets on rev-A copper) and are
+  the next stage. Nothing has landed on rev-b-lean.
+</div>
+
 <div class="board" style="border-left:4px solid var(--good)">
   <strong>Status 2026-08-20:</strong> the module-stretch experiment is in — verdict <em>no module-level slack</em>
   (<a href="findings.html#f-44">F-44</a>, <a href="modules.html">full page</a>) — and the rev-B corner is un-jammed:
@@ -179,7 +257,7 @@
 </div>
 
 <div class="board" style="border-left:4px solid var(--accent)">
-  <strong><a href="findings.html">Findings Register</a></strong> — all 45 findings from the three
+  <strong><a href="findings.html">Findings Register</a></strong> — all 48 findings from the three
   reviews and the GaN eval, plus dated amendments, with stable IDs (F-01…F-45), severity, and
   disposition. Every row is a permalink: <code><a href="findings.html#f-40">findings.html#f-40</a></code>.
   15 fixed on <code>rev-b-fixes</code>, 9 rev-C candidates, the rev-B USB power-path pair (F-27/F-39),
@@ -192,6 +270,7 @@
 
 <h2>Current top items</h2>
 <ul class="digest">
+  <li><strong>Space budget (2026-09-01):</strong> the bottom side can lose ~39&nbsp;% of its part courtyard with in-stock swaps, and JLCPCB caps via-in-pad for free on this 6-layer stack — decide the design-rule set (0.10/0.10, 0.2/0.35 vias, POFV) before the next placement run (<a href="findings.html#f-47">F-47</a>, <a href="findings.html#f-48">F-48</a>, <a href="shrink.html">page</a>).</li>
   <li><span class="sev high">HIGH</span> EG3113 gate driver is out of stock at LCSC (9 units, min buy 25;
   alternates at 0) and the board needs four — blocks ordering today, independent of any GaN question
   (<a href="gan.html#f40">F-40</a>).</li>
@@ -219,7 +298,7 @@
 <footer>
   Lives in <code>review/</code> in the repo · registered as <code>rp2350-motor-controller</code> in the
   project registry (<code>proj up rp2350-motor-controller</code>, hub on :8000) · sources: <code>hardware/rp2350_driver.kicad_sch</code>, <code>hardware/rp2350_driver.kicad_pcb</code>
-  (working tree), <code>firmware/</code> @ 781a033.
+  (working tree; plan-of-record board: lean-jiggle worktree <code>hardware/tools/settle/candidates/plan_of_record.kicad_pcb</code>), <code>firmware/</code> @ 781a033.
 </footer>
 
 </main>
