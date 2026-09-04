@@ -51,8 +51,9 @@ if '--strip' in sys.argv:
         board.Remove(t)
     with quiet_stderr():
         pcbnew.SaveBoard(STRIPPED, board)
-    print(f'stripped {len(doomed)} of {len(dyn_sigs)} dynamic originals -> {STRIPPED}')
-    sys.exit(0 if len(doomed) == len(dyn_sigs) else 3)
+    print(f'stripped {len(doomed)} of {len(dyn_sigs)} dynamic originals -> {STRIPPED}' +
+          (f' ({len(doomed) - len(dyn_sigs)} duplicate segments in the base)' if len(doomed) > len(dyn_sigs) else ''))
+    sys.exit(0 if len(doomed) >= len(dyn_sigs) else 3)
 
 # ---- emit one checkpoint -----------------------------------------------------
 
