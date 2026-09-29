@@ -1,0 +1,164 @@
+{
+ "board": "rp2350_driver.kicad_pcb",
+ "generated": "2026-09-27",
+ "view_mm": [
+  110.98,
+  80.48,
+  79.04,
+  49.44
+ ],
+ "size_mm": [
+  76.0,
+  46.4
+ ],
+ "round": null,
+ "polar": null,
+ "thickness": 1.609,
+ "plate": "#c8c8c8",
+ "body": "body.svg",
+ "vias": 493,
+ "nets": 188,
+ "footprints": 291,
+ "front": 92,
+ "back": 199,
+ "tracks": 3984,
+ "length_mm": 5164.7,
+ "layers": [
+  {
+   "name": "F.Cu",
+   "slug": "f",
+   "kind": "copper",
+   "file": "f.svg",
+   "color": "#C83434",
+   "note": "Top copper, 70 \u00b5m (2 oz).",
+   "tracks": 884,
+   "length_mm": 716.9,
+   "pads": 385,
+   "zones": [
+    "/D",
+    "+3V3",
+    "/VREG_LX",
+    "GND",
+    "/B_N",
+    "VMOT",
+    "/A_N",
+    "/B_P",
+    "/A_P",
+    "+1V1",
+    "/C_P",
+    "/C_N"
+   ]
+  },
+  {
+   "name": "In1.Cu",
+   "slug": "in1",
+   "kind": "copper",
+   "file": "in1.svg",
+   "color": "#7FC87F",
+   "note": "Inner layer 1 of 4, 61 \u00b5m.",
+   "tracks": 0,
+   "length_mm": 0.0,
+   "pads": 66,
+   "zones": [
+    "GND"
+   ]
+  },
+  {
+   "name": "In2.Cu",
+   "slug": "in2",
+   "kind": "copper",
+   "file": "in2.svg",
+   "color": "#CE7D2C",
+   "note": "Inner layer 2 of 4, 61 \u00b5m.",
+   "tracks": 596,
+   "length_mm": 1370.7,
+   "pads": 66,
+   "zones": [
+    "/D"
+   ]
+  },
+  {
+   "name": "In3.Cu",
+   "slug": "in3",
+   "kind": "copper",
+   "file": "in3.svg",
+   "color": "#4FCBCB",
+   "note": "Inner layer 3 of 4, 35 \u00b5m (1 oz).",
+   "tracks": 828,
+   "length_mm": 1689.6,
+   "pads": 66,
+   "zones": []
+  },
+  {
+   "name": "In4.Cu",
+   "slug": "in4",
+   "kind": "copper",
+   "file": "in4.svg",
+   "color": "#DB628B",
+   "note": "Inner layer 4 of 4, 35 \u00b5m (1 oz).",
+   "tracks": 0,
+   "length_mm": 0.0,
+   "pads": 66,
+   "zones": [
+    "GND"
+   ]
+  },
+  {
+   "name": "B.Cu",
+   "slug": "b",
+   "kind": "copper",
+   "file": "b.svg",
+   "color": "#4D7FC4",
+   "note": "Bottom copper, 70 \u00b5m (2 oz).",
+   "tracks": 1676,
+   "length_mm": 1387.6,
+   "pads": 624,
+   "zones": [
+    "Vdrive",
+    "VBUS",
+    "GND",
+    "Net-(D4-K)"
+   ]
+  },
+  {
+   "name": "Edge.Cuts",
+   "slug": "edge",
+   "kind": "outline",
+   "file": "edge.svg",
+   "color": "#D0D2CD",
+   "note": "The outline and every cut-out in it."
+  },
+  {
+   "name": "F.Silkscreen",
+   "slug": "silk_f",
+   "kind": "silk",
+   "file": "silk_f.svg",
+   "color": "#F2EDA1",
+   "note": "Silkscreen, front: reference designators and markings as printed."
+  },
+  {
+   "name": "B.Silkscreen",
+   "slug": "silk_b",
+   "kind": "silk",
+   "file": "silk_b.svg",
+   "color": "#E8B2A7",
+   "note": "Silkscreen, back, seen through the board (mirror the view to read it)."
+  },
+  {
+   "name": "F.Fab",
+   "slug": "fab_f",
+   "kind": "fab",
+   "file": "fab_f.svg",
+   "color": "#DDE1E8",
+   "note": "Part bodies and reference designators, front: what each piece of copper belongs to."
+  },
+  {
+   "name": "B.Fab",
+   "slug": "fab_b",
+   "kind": "fab",
+   "file": "fab_b.svg",
+   "color": "#96A2CE",
+   "note": "Part bodies and reference designators, back."
+  }
+ ]
+}

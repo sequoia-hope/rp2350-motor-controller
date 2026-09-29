@@ -1,0 +1,65 @@
+# pcbview.toml -- the rev-A board viewer served at review/viewer/.
+#
+#     ~/Software/pcbview/bin/pcbview build pcbview.toml
+#     ~/Software/pcbview/bin/pcbview models pcbview.toml    (which parts lack a 3D model, and why)
+#
+# pcbview (~/Software/pcbview) plots the schematic and every layer with
+# kicad-cli, exports the board as a GLB, and writes a viewer page with SCH /
+# PCB / 3D tabs and a part pane. The board is read out of git at the rev-A-fab
+# tag, not from hardware/rev-A/ (gitignored, and only a copy), so the page
+# shows the board that was fabricated even while rev-B work lands in the
+# mainline file.
+
+title = "RP2350 Motor Controller"
+subtitle = "sequoia-hope"
+out = "review/viewer"
+back = { href = "../index.html", label = "Review hub" }
+repo = "https://github.com/sequoia-hope/rp2350-motor-controller"
+
+[[boards]]
+id = "rev-a"
+name = "Rev A — as fabricated"
+git = "rev-A-fab"
+pcb = "hardware/rp2350_driver.kicad_pcb"
+sch = "hardware/rp2350_driver.kicad_sch"
+front = "Top"
+back = "Bottom"
+note = """The board that shipped: tag rev-A-fab (c6b9b75, 2026-05-26), the design the \
+gerbers in hardware/production/ were plotted from (review/rev-a.html has the proof). \
+The mainline hardware/rp2350_driver.kicad_pcb is rev-B work in progress, not this board."""
+
+# Stand-ins for models the footprints name but the GLB exporter cannot use:
+# VRML-only EasyEDA models (it meshes STEP, not VRML) and a KiCad 7 library
+# model KiCad 9 no longer ships. Each rotation was worked out by matching the
+# footprint's pads to the stand-in's own KiCad footprint, in the library
+# (unflipped) frame; KiCad writes model rotations clockwise-positive, so a
+# quarter turn anticlockwise is -90. `python3 -m pcbview models` lists what
+# still has none (the SOT-883 TVS diodes and the Keystone 5019 test point:
+# drawn as boxes).
+
+# SIT3088 (U18-U21): EasyEDA's DFN-8 has pin 1 bottom-left with the rows
+# horizontal, KiCad's pin 1 top-left with them vertical.
+[models."DFN-8_L3.0-W3.0-P0.65-BL-EP.wrl"]
+path = "${KICAD9_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/DFN-8-1EP_3x3mm_P0.65mm_EP1.55x2.4mm.step"
+offset = [0, 0, 0]
+rotate = [0, 0, -90]
+
+# SW1, SW2: a 4.2 x 3.2 mm tact switch, the same land pattern as C&K's PTS810.
+[models."KEY-SMD_4P-L4.2-W3.2-P2.20-LS4.6.wrl"]
+path = "${KICAD9_3DMODEL_DIR}/Button_Switch_SMD.3dshapes/SW_SPST_PTS810.step"
+offset = [0, 0, 0]
+rotate = [0, 0, 0]
+
+# FL1-FL4, Murata DLW21: a 2.0 x 1.2 mm four-terminal choke, long axis along
+# y here and along x in KiCad's ACM2012.
+[models."FILTER-SMD_4P-L2.0-W1.2-BL_DLW21H.wrl"]
+path = "${KICAD9_3DMODEL_DIR}/Inductor_SMD.3dshapes/L_CommonModeChoke_Coilank_ACM2012.step"
+offset = [0, 0, 0]
+rotate = [0, 0, -90]
+
+# L2, the RP2350's buck inductor: the model RP-006440's footprint names, as
+# servodrive keeps it; modelled z-up on z = 0, so no offset or turn.
+[models."AOTA-B201610SR47MT.STEP"]
+path = "~/pcb/servodrive/hardware/parts/3dmodels/AOTA-B201610SR47MT.STEP"
+offset = [0, 0, 0]
+rotate = [0, 0, 0]

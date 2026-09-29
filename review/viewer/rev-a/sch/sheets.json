@@ -1,0 +1,19 @@
+{
+ "schematic": "rp2350_driver.kicad_sch",
+ "pdf": "rp2350_driver.pdf",
+ "sheets": [
+  {
+   "sheet": "root",
+   "title": "rp2350_driver",
+   "desc": "291 symbols",
+   "file": "rp2350_driver.svg",
+   "source": "rp2350_driver.kicad_sch",
+   "paper": "A1",
+   "page": "1",
+   "size_mm": [
+    840.994,
+    594.0044
+   ]
+  }
+ ]
+}
