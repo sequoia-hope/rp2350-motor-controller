@@ -16,3 +16,14 @@ rp2350_driver_rubber_A.kicad_prl
 hardware/_autosave-*
 hardware/rp2350_driver_rubber-backups/
 hardware/~*.lck
+
+# Research papers kept as local reading copies only: the repo is public and
+# these are publisher-copyrighted or arXiv-default-licensed, so they are not
+# ours to redistribute. review/research.html links to the official pages.
+# (diffusion-placement-2024 is CC BY 4.0 and pcbworld-benchmark-2026 is CC0;
+# those two are tracked.)
+review/research/drl-global-routing-2019.pdf
+review/research/fanoutnet-rl-fanout-2023.pdf
+review/research/homotopy-paths-plane-cabello.pdf
+review/research/pathfinder-negotiated-routing-1995.pdf
+review/research/position-based-dynamics-2007.pdf

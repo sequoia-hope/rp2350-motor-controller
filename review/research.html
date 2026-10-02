@@ -105,9 +105,9 @@ what's worth stealing from each.</p>
 </div>
 
 <div class="paper">
-  <h3>Testing Homotopy for Paths in the Plane <span class="tag pdf">PDF</span></h3>
+  <h3>Testing Homotopy for Paths in the Plane <span class="tag link">LINK ONLY</span></h3>
   <p class="meta">Cabello, Liu, Mantler &amp; Snoeyink · SoCG 2002 ·
-    <a href="research/homotopy-paths-plane-cabello.pdf">local PDF</a></p>
+    <a href="https://doi.org/10.1145/513400.513421">ACM</a></p>
   <p>Efficient algorithms to decide whether two paths are homotopic (deformable into each other without
   crossing obstacles).</p>
   <p class="steal"><b>Steal:</b> a post-run invariant check. After relaxation, verify each dragged trace is
@@ -118,9 +118,9 @@ what's worth stealing from each.</p>
 <h2>3 · Solver machinery: constraints &amp; negotiation</h2>
 
 <div class="paper">
-  <h3>Position Based Dynamics <span class="tag pdf">PDF</span></h3>
+  <h3>Position Based Dynamics <span class="tag link">LINK ONLY</span></h3>
   <p class="meta">Müller, Heidelberger, Hennix &amp; Ratcliff · J. Vis. Commun. 2007 ·
-    <a href="research/position-based-dynamics-2007.pdf">local PDF</a></p>
+    <a href="https://doi.org/10.1016/j.jvcir.2007.01.005">Elsevier</a></p>
   <p>The games/graphics standard for simulating constrained systems (cloth, ropes) without force blow-ups:
   skip forces for hard limits, move positions directly, then run Gauss–Seidel projection over all constraints
   each step. Unconditionally stable, handles inequality constraints (≥ clearance) natively.</p>
@@ -131,9 +131,9 @@ what's worth stealing from each.</p>
 </div>
 
 <div class="paper">
-  <h3>PathFinder: A Negotiation-Based Performance-Driven Router <span class="tag pdf">PDF</span></h3>
+  <h3>PathFinder: A Negotiation-Based Performance-Driven Router <span class="tag link">LINK ONLY</span></h3>
   <p class="meta">McMurchie &amp; Ebeling · FPGA 1995 ·
-    <a href="research/pathfinder-negotiated-routing-1995.pdf">local PDF</a></p>
+    <a href="https://doi.org/10.1145/201310.201328">ACM</a></p>
   <p>The classic iterative scheme behind most modern routers: let nets share resources illegally at first,
   then raise the cost of each contested resource every iteration until congestion resolves itself. Signals
   that have alternatives yield; the one that needs the resource most keeps it.</p>
@@ -168,8 +168,8 @@ what's worth stealing from each.</p>
 </div>
 
 <div class="paper">
-  <h3>FanoutNet: Neuralized PCB Fanout via Deep RL <span class="tag pdf">PDF</span></h3>
-  <p class="meta">AAAI 2023 · <a href="research/fanoutnet-rl-fanout-2023.pdf">local PDF</a></p>
+  <h3>FanoutNet: Neuralized PCB Fanout via Deep RL <span class="tag link">LINK ONLY</span></h3>
+  <p class="meta">Li, Zhang, Xu &amp; Liu · AAAI 2023 · <a href="https://doi.org/10.1609/aaai.v37i7.26030">AAAI</a></p>
   <p>RL (PPO, CNN + attention) for the fanout/escape-routing stage of dense PCBs — the first automation paper
   aimed specifically at PCB fanout rather than IC routing.</p>
   <p class="steal"><b>Steal:</b> problem decomposition. Escape/fanout (getting from a pad field to open board)
@@ -178,8 +178,8 @@ what's worth stealing from each.</p>
 </div>
 
 <div class="paper">
-  <h3>A Deep Reinforcement Learning Approach for Global Routing <span class="tag pdf">PDF</span></h3>
-  <p class="meta">Liao et al. · arXiv 1906.08809 (2019) · <a href="research/drl-global-routing-2019.pdf">local PDF</a></p>
+  <h3>A Deep Reinforcement Learning Approach for Global Routing <span class="tag link">LINK ONLY</span></h3>
+  <p class="meta">Liao et al. · arXiv 1906.08809 (2019) · <a href="https://arxiv.org/abs/1906.08809">arXiv</a></p>
   <p>DQN over a grid-graph global-routing environment; jointly optimizes net order and paths. More IC-flavored,
   but a clean reference for formulating routing as sequential decisions with capacity costs.</p>
   <p class="steal"><b>Steal:</b> mostly context — shows where the RL literature sits vs. our deterministic
@@ -227,7 +227,7 @@ what's worth stealing from each.</p>
 </ul>
 
 <footer>
-  Pulled 2026-08-09 · 7 PDFs in <code>review/research/</code> · paywalled items kept as links ·
+  Pulled 2026-08-09 · openly licensed papers (CC BY, CC0) hosted in <code>review/research/</code>, the rest linked to the publisher or arXiv ·
   part of the <a href="index.html">rp2350-motor-controller review hub</a>
 </footer>
 
