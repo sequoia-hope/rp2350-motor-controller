@@ -16,15 +16,15 @@ while getopts "r" opt; do
 done
 
 # Kill existing session if force-restarting
-if $FORCE_RESTART && tmux has-session -t "$SESSION" 2>/dev/null; then
-  tmux kill-session -t "$SESSION"
+if $FORCE_RESTART && tmux has-session -t "=$SESSION" 2>/dev/null; then
+  tmux kill-session -t "=$SESSION"
 fi
 
 # Create session if it doesn't exist. `exec bash` keeps the pane alive if claude exits.
-if ! tmux has-session -t "$SESSION" 2>/dev/null; then
+if ! tmux has-session -t "=$SESSION" 2>/dev/null; then
   tmux new-session -d -s "$SESSION" -c "$DIR" "$CLAUDE_CMD; exec bash"
   echo "Created tmux session '$SESSION' in $DIR"
 fi
 
 # Attach
-exec tmux attach-session -t "$SESSION"
+exec tmux attach-session -t "=$SESSION"
