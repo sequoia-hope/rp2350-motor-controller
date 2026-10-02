@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rev-B Schematic Changes — RP2350 Motor Controller</title>
+<style>
+  :root {
+    --bg: #f7f6f3; --panel: #ffffff; --ink: #1e2126; --muted: #5b6470;
+    --line: #d9d5cc; --accent: #6b4fa0; --good: #2c7a4b; --warn: #a05a00;
+    --bad: #b03434; --code-bg: #efede8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d; --panel: #1e2128; --ink: #e8e6e1; --muted: #9aa3af;
+      --line: #343945; --accent: #a98fd8; --good: #5cb884; --warn: #e0a44c;
+      --bad: #e06c6c; --code-bg: #262a33;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+  header.masthead { border-bottom: 3px solid var(--accent); padding: 2.2rem 0 1rem; margin-bottom: 1.5rem; }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 .4rem; }
+  .subtitle { color: var(--muted); margin: 0; }
+  h2 { font-size: 1.45rem; margin: 2.8rem 0 .8rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.12rem; margin: 1.8rem 0 .5rem; }
+  p { margin: .6rem 0; }
+  a { color: var(--accent); }
+  code, .mono { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .92em; background: var(--code-bg); padding: .08em .35em; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
+  th, td { text-align: left; padding: .45rem .65rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tablewrap { overflow-x: auto; }
+  .sev { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; padding: .12em .55em; border-radius: 99px; white-space: nowrap; }
+  .sev.high { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); }
+  .sev.med  { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+  .sev.low  { background: color-mix(in srgb, var(--muted) 18%, transparent); color: var(--muted); }
+  .sev.good { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+  .callout { border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 8px 8px 0; padding: .8rem 1rem; margin: 1rem 0; }
+  .callout.bad { border-left-color: var(--bad); }
+  .callout.good { border-left-color: var(--good); }
+  .callout.warn { border-left-color: var(--warn); }
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 760px) { .cols2 { grid-template-columns: 1fr; } }
+  ul.tight li { margin: .3rem 0; }
+  .muted { color: var(--muted); }
+  td.refs { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: .85em; }
+</style>
+</head>
+<body>
+<main>
+
+<header class="masthead">
+  <p style="margin:0 0 .4rem"><a href="index.html" style="text-decoration:none">← project hub</a></p>
+  <h1>Rev-B Schematic Changes — every delta against rev A</h1>
+  <p class="subtitle">Netlist diff of the shipped schematic (tag <code>rev-A-fab</code>, c6b9b75) against the rev-B schematic on
+  <code>rev-b-lean</code> (270af45 / bc35b15 — the same schematic as <code>rev-b-fixes</code>, plus the Tier A footprint re-points) ·
+  2026-09-07 · both exported with <code>kicad-cli sch export netlist</code> and compared component by component, pin by pin.</p>
+</header>
+
+<div class="callout">
+<strong>In one paragraph.</strong> Rev B adds 33 components and removes one (291 → 323), changes 15 values, moves 17 existing
+parts onto different nets, and re-points 208 footprint fields. Every electrical change traces to a finding in the
+<a href="findings.html">register</a>: the switched encoder termination (F-01/02/03), the 64&nbsp;V voltage philosophy on the
+TVS (F-09/10/11), the LED supply drop (F-16), the hardware E-stop option (F-17), CAN termination and barrier stitch (F-19),
+the 100&nbsp;V ideal diode on the USB path and the USB ESD fix (F-27/F-39), and the 0402 audit (F-43). The footprint-only
+changes are Tier A of the <a href="shrink.html#tierA">space budget</a> — and one of them, <strong>A1, the snubber shrink,
+is the change to take back</strong>: the sixteen snubber footprints have no value assigned and have been DNP since rev A,
+so the shrink was sized to a guess, and at 20&nbsp;kHz on a 60&nbsp;V bus a snubber above ~1.5&nbsp;nF already exceeds an 0805
+resistor's rating. Restoring the 0805 pads on the lean board costs nothing: they land exactly where rev A had them, with
+zero new DRC items (verified on the lean board and on the fresh-base fan candidate).
+</div>
+
+<h2 id="snubbers">1 · The snubber decision (Tier A1 → revert)</h2>
+
+<p>Each of the four legs carries two RC snubbers: <code>R17/C7</code> VMOT → /A_P, <code>R18/C9</code> /A_P → GND, and likewise
+R37/C25 + R38/C26 on B, R48/C33 + R52/C34 on C, R80/C53 + R81/C54 on D. All sixteen parts have the placeholder values
+<code>R</code> and <code>C</code>, are DNP, have no LCSC field, and were empty pads on the shipped rev A. Tier A1 re-pointed the
+caps 0805 → 0402 and the resistors 0805 → 0603 on the assumption "1&nbsp;nF/100&nbsp;V X7R is a stock 0402 value", freeing
+56&nbsp;mm² in the half-bridge bands. Two things argue against it.</p>
+
+<div class="cols2">
+<div>
+<h3>The resistor dissipates C·V²·f<sub>sw</sub></h3>
+<p>Whatever the R value, a series-RC snubber charges and discharges its capacitor through the resistor every cycle and burns
+½CV² each way. At the firmware's 20&nbsp;kHz (<code>driver->pwm_frequency = 20000</code>) and a 60&nbsp;V bus:</p>
+<table>
+<tr><th>C</th><th class="num">P at 60 V</th><th class="num">P at 72 V</th><th>fits</th></tr>
+<tr><td>470 pF</td><td class="num">34 mW</td><td class="num">49 mW</td><td>0603 (100 mW)</td></tr>
+<tr><td>1 nF</td><td class="num">72 mW</td><td class="num">104 mW</td><td>0603 marginal · 0805 (125 mW)</td></tr>
+<tr><td>2.2 nF</td><td class="num">158 mW</td><td class="num">228 mW</td><td>1206 (250 mW)</td></tr>
+<tr><td>4.7 nF</td><td class="num">338 mW</td><td class="num">487 mW</td><td>1206 marginal · 2010</td></tr>
+</table>
+<p class="muted">Steady-state at full PWM; the peak pulse power is far higher and is what limits thin-film 0603s first.
+An 0603 is also rated 75&nbsp;V working voltage against a 60&nbsp;V bus with ringing on top; 0805 is rated 150&nbsp;V.</p>
+</div>
+<div>
+<h3>The capacitor wants voltage margin and C0G</h3>
+<p>A snubber cap sees the full bus plus overshoot on every edge, so it should be 100&nbsp;V rated and, to keep the RC time
+constant stable, C0G/NP0 rather than X7R (X7R loses a large fraction of its capacitance under DC bias and drifts with
+temperature). In 100&nbsp;V C0G the practical catalog ceilings are roughly 220&nbsp;pF in 0402, 1&nbsp;nF in 0603 and a few nF in
+0805; X7R reaches ~1&nbsp;nF in 0402 and ~10&nbsp;nF in 0805. Shrinking to 0402 pins the design to "≤1&nbsp;nF X7R" before the
+value has ever been chosen; 0805 keeps the whole plausible range (470&nbsp;pF–4.7&nbsp;nF) open on the same pads.</p>
+</div>
+</div>
+
+<div class="callout good">
+<strong>Verified: reverting is free on the fresh base.</strong> The lean board keeps the rev-A copper, so the sixteen parts sit at
+their rev-A coordinates with the small footprints centred on the old pads. Swapping them back to
+<code>parts:C_0805_2012Metric_JLC</code> / <code>parts:R_0805_2012Metric_JLC</code> (the A4 tight-courtyard variants) in a scratch
+copy and running kicad-cli DRC gives <strong>0 courtyard or clearance items involving any snubber</strong> — on the lean board and
+on the fresh-base fan candidate (<code>enc_fan_fresh</code>). The cost is the 56&nbsp;mm² the shrink would have freed, which
+nothing in the fan layout or the fresh-base plan needs (the encoder corner is x&nbsp;112–131; the snubbers are at x&nbsp;135–147).
+Recommendation: revert <em>both</em> the caps and the resistors to 0805, and if the chosen C ends up above ~1.5&nbsp;nF,
+size the resistor pads 1206. Mechanically: change the A1 lines in <code>hardware/tools/lean/edit_sch_footprints.py</code>
+and re-run the footprint sync; the board side is a 16-footprint re-point.
+</div>
+
+<h2 id="map">2 · Change map, by finding</h2>
+
+<div class="tablewrap">
+<table>
+<tr><th>Finding</th><th>What changed</th><th>Parts</th><th>Notes</th></tr>
+
+<tr><td><a href="findings.html">F-01 / F-02 / F-03</a><br><span class="sev good">landed</span></td>
+<td><strong>Switched encoder termination.</strong> The fixed 100&nbsp;Ω R82–R85 across each transceiver pair is now in series with a
+TS5A3159 switch (U30–U33: COM on <code>/ENC_x_TRX_A</code>, NO on <code>/TERM_x_R</code> → R8x → <code>/ENC_x_TRX_B</code>), all four
+controls bussed on <code>/TERM_SW</code> = U8 GPIO38 (TP20 stays on that net). 10&nbsp;k pull-ups R97–R100 to +3V3 bias the P line
+for open-collector encoders. 100&nbsp;k pull-downs R101–R112 on every switch control line so the muxes have a defined state before
+firmware runs. C110–C113 100&nbsp;n decouple the four new switches on Vdrive.</td>
+<td class="refs">+U30 U31 U32 U33 · +R97–R100 · +R101–R112 · +C110–C113 · R82–R85 re-wired · U18–U21 / FL1–FL4 nets renamed</td>
+<td>Net names <code>Net-(U18-A)</code> etc. became <code>/ENC_A_TRX_A/B</code> — labels, not topology. The switches run from
+Vdrive (5&nbsp;V) exactly like the existing U22–U27 and are driven by a 3.3&nbsp;V GPIO, the arrangement rev A already proves.
+Default at boot: R112 holds TERM_SW low → all four terminations open until firmware enables them. Channel D's pull-up R100 sits on
+the connector net <code>/ENC_D_P</code> (before FL4) because D has no mux — the F-05 asymmetry, unchanged.</td></tr>
+
+<tr><td>F-09 / F-10 / F-11<br><span class="sev good">landed</span></td>
+<td><strong>64&nbsp;V voltage philosophy.</strong> Phase clamps D9/D13/D17/D21 SMAJ51A → SMAJ64A (standoff 64&nbsp;V, breakdown
+71–79&nbsp;V, below the 80&nbsp;V FETs); bus clamp D5 SMDJ85A → SMDJ64A. The eight bridge FETs' value field changes from the
+placeholder <code>MOSFETSO-8</code> to <code>BSC030N08NS5</code>, the part rev A was actually built with (LCSC C501507) — documentation, not a BOM change.</td>
+<td class="refs">D5 D9 D13 D17 D21 · AH1 AL1 BH1 BL1 CH1 CH2 CL1 CL2</td>
+<td>All five TVS carry <code>LCSC-TBD-…</code> (F-26). Symbol names lag the values (D5 is drawn with the <code>Diode:SMF54A</code>
+symbol, D31 with <code>SMAJ24A</code>) — harmless, but any BOM export must key on Value/LCSC, not the symbol.</td></tr>
+
+<tr><td>F-16<br><span class="sev good">landed</span></td>
+<td><strong>LED supply drop.</strong> D30 (DSS110 Schottky) from Vdrive to a new <code>/LED_VDD</code> rail with C114 100&nbsp;n; D1's VDD pin
+moves from Vdrive to LED_VDD so 0.7·VDD lands under the 3.3&nbsp;V GPIO swing. D1 becomes the 2020 package (Tier A5).</td>
+<td class="refs">+D30 +C114 · D1 pin 3 · D1 footprint</td>
+<td>Stays as designed unless a 3.3&nbsp;V-logic "V" variant of the LED is picked, which would delete D30/C114.</td></tr>
+
+<tr><td>F-17<br><span class="sev med">landed, DNP</span></td>
+<td><strong>Hardware E-stop option.</strong> R113 10&nbsp;k pulls <code>/E-STOP</code> (J5 pin 1, GPIO10) to +3V3; Q6 2N7002 (DNP) with gate on
+E-STOP and drain on <code>/RUN</code>. Populate Q6 and an open E-stop loop holds the RP2350 in reset with no firmware in the path.</td>
+<td class="refs">+Q6 (DNP) +R113</td>
+<td><strong>Decide deliberately before fitting Q6:</strong> the reset state of this board is all four low-sides on (F-12), so a
+hardware E-stop is a hard brake, and F-28's bus guard is firmware, which is out of the loop while RUN is low. Q6's SOT-23 land
+was fixed on the board in F-45.</td></tr>
+
+<tr><td>F-19<br><span class="sev good">landed (schematic)</span></td>
+<td><strong>CAN termination and barrier stitch.</strong> R114 120&nbsp;Ω + solder jumper JP2 across CAN0_P/CAN0_N (open by default =
+mid-bus node). C115 1&nbsp;n/2&nbsp;kV 1206 + R115 100&nbsp;Ω in series from GND_ISO to GND give common-mode current a defined return
+while holding the DC barrier. The isolated side stays harness-powered by design.</td>
+<td class="refs">+R114 +JP2 +C115 +R115</td>
+<td>Layout rule: C115 is the only part allowed to bridge the barrier. F-42 (the GND/In1/In4 planes still run solid under the isolated
+section) is a PCB item, still open on every branch.</td></tr>
+
+<tr><td>F-27 / F-39<br><span class="sev good">landed (schematic + placement)</span></td>
+<td><strong>USB path rated for 20&nbsp;V/5&nbsp;A PD and a 60&nbsp;V bus.</strong> U29 LM74700 (SOT-23-6, 65&nbsp;V abs max) → LTC4359CMS8
+(MSOP-8, 100&nbsp;V, C688235); Q5 TMG08N10SI (SOT-89, 100&nbsp;mΩ) → E100N4P0HL1 (PowerPAK 5×6, 100&nbsp;V/4&nbsp;mΩ, C29781176);
+C79, the LM74700's charge-pump cap, deleted. D31 SMF24A (SOD-123FL, 24&nbsp;V standoff) VBUS → GND at J3. U11 (USBLC6-2P6) pin 5
+moves from VBUS to +3V3 so its internal 6&nbsp;V clamp never sees a PD contract.</td>
+<td class="refs">U29 Q5 −C79 +D31 · U11 pin 5</td>
+<td>The Q5 pin-number changes in the diff are the symbol swap (G-D-S → S-G-D order); the wiring is source on VBUS, drain on
+<code>Net-(JP1-A)</code>, gate from the LTC4359, so the body diode conducts USB → board and never board → USB. On the board the 5&nbsp;A path
+(VBUS, Net-(JP1-A), Q5-G) is 11 of the 103 airwires in the 1.5&nbsp;mm <code>usb_5A</code> class.</td></tr>
+
+<tr><td>F-43<br><span class="sev good">landed</span></td>
+<td><strong>0603 → 0402 on 15 logic-level parts:</strong> the eight PWM pull-downs R1 R2 R21 R22 R35 R36 R65 R66 (10&nbsp;k, inside the RP2350
+halo), R49 (TH1_SENSE 10&nbsp;k), R53/R54 (100&nbsp;Ω debug-UART series), and +3V3 decoupling C16 C19 C29 C40.</td>
+<td class="refs">R1 R2 R21 R22 R35 R36 R49 R53 R54 R65 R66 C16 C19 C29 C40</td>
+<td>Everything in a gate loop, bootstrap path, 48&nbsp;V divider or &gt;16&nbsp;V rail stays 0603 — the snubbers were never on this list;
+they came in through Tier A1.</td></tr>
+
+<tr><td>Tier A<br><span class="sev low">footprints only</span></td>
+<td><strong>A1</strong> snubbers 0805 → 0402 (C) / 0603 (R) — <strong>revert, §1</strong>.
+<strong>A2</strong> TP12–TP20 → 1.0&nbsp;mm pad without courtyard, TP8 Keystone loop → 1.5&nbsp;mm pad.
+<strong>A3</strong> all 14 TS5A3159 (U13 U14 U15 U17 U22–U27 U30–U33) → one <code>SOT-363_SC-70-6_JLC</code>.
+<strong>A4</strong> every chip R/C → the <code>parts:*_JLC</code> variant with JLCPCB-minimum courtyards: 41 R0603, 26 R0402, 39 C0402, 19 C0603, 5 C0805 — same size, tighter wall.
+<strong>A5</strong> D1 WS2812B 3528 → 2020 (MotorBuck pin order).</td>
+<td class="refs">208 Footprint fields</td>
+<td>No electrical or BOM change; netlist-verified identical to rev-b-fixes pin for pin. A4 is what every placement tool on this repo
+sees as the wall, so it is the one that changes what "fits".</td></tr>
+</table>
+</div>
+
+<h2 id="delta">3 · The full delta</h2>
+
+<h3>Added (33)</h3>
+<div class="tablewrap">
+<table>
+<tr><th>Ref</th><th>Value</th><th>Footprint</th><th>Nets</th><th>For</th></tr>
+<tr><td class="refs">U30 U31 U32 U33</td><td>TS5A3159DCK</td><td>SOT-363_SC-70-6_JLC</td><td>V+ Vdrive · COM /ENC_x_TRX_A · NO /TERM_x_R · IN /TERM_SW</td><td>F-01</td></tr>
+<tr><td class="refs">R97 R98 R99 R100</td><td>10k 0402</td><td>R_0402_JLC</td><td>+3V3 → /ENC_A_P_SW, /ENC_B_P_SW, /ENC_C_P_SW, /ENC_D_P</td><td>F-03</td></tr>
+<tr><td class="refs">R101–R112</td><td>100k 0402</td><td>R_0402_JLC</td><td>V_SW, I2C_SW, H1_SW, H2_SW, H3_SW, EXT_ANALOG_SW, TH_SW_1, ENC_A–D_SW, TERM_SW → GND</td><td>F-02</td></tr>
+<tr><td class="refs">C110 C111 C112 C113</td><td>100n 0402</td><td>C_0402_JLC</td><td>Vdrive → GND (at U30–U33)</td><td>F-01</td></tr>
+<tr><td class="refs">D30</td><td>DSS110</td><td>SOD-123F</td><td>Vdrive → /LED_VDD</td><td>F-16</td></tr>
+<tr><td class="refs">C114</td><td>100n 0402</td><td>C_0402_JLC</td><td>/LED_VDD → GND</td><td>F-16</td></tr>
+<tr><td class="refs">Q6 <span class="sev low">DNP</span></td><td>2N7002</td><td>SOT-23</td><td>G /E-STOP · D /RUN · S GND</td><td>F-17</td></tr>
+<tr><td class="refs">R113</td><td>10k 0402</td><td>R_0402_JLC</td><td>+3V3 → /E-STOP</td><td>F-17</td></tr>
+<tr><td class="refs">R114 / JP2</td><td>120R 0603 / solder jumper</td><td>R_0603 / SolderJumper-2 open</td><td>/CAN0_P → R114 → JP2 → /CAN0_N</td><td>F-19</td></tr>
+<tr><td class="refs">C115 / R115</td><td>1n 2kV 1206 / 100R 0603</td><td>C_1206 / R_0603</td><td>GND_ISO → C115 → R115 → GND</td><td>F-19</td></tr>
+<tr><td class="refs">D31</td><td>SMF24A</td><td>SOD-123F</td><td>VBUS → GND</td><td>F-39</td></tr>
+</table>
+</div>
+
+<h3>Removed (1)</h3>
+<p><code>C79</code> 100&nbsp;n 0402 — the LM74700's VCAP charge-pump capacitor (VBUS ↔ Net-(U29-VCAP)); the LTC4359 has no such pin.</p>
+
+<h3>Value changes (15)</h3>
+<div class="tablewrap">
+<table>
+<tr><th>Ref</th><th>Rev A</th><th>Rev B</th><th>Footprint</th><th>BOM</th></tr>
+<tr><td class="refs">AH1 AL1 BH1 BL1 CH1 CH2 CL1 CL2</td><td>MOSFETSO-8 (placeholder)</td><td>BSC030N08NS5</td><td>PowerPAK SO-8, unchanged</td><td>none — names the fitted part (C501507)</td></tr>
+<tr><td class="refs">D9 D13 D17 D21</td><td>SMAJ51A</td><td>SMAJ64A</td><td>SMA, unchanged</td><td>new part, LCSC-TBD</td></tr>
+<tr><td class="refs">D5</td><td>SMDJ85A</td><td>SMDJ64A</td><td>SMC, unchanged</td><td>new part, LCSC-TBD</td></tr>
+<tr><td class="refs">Q5</td><td>Q_NMOS_GDS (TMG08N10SI)</td><td>E100N4P0HL1</td><td>SOT-89-3 → PowerPAK SO-8 5×6</td><td>C29781176</td></tr>
+<tr><td class="refs">U29</td><td>LM74700</td><td>LTC4359CMS8</td><td>SOT-23-6 → MSOP-8</td><td>C688235</td></tr>
+</table>
+</div>
+
+<h3>Existing parts on different nets (17)</h3>
+<div class="tablewrap">
+<table>
+<tr><th>Ref</th><th>Change</th><th>Meaning</th></tr>
+<tr><td class="refs">R82 R83 R84 R85</td><td>pin 2: <code>Net-(U1x-A)</code> → <code>/TERM_x_R</code></td><td>termination now goes through the switch (pin 1 stays on the B line)</td></tr>
+<tr><td class="refs">U18 U19 U20 U21 · FL1 FL2 FL3 FL4</td><td><code>Net-(U1x-A/B)</code> → <code>/ENC_x_TRX_A/B</code></td><td>rename only — same pins, same partners</td></tr>
+<tr><td class="refs">U8 · TP20</td><td>GPIO38 net → <code>/TERM_SW</code></td><td>the spare GPIO becomes the termination control; TP20 rides along</td></tr>
+<tr><td class="refs">D1</td><td>pin 3 (VDD): Vdrive → <code>/LED_VDD</code></td><td>F-16</td></tr>
+<tr><td class="refs">U11</td><td>pin 5 (VBUS): VBUS → +3V3</td><td>F-39</td></tr>
+<tr><td class="refs">Q5 · U29</td><td>pin numbers re-mapped</td><td>new symbols for the new parts; topology in §2</td></tr>
+</table>
+</div>
+
+<h3>Footprint re-points (208)</h3>
+<div class="tablewrap">
+<table>
+<tr><th class="num">n</th><th>From</th><th>To</th><th>Refs</th><th>Tier</th></tr>
+<tr><td class="num">41</td><td>R_0603_1608Metric</td><td>R_0603_1608Metric_JLC</td><td class="refs">R10 R11 R12 R13 R14 R15 R25 R27 R28 R29 R30 R31 …</td><td>A4</td></tr>
+<tr><td class="num">39</td><td>C_0402_1005Metric</td><td>C_0402_1005Metric_JLC</td><td class="refs">C3 C13 C14 C20 C21 C22 C24 C30 C32 C35 C107 C108 …</td><td>A4</td></tr>
+<tr><td class="num">26</td><td>R_0402_1005Metric</td><td>R_0402_1005Metric_JLC</td><td class="refs">R5 R6 R8 R24 R26 R32 R34 R50 R51 R57 R58 R82 …</td><td>A4</td></tr>
+<tr><td class="num">19</td><td>C_0603_1608Metric</td><td>C_0603_1608Metric_JLC</td><td class="refs">C2 C10 C15 C23 C27 C28 C31 C36 C48 C51 C55 C57 …</td><td>A4</td></tr>
+<tr><td class="num">5</td><td>C_0805_2012Metric</td><td>C_0805_2012Metric_JLC</td><td class="refs">C5 C12 C47 C105 C106</td><td>A4</td></tr>
+<tr><td class="num">11</td><td>R_0603_1608Metric</td><td>R_0402_1005Metric_JLC</td><td class="refs">R1 R2 R21 R22 R35 R36 R49 R53 R54 R65 R66</td><td>F-43</td></tr>
+<tr><td class="num">4</td><td>C_0603_1608Metric</td><td>C_0402_1005Metric_JLC</td><td class="refs">C16 C19 C29 C40</td><td>F-43</td></tr>
+<tr><td class="num">8</td><td>C_0805_2012Metric</td><td>C_0402_1005Metric_JLC</td><td class="refs">C7 C9 C25 C26 C33 C34 C53 C54</td><td><strong>A1 — revert</strong></td></tr>
+<tr><td class="num">8</td><td>R_0805_2012Metric</td><td>R_0603_1608Metric_JLC</td><td class="refs">R17 R18 R37 R38 R48 R52 R80 R81</td><td><strong>A1 — revert</strong></td></tr>
+<tr><td class="num">10</td><td>SOT-363_SC-70-6</td><td>SOT-363_SC-70-6_JLC</td><td class="refs">U13 U14 U15 U17 U22 U23 U24 U25 U26 U27</td><td>A3</td></tr>
+<tr><td class="num">9</td><td>TestPoint_Pad_D1.0mm</td><td>TestPoint_Pad_D1.0mm_no_courtyard</td><td class="refs">TP12–TP20</td><td>A2</td></tr>
+<tr><td class="num">1</td><td>TestPoint_Keystone_5019_Minature</td><td>TestPoint_Pad_D1.5mm_no_courtyard</td><td class="refs">TP8</td><td>A2</td></tr>
+<tr><td class="num">1</td><td>LED_WS2812_3528</td><td>LED_WS2812B-2020_PLCC4_MotorBuck</td><td class="refs">D1</td><td>A5</td></tr>
+<tr><td class="num">1</td><td>SOT-89-3</td><td>PowerPAK_SO-8_123</td><td class="refs">Q5</td><td>F-27</td></tr>
+<tr><td class="num">1</td><td>SOT-23-6</td><td>MSOP-8</td><td class="refs">U29</td><td>F-27</td></tr>
+</table>
+</div>
+
+<h2 id="bom">4 · BOM readiness</h2>
+<p>27 fitted rev-B parts have no LCSC number. Six are not purchasable parts (H1–H4, JP1, JP2) and C57 was already blank on rev A.
+The real gaps, all from rev-B changes:</p>
+<ul class="tight">
+<li><code>D5</code> SMDJ64A, <code>D9 D13 D17 D21</code> SMAJ64A — marked <code>LCSC-TBD-…</code> (in F-26).</li>
+<li><code>R101–R112</code> 100&nbsp;k 0402 — marked TBD (in F-26); trivial to fill.</li>
+<li><code>R114</code> 120&nbsp;Ω 0603, <code>R115</code> 100&nbsp;Ω 0603, <code>C115</code> 1&nbsp;n/2&nbsp;kV 1206 — blank, <strong>not listed in F-26</strong>; the 2&nbsp;kV 1206 is the one that needs a real part pick.</li>
+<li><code>Q6</code> is marked TBD but DNP.</li>
+</ul>
+<p>Everything else new carries a number: U30–U33 C46388, R97–R100 C60490, C110–C114 C131394, D30 C2923942, D31 C169430, Q5 C29781176, U29 C688235, D1 C2890364.</p>
+
+<h2 id="notes">5 · Things to decide or note</h2>
+<ol>
+<li><strong>A1 snubbers — revert to 0805</strong> (§1). Both C and R; consider 1206 for R if the chosen C exceeds ~1.5&nbsp;nF. Zero layout cost on the fresh base.</li>
+<li><strong>Q6 E-stop vs reset brake.</strong> With Q6 fitted an open loop is a hard brake (F-12) with the firmware bus guard out of the loop. Fine if that is the intended E-stop behaviour on this bus; decide before populating.</li>
+<li><strong>Channel D bias is connector-side.</strong> R100 pulls up <code>/ENC_D_P</code> at the connector while A–C pull up on the mux side; consistent with D having no mux (F-05), just different.</li>
+<li><strong>Symbol names lag values</strong> on D5 (SMF54A symbol, SMDJ64A value) and D31 (SMAJ24A symbol, SMF24A value). Cosmetic; BOM must key on Value/LCSC.</li>
+<li><strong>F-26 is incomplete:</strong> add R114, R115, C115 to the LCSC-pending list.</li>
+<li><strong>Nothing here depends on the power-stage squeeze.</strong> Every schematic change places on the lean board's rev-A copper; the seven encoder-corner parts (U30–U33, R97, R98, R100, C110) are the ones the <a href="settle/enclayout.html">fan layout</a> homes.</li>
+</ol>
+
+<p class="muted">Method: <code>kicad-cli sch export netlist --format kicadsexpr</code> on both schematics; components, values, DNP flags, footprint fields and every (ref, pin) → net compared; DNP taken from the schematic symbols. Snubber revert test: pcbnew swap of the 16 footprints in scratch copies of the lean board and <code>enc_fan_fresh</code>, zone refill, kicad-cli DRC all severities, filtered to items naming a snubber ref.</p>
+
+</main>
+</body>
+</html>

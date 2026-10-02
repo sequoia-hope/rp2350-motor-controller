@@ -87,6 +87,41 @@
 <figure><div class="cmp" data-a="img/revA_power_bottom.png" data-b="img/por_power_bottom.png" data-la="rev A" data-lb="plan of record"></div><figcaption>Bottom side, x 130–150 mm, same camera. The gate drivers and their loops barely move (the 0.3 mm caps); the passives above and between them ride up; the bottom of the stage empties.</figcaption></figure>
 <details><summary>Largest twelve moves</summary><table><tr><th>Part</th><th>mm</th><th>Side</th></tr><tr><td>TP3</td><td>3.00</td><td>B</td></tr><tr><td>D10</td><td>3.00</td><td>B</td></tr><tr><td>TP5</td><td>3.00</td><td>B</td></tr><tr><td>R25</td><td>3.00</td><td>B</td></tr><tr><td>R41</td><td>2.99</td><td>B</td></tr><tr><td>D15</td><td>2.70</td><td>B</td></tr><tr><td>R75</td><td>2.58</td><td>B</td></tr><tr><td>C15</td><td>2.50</td><td>B</td></tr><tr><td>C1</td><td>2.42</td><td>F</td></tr><tr><td>C51</td><td>2.39</td><td>B</td></tr><tr><td>R37</td><td>2.32</td><td>F</td></tr><tr><td>TP4</td><td>2.29</td><td>B</td></tr></table></details>
 
+<h2 id="keepouts">Mounting-hole keepouts (2026-09-04)</h2>
+<p>The four holes are <b>edge half-holes</b> (3.9&nbsp;mm NPTH centred on the board outline, #6 Plastite into a plastic boss). The footprint had a
+7&nbsp;mm silk ring and a 3.65&nbsp;mm courtyard on the <em>top</em> only, and no rule area at all — so nothing stopped bottom-side parts or surface
+tracks from sitting under the screw head or the boss, and the settle engine (which sees courtyards, not silk) placed six of the rev-B pulldowns
+inside the rings. Fixed at the source and on this board:</p>
+<ul>
+<li><b>Footprint</b> <code>parts:MountingHole_3.9mm_Plastite_#6</code> (library and the four instances): a footprint-embedded rule area <code>mount_keepout</code>
+on F.Cu + B.Cu — <b>tracks not allowed, footprints not allowed</b>; vias, pads and pours allowed — as a 72-gon with vertices on the 3.65&nbsp;mm courtyard
+circle, plus the missing <b>B.CrtYd</b> circle so the courtyard check and the settle engine see the hole from both sides.</li>
+<li><b>Six pulldowns out of the rings</b> (bottom side, all unrouted, so no copper moved with them), to the nearest spot whose courtyard clears every
+courtyard and whose pads clear all copper on B.Cu, scored by displacement plus 0.3&nbsp;× the signal airwire: R112 → (179.10, 86.30), R113 → (181.00, 85.30)
+turned vertical, R111 → (180.50, 124.75), R109 → (124.60, 85.80) beside C40 (6.5&nbsp;mm; nothing nearer was free on the bottom near H3), R106 → (134.05, 126.12)
+vertical, R105 → (135.12, 126.23) vertical with its GND via re-dropped under the new pad. Signal airwires: 10.5→9.7, 17.9→18.2, 32.4→31.6, 44.9→41.3,
+14.1→17.3, 15.3→17.1&nbsp;mm.</li>
+<li><b>Four rev-A parts that touched the ring</b>, nudged with their track ends dragged: C5 −0.35&nbsp;mm in x, C12 +0.15 in y, U10 +0.10 in y (its GND return
+via moved to (130.60, 93.35) — it would have been 0.02&nbsp;mm from pad 1), R56 +0.05 in y together with R55 and D17 below it (the shunt column is packed at
+courtyard pitch).</li>
+<li><b>Copper under the rings.</b> The +3V3 link from the In2 trunk to U10 ran on B.Cu hugging H3 (nine segments at 3.39–3.64&nbsp;mm from the centre). There is
+no B.Cu channel between the ring and U10's 1.95&nbsp;mm pads, and In2 is fenced by C_SENSE / C_PHASE_SENSE, so the link is now on <b>In3</b> (0.3&nbsp;mm, between the
+NPTH clearance and /EXT_ANALOG2) from the existing via to a new via at (126.80, 84.79) on the left-hand feed next to C40; the feed corner moved 0.06&nbsp;mm off
+the ring. At H2 the I2C_SDA F.Cu run at y&nbsp;=&nbsp;124.80 lifted to 124.60 with a 45° jog at its via. Two vias remain inside the rings (edges 3.37 and 3.51&nbsp;mm
+from the centres) — allowed by the rule as specified; disallowing vias too would need those two moved.</li>
+</ul>
+<figure><a href="img/keepout_bottom.png"><img src="img/keepout_bottom.png" alt="Bottom side around the four mounting holes, before and after the keepout pass"></a>
+<figcaption>Bottom side, before (top row) and after (bottom row). Dashed: the 7&nbsp;mm silk ring; magenta: the 3.65&nbsp;mm courtyard, now also the rule area;
+gold: parts that moved. Grey beyond the outline is off-board.</figcaption></figure>
+<figure><a href="img/keepout_top.png"><img src="img/keepout_top.png" alt="Top side around the four mounting holes, before and after the keepout pass"></a>
+<figcaption>Top side. Only R56's column moved (0.05&nbsp;mm) and the I2C_SDA run at H2.</figcaption></figure>
+<div class="note good"><b>DRC (kicad-cli, all severities, zones refilled):</b> keepout violations 20&nbsp;→&nbsp;0 once the rule areas exist; courtyard errors back at the
+baseline 7 (3 live + 4 excluded); silk warnings 69→67 overlap, 41→40 over copper; 154 violations vs 157 before the pass; <b>103 airwires unchanged</b>. The only
+"new" item is the pre-existing dangling C_SENSE stub at U10.5, 0.07&nbsp;mm longer because U10 moved. Verified independently by a geometry census: no courtyard
+and no F/B track within 3.65&nbsp;mm of any hole centre.</div>
+<div class="note warn"><b>Only the candidate is fixed.</b> The same six pulldowns sit inside the rings on <code>rev-b-fixes</code>, <code>rev-b-lean</code> and
+lean-jiggle's own <code>hardware/rp2350_driver.kicad_pcb</code> (there also R98/R100 at H4); landing the candidate over the branch board carries the fix.</div>
+
 <h2>2D plots</h2>
 <p>Straight <code>kicad-cli pcb export svg</code> plots of the candidate, board area only; the back is mirrored. Copper, silkscreen, mask and edge cuts per side.</p>
 <figure><a href="img/por_front.svg"><img src="img/por_front.svg" alt="front copper, silk, mask and edge plot"></a><figcaption>Front: F.Cu + F.Silkscreen + F.Mask + Edge.Cuts.</figcaption></figure>
@@ -98,6 +133,7 @@
 <li><b>Routing:</b> 103 airwires, the rev-B nets on rev-A copper — the F-19 CAN parts, the USB power path (F-27/F-39), the termination switches and their pull-ups, E-stop, LED_VDD. This placement fixes where they go; nothing is routed yet.</li>
 <li><b>Silkscreen:</b> the moved parts left 13 more silk overlaps and 19 more silk-over-copper warnings than the lean board. Cosmetic, but a fab-file pass.</li>
 <li><b>DRC housekeeping:</b> re-mark the J9/BH1 exclusion; D23/U22 and J7/C38 were already open on the lean board and want a look.</li>
+<li><b>Mounting holes:</b> keepouts and the parts under the screw heads are fixed on this board (<a href="#keepouts">above</a>); the two vias inside the rings stay unless the rule is widened to vias.</li>
 <li><b>The encoder trade:</b> U30 / R100 / C110 distances above. If they are not acceptable the alternatives are the atomic group jump (not built) or hand rework of the switch fabric.</li>
 <li><b>Rules:</b> this board is DRC-clean at 0.10/0.10 only. The <a href="../findings.html#f-47">F-47</a>/<a href="../findings.html#f-48">F-48</a> decision (rules, via-in-pad) is baked in.</li>
 <li><b>Ordering blockers</b> are unchanged: EG3113 stock (<a href="../findings.html#f-40">F-40</a>), gate drive at 5 V (<a href="../findings.html#f-41">F-41</a>).</li>

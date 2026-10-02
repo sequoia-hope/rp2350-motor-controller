@@ -77,7 +77,7 @@
     <p>The board rev-B now targets, adopted 2026-09-03: <code>lean-jiggle</code> run <code>enc_after_wide</code>, final checkpoint.
     Orthographic and perspective 3D renders, rev-A→candidate sliders shot with identical cameras, the encoder corner annotated with
     every new part's airwire lengths (U30 15.6&nbsp;mm to R82, R100 11.3&nbsp;mm to FL4 — the trade), the squeeze histogram
-    (110 parts up, median 1.2&nbsp;mm), per-layer plots, and the list of what adopting it commits to: 103 airwires, a silk pass,
+    (110 parts up, median 1.2&nbsp;mm), per-layer plots, the mounting-hole keepout pass (2026-09-04), and the list of what adopting it commits to: 103 airwires, a silk pass,
     three courtyard errors, the 0.10/0.10 rules.</p>
     <p class="date">2026-09-03</p>
   </a>
@@ -97,6 +97,14 @@
     instead of ignored. Verified against the gerbers actually sent out — 12 of 13 layers bit-identical, the 13th a
     5&nbsp;µm zone-refill artifact. Renders, plots, and how rev-B has diverged (+33 parts, 1&nbsp;mm wider outline).</p>
     <p class="date">2026-08-30</p>
+  </a>
+  <a class="card" href="revb-schematic.html">
+    <h3>Rev-B Schematic Changes →</h3>
+    <p>Every delta of the rev-B schematic against the shipped rev A, netlist-diffed: +33 parts, 15 value changes, 17 re-wired
+    nets, 208 footprint re-points, each traced to its finding. The snubber shrink (Tier A1) is the one to take back: sixteen
+    valueless DNP footprints sized to a guess, and at 20&nbsp;kHz on 60&nbsp;V anything above ~1.5&nbsp;nF exceeds an 0805 resistor.
+    Reverting is free on the fresh base. Plus a BOM-readiness list (three parts missing from F-26).</p>
+    <p class="date">2026-09-07</p>
   </a>
   <a class="card" href="shrink.html">
     <h3>Space Budget: Smaller Parts &amp; JLCPCB Process →</h3>
@@ -182,6 +190,22 @@
   </a>
 </div>
 
+<div class="board" style="border-left:4px solid var(--ok, #3a3)">
+  <strong>Status 2026-09-06 (fresh base):</strong> "in hindsight the bridge compression is not great" — does the new encoder layout
+  need it? <em>No.</em> The <a href="settle/enclayout.html">enclayout</a> candidates were annealed against the squeezed plan-of-record walls;
+  dropped as-is onto the lean board (rev-A copper + rev-B nets + Tier A, mounting-hole keepout footprints applied) <code>enc_fan</code> collides
+  in three places (U33 on C16, which the squeeze had lifted; C75 on a B_SENSE via; U32 at J12 pin 2). A 120k-step re-anneal from the r4
+  result against the unsqueezed walls takes that back to the same single residual as before (U32, 0.13) with pair floors
+  A 14.6 / B 13.4 / C 13.9 / D 14.1&nbsp;mm — <a href="settle/img/enclayout/fresh_fan.png">figure</a>
+  (<a href="settle/img/enclayout/fresh_clean.png">enc_clean 17.7 / 18.5 / 18.3 / 17.7</a>, <a href="settle/img/enclayout/fresh_current.png">the lean board today</a>).
+  Written into the lean board, kicad-cli DRC in the corner is 0 courtyard overlaps from the encoder parts, one clearance (U18 pin 3 against J2's
+  no-net mounting pad, 0.035&nbsp;mm actual), 265 airwires; the two R105/R106-in-the-H4-ring items are the lean base's own keepout backlog.
+  What the squeeze cost, measured on the plan of record: 177 of 488 vias moved (130 GND stitch vias; the 12-via /D farm scattered off its 0.7&nbsp;mm
+  grid; median 0.32&nbsp;mm, 16 over 1&nbsp;mm) and 39 fixed parts in the corner window shifted up to 2.6&nbsp;mm — none of it needed by the fan layout.
+  Boards (lean-jiggle worktree, uncommitted): <code>hardware/tools/enclayout/candidates/enc_fan_fresh</code>, <code>enc_clean_fresh</code>,
+  base <code>data/boards/fresh_base.kicad_pcb</code>.
+</div>
+
 <div class="board" style="border-left:4px solid var(--warn)">
   <strong>Status 2026-09-03 (late):</strong> can the encoder section be squeezed toward the board corner to make room for
   the new chips nearer the connector, with the diff pairs of similar length? <em>No</em>, three gated runs on the settle branch —
@@ -194,6 +218,28 @@
   the experiment bases shrink 190 of them cleanly); via-in-pad moves only 6 of 54 candidates on the existing copper — it is a
   routing-stage decision. Pair copper today, P/N: A 7.8/15.9, B 16.1/18.4, C 24.4/26.3, D 31.9/36.0&nbsp;mm; the 20&nbsp;mm
   spread is ~130&nbsp;ps against RS-422 edges. Full log on the <a href="settle/index.html">settle index</a>.
+</div>
+
+<div class="board" style="border-left:4px solid var(--ok, #3a3)">
+  <strong>Status 2026-09-04 (later):</strong> asked differently — not "can the settle engine squeeze it" but "is there <em>any</em> corner
+  layout with the four pairs of similar length, connectors allowed up but not sideways" — the answer is <em>yes</em>, and the connectors stay.
+  An abstract model of the corner (courtyards, pads, every through-hole annulus and fixed via as walls, a priced connector slide) annealed over
+  96 starts puts every chain left from its own J12 pins: <a href="settle/enclayout.html">pair floors A 14.6 / B 13.0 / C 13.6 / D 14.3&nbsp;mm</a>
+  against today's 13.4 / 15.9 / 25.6 / 24.7 — C and D were long because they were homed at the top of the section, not for lack of room.
+  Two candidate boards are written (<code>hardware/tools/enclayout/candidates/enc_fan</code>, <code>enc_clean</code>): parts placed, corner copper stripped,
+  kicad-cli DRC 0 courtyard overlaps and two pad clearances a few hundredths short, 265 airwires to route. Sliding J1/J2 up buys nothing: the
+  chains' walls are J12's pin columns, U5 and the /D via farm, and 0.5&nbsp;mm up already puts J1's second pin into the In2 sense lines.
+</div>
+
+<div class="board" style="border-left:4px solid var(--accent)">
+  <strong>Status 2026-09-04 (mounting-hole keepouts):</strong> the four edge half-holes now carry a proper keepout in the
+  footprint itself — a rule area on F.Cu and B.Cu (no tracks, no footprints) matching the 3.65&nbsp;mm courtyard, plus the
+  bottom-side courtyard the hole never had (which is why the settle engine and the courtyard check let bottom parts in).
+  Six rev-B pulldowns (R105 R106 R109 R111 R112 R113) that had been placed inside the 7&nbsp;mm silk ring moved out to
+  searched free spots; four rev-A parts touching the ring (C5, C12, U10, R56 with its R55/D17 column) were nudged
+  0.05–0.35&nbsp;mm with their track ends dragged; the +3V3 link under H3 moved from B.Cu to In3 with a new via, and one
+  I2C_SDA segment lifted off H2. DRC: keepout violations 20→0, courtyard errors back at the baseline 7 (3 live + 4 excluded),
+  103 airwires unchanged. <a href="settle/renders.html#keepouts">Before/after on the plan-of-record page</a>.
 </div>
 
 <div class="board" style="border-left:4px solid var(--accent)">
