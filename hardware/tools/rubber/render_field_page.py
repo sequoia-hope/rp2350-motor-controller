@@ -328,7 +328,7 @@ field of any kind reroutes a trace, so the {stg['airwires']} open airwires stay 
 <p class="small" style="margin-top:2rem">Tooling: <code>hardware/tools/rubber/field.py</code> (solver),
 <code>stretch.py</code> (board application), <code>animate.py</code> (the videos),
 <code>render_field_page.py</code> (this page), <code>field_results.json</code> (its data).
-The superseded graph-harmonic engine is preserved at git <code>cbc2240</code>.</p>
+The superseded graph-harmonic engine is preserved at git <code>21f8fce</code>.</p>
 </main></body></html>"""
 
 out = os.path.join(REV, 'field.html')

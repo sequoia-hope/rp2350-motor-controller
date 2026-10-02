@@ -443,7 +443,7 @@
   "med": 15,
   "p90": 50,
   "mx": 121,
-  "note": "old graph-harmonic engine, +1% post-nudge (git cbc2240)"
+  "note": "old graph-harmonic engine, +1% post-nudge (git 21f8fce)"
  },
  "ablation": [
   {

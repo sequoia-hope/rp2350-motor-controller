@@ -24,7 +24,7 @@ Note: run against the PRE-sync board to reproduce the original decision --
 sync_pcb.py has since moved these parts, and the current board therefore scores
 the poses that were chosen, not the ones that were available:
 
-  git show 7058e41:hardware/rp2350_driver.kicad_pcb > /tmp/pre.kicad_pcb
+  git show e5e7a12:hardware/rp2350_driver.kicad_pcb > /tmp/pre.kicad_pcb
   scan_place.py --board /tmp/pre.kicad_pcb
 
   usage: scan_place.py [--board PCB] [--part U29] [--window 8] [--top 8]

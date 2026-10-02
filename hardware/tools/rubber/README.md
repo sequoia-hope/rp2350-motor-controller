@@ -54,7 +54,7 @@ Staged board: `hardware/rp2350_driver_rubber_A.kicad_pcb`.
 ## Lessons (hard-won, see also ../modules/README.md)
 
 - **Interpolate the lag through SPACE, not along the net.**  The graph-harmonic
-  engine (git `cbc2240`) blended each footprint's residual along its own net's
+  engine (git `21f8fce`) blended each footprint's residual along its own net's
   copper, and that graph knows nothing about distance: two traces 0.2 mm apart
   on different nets got uncorrelated displacements and the gap between them
   changed by the difference of two unrelated residuals.  That was the entire
