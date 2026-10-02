@@ -211,12 +211,17 @@ static float loop_freq_hz = 0;
 
 // --- Automatic demo ---
 // 1 = self-starting demo: wait for motor power, load calibration from flash,
-// then run a continuous sine with all output suppressed. 0 = manual bring-up
-// (H / A / Cs / Y from tune.py). Nothing moves on boot when this is 0.
+// then run a continuous velocity sine with all output suppressed. 0 = manual
+// bring-up (H / A / Cs / Y from tune.py). Nothing moves on boot when this is 0.
 #define DEMO_MODE 1
-#define DEMO_SPEED      50.0f    // rad/s amplitude
+#define DEMO_SPEED      40.0f    // rad/s amplitude
 #define DEMO_PERIOD_MS  2000.0f  // -> 0.5Hz
 #define DEMO_MIN_VMOT   15.0f    // any bench supply above this also arms it
+// Plateau mode: >0 holds each sine peak at +/-DEMO_SPEED for this many seconds
+// before the ramp to the other direction, so the demo spends most of its time
+// at constant speed (thermal soak, bearing/acoustic checks) instead of only
+// touching peak velocity instantaneously. 0 = plain sine, the original demo.
+#define DEMO_PLATEAU_S  10.0f
 
 // Blocking per-iteration debug dump (angle/alpha/beta/dq for the first 10
 // iterations). Costs ~9ms per line at 115200 and stalls the control loop, so
@@ -295,11 +300,56 @@ static inline bool focLoopDue() {
     return true;
 }
 
-// Continuous velocity sine mode (non-blocking, runs in loop)
+// --- Continuous velocity sine mode (non-blocking, runs in loop) ---
+//
+// Phase is accumulated in whole milliseconds and wrapped once per cycle rather
+// than recomputed as (millis() - t0): this mode is meant to run for hours, and
+// a float seconds count coarsens badly over that span (~4ms of resolution after
+// half a day), which quantises the velocity target visibly. Wrapping also makes
+// the millis() rollover a non-event.
 static bool sine_running = false;
 static float sine_amplitude = 0;
 static float sine_freq_hz = 1.0f;
-static unsigned long sine_t0 = 0;
+static float sine_period_ms = 1000.0f;  // 1000/freq, rounded to whole ms
+static uint32_t sine_plateau_ms = 0;    // 0 = plain sine, >0 = plateau mode
+static uint32_t sine_cycle_ms = 1000;   // period + 2*plateau
+static uint32_t sine_phase_ms = 0;      // position within the cycle
+static uint32_t sine_last_ms = 0;
+
+// Velocity target for a given phase within the cycle.
+//
+// With sine_plateau_ms == 0 this is the plain sine. Otherwise it is the same
+// sine with its phase clock paused at each peak: the ramps keep the sine's
+// acceleration profile (so the tuned velocity gains still apply) and the peaks
+// are held flat for the dwell.
+//
+//   +A       _______              _______
+//           /       \            /
+//    0  ___/         \          /
+//                     \        /
+//   -A                 \______/
+//           |<--P-->|  |<--P-->|
+//       |<-T/4->|      |<-T/2->|          one cycle = T + 2P
+//
+// The period is quantised to whole ms in startSine() so these boundaries and
+// the wrap point in loop() agree exactly and the waveform stays continuous.
+static float sineTarget(uint32_t phase_ms) {
+    float t = (float)phase_ms;
+    const float T = sine_period_ms;
+    const float P = (float)sine_plateau_ms;
+    const float q = T * 0.25f;  // quarter period: the 0 -> +A ramp
+    if (P > 0.0f) {
+        if (t >= q + P) {
+            if (t < 3.0f * q + P)             t -= P;           // +A -> -A ramp
+            else if (t < 3.0f * q + 2.0f * P) return -sine_amplitude;
+            else                              t -= 2.0f * P;    // -A -> 0 ramp
+        } else if (t >= q) {
+            return sine_amplitude;                              // hold at +A
+        }
+        // t < q: the 0 -> +A ramp, unshifted
+    }
+    return sine_amplitude * sinf(2.0f * 3.14159265f * t / T);
+}
 
 #ifdef HAS_USB_PD
 #include <PD_UFP.h>
@@ -325,7 +375,7 @@ static float readVMOT() {
 
 // Forward declarations
 void stopSine();
-void startSine(float amplitude, float freq);
+void startSine(float amplitude, float freq, float plateau_s);
 void doHallScan(char *cmd);
 
 // Serial output is blocked while the sine runs: SERIAL_PORT is a 115200 UART and
@@ -336,9 +386,15 @@ void doHallScan(char *cmd);
 // button (T0 -> doTarget -> stopSine) still works.
 static inline bool outputBlocked() { return sine_running; }
 
-// Continuous sine demo: Y<amplitude>[,<freq_hz>] starts it, Y alone stops it.
-// This is the only way to reach startSine() -- the PD 20V/5A auto-start in
-// loop() is commented out, so without this the demo path is unreachable.
+// Continuous sine demo: Y<amplitude>[,<freq_hz>[,<plateau_s>]] starts it,
+// Y alone stops it. A non-zero plateau holds each peak for that many seconds
+// (see sineTarget()); omit it for the plain sine.
+//
+//   Y50          50 rad/s, 1Hz sine
+//   Y50,0.5      50 rad/s, 0.5Hz sine (the DEMO_MODE default)
+//   Y50,0.5,30   ...with 30s held at +50 and at -50 each cycle
+//
+// The other entry point is the DEMO_MODE auto-start in demoTick().
 void doDemo(char *cmd) {
     if (cmd[0] == '\0' || cmd[0] == '\n' || cmd[0] == '\r') {
         stopSine();
@@ -346,9 +402,14 @@ void doDemo(char *cmd) {
     }
     float amplitude = atof(cmd);
     float freq = 1.0f;
+    float plateau_s = 0.0f;
     char *comma = strchr(cmd, ',');
-    if (comma) freq = atof(comma + 1);
-    startSine(amplitude, freq);
+    if (comma) {
+        freq = atof(comma + 1);
+        char *comma2 = strchr(comma + 1, ',');
+        if (comma2) plateau_s = atof(comma2 + 1);
+    }
+    startSine(amplitude, freq, plateau_s);
 }
 void doCSDebug(char *cmd);
 
@@ -2110,7 +2171,7 @@ void setup() {
     // Use H (hw_init), A (align), Cl (load cal) manually.
 }
 
-void startSine(float amplitude, float freq) {
+void startSine(float amplitude, float freq, float plateau_s) {
     if (!foc_ready) {
         SERIAL_PORT.println("ERR: Not aligned/calibrated. Cannot start sine.");
         return;
@@ -2133,13 +2194,31 @@ void startSine(float amplitude, float freq) {
     driver->setPwm(vn, vn, vn);
 
     sine_amplitude = amplitude;
-    sine_freq_hz = freq;
-    sine_t0 = millis();
+    // Quantise the period to whole ms: sineTarget()'s piecewise boundaries and
+    // the phase wrap in loop() are then the same number, so the waveform is
+    // continuous across the wrap. 50ms floor matches the Sw step test.
+    if (freq <= 0.0f) freq = 1.0f;
+    sine_period_ms = roundf(1000.0f / freq);
+    if (sine_period_ms < 50.0f) sine_period_ms = 50.0f;
+    sine_freq_hz = 1000.0f / sine_period_ms;  // what we will actually run
+    if (plateau_s < 0.0f) plateau_s = 0.0f;
+    sine_plateau_ms = (uint32_t)(plateau_s * 1000.0f + 0.5f);
+    sine_cycle_ms = (uint32_t)sine_period_ms + 2 * sine_plateau_ms;
+    sine_phase_ms = 0;
+    sine_last_ms = millis();
     sine_running = true;
     SERIAL_PORT.print("Sine started: amplitude=");
     SERIAL_PORT.print(amplitude, 1);
     SERIAL_PORT.print(" freq=");
-    SERIAL_PORT.println(freq, 2);
+    SERIAL_PORT.print(sine_freq_hz, 2);
+    if (sine_plateau_ms) {
+        SERIAL_PORT.print(" plateau=");
+        SERIAL_PORT.print(sine_plateau_ms * 0.001f, 1);
+        SERIAL_PORT.print("s cycle=");
+        SERIAL_PORT.print(sine_cycle_ms * 0.001f, 1);
+        SERIAL_PORT.print("s");
+    }
+    SERIAL_PORT.println();
 }
 
 void stopSine() {
@@ -2195,7 +2274,7 @@ static void demoTick() {
         SERIAL_PORT.println("DEMO: no valid calibration in flash. Run A then Cs.");
         return;
     }
-    startSine(DEMO_SPEED, 1000.0f / DEMO_PERIOD_MS);
+    startSine(DEMO_SPEED, 1000.0f / DEMO_PERIOD_MS, DEMO_PLATEAU_S);
     SERIAL_PORT.println("DEMO: running. Output is now suppressed.");
 }
 #endif
@@ -2242,8 +2321,11 @@ void loop() {
 
     if (sine_running) {
         if (focLoopDue()) {
-            float t_sec = (millis() - sine_t0) * 0.001f;
-            motor->target = sine_amplitude * sinf(2.0f * 3.14159265f * sine_freq_hz * t_sec);
+            uint32_t now_ms = millis();
+            sine_phase_ms += now_ms - sine_last_ms;
+            sine_last_ms = now_ms;
+            if (sine_phase_ms >= sine_cycle_ms) sine_phase_ms %= sine_cycle_ms;
+            motor->target = sineTarget(sine_phase_ms);
             motor->loopFOC();
             motor->move();
         }
