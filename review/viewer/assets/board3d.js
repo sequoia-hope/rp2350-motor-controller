@@ -27,7 +27,7 @@ const VIEWS = {
   tilt: [[0, 0.62, 0.78], [0, 1, 0]],
   edge: [[0, 0.06, 1], [0, 1, 0]],
 };
-// the board's own meshes, by the layer export_3d.py names them, into toggles
+// the board's own meshes, by the layer the 3D stage (model3d.py) names them, into toggles
 const GROUPS = [
   ['parts', 'Parts', null],
   ['copper', 'Copper', ['copper', 'pad', 'via']],

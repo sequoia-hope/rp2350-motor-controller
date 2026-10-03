@@ -75,7 +75,10 @@
           });
           return b;
         }));
-        show(Math.max(0, wanted()));
+        // a hash's sheet, or the first that has parts on it: a top level
+        // that only holds sheet boxes is not much to open on
+        const first = Math.max(0, sheets.findIndex(s => s.symbols !== 0));
+        show(wanted() >= 0 ? wanted() : first);
       }).catch(e => {
         msg.hidden = false;
         msg.innerHTML = 'The schematic plots are missing: run <code>python3 -m pcbview build</code>. (' + e + ')';
@@ -83,42 +86,34 @@
     }
     const wanted = () => sheets.findIndex(s => '#sch-' + s.sheet === decodeURIComponent(location.hash));
 
-    // drag to pan, wheel to zoom about the cursor
-    let drag = null;
-    plate.addEventListener('pointerdown', e => {
-      drag = { px: e.clientX, py: e.clientY, x, y };
-      plate.setPointerCapture(e.pointerId);
-      plate.classList.add('drag');
+    // drag / pinch / double tap: gesture.js; the mouse wheel is the plate's own
+    PV.gestures(plate, {
+      start: () => plate.classList.add('drag'),
+      end: () => plate.classList.remove('drag'),
+      pan: (dx, dy) => { if (z > 1) { x += dx; y += dy; place(); } },
+      zoom: (f, cx, cy) => zoomAt(f, cx, cy),
+      dblclick: (cx, cy) => zoomAt(2, cx, cy),
     });
-    plate.addEventListener('pointermove', e => {
-      if (!drag || z <= 1) return;
-      x = drag.x + e.clientX - drag.px; y = drag.y + e.clientY - drag.py; place();
-    });
-    const end = () => { drag = null; plate.classList.remove('drag'); };
-    plate.addEventListener('pointerup', end);
-    plate.addEventListener('pointercancel', end);
     plate.addEventListener('wheel', e => {
       e.preventDefault();
       const r = plate.getBoundingClientRect();
       zoomAt(Math.exp(-e.deltaY * 0.0015), e.clientX - r.left, e.clientY - r.top);
     }, { passive: false });
-    plate.addEventListener('dblclick', e => {
-      const r = plate.getBoundingClientRect();
-      zoomAt(2, e.clientX - r.left, e.clientY - r.top);
-    });
     panel.querySelectorAll('[data-sch]').forEach(b => b.addEventListener('click', () => {
       if (b.dataset.sch === 'fit') fitAll();
       else zoomAt(b.dataset.sch === 'in' ? 1.5 : 1 / 1.5, plate.clientWidth / 2, plate.clientHeight / 2);
     }));
     addEventListener('keydown', e => {
       if (!shown() || e.target.closest('input, textarea, select') || e.metaKey || e.ctrlKey) return;
+      const r = panel.getBoundingClientRect();                 // and on screen
+      if (r.bottom < 0 || r.top > innerHeight) return;
       if (e.key === '0') fitAll();
       else if (e.key === '+' || e.key === '=') zoomAt(1.5, plate.clientWidth / 2, plate.clientHeight / 2);
       else if (e.key === '-') zoomAt(1 / 1.5, plate.clientWidth / 2, plate.clientHeight / 2);
       else if (/^[1-9]$/.test(e.key) && sheets[+e.key - 1]) show(+e.key - 1);
     });
 
-    // app.js fires resize when a tab is chosen: the first time this one is,
+    // viewer.js fires resize when a tab is chosen: the first time this one is,
     // fetch the list and the first sheet
     addEventListener('resize', () => { load(); layout(); });
     new ResizeObserver(layout).observe(plate);

@@ -507,10 +507,10 @@
   "triangles": 663176,
   "primitives": 705
  },
- "when": "2026-09-27 12:50",
+ "when": "2026-10-03 00:11",
  "source": {
   "kind": "git",
-  "repo": "/home/sequoia/pcb/rp2350-motor-controller",
+  "repo": ".",
   "ref": "rev-A-fab",
   "commit": "c6b9b75",
   "date": "2026-05-26",

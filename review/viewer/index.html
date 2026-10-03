@@ -4,9 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>RP2350 Motor Controller &mdash; Rev A — as fabricated</title>
+<link rel="stylesheet" href="assets/viewer.css">
 <link rel="stylesheet" href="assets/pcbview.css">
-<script src="assets/parts.js" defer></script>
 <script src="assets/app.js" defer></script>
+<script src="assets/parts.js" defer></script>
+<script src="assets/gesture.js" defer></script>
+<script src="assets/viewer.js" defer></script>
 <script src="assets/copper.js" defer></script>
 <script src="assets/sch.js" defer></script>
 <script type="importmap">{"imports": {"three": "./assets/vendor/three.module.js"}}</script>
@@ -159,7 +162,7 @@
       <h1>Rev A — as fabricated</h1>
       <p class="pv-lede">The board that shipped: tag rev-A-fab (c6b9b75, 2026-05-26), the design the gerbers in hardware/production/ were plotted from (review/rev-a.html has the proof). The mainline hardware/rp2350_driver.kicad_pcb is rev-B work in progress, not this board.</p>
       <dl class="pv-facts"><dt>Source</dt><dd><code>hardware/rp2350_driver.kicad_pcb</code><br><code>hardware/rp2350_driver.kicad_sch</code><small>at <b>rev-A-fab</b> &rarr; c6b9b75, 2026-05-26: &ldquo;remove incorrect max voltage silk&rdquo;</small></dd><dt>Board</dt><dd>76 &times; 46.4 mm<small>6 copper layers, 1.609 mm thick</small></dd><dt>Parts</dt><dd>291 footprints<small>92 on the top, 199 on the bottom</small></dd><dt>Copper</dt><dd>188 nets, 3,984 track segments, 493 vias<small>5,165 mm of routed track</small></dd><dt>Schematic</dt><dd>1 sheet<small>A1</small></dd><dt>3D</dt><dd>259 of 291 parts drawn from a model<small>195 through an older KiCad&rsquo;s library variable (<code>${KICAD6_3DMODEL_DIR}</code> and so on), read as KiCad 9&rsquo;s library</small><small>FL1&ndash;FL4, L2, SW1, SW2, U18&ndash;U21 with a stand-in from the project file</small><small>Q5: a STEP assembly the exporter meshes as nothing, flattened first</small><small>24 name no model (H1&ndash;H4, JP1, TP1&ndash;TP7, TP9, TP10, TP12&ndash;TP20, U3)</small></dd><dt>Drawn as boxes</dt><dd><span class="warn">D23, D25&ndash;D27</span><small><code>${KICAD8_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/SOT-883.wrl</code>: no such file</small><span class="warn">D24</span><small><code>${KIPRJMOD}/parts/SOT-883-3_L1.0-W0.6-BR.wrl</code>: only a .wrl, which the exporter cannot mesh</small><span class="warn">D28, D29</span><small><code>${KICAD9_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/SOT-883.step</code>: no such file</small><span class="warn">TP8</span><small><code>${KICAD6_3DMODEL_DIR}/TestPoint.3dshapes/TestPoint_Keystone_5019_Minature.wrl</code>: no such file</small><small>a box the size of the courtyard stands in for each; a <code>[models]</code> entry in the project file can name a stand-in model</small></dd></dl>
-      <p class="cu-hint">Built 2026-09-27 12:50 by pcbview from the KiCad files above:
+      <p class="cu-hint">Built 2026-10-03 00:11 by pcbview from the KiCad files above:
       <code>python3 -m pcbview build pcbview.toml</code>. Nothing here is drawn by hand &mdash; the layer plots, the model and the
       sheets are KiCad&rsquo;s own exports.</p>
     </div>

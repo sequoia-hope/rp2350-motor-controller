@@ -157,36 +157,19 @@
       $('#cu-read').textContent = t;
     }
 
-    let drag = null;
-    plate.addEventListener('pointerdown', e => {
-      drag = { x: e.clientX, y: e.clientY, tx: state.tx, ty: state.ty, moved: false };
-      plate.setPointerCapture(e.pointerId);
-    });
-    plate.addEventListener('pointerup', e => {
-      const was = drag;
-      drag = null;
-      plate.classList.remove('drag');
-      plate.releasePointerCapture(e.pointerId);
-      if (was && !was.moved) {
-        const r = plate.getBoundingClientRect();
-        pick(e.clientX - r.left, e.clientY - r.top);
-      }
-      place();
-    });
-    plate.addEventListener('pointermove', e => {
-      const r = plate.getBoundingClientRect();
-      if (drag) {
-        if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 4) {
-          drag.moved = true;
-          plate.classList.add('drag');
-        }
-        if (drag.moved) {
-          state.tx = drag.tx + (e.clientX - drag.x);
-          state.ty = drag.ty + (e.clientY - drag.y);
-          place();
-        }
-      }
-      readout(e.clientX - r.left, e.clientY - r.top);
+    // drag / pinch / tap: gesture.js; the mouse wheel is the plate's own
+    let drag = false;
+    PV.gestures(plate, {
+      start: () => { drag = true; plate.classList.add('drag'); },
+      end: () => { drag = false; plate.classList.remove('drag'); place(); },
+      pan: (dx, dy) => { state.tx += dx; state.ty += dy; place(); },
+      zoom: (f, cx, cy) => zoom(state.s * f, cx, cy),
+      click: pick,
+      dblclick: (x, y) => {
+        if (state.s > 1.01) { state.s = 1; state.tx = state.ty = 0; place(); }
+        else zoom(4, x, y);
+      },
+      move: readout,
     });
     plate.addEventListener('pointerleave', () => { $('#cu-read').textContent = ''; });
     plate.addEventListener('wheel', e => {
@@ -194,13 +177,14 @@
       const r = plate.getBoundingClientRect();
       zoom(state.s * Math.exp(-e.deltaY * 0.0018), e.clientX - r.left, e.clientY - r.top);
     }, { passive: false });
-    plate.addEventListener('dblclick', e => {
-      const r = plate.getBoundingClientRect();
-      if (state.s > 1.01) { state.s = 1; state.tx = state.ty = 0; place(); }
-      else zoom(4, e.clientX - r.left, e.clientY - r.top);
-    });
 
-    const shown = () => !root.hidden && root.offsetParent !== null;
+    // keys work while the tab is open and on screen: a page the viewer is
+    // embedded in has other things to type at
+    const shown = () => {
+      if (root.hidden || root.offsetParent === null) return false;
+      const r = root.getBoundingClientRect();
+      return r.bottom > 0 && r.top < innerHeight;
+    };
     document.addEventListener('keydown', e => {
       if (!shown() || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.metaKey || e.ctrlKey) return;
       const n = parseInt(e.key, 10);

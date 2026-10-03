@@ -1,15 +1,16 @@
 {
  "title": "RP2350 Motor Controller",
- "built": "2026-09-27T12:50:49",
- "config": "/home/sequoia/pcb/rp2350-motor-controller/pcbview.toml",
+ "built": "2026-10-03T00:11:18",
+ "config": "pcbview.toml",
  "boards": [
   {
    "id": "rev-a",
    "name": "Rev A \u2014 as fabricated",
    "page": "index.html",
+   "embed": null,
    "source": {
     "kind": "git",
-    "repo": "/home/sequoia/pcb/rp2350-motor-controller",
+    "repo": ".",
     "ref": "rev-A-fab",
     "commit": "c6b9b75",
     "date": "2026-05-26",
