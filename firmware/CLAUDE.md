@@ -69,9 +69,20 @@ Similarly, SimpleFOC's `current_sense.init()` starts a DMA-driven ADC engine tha
 
 The framework's FreeRTOS library compiles and links even though it's absent from the dependency graph and unreferenced by our source. The core enables FreeRTOS purely on presence — `extern void initFreeRTOS() __attribute__((weak))` (arduino-pico `cores/rp2040/main.cpp:41`) resolving non-null sets `__isFreeRTOS`. `lib_archive = true` does **not** prevent this; only `lib_ignore = FreeRTOS` does.
 
-When FreeRTOS is active, any LittleFS write (i.e. `Cs` / `save_calibration()`) deadlocks: `lfs_flash_prog` → `RP2040::idleOtherCore()` → `__freertos_idle_other_core()`, which notifies core1's idle task and busy-waits on `__otherCoreIdled` forever. **The failure looks like a serial problem** — interrupts still drain the UART FIFO, so the board transmits its boot banner and the RX line looks healthy, but it stops answering commands until reset. Don't chase the UART; get a backtrace.
+When FreeRTOS is active, any flash write (i.e. `Cs` / `save_calibration()`) deadlocks: `calFlashErase()` → `RP2040::idleOtherCore()` → `__freertos_idle_other_core()` (LittleFS's `lfs_flash_prog` took the same path when calibration lived there), which notifies core1's idle task and busy-waits on `__otherCoreIdled` forever. **The failure looks like a serial problem** — interrupts still drain the UART FIFO, so the board transmits its boot banner and the RX line looks healthy, but it stops answering commands until reset. Don't chase the UART; get a backtrace.
 
 With FreeRTOS unlinked and no `setup1`/`loop1`, `_multicore` is false and `idleOtherCore()` returns immediately, so flash writes work.
+
+## Calibration storage: two raw flash slots, not LittleFS
+
+`Cs` writes one 52-byte record (magic, version, sequence number, `MOTOR_CONFIG`, alignment data, CRC-32) into one of two 4 KB sectors at `_FS_start` (0x101ef000), always the slot that does **not** hold the newest good record. A power cut at any point therefore leaves the previous calibration loadable; boot loads the newest record whose CRC checks out. Code: `src/cal_store.h` (no Arduino deps), wired up in `main.cpp`.
+
+Why not LittleFS: arduino-pico's `File open("w")` calls `lfs_file_sync()` straight after opening, which commits the truncated, empty file before any data is written. In host simulation (`host_test/littlefs_powercut.c`) 37% of power-cut points during a save left an empty `calibration.txt`, which the demo reported as "no valid calibration" with the orange LED. littlefs itself never asserted or faulted. The earlier "begin() mounts, open() hardfaults" diagnosis is not supported: the orange LED it reported is set only after `load_calibration_and_init()` returns, so the board was not stuck inside `open()`.
+
+- A load is refused unless the record matches this build: same `MOTOR_CONFIG`, direction ±1, angle in [0, 2π], every gain's magnitude equal to `1/(SHUNT_RESISTOR*CURRENT_AMP_GAIN)` (driverAlign only swaps and negates them), hall pins a permutation of GPIO31-33. `Cs` refuses to save anything that would fail these checks.
+- `Cs` refuses while `motor->enabled`: the sector erase runs with interrupts off (W25Q16JV 45 ms typical, 400 ms max), freezing `loopFOC()` and `busGuard()`. Send `Bx` first.
+- Boards flashed from LittleFS-era firmware come up with "No saved calibration: flash holds a calibration.txt from older firmware" — run `A` then `Cs` once. The first `Cs` overwrites the old LittleFS superblock.
+- Test without the board: `make -C firmware/host_test` (power cuts at every erase/program, bit flips, a stuck cell, a 200k-step random history; mutation-checked).
 
 ## Commander verbose mode
 

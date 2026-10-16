@@ -1,9 +1,10 @@
 #include <Arduino.h>
 #include <SimpleFOC.h>
 #include <SPI.h>
-#include <LittleFS.h>
+#include <hardware/flash.h>
 #include <Adafruit_NeoPixel.h>
 #include "../patches/simplefoc_rp2040_current_sense.h"
+#include "cal_store.h"
 
 // Motor configuration
 // MOTOR_MT6701 (1): MT6701 magnetic encoder (SPI, differential transceivers)
@@ -1347,171 +1348,177 @@ void doAdcTest(char *cmd) {
     SERIAL_PORT.println(current_sense->offset_ic, 4);
 }
 
-// --- Calibration save/load (LittleFS on SPI flash) ---
+// --- Calibration save/load (two raw flash slots, see cal_store.h) ---
 
-// Mount LittleFS, logging a failure (the old code ignored begin()'s return).
-// begin() already formats and retries on a failed mount -- LittleFSConfig's
-// autoFormat defaults to true and nothing here calls setConfig() -- so false
-// means that format failed too; format_on_fail (save path) is a second try.
-// This does NOT fix the power-cut brick seen on the demo board: there begin()
-// mounts the corrupt filesystem and open() hardfaults on its metadata.
-// Recovery from that is still an SWD erase of the 0x101ef000 region.
-static bool fsMount(bool format_on_fail) {
-    if (LittleFS.begin()) return true;
-    SERIAL_PORT.println("LittleFS: mount FAILED.");
-    if (!format_on_fail) return false;
-    SERIAL_PORT.println("LittleFS: formatting...");
-    if (!LittleFS.format() || !LittleFS.begin()) {
-        SERIAL_PORT.println("LittleFS: format FAILED — flash problem.");
-        return false;
-    }
-    SERIAL_PORT.println("LittleFS: formatted and mounted.");
-    return true;
+// The slots are the first two sectors of the region board_build.filesystem_size
+// reserves, where LittleFS used to live. A save stalls this core with
+// interrupts off for the sector erase (W25Q16JV: 45 ms typical, 400 ms max) --
+// no loopFOC(), no busGuard() -- so doCalibration() refuses while the motor is
+// enabled.
+extern uint8_t _FS_start;
+extern uint8_t _FS_end;
+
+static_assert(CAL_SECTOR_SIZE == FLASH_SECTOR_SIZE && CAL_PAGE_SIZE == FLASH_PAGE_SIZE,
+              "cal_store.h geometry must match the flash");
+
+static uint32_t calFlashOffset(int slot) {
+    return (uint32_t)(&_FS_start - (uint8_t *)XIP_BASE) + (uint32_t)slot * CAL_SECTOR_SIZE;
+}
+// Same guard as the framework's LittleFS writes: nothing may run from flash
+// while it is being erased or programmed.
+static void calFlashErase(int slot) {
+    noInterrupts();
+    rp2040.idleOtherCore();
+    flash_range_erase(calFlashOffset(slot), CAL_SECTOR_SIZE);
+    rp2040.resumeOtherCore();
+    interrupts();
+}
+static void calFlashProgram(int slot, const uint8_t *page) {
+    noInterrupts();
+    rp2040.idleOtherCore();
+    flash_range_program(calFlashOffset(slot), page, CAL_PAGE_SIZE);
+    rp2040.resumeOtherCore();
+    interrupts();
+}
+static const CalFlash cal_flash = {{&_FS_start, &_FS_start + CAL_SECTOR_SIZE},
+                                   calFlashErase, calFlashProgram};
+
+// driverAlign() only swaps and negates InlineCurrentSense's volts-to-amps
+// ratio, so every saved gain must have this magnitude.
+#define CAL_GAIN_MAG (1.0f / SHUNT_RESISTOR / CURRENT_AMP_GAIN)
+#if MOTOR_CONFIG == MOTOR_HALLS
+static const int32_t cal_hall_pins[3] = {PIN_HALL_A, PIN_HALL_B, PIN_HALL_C};
+#define CAL_HALL_PINS cal_hall_pins
+#else
+#define CAL_HALL_PINS nullptr
+#endif
+
+static bool calRegionOk() {
+    if (&_FS_end - &_FS_start >= (ptrdiff_t)(2 * CAL_SECTOR_SIZE)) return true;
+    SERIAL_PORT.println("ERR: no flash reserved for calibration (board_build.filesystem_size < 8KB).");
+    return false;
+}
+
+// Older firmware kept calibration.txt on LittleFS in these same sectors. Its
+// superblock names itself "littlefs" near the start of the block.
+static bool calSlotHasLittleFS(int slot) {
+    const uint8_t *p = cal_flash.read[slot];
+    for (unsigned i = 0; i + 8 <= CAL_PAGE_SIZE; i++)
+        if (memcmp(p + i, "littlefs", 8) == 0) return true;
+    return false;
+}
+
+static void printCalibration(const char *title, uint32_t seq, const CalData &d) {
+    SERIAL_PORT.print(title);
+    SERIAL_PORT.print(" #");
+    SERIAL_PORT.print(seq);
+    SERIAL_PORT.println(":");
+    SERIAL_PORT.print("  zero_electric_angle=");
+    SERIAL_PORT.println(d.zero_electric_angle, 4);
+    SERIAL_PORT.print("  sensor_direction=");
+    SERIAL_PORT.println(d.sensor_direction == (int32_t)Direction::CW ? "CW" : "CCW");
+    SERIAL_PORT.print("  gain_a=");
+    SERIAL_PORT.println(d.gain_a, 5);
+    SERIAL_PORT.print("  gain_b=");
+    SERIAL_PORT.println(d.gain_b, 5);
+    SERIAL_PORT.print("  gain_c=");
+    SERIAL_PORT.println(d.gain_c, 5);
+#if MOTOR_CONFIG == MOTOR_HALLS
+    SERIAL_PORT.print("  hall_pins: A=");
+    SERIAL_PORT.print(d.hall_a);
+    SERIAL_PORT.print(" B=");
+    SERIAL_PORT.print(d.hall_b);
+    SERIAL_PORT.print(" C=");
+    SERIAL_PORT.println(d.hall_c);
+#endif
 }
 
 // Saves motor sensor alignment AND current sense driver alignment results.
-// Format: offset,direction,gain_a,gain_b,gain_c[,hall_a,hall_b,hall_c]
 void save_calibration() {
-    if (!fsMount(true)) {
-        SERIAL_PORT.println("Calibration not saved!");
+    if (!calRegionOk()) return;
+    CalData d = {};
+    d.zero_electric_angle = motor->zero_electric_angle;
+    d.sensor_direction = (int32_t)motor->sensor_direction;
+    d.gain_a = current_sense->gain_a;
+    d.gain_b = current_sense->gain_b;
+    d.gain_c = current_sense->gain_c;
+#if MOTOR_CONFIG == MOTOR_HALLS
+    d.hall_a = hall_sensor->pinA;
+    d.hall_b = hall_sensor->pinB;
+    d.hall_c = hall_sensor->pinC;
+#else
+    d.hall_a = d.hall_b = d.hall_c = -1;
+#endif
+    // Never store what load_calibration_and_init() would refuse.
+    CalRecord check = {};
+    check.motor_config = MOTOR_CONFIG;
+    check.data = d;
+    const char *why = calCheck(check, MOTOR_CONFIG, CAL_GAIN_MAG, CAL_HALL_PINS);
+    if (why) {
+        SERIAL_PORT.print("ERR: calibration not saved: ");
+        SERIAL_PORT.println(why);
         return;
     }
-    File file = LittleFS.open("calibration.txt", "w");
-    if (!file) {
-        SERIAL_PORT.println("Failed to open file for writing.");
-        SERIAL_PORT.println("Calibration not saved!");
-        LittleFS.end();
+    uint32_t seq = calSave(cal_flash, MOTOR_CONFIG, d);
+    if (!seq) {
+        SERIAL_PORT.println("ERR: calibration did not read back from flash. Previous calibration kept.");
         return;
     }
-    file.print(motor->zero_electric_angle, 6);
-    file.print(",");
-    file.print((int)motor->sensor_direction);
-    file.print(",");
-    file.print(current_sense->gain_a, 6);
-    file.print(",");
-    file.print(current_sense->gain_b, 6);
-    file.print(",");
-    file.print(current_sense->gain_c, 6);
-#if MOTOR_CONFIG == MOTOR_HALLS
-    file.print(",");
-    file.print(hall_sensor->pinA);
-    file.print(",");
-    file.print(hall_sensor->pinB);
-    file.print(",");
-    file.print(hall_sensor->pinC);
-#endif
-    file.close();
-    LittleFS.end();
-    SERIAL_PORT.println("Saved calibration:");
-    SERIAL_PORT.print("  zero_electric_angle=");
-    SERIAL_PORT.println(motor->zero_electric_angle, 4);
-    SERIAL_PORT.print("  sensor_direction=");
-    SERIAL_PORT.println(motor->sensor_direction == Direction::CW ? "CW" : "CCW");
-    SERIAL_PORT.print("  gain_a=");
-    SERIAL_PORT.println(current_sense->gain_a, 5);
-    SERIAL_PORT.print("  gain_b=");
-    SERIAL_PORT.println(current_sense->gain_b, 5);
-    SERIAL_PORT.print("  gain_c=");
-    SERIAL_PORT.println(current_sense->gain_c, 5);
-#if MOTOR_CONFIG == MOTOR_HALLS
-    SERIAL_PORT.print("  hall_pins: A=");
-    SERIAL_PORT.print(hall_sensor->pinA);
-    SERIAL_PORT.print(" B=");
-    SERIAL_PORT.print(hall_sensor->pinB);
-    SERIAL_PORT.print(" C=");
-    SERIAL_PORT.println(hall_sensor->pinC);
-#endif
+    printCalibration("Saved calibration", seq, d);
 }
 
 void load_calibration_and_init() {
-    // No second format on the read path. begin() has already formatted if the
-    // mount failed, so a calibration that would not mount is gone either way.
-    if (!fsMount(false)) {
-        SERIAL_PORT.println("No saved calibration found.");
+    if (!calRegionOk()) return;
+    CalRecord rec;
+    CalSlotState state[2];
+    if (calNewest(cal_flash, &rec, state) < 0) {
+        if (calSlotHasLittleFS(0) || calSlotHasLittleFS(1))
+            SERIAL_PORT.println("No saved calibration: flash holds a calibration.txt from older "
+                                "firmware, which is no longer read. Run A then Cs.");
+        else if (state[0] == CAL_SLOT_BAD || state[1] == CAL_SLOT_BAD)
+            SERIAL_PORT.println("No saved calibration: stored data failed its CRC (save cut short?). "
+                                "Run A then Cs.");
+        else
+            SERIAL_PORT.println("No saved calibration found.");
         return;
     }
-    File file = LittleFS.open("calibration.txt", "r");
-    if (!file) {
-        SERIAL_PORT.println("No saved calibration found.");
-        LittleFS.end();
+    const char *why = calCheck(rec, MOTOR_CONFIG, CAL_GAIN_MAG, CAL_HALL_PINS);
+    if (why) {
+        SERIAL_PORT.print("ERR: saved calibration rejected: ");
+        SERIAL_PORT.print(why);
+        SERIAL_PORT.println(". Run A then Cs.");
         return;
     }
-    String line = file.readStringUntil('\n');
-    file.close();
-    LittleFS.end();
-
-    // Parse: offset,direction,gain_a,gain_b,gain_c[,hall_a,hall_b,hall_c]
-    int p1 = line.indexOf(',');
-    int p2 = line.indexOf(',', p1 + 1);
-    int p3 = line.indexOf(',', p2 + 1);
-    int p4 = line.indexOf(',', p3 + 1);
-    if (p1 < 0 || p2 < 0 || p3 < 0 || p4 < 0) {
-        SERIAL_PORT.println("ERR: Invalid calibration format (old format? re-save with Cs after align)");
-        return;
-    }
-    float offset   = line.substring(0, p1).toFloat();
-    int direction   = line.substring(p1 + 1, p2).toInt();
-    float gain_a   = line.substring(p2 + 1, p3).toFloat();
-    float gain_b   = line.substring(p3 + 1, p4).toFloat();
-    float gain_c   = line.substring(p4 + 1).toFloat();
-
-    SERIAL_PORT.println("Loaded calibration:");
-    SERIAL_PORT.print("  zero_electric_angle=");
-    SERIAL_PORT.println(offset, 4);
-    SERIAL_PORT.print("  sensor_direction=");
-    SERIAL_PORT.println(direction == (int)Direction::CW ? "CW" : "CCW");
-    SERIAL_PORT.print("  gain_a=");
-    SERIAL_PORT.println(gain_a, 5);
-    SERIAL_PORT.print("  gain_b=");
-    SERIAL_PORT.println(gain_b, 5);
-    SERIAL_PORT.print("  gain_c=");
-    SERIAL_PORT.println(gain_c, 5);
+    const CalData &d = rec.data;
+    printCalibration("Loaded calibration", rec.seq, d);
 
 #if MOTOR_CONFIG == MOTOR_HALLS
-    // Parse optional hall pin order: ...,hall_a,hall_b,hall_c
-    int p5 = line.indexOf(',', p4 + 1);
-    int p6 = (p5 >= 0) ? line.indexOf(',', p5 + 1) : -1;
-    int p7 = (p6 >= 0) ? line.indexOf(',', p6 + 1) : -1;
-    if (p5 >= 0 && p6 >= 0 && p7 >= 0) {
-        int hall_a = line.substring(p5 + 1, p6).toInt();
-        int hall_b = line.substring(p6 + 1, p7).toInt();
-        int hall_c = line.substring(p7 + 1).toInt();
-        SERIAL_PORT.print("  hall_pins: A=");
-        SERIAL_PORT.print(hall_a);
-        SERIAL_PORT.print(" B=");
-        SERIAL_PORT.print(hall_b);
-        SERIAL_PORT.print(" C=");
-        SERIAL_PORT.println(hall_c);
-
-        // Reconfigure hall sensor if pin order differs from default
-        if (hall_a != hall_sensor->pinA || hall_b != hall_sensor->pinB || hall_c != hall_sensor->pinC) {
-            SERIAL_PORT.println("  Reconfiguring hall sensor pins...");
-            detachInterrupt(digitalPinToInterrupt(hall_sensor->pinA));
-            detachInterrupt(digitalPinToInterrupt(hall_sensor->pinB));
-            detachInterrupt(digitalPinToInterrupt(hall_sensor->pinC));
-            delete hall_sensor;
-            hall_sensor = new HallSensor(hall_a, hall_b, hall_c, motor->pole_pairs);
-            hall_sensor->init();
-            hall_sensor->enableInterrupts(hallA_ISR, hallB_ISR, hallC_ISR);
-            motor->linkSensor(hall_sensor);
-        }
-        hall_order_determined = true;
-    } else {
-        SERIAL_PORT.println("  WARN: No hall pin data — will need hall scan on next align");
+    // Reconfigure hall sensor if pin order differs from default
+    if (d.hall_a != hall_sensor->pinA || d.hall_b != hall_sensor->pinB || d.hall_c != hall_sensor->pinC) {
+        SERIAL_PORT.println("  Reconfiguring hall sensor pins...");
+        detachInterrupt(digitalPinToInterrupt(hall_sensor->pinA));
+        detachInterrupt(digitalPinToInterrupt(hall_sensor->pinB));
+        detachInterrupt(digitalPinToInterrupt(hall_sensor->pinC));
+        delete hall_sensor;
+        hall_sensor = new HallSensor(d.hall_a, d.hall_b, d.hall_c, motor->pole_pairs);
+        hall_sensor->init();
+        hall_sensor->enableInterrupts(hallA_ISR, hallB_ISR, hallC_ISR);
+        motor->linkSensor(hall_sensor);
     }
+    hall_order_determined = true;
 #endif
 
     // Restore sensor alignment — initFOC() skips physical alignment when set.
-    motor->zero_electric_angle = offset;
-    motor->sensor_direction = (Direction)direction;
+    motor->zero_electric_angle = d.zero_electric_angle;
+    motor->sensor_direction = (Direction)d.sensor_direction;
 
     // Restore current sense gains — driverAlign() determined phase-to-ADC
     // mapping and gain polarity during the original align. These MUST be
     // restored before skipping driverAlign, otherwise FOC runs with wrong
     // current sense phasing (causes rough/unstable operation).
-    current_sense->gain_a = gain_a;
-    current_sense->gain_b = gain_b;
-    current_sense->gain_c = gain_c;
+    current_sense->gain_a = d.gain_a;
+    current_sense->gain_b = d.gain_b;
+    current_sense->gain_c = d.gain_c;
 
     // Skip driverAlign — we just restored its results above.
     current_sense->skip_align = true;
@@ -1539,6 +1546,12 @@ void doCalibration(char *cmd) {
         // Save current calibration
         if (!foc_ready) {
             SERIAL_PORT.println("ERR: Not aligned. Run 'A' first.");
+            return;
+        }
+        // The flash erase freezes this core for up to 400 ms with interrupts
+        // off: no current loop, no bus guard. Never do that to a live motor.
+        if (motor->enabled) {
+            SERIAL_PORT.println("ERR: Motor is enabled. Stop it first (Bx to coast), then Cs.");
             return;
         }
         save_calibration();
