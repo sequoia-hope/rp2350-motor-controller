@@ -176,6 +176,15 @@ static void setLED(uint8_t r, uint8_t g, uint8_t b) {
     led.show();
 }
 
+// Status-LED palette. Red boot / green ready / purple PD match the original
+// demo; blue (arming) and purple (running) extend it for the self-running demo.
+#define LED_BOOT()     setLED(255, 0, 0)    // red:    powered, waiting / not ready
+#define LED_PD()       setLED(128, 0, 255)  // purple: USB PD contract negotiated
+#define LED_ARMING()   setLED(0, 0, 255)    // blue:   power seen, loading calibration
+#define LED_READY()    setLED(0, 255, 0)    // green:  FOC aligned/ready
+#define LED_RUNNING()  setLED(128, 0, 255)  // purple: demo sine running
+#define LED_ERROR()    setLED(255, 40, 0)   // orange: demo could not start
+
 // Debug serial via UART0 (GPIO0 TX, GPIO1 RX) through debug probe UART bridge.
 // Falls back to USB CDC if debug probe not connected.
 #define PIN_UART_TX 0
@@ -584,12 +593,13 @@ void doRun(char *cmd) {
 // Keep in sync with the input `value` attributes in tune.py.
 static void applyMotorTuning() {
 #if MOTOR_CONFIG == MOTOR_MT6701
-    motor->voltage_limit = 4.0;
+    motor->voltage_limit = 8.0;
     motor->voltage_sensor_align = 1.0;  // reduced from 2.0: 20mOhm shunts saturate INA240 at ~4A
-    // Was 5.0 -- ABOVE the 4.12A the 20mOhm shunts can measure, so the current
-    // loop could be commanding current it was blind to. See CURRENT_LIMIT_MAX_A.
-    motor->current_limit = 4.0;
-    motor->velocity_limit = 20.0;
+    // 3.9A: bench-validated to move the motor while staying under the 4.04A
+    // clamp ceiling and the 4.12A the 20mOhm shunts can measure (1A was too
+    // low to turn it).
+    motor->current_limit = 3.9;
+    motor->velocity_limit = 50.0;
     motor->controller = MotionControlType::velocity;
     motor->torque_controller = TorqueControlType::foc_current;
     motor->PID_current_q.P = 0.6;
@@ -872,7 +882,7 @@ void doAlign(char *cmd) {
     if (result) {
         foc_ready = true;
         motor->disable();
-        setLED(0, 255, 0);  // Green when initialized
+        LED_READY();  // green when initialized
         SERIAL_PORT.println("Aligned. Motor disabled until step/run command.");
     } else {
         foc_ready = false;
@@ -1338,10 +1348,34 @@ void doAdcTest(char *cmd) {
 }
 
 // --- Calibration save/load (LittleFS on SPI flash) ---
+
+// Mount LittleFS, logging a failure (the old code ignored begin()'s return).
+// begin() already formats and retries on a failed mount -- LittleFSConfig's
+// autoFormat defaults to true and nothing here calls setConfig() -- so false
+// means that format failed too; format_on_fail (save path) is a second try.
+// This does NOT fix the power-cut brick seen on the demo board: there begin()
+// mounts the corrupt filesystem and open() hardfaults on its metadata.
+// Recovery from that is still an SWD erase of the 0x101ef000 region.
+static bool fsMount(bool format_on_fail) {
+    if (LittleFS.begin()) return true;
+    SERIAL_PORT.println("LittleFS: mount FAILED.");
+    if (!format_on_fail) return false;
+    SERIAL_PORT.println("LittleFS: formatting...");
+    if (!LittleFS.format() || !LittleFS.begin()) {
+        SERIAL_PORT.println("LittleFS: format FAILED — flash problem.");
+        return false;
+    }
+    SERIAL_PORT.println("LittleFS: formatted and mounted.");
+    return true;
+}
+
 // Saves motor sensor alignment AND current sense driver alignment results.
 // Format: offset,direction,gain_a,gain_b,gain_c[,hall_a,hall_b,hall_c]
 void save_calibration() {
-    LittleFS.begin();
+    if (!fsMount(true)) {
+        SERIAL_PORT.println("Calibration not saved!");
+        return;
+    }
     File file = LittleFS.open("calibration.txt", "w");
     if (!file) {
         SERIAL_PORT.println("Failed to open file for writing.");
@@ -1390,7 +1424,12 @@ void save_calibration() {
 }
 
 void load_calibration_and_init() {
-    LittleFS.begin();
+    // No second format on the read path. begin() has already formatted if the
+    // mount failed, so a calibration that would not mount is gone either way.
+    if (!fsMount(false)) {
+        SERIAL_PORT.println("No saved calibration found.");
+        return;
+    }
     File file = LittleFS.open("calibration.txt", "r");
     if (!file) {
         SERIAL_PORT.println("No saved calibration found.");
@@ -2093,7 +2132,7 @@ void setup() {
 #endif
 
     led.begin();
-    setLED(255, 0, 0);  // Red at boot
+    LED_BOOT();  // red at boot
 
     // UART via debug probe (reliable, no USB CDC issues)
     Serial1.setTX(PIN_UART_TX);
@@ -2257,6 +2296,7 @@ static void demoTick() {
     if (!pd_20v && vmot < DEMO_MIN_VMOT) return;
 
     demo_done = true;  // one shot: never retry, even if the steps below fail
+    LED_ARMING();      // blue: power seen, loading calibration
     SERIAL_PORT.print("DEMO: power up (VMOT=");
     SERIAL_PORT.print(vmot, 1);
     SERIAL_PORT.println("V), loading calibration...");
@@ -2266,15 +2306,18 @@ static void demoTick() {
     // an uninitialised driver/current sense/encoder and the motor never turns.
     initHardware();
     if (!enc_detected) {
+        LED_ERROR();
         SERIAL_PORT.println("DEMO: encoder not detected — not starting.");
         return;
     }
     load_calibration_and_init();
     if (!foc_ready) {
+        LED_ERROR();
         SERIAL_PORT.println("DEMO: no valid calibration in flash. Run A then Cs.");
         return;
     }
     startSine(DEMO_SPEED, 1000.0f / DEMO_PERIOD_MS, DEMO_PLATEAU_S);
+    LED_RUNNING();  // purple: demo sine running
     SERIAL_PORT.println("DEMO: running. Output is now suppressed.");
 }
 #endif
@@ -2304,7 +2347,7 @@ void loop() {
         SERIAL_PORT.print("mV ");
         SERIAL_PORT.print(pd_current_raw * 10);
         SERIAL_PORT.println("mA");
-        setLED(128, 0, 255);  // Purple when PD connected
+        LED_PD();  // purple when PD connected
         if (hw_initialized) {
             delay(50);  // let voltage settle
             float vmot = readVMOT();
