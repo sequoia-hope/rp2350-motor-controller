@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Encoder corner: layout explorer</title>
+<style>
+:root{--ink:#222;--muted:#666;--bg:#fbfaf7;--card:#fff;--line:#ddd}
+body{font:15px/1.45 system-ui,sans-serif;color:var(--ink);background:var(--bg);margin:0;padding:1.5rem 2rem;max-width:1500px}
+h1{font-size:1.5rem;margin:.2rem 0} h2{font-size:1.15rem;margin:1.6rem 0 .6rem;border-bottom:1px solid var(--line)} h4{margin:.4rem 0 .2rem}
+.muted{color:var(--muted)} code{background:#eee;padding:0 .25em;border-radius:3px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:1.2rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:.6rem} .card img{width:100%;height:auto;display:block}
+table{border-collapse:collapse;font-size:.85rem} td,th{padding:.15rem .5rem;border-bottom:1px solid #eee;text-align:right} th{background:#f0eee8}
+td:first-child,th:first-child,td:nth-child(2),th:nth-child(2){text-align:left}
+.mini{display:inline-table;margin:.3rem 1rem .3rem 0} .mini td,.mini th{padding:.05rem .4rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
+.note{background:#fff7e0;border:1px solid #e8d9a0;border-radius:6px;padding:.6rem .9rem;margin:.8rem 0}
+</style></head><body>
+<p class="muted"><a href="index.html">settle index</a> · <a href="renders.html">plan of record</a></p>
+<h1>Encoder corner: layout explorer</h1>
+<p>Question (2026-09-04): is there a corner layout in which the four encoder differential pairs have <em>similar</em> trace lengths?
+The phase connectors J1/J2 may move <em>up</em> (never sideways), everything else outside the corner is a wall.
+Today: <b>A 13.4   B 15.9   C 25.6   D 24.7 — spread 12.2 mm</b> (pair path J12 pin → TVS → mux switch → filter → transceiver, mean of P and N).</p>
+
+<div class="two"><div>
+<h2>How the explorer works</h2>
+<p>Instead of the settle engine (real copper, real DRC, minutes per run) this is an <b>abstract model</b> of the corner
+(<code>hardware/tools/enclayout/</code>): the 62 movable bottom-side parts are courtyard rectangles with their pads; the walls are the fixed
+bottom-side courtyards, every through-hole pad and via of a net that touches no movable part (the /D phase via farm, the sense lines,
+J12's twelve pins, the XT30 pins and posts), the mounting-hole keepouts and the board edge. Fixed B.Cu tracks that cross the corner are soft
+walls for pads. Copper of the movable nets is assumed re-routed, so it is not a wall.</p>
+<p>A layout is scored by: courtyard/pad overlap (hard), the <b>spread</b> of the four pair path lengths (the thing routing cannot fix — a short pair
+can always be meandered longer, a long one cannot be shortened), the P/N mismatch inside each pair, the sum of the pair paths, the minimum-spanning-tree
+copper of every net on the movable pads (keeps stubs, pull-ups and hall parts close; control and data nets pull toward the right edge where they leave the corner),
+decoupling caps within 1.5 mm of a chip on their rail, and a small price on moving the connectors.</p>
+<p>Simulated annealing over part positions and 90° rotations (single-part moves, same-footprint swaps, snap-to-partner moves, rigid moves of a whole
+channel, and the connector slide), 120 k steps per start, 28 starts in parallel from named arrangements (<code>rows</code>: four chains left from
+the header; <code>rows_dpk</code>: D into the pocket under the via farm; <code>hat_cd</code>: D over the top of J12; <code>a_up</code>, <code>fan</code>,
+<code>column</code>, <code>current</code>, and random). About two minutes per batch on 24 cores.</p>
+<p>Packing rules in the model: courtyards may not overlap (0.1 mm guard); pads keep 0.2 mm from every fixed annulus, via and fixed track;
+bodies keep off through-hole annuli entirely (a bottom-side body on a solder joint is not a placement) and off the mounting-hole rings;
+0.45 mm courtyard margin to the board edge. Sliding J1/J2 up is priced by the <em>new</em> conflicts the XT30 pins create with fixed copper on any
+layer — chiefly the /A_P and A/B_PHASE_SENSE lines on In2 that run just above J1's second pin — so a candidate that moves the connectors also
+lists what would have to be re-routed by hand.</p>
+<p class="muted">Path lengths are straight pad-to-pad distances along the chain — a floor, not a route; real copper will be ~1.2–1.4× longer. Magenta outline = a part
+the annealer could not fully clear (residual overlap in the score). The figure shows the bottom side seen from the top (x as on the board), J1/J2
+are dotted because they are on the top side.</p>
+</div><div>
+<h2>Plan of record today</h2>
+<img src="img/enclayout/current.png" alt="current corner" style="width:100%;max-width:520px">
+</div></div>
+
+<h2>Verdict</h2>
+<div class="note"><p><b>Yes — all four pairs can sit at 13–15 mm from the header, and the connectors do not need to move.</b>
+Four batches (96 annealed starts; r1 is not shown: its weights let the annealer "equalise" by making everything 20–30 mm long, which is why the score
+now penalises the <em>longest</em> pair, not just the spread). Two candidates are written out as boards
+(<code>hardware/tools/enclayout/candidates/</code>, corner copper stripped, parts placed, 265 airwires to route):</p>
+<ul>
+<li><b>enc_fan</b> (r4 / r2-a_up_11_10_400_0): <b>A 14.6 · B 13.0 · C 13.6 · D 14.3 mm, spread 1.6</b>. Every chain runs left from its own J12 pins —
+TVS at the pin, the two mux switches, the filter, the transceiver in the left column (U18/U19/U20/U21 at x 113–118) — and the termination switch with its
+100 Ω sits on the far side of each transceiver. Two parts did not fully clear: U33 (channel D's termination switch) sits on the A_SENSE track by U5,
+and U32 rides the H4 ring/edge margin. kicad-cli DRC on the written board: 0 courtyard overlaps in the corner, 2 pad clearances short by 0.015–0.02 mm.</li>
+<li><b>enc_clean</b> (r4 / r2-current_12_1_406_6): <b>A 17.5 · B 18.6 · C 18.1 · D 17.4 mm, spread 1.2</b>, overlap score 0.000 — the same fan topology
+with more air; DRC: 0 courtyard overlaps, 2 pad clearances short by 0.02–0.03 mm (filter pad vs transceiver GND pad, courtyard-tight neighbours).</li>
+</ul>
+<p>Today the floors are A 13.4 · B 15.9 · C 25.6 · D 24.7 (spread 12.2): C and D were long because their chains were homed at the top of the section,
+not because the corner lacks room. <b>The connector slide buys nothing</b>: every start was free to move J1/J2 up to 1.2 mm, the polished results settle at
+0–0.06 mm. The chains' walls are J12's own pin columns, U5 and the /D via farm, not J2; and moving the stack 0.5 mm already pushes J1's second pin into
+the /A_P and A_PHASE_SENSE lines on In2 (which the slide term prices). What it would take to land either candidate: route the 265 airwires of the corner
+(the pair paths, the switch controls, the GND/+3V3/Vdrive drops), then the settle gate. Path floors are pad-to-pad; routed copper will be longer and
+the two switch-less channel-D hops give the router the slack to trim D to the others.</p></div>
+
+<h2>All starts, ranked</h2>
+<div style="overflow-x:auto"><table><tr><th>run</th><th>start</th><th>cost</th><th>overlap</th><th>spread</th><th>A</th><th>B</th><th>C</th><th>D</th><th>P/N mism.</th><th>sum</th><th>conn. up</th><th>parts w/ overlap</th></tr>
+<tr><td>r2</td><td>a_up_11_10</td><td>208.1</td><td>0.037</td><td><b>1.3</b></td><td>14.7</td><td>13.4</td><td>14.5</td><td>14.6</td><td>1.3</td><td>57.1</td><td>0.25</td><td>3</td></tr><tr><td>r3</td><td>fan_103_3</td><td>221.6</td><td>0.189</td><td><b>0.0</b></td><td>19.5</td><td>19.5</td><td>19.4</td><td>19.5</td><td>1.0</td><td>77.8</td><td>0.38</td><td>6</td></tr><tr><td>r4</td><td>r2-current_12_1_406_6</td><td>222.7</td><td>0.000</td><td><b>1.2</b></td><td>17.5</td><td>18.6</td><td>18.1</td><td>17.4</td><td>1.6</td><td>71.5</td><td>0.06</td><td>0</td></tr><tr><td>r2</td><td>hat_cd_13_9</td><td>223.0</td><td>0.015</td><td><b>6.1</b></td><td>16.7</td><td>19.9</td><td>13.8</td><td>14.1</td><td>1.7</td><td>64.5</td><td>0.40</td><td>4</td></tr><tr><td>r4</td><td>r2-current_12_1_407_7</td><td>224.6</td><td>0.000</td><td><b>0.4</b></td><td>17.9</td><td>18.3</td><td>18.3</td><td>18.3</td><td>2.8</td><td>72.8</td><td>0.00</td><td>0</td></tr><tr><td>r4</td><td>r2-a_up_11_10_400_0</td><td>225.1</td><td>0.160</td><td><b>1.6</b></td><td>14.6</td><td>13.0</td><td>13.6</td><td>14.3</td><td>2.4</td><td>55.5</td><td>0.00</td><td>2</td></tr><tr><td>r4</td><td>fan_504_24</td><td>228.8</td><td>0.001</td><td><b>1.8</b></td><td>19.5</td><td>19.4</td><td>18.3</td><td>17.7</td><td>0.3</td><td>74.9</td><td>0.00</td><td>0</td></tr><tr><td>r4</td><td>r2-hat_cd_13_9_403_3</td><td>229.1</td><td>0.017</td><td><b>6.0</b></td><td>16.8</td><td>20.3</td><td>15.2</td><td>14.3</td><td>2.5</td><td>66.6</td><td>0.29</td><td>1</td></tr><tr><td>r4</td><td>r2-current_11_0_404_4</td><td>230.0</td><td>0.000</td><td><b>1.1</b></td><td>17.5</td><td>18.2</td><td>18.6</td><td>17.7</td><td>3.4</td><td>72.0</td><td>0.00</td><td>0</td></tr><tr><td>r2</td><td>current_11_0</td><td>231.0</td><td>0.004</td><td><b>0.3</b></td><td>18.2</td><td>18.5</td><td>18.5</td><td>18.2</td><td>1.4</td><td>73.3</td><td>0.37</td><td>1</td></tr><tr><td>r2</td><td>current_12_1</td><td>233.6</td><td>0.006</td><td><b>0.9</b></td><td>19.6</td><td>19.9</td><td>19.3</td><td>19.0</td><td>1.1</td><td>77.7</td><td>0.57</td><td>2</td></tr><tr><td>r3</td><td>a_up_202_10</td><td>236.1</td><td>0.042</td><td><b>1.8</b></td><td>18.0</td><td>16.1</td><td>17.4</td><td>17.7</td><td>2.9</td><td>69.2</td><td>0.00</td><td>3</td></tr><tr><td>r2</td><td>random_11_16</td><td>236.4</td><td>0.097</td><td><b>1.6</b></td><td>18.0</td><td>19.6</td><td>18.0</td><td>19.4</td><td>2.1</td><td>75.0</td><td>1.09</td><td>3</td></tr><tr><td>r3</td><td>rows_100_0</td><td>236.6</td><td>0.100</td><td><b>0.1</b></td><td>19.1</td><td>19.1</td><td>19.1</td><td>19.1</td><td>10.3</td><td>76.4</td><td>1.08</td><td>3</td></tr><tr><td>r2</td><td>rows_13_4</td><td>243.3</td><td>0.004</td><td><b>1.0</b></td><td>18.9</td><td>19.3</td><td>19.9</td><td>18.9</td><td>0.4</td><td>77.0</td><td>0.85</td><td>1</td></tr><tr><td>r3</td><td>column_104_4</td><td>243.5</td><td>0.070</td><td><b>0.1</b></td><td>22.9</td><td>23.0</td><td>23.0</td><td>23.0</td><td>0.5</td><td>91.9</td><td>0.88</td><td>2</td></tr><tr><td>r3</td><td>random_305_21</td><td>245.1</td><td>0.004</td><td><b>1.7</b></td><td>19.3</td><td>21.0</td><td>19.4</td><td>21.0</td><td>3.5</td><td>80.6</td><td>1.20</td><td>1</td></tr><tr><td>r3</td><td>fan_303_19</td><td>247.2</td><td>0.073</td><td><b>0.0</b></td><td>18.6</td><td>18.6</td><td>18.6</td><td>18.6</td><td>1.9</td><td>74.5</td><td>0.14</td><td>4</td></tr></table></div>
+
+<h2 id="r2">run r2</h2><div class="grid"><div class="card"><img src="img/enclayout/r2_a_up_11_10.png" alt="a_up_11_10">
+<h4>a_up_11_10</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>14.7</td><td>14.6</td><td>14.7</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>13.4</td><td>13.4</td><td>13.4</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>14.5</td><td>14.5</td><td>14.5</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>15.2</td><td>14.0</td><td>14.6</td></tr></table>
+<p><b>spread 1.3 mm</b> · sum 57.1 · P/N mismatch 1.3 · pair copper (MST) 136 ·
+connectors up 0.25 mm · overlap score 0.037<br><span class="muted">parts with residual overlap: U32 0.03, U33 0.01, D23 0.00<br>connector slide touches fixed copper: A_PHASE_SENSE (13 pts), /A_P (10 pts)</span></p></div><div class="card"><img src="img/enclayout/r2_hat_cd_13_9.png" alt="hat_cd_13_9">
+<h4>hat_cd_13_9</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>16.7</td><td>16.7</td><td>16.7</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>20.7</td><td>19.1</td><td>19.9</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>13.8</td><td>13.9</td><td>13.8</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>14.1</td><td>14.1</td><td>14.1</td></tr></table>
+<p><b>spread 6.1 mm</b> · sum 64.5 · P/N mismatch 1.7 · pair copper (MST) 142 ·
+connectors up 0.40 mm · overlap score 0.015<br><span class="muted">parts with residual overlap: U31 0.01, D24 0.00, U19 0.00, FL1 0.00<br>connector slide touches fixed copper: A_PHASE_SENSE (15 pts), /A_P (16 pts)</span></p></div><div class="card"><img src="img/enclayout/r2_current_11_0.png" alt="current_11_0">
+<h4>current_11_0</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>18.2</td><td>18.2</td><td>18.2</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>18.5</td><td>18.5</td><td>18.5</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>18.2</td><td>18.7</td><td>18.5</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>18.6</td><td>17.7</td><td>18.2</td></tr></table>
+<p><b>spread 0.3 mm</b> · sum 73.3 · P/N mismatch 1.4 · pair copper (MST) 158 ·
+connectors up 0.37 mm · overlap score 0.004<br><span class="muted">parts with residual overlap: C111 0.00<br>connector slide touches fixed copper: A_PHASE_SENSE (14 pts), /A_P (16 pts)</span></p></div><div class="card"><img src="img/enclayout/r2_current_12_1.png" alt="current_12_1">
+<h4>current_12_1</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>19.6</td><td>19.6</td><td>19.6</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>20.4</td><td>19.4</td><td>19.9</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>19.3</td><td>19.3</td><td>19.3</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>19.0</td><td>18.9</td><td>19.0</td></tr></table>
+<p><b>spread 0.9 mm</b> · sum 77.7 · P/N mismatch 1.1 · pair copper (MST) 160 ·
+connectors up 0.57 mm · overlap score 0.006<br><span class="muted">parts with residual overlap: C111 0.00, D23 0.00<br>connector slide touches fixed copper: A_PHASE_SENSE (16 pts), /A_P (21 pts)</span></p></div><div class="card"><img src="img/enclayout/r2_random_11_16.png" alt="random_11_16">
+<h4>random_11_16</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>18.0</td><td>18.0</td><td>18.0</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>20.6</td><td>18.6</td><td>19.6</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>18.0</td><td>18.0</td><td>18.0</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>19.4</td><td>19.4</td><td>19.4</td></tr></table>
+<p><b>spread 1.6 mm</b> · sum 75.0 · P/N mismatch 2.1 · pair copper (MST) 160 ·
+connectors up 1.09 mm · overlap score 0.097<br><span class="muted">parts with residual overlap: U21 0.06, U25 0.03, FL4 0.00<br>connector slide touches fixed copper: /C_P (11 pts), A_PHASE_SENSE (20 pts), B_PHASE_SENSE (8 pts), /A_P (35 pts)</span></p></div><div class="card"><img src="img/enclayout/r2_rows_13_4.png" alt="rows_13_4">
+<h4>rows_13_4</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>18.9</td><td>18.9</td><td>18.9</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>19.3</td><td>19.3</td><td>19.3</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>20.1</td><td>19.7</td><td>19.9</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>18.9</td><td>18.9</td><td>18.9</td></tr></table>
+<p><b>spread 1.0 mm</b> · sum 77.0 · P/N mismatch 0.4 · pair copper (MST) 178 ·
+connectors up 0.85 mm · overlap score 0.004<br><span class="muted">parts with residual overlap: R93 0.00<br>connector slide touches fixed copper: /C_P (4 pts), A_PHASE_SENSE (18 pts), /A_P (32 pts)</span></p></div></div><h2 id="r3">run r3</h2><div class="grid"><div class="card"><img src="img/enclayout/r3_fan_103_3.png" alt="fan_103_3">
+<h4>fan_103_3</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>19.5</td><td>19.4</td><td>19.5</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>19.6</td><td>19.4</td><td>19.5</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>19.4</td><td>19.4</td><td>19.4</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>19.8</td><td>19.1</td><td>19.5</td></tr></table>
+<p><b>spread 0.0 mm</b> · sum 77.8 · P/N mismatch 1.0 · pair copper (MST) 155 ·
+connectors up 0.38 mm · overlap score 0.189<br><span class="muted">parts with residual overlap: U19 0.13, U25 0.03, U32 0.02, U24 0.01, C62 0.00, U27 0.00<br>connector slide touches fixed copper: A_PHASE_SENSE (14 pts), /A_P (16 pts)</span></p></div><div class="card"><img src="img/enclayout/r3_a_up_202_10.png" alt="a_up_202_10">
+<h4>a_up_202_10</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>18.5</td><td>17.4</td><td>18.0</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>16.4</td><td>15.8</td><td>16.1</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>17.4</td><td>17.5</td><td>17.4</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>18.3</td><td>17.1</td><td>17.7</td></tr></table>
+<p><b>spread 1.8 mm</b> · sum 69.2 · P/N mismatch 2.9 · pair copper (MST) 142 ·
+connectors up 0.00 mm · overlap score 0.042<br><span class="muted">parts with residual overlap: U24 0.04, U30 0.00, C68 0.00<br>connector slide touches nothing fixed</span></p></div><div class="card"><img src="img/enclayout/r3_rows_100_0.png" alt="rows_100_0">
+<h4>rows_100_0</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>15.1</td><td>23.1</td><td>19.1</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>19.1</td><td>19.1</td><td>19.1</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>18.5</td><td>19.6</td><td>19.1</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>19.7</td><td>18.5</td><td>19.1</td></tr></table>
+<p><b>spread 0.1 mm</b> · sum 76.4 · P/N mismatch 10.3 · pair copper (MST) 162 ·
+connectors up 1.08 mm · overlap score 0.100<br><span class="muted">parts with residual overlap: U20 0.09, C75 0.00, U26 0.00<br>connector slide touches fixed copper: /C_P (10 pts), A_PHASE_SENSE (20 pts), B_PHASE_SENSE (8 pts), /A_P (35 pts)</span></p></div><div class="card"><img src="img/enclayout/r3_column_104_4.png" alt="column_104_4">
+<h4>column_104_4</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>22.9</td><td>22.9</td><td>22.9</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>22.8</td><td>23.1</td><td>23.0</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>22.9</td><td>23.0</td><td>23.0</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>22.9</td><td>23.0</td><td>23.0</td></tr></table>
+<p><b>spread 0.1 mm</b> · sum 91.9 · P/N mismatch 0.5 · pair copper (MST) 196 ·
+connectors up 0.88 mm · overlap score 0.070<br><span class="muted">parts with residual overlap: U20 0.06, R87 0.00<br>connector slide touches fixed copper: /C_P (5 pts), A_PHASE_SENSE (18 pts), /A_P (32 pts)</span></p></div><div class="card"><img src="img/enclayout/r3_random_305_21.png" alt="random_305_21">
+<h4>random_305_21</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>20.7</td><td>17.9</td><td>19.3</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>20.9</td><td>21.0</td><td>21.0</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>19.3</td><td>19.4</td><td>19.4</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>21.3</td><td>20.7</td><td>21.0</td></tr></table>
+<p><b>spread 1.7 mm</b> · sum 80.6 · P/N mismatch 3.5 · pair copper (MST) 169 ·
+connectors up 1.20 mm · overlap score 0.004<br><span class="muted">parts with residual overlap: C69 0.00<br>connector slide touches fixed copper: /C_P (12 pts), A_PHASE_SENSE (20 pts), B_PHASE_SENSE (10 pts), /A_P (35 pts)</span></p></div><div class="card"><img src="img/enclayout/r3_fan_303_19.png" alt="fan_303_19">
+<h4>fan_303_19</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>18.9</td><td>18.3</td><td>18.6</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>18.6</td><td>18.7</td><td>18.6</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>18.4</td><td>18.8</td><td>18.6</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>19.0</td><td>18.2</td><td>18.6</td></tr></table>
+<p><b>spread 0.0 mm</b> · sum 74.5 · P/N mismatch 1.9 · pair copper (MST) 182 ·
+connectors up 0.14 mm · overlap score 0.073<br><span class="muted">parts with residual overlap: C62 0.04, U25 0.03, D24 0.00, U31 0.00<br>connector slide touches fixed copper: A_PHASE_SENSE (8 pts), /A_P (4 pts)</span></p></div></div><h2 id="r4">run r4</h2><div class="grid"><div class="card"><img src="img/enclayout/r4_r2-current_12_1_406_6.png" alt="r2-current_12_1_406_6">
+<h4>r2-current_12_1_406_6</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>17.5</td><td>17.5</td><td>17.5</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>18.5</td><td>18.7</td><td>18.6</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>17.6</td><td>18.5</td><td>18.1</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>17.6</td><td>17.1</td><td>17.4</td></tr></table>
+<p><b>spread 1.2 mm</b> · sum 71.5 · P/N mismatch 1.6 · pair copper (MST) 147 ·
+connectors up 0.06 mm · overlap score 0.000<br><span class="muted">parts with residual overlap: none<br>connector slide touches fixed copper: A_PHASE_SENSE (2 pts)</span></p></div><div class="card"><img src="img/enclayout/r4_r2-current_12_1_407_7.png" alt="r2-current_12_1_407_7">
+<h4>r2-current_12_1_407_7</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>17.9</td><td>17.9</td><td>17.9</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>19.3</td><td>17.3</td><td>18.3</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>17.9</td><td>18.6</td><td>18.3</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>18.3</td><td>18.3</td><td>18.3</td></tr></table>
+<p><b>spread 0.4 mm</b> · sum 72.8 · P/N mismatch 2.8 · pair copper (MST) 151 ·
+connectors up 0.00 mm · overlap score 0.000<br><span class="muted">parts with residual overlap: none<br>connector slide touches nothing fixed</span></p></div><div class="card"><img src="img/enclayout/r4_r2-a_up_11_10_400_0.png" alt="r2-a_up_11_10_400_0">
+<h4>r2-a_up_11_10_400_0</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>14.8</td><td>14.4</td><td>14.6</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>13.0</td><td>13.0</td><td>13.0</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>13.9</td><td>13.3</td><td>13.6</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>15.0</td><td>13.6</td><td>14.3</td></tr></table>
+<p><b>spread 1.6 mm</b> · sum 55.5 · P/N mismatch 2.4 · pair copper (MST) 132 ·
+connectors up 0.00 mm · overlap score 0.160<br><span class="muted">parts with residual overlap: U32 0.13, U33 0.03<br>connector slide touches nothing fixed</span></p></div><div class="card"><img src="img/enclayout/r4_fan_504_24.png" alt="fan_504_24">
+<h4>fan_504_24</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>19.4</td><td>19.6</td><td>19.5</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>19.5</td><td>19.4</td><td>19.4</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>18.3</td><td>18.3</td><td>18.3</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>17.7</td><td>17.7</td><td>17.7</td></tr></table>
+<p><b>spread 1.8 mm</b> · sum 74.9 · P/N mismatch 0.3 · pair copper (MST) 155 ·
+connectors up 0.00 mm · overlap score 0.001<br><span class="muted">parts with residual overlap: none<br>connector slide touches nothing fixed</span></p></div><div class="card"><img src="img/enclayout/r4_r2-hat_cd_13_9_403_3.png" alt="r2-hat_cd_13_9_403_3">
+<h4>r2-hat_cd_13_9_403_3</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>16.8</td><td>16.8</td><td>16.8</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>21.1</td><td>19.6</td><td>20.3</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>14.7</td><td>15.7</td><td>15.2</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>14.3</td><td>14.3</td><td>14.3</td></tr></table>
+<p><b>spread 6.0 mm</b> · sum 66.6 · P/N mismatch 2.5 · pair copper (MST) 137 ·
+connectors up 0.29 mm · overlap score 0.017<br><span class="muted">parts with residual overlap: U22 0.02<br>connector slide touches fixed copper: A_PHASE_SENSE (13 pts), /A_P (13 pts)</span></p></div><div class="card"><img src="img/enclayout/r4_r2-current_11_0_404_4.png" alt="r2-current_11_0_404_4">
+<h4>r2-current_11_0_404_4</h4>
+<table class="mini"><tr><th>ch</th><th>P</th><th>N</th><th>mean</th></tr><tr><td style="color:#d62728"><b>A</b></td><td>17.5</td><td>17.5</td><td>17.5</td></tr><tr><td style="color:#1f77b4"><b>B</b></td><td>18.2</td><td>18.2</td><td>18.2</td></tr><tr><td style="color:#2ca02c"><b>C</b></td><td>17.5</td><td>19.7</td><td>18.6</td></tr><tr><td style="color:#ff7f0e"><b>D</b></td><td>18.3</td><td>17.1</td><td>17.7</td></tr></table>
+<p><b>spread 1.1 mm</b> · sum 72.0 · P/N mismatch 3.4 · pair copper (MST) 150 ·
+connectors up 0.00 mm · overlap score 0.000<br><span class="muted">parts with residual overlap: none<br>connector slide touches nothing fixed</span></p></div></div><h2 id="6">run 6</h2><div class="grid"></div>
+</body></html>
