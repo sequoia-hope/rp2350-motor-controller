@@ -18,6 +18,7 @@ td:first-child,th:first-child,td:nth-child(2),th:nth-child(2){text-align:left}
 <p>Question (2026-09-04): is there a corner layout in which the four encoder differential pairs have <em>similar</em> trace lengths?
 The phase connectors J1/J2 may move <em>up</em> (never sideways), everything else outside the corner is a wall.
 Today: <b>{{CUR}}</b> (pair path J12 pin → TVS → mux switch → filter → transceiver, mean of P and N).</p>
+<p class="note"><b>Update 2026-09-06:</b> the fan layout also fits the lean board, <em>without</em> the power-stage squeeze, after a short re-anneal against its walls: <a href="#fresh">fresh base</a>.</p>
 
 <div class="two"><div>
 <h2>How the explorer works</h2>
@@ -66,6 +67,41 @@ not because the corner lacks room. <b>The connector slide buys nothing</b>: ever
 the /A_P and A_PHASE_SENSE lines on In2 (which the slide term prices). What it would take to land either candidate: route the 265 airwires of the corner
 (the pair paths, the switch controls, the GND/+3V3/Vdrive drops), then the settle gate. Path floors are pad-to-pad; routed copper will be longer and
 the two switch-less channel-D hops give the router the slack to trim D to the others.</p></div>
+
+<h2 id="fresh">Fresh base: no power-stage squeeze (2026-09-06)</h2>
+<div class="two"><div>
+<p>Every run above used walls extracted from the plan-of-record board, on which the power stage had been squeezed 0.9–3&nbsp;mm toward the top edge.
+That squeeze moved a lot of fixed copper the fan layout never asked for, so the question was whether the layout fits the <b>lean board</b> as it stands:
+rev-A copper + rev-B nets + Tier A, with the mounting-hole keepout footprints loaded (<code>data/boards/fresh_base.kicad_pcb</code>, walls in
+<code>data/corner_lean.json</code>).</p>
+<p><b>It does.</b> Dropped as-is onto the lean walls, enc_fan collides in three places: U33 0.97 (on C16, which the squeeze had lifted out of its way),
+C75 0.41 (on a B_SENSE via) and U32 0.13 (at J12 pin 2, the same residual as on the squeezed board); enc_clean only at U32 (0.74). Run
+<code>r5_fresh</code> re-anneals both from their r4 poses against the lean walls: six starts, 120&nbsp;k steps, T0 0.5, about 90&nbsp;s each.</p>
+<ul>
+<li><b>enc_fan_fresh</b> (r5_fresh / a_up_11_10_400_0_500_0): <b>A 14.6 · B 13.4 · C 13.9 · D 14.1&nbsp;mm, spread 1.1</b> — within 0.4&nbsp;mm of enc_fan on every
+pair, U32 the only residual. kicad-cli DRC in the corner: 0 courtyard overlaps among the encoder parts, 1 clearance (U18 pad 3 to J2's no-net
+mounting pad, 0.035&nbsp;mm against 0.10), 265 airwires.</li>
+<li><b>enc_clean_fresh</b> (current_12_1_406_6_500_3): <b>A 17.7 · B 18.5 · C 18.3 · D 17.7&nbsp;mm, spread 0.8</b>, U32 residual 0.45. DRC: 0 encoder courtyard
+overlaps, 4 clearances — U32's Vdrive pad 0.012&nbsp;mm from the A_SENSE track (that residual), R85 to U21's +3V3 pad 0.170 against 0.18, and two FL3/U20 pad
+pairs at 0.073 and 0.078&nbsp;mm.</li>
+</ul>
+<p>The other corner items on both boards belong to the lean base: R105 and R106 sit inside H4's keepout ring (courtyard overlap + rule area).
+The six-pulldown keepout pass exists only on the plan-of-record candidate (<a href="renders.html#keepouts">renders</a>) and has to be redone on this base.</p>
+<p><b>What the squeeze cost</b>, measured between the plan-of-record candidate and the fresh base: 179 of its 490 vias are not where the lean board
+has them — 131 GND stitch vias and 13 of the /D phase via farm; median shift 0.31&nbsp;mm, 55 over 0.5&nbsp;mm, 20 over 1&nbsp;mm (a few are the keepout
+pass's own via moves). 40 fixed parts in the corner window moved, up to 2.6&nbsp;mm (R75, C51, TP4). The fan layout uses none of it.</p>
+<p><b>If this layout is adopted, the rev-B base is fresh_base + enc_fan_fresh rather than the plan of record:</b> route the 265 airwires, redo the keepout
+moves, and the stitching vias and the /D farm stay exactly as they were fabricated on rev A.</p>
+<p class="muted">Reproducing: <code>extract.py</code> always <em>writes</em> <code>data/corner.json</code> and <code>apply.py</code>/<code>render.py</code> always read it, so
+copy <code>corner_lean.json</code> over it, run <code>apply.py r5_fresh NAME --drc</code>, then copy <code>corner_por.json</code> back. <code>data/</code> is
+gitignored: the fresh base exists only in the lean-jiggle worktree. The two candidates are committed under <code>candidates/</code>.</p>
+</div><div>
+<img src="img/enclayout/fresh_fan.png" alt="enc_fan re-annealed on the unsqueezed lean board" style="width:100%;max-width:520px">
+<p class="muted">enc_fan_fresh on the lean walls. Also: <a href="img/enclayout/fresh_clean.png">enc_clean_fresh</a> ·
+<a href="img/enclayout/fresh_current.png">the lean board today</a> (A 13.4 · B 15.9 · C 25.6 · D 24.7; seven rev-B parts parked below the edge).</p>
+</div></div>
+<div style="overflow-x:auto"><table><tr><th>start (from r4)</th><th>cost</th><th>overlap</th><th>spread</th><th>A</th><th>B</th><th>C</th><th>D</th><th>P/N mism.</th><th>sum</th><th>conn. up</th><th>parts w/ overlap</th></tr>
+<tr><td>a_up_11_10_400_0_500_0</td><td>225.0</td><td>0.132</td><td><b>1.1</b></td><td>14.6</td><td>13.4</td><td>13.9</td><td>14.1</td><td>2.2</td><td>56.0</td><td>0.00</td><td>U32 0.13</td></tr><tr><td>a_up_11_10_400_0_501_1</td><td>240.7</td><td>0.132</td><td><b>1.1</b></td><td>14.6</td><td>13.5</td><td>13.9</td><td>14.1</td><td>2.0</td><td>56.0</td><td>0.09</td><td>U32 0.13</td></tr><tr><td>current_12_1_406_6_500_3</td><td>289.0</td><td>0.447</td><td><b>0.8</b></td><td>17.7</td><td>18.5</td><td>18.3</td><td>17.7</td><td>1.2</td><td>72.2</td><td>0.00</td><td>U32 0.45</td></tr><tr><td>current_12_1_406_6_501_4</td><td>289.2</td><td>0.446</td><td><b>0.8</b></td><td>17.6</td><td>18.4</td><td>18.3</td><td>18.3</td><td>0.6</td><td>72.6</td><td>0.00</td><td>U32 0.45</td></tr><tr><td>current_12_1_406_6_502_5</td><td>293.9</td><td>0.386</td><td><b>0.3</b></td><td>18.1</td><td>18.4</td><td>18.2</td><td>18.1</td><td>1.4</td><td>72.8</td><td>0.06</td><td>U31 0.39</td></tr><tr><td>a_up_11_10_400_0_502_2</td><td>305.6</td><td>0.517</td><td><b>0.6</b></td><td>13.4</td><td>13.1</td><td>13.7</td><td>13.7</td><td>2.4</td><td>54.0</td><td>0.00</td><td>U31 0.38, U32 0.13</td></tr></table></div>
 
 <h2>All starts, ranked</h2>
 <div style="overflow-x:auto"><table><tr><th>run</th><th>start</th><th>cost</th><th>overlap</th><th>spread</th><th>A</th><th>B</th><th>C</th><th>D</th><th>P/N mism.</th><th>sum</th><th>conn. up</th><th>parts w/ overlap</th></tr>
