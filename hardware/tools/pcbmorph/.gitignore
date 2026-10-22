@@ -1,0 +1,4 @@
+data/
+runs/
+configs/data/
+_cuda_accel.so

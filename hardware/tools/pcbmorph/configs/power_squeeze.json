@@ -1,0 +1,35 @@
+{
+  "name": "power_squeeze",
+  "board": "hardware/rp2350_driver.kicad_pcb",
+  "out_board": "hardware/tools/pcbmorph/data/power_squeeze/checkpoint.kicad_pcb",
+  "data_dir": "hardware/tools/pcbmorph/data/power_squeeze",
+  "active_rect": [130.0, 82.0, 184.0, 114.0],
+  "subdivide_mm": 0.8,
+  "courtyard_gap": 0.12,
+  "max_cycles": 60,
+  "movable": [
+    "C5", "C8", "C10", "C21", "C31",
+    "R21", "R22", "R23", "R25", "R26"
+  ],
+  "targets": {
+    "C5":  {"dx":  0.5, "dy":  0.5},
+    "C8":  {"dx": -0.5, "dy": -0.5},
+    "C10": {"dx":  0.5, "dy":  0.4},
+    "C21": {"dx": -0.5, "dy":  0.5},
+    "C31": {"dx": -0.4, "dy":  0.5},
+    "R21": {"dx": -0.5, "dy": -0.3},
+    "R22": {"dx":  0.5, "dy": -0.3},
+    "R23": {"dx":  0.4, "dy": -0.5},
+    "R25": {"dx":  0.5, "dy": -0.3},
+    "R26": {"dx": -0.5, "dy": -0.3}
+  },
+  "field": {
+    "enabled": true,
+    "h": 0.25,
+    "pad_inflate": 0.15,
+    "bridge_mm": 1.0,
+    "lookahead": 0.35,
+    "gain": 0.65
+  },
+  "net_changes": []
+}

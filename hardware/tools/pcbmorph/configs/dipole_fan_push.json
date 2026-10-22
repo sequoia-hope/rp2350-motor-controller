@@ -1,0 +1,34 @@
+{
+  "name": "dipole_fan_push",
+  "board": "hardware/rp2350_driver.kicad_pcb",
+  "out_board": "hardware/tools/pcbmorph/data/dipole_fan_push/checkpoint.kicad_pcb",
+  "data_dir": "hardware/tools/pcbmorph/data/dipole_fan_push",
+  "active_rect": [130.0, 92.0, 155.0, 118.0],
+  "subdivide_mm": 0.8,
+  "courtyard_gap": 0.12,
+  "max_cycles": 60,
+  "movable": [
+    "R5", "R11", "R12", "R13", "R14", "R15", "R27", "R28",
+    "R37", "R38", "D7", "TP2",
+    "C25", "C26", "C27"
+  ],
+  "targets": {},
+  "field": {
+    "enabled": true,
+    "h": 0.25,
+    "pad_inflate": 0.15,
+    "bridge_mm": 1.0,
+    "lookahead": 0.35,
+    "gain": 0.65,
+    "dipoles": [
+      {
+        "x": 138.0,
+        "y": 106.0,
+        "vector": [0.5, 0.6],
+        "radius": 8.0,
+        "decay": 2.0
+      }
+    ]
+  },
+  "net_changes": []
+}

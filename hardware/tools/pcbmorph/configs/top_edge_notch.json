@@ -1,0 +1,43 @@
+{
+  "name": "top_edge_notch",
+  "board": "hardware/rp2350_driver.kicad_pcb",
+  "data_dir": "hardware/tools/pcbmorph/runs/top_edge_notch",
+  "out_board": "hardware/tools/pcbmorph/runs/top_edge_notch/checkpoint.kicad_pcb",
+  "active_rect": [159.5, 81.8, 175.0, 89.5],
+  "subdivide_mm": 0.7,
+  "courtyard_gap": 0.12,
+  "guard_mm": 0.015,
+  "max_cycles": 60,
+  "step_part_mm": 0.18,
+  "step_copper_mm": 0.25,
+  "step_shape": 0.16,
+  "copper_iters": 6,
+  "movable": [
+    "C50", "C49", "U14", "U13", "C5", "U4"
+  ],
+  "targets": {
+    "C50": {"dx": 0.0, "dy": 0.40},
+    "C49": {"dx": 0.0, "dy": 0.40},
+    "U14": {"dx": 0.0, "dy": 0.32},
+    "U13": {"dx": 0.0, "dy": 0.34}
+  },
+  "shape": {
+    "type": "notch",
+    "edge": "top",
+    "span": [164.2, 169.8],
+    "depth_mm": 0.65,
+    "shoulder_mm": 1.0,
+    "halo_mm": 3.5,
+    "auto_targets": false
+  },
+  "field": {
+    "enabled": true,
+    "h": 0.25,
+    "pad_inflate": 0.15,
+    "bridge_mm": 1.0,
+    "gain": 0.65,
+    "lookahead": 0.35,
+    "max_lookahead_mm": 0.6,
+    "deadzone_mm": 0.015
+  }
+}
