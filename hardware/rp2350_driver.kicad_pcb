@@ -5672,7 +5672,7 @@
 			(uuid "57c3fae7-178d-4550-853c-da3adb925694")
 		)
 		(embedded_fonts no)
-		(model "/home/sequoia/pcb/rp2040-motor-controller/parts/XT30PW-M--3DModel-STEP-269445.STEP"
+		(model "${KIPRJMOD}/parts/XT30PW-M--3DModel-STEP-269445.STEP"
 			(offset
 				(xyz -2.5 10 0)
 			)
@@ -6959,7 +6959,7 @@
 			(uuid "e34769f4-5fc2-46b2-9a81-f3b5725803a5")
 		)
 		(embedded_fonts no)
-		(model "/home/sequoia/pcb/rp2040-motor-controller/parts/XT30PW-M--3DModel-STEP-269445.STEP"
+		(model "${KIPRJMOD}/parts/XT30PW-M--3DModel-STEP-269445.STEP"
 			(offset
 				(xyz -2.5 10 0)
 			)
@@ -16156,7 +16156,7 @@
 			(uuid "fbf9d3a2-4e62-4e6e-98d8-1e0683ad23b2")
 		)
 		(embedded_fonts no)
-		(model "/home/sequoia/pcb/rp2040-motor-controller/parts/XT30PW-F.STEP"
+		(model "${KIPRJMOD}/parts/XT30PW-F.STEP"
 			(offset
 				(xyz 2.5 5.75 0)
 			)
@@ -20489,7 +20489,7 @@
 			(uuid "8ab28794-da87-4513-a16d-390bc5176806")
 		)
 		(embedded_fonts no)
-		(model "/home/sequoia/pcb/rp2040-motor-controller/parts/XT30PW-M--3DModel-STEP-269445.STEP"
+		(model "${KIPRJMOD}/parts/XT30PW-M--3DModel-STEP-269445.STEP"
 			(offset
 				(xyz -2.5 10 0)
 			)
