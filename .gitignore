@@ -27,3 +27,8 @@ review/research/fanoutnet-rl-fanout-2023.pdf
 review/research/homotopy-paths-plane-cabello.pdf
 review/research/pathfinder-negotiated-routing-1995.pdf
 review/research/position-based-dynamics-2007.pdf
+
+# Boardroom: AI job logs and the project lock (docs/shell-spec.md)
+.boardroom/
+# Circuit Composer outputs
+compose/*/out/

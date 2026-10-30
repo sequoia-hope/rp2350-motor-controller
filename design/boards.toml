@@ -1,0 +1,67 @@
+# Boards in this project, linked by git ref instead of laid out as hw/<board>/<variant>/.
+#
+# The KiCad files stay where they are (hardware/), because the research tooling,
+# the review hub and three branches all name those paths. Each variant here is a
+# git ref plus paths inside the repository at that ref, the way pcbview.toml's
+# `git = "<tag>"` and Boardroom's examples.toml (`repo`, `ref`) already name
+# boards. Boardroom does not read this file yet: it is the list for its
+# "link boards by git" support to read.
+#
+#   board, variant   Boardroom's names (hw/<board>/<variant>/ in the folder layout)
+#   repo, ref        where the files are: a branch, tag or commit
+#   commit           for a tag: the commit it names (branches move, so they have none)
+#   pro, pcb, sch    paths inside the repo at that ref
+#   state            fabricated | working | candidate
+
+repo = "https://github.com/sequoia-hope/rp2350-motor-controller"
+
+[[boards]]
+board = "rp2350_driver"
+variant = "rev-a"
+ref = "rev-A-fab"
+commit = "c6b9b75"
+pro = "hardware/rp2350_driver.kicad_pro"
+pcb = "hardware/rp2350_driver.kicad_pcb"
+sch = "hardware/rp2350_driver.kicad_sch"
+state = "fabricated"
+note = "The board that shipped (2026-05-26). Gerbers: hardware/production/ on any branch; review/rev-a.html proves they were plotted from this commit. Its library tables still name ~/pcb/rp2040-motor-controller (a tag can't change); the footprints and symbols are embedded, so it opens without them."
+
+[[boards]]
+board = "rp2350_driver"
+variant = "rev-b"
+ref = "rev-b-fixes"
+pro = "hardware/rp2350_driver.kicad_pro"
+pcb = "hardware/rp2350_driver.kicad_pcb"
+sch = "hardware/rp2350_driver.kicad_sch"
+state = "working"
+note = "Mainline rev-B: the rev-B schematic on a re-placed board, +33 parts and 1 mm wider than rev A. Not fab-ready (DRC in design/status.json); rev-B routing moved to the lean branches (rev-b-lean, lean-jiggle)."
+
+[[boards]]
+board = "rp2350_driver"
+variant = "rev-b-por"
+ref = "lean-jiggle"
+pro = "hardware/tools/settle/candidates/plan_of_record.kicad_pro"
+pcb = "hardware/tools/settle/candidates/plan_of_record.kicad_pcb"
+sch = "hardware/rp2350_driver.kicad_sch"
+state = "candidate"
+note = "Plan of record for rev B (adopted 2026-09-03): rev-A copper + rev-B schematic + Tier A footprints, power stage squeezed toward the top edge, the seven encoder-corner parts placed, mounting-hole keepouts. Rules 0.10/0.10 in its .kicad_pro. 103 airwires to route. For UltraRoute: keep the existing copper (no --strip, no --nudge)."
+
+[[boards]]
+board = "rp2350_driver"
+variant = "rev-b-fan"
+ref = "lean-jiggle"
+pro = "hardware/tools/enclayout/candidates/enc_fan_fresh.kicad_pro"
+pcb = "hardware/tools/enclayout/candidates/enc_fan_fresh.kicad_pcb"
+sch = "hardware/rp2350_driver.kicad_sch"
+state = "candidate"
+note = "Alternative to the plan of record, not adopted: the fan encoder-corner layout on the unsqueezed lean board (pairs 14.6/13.4/13.9/14.1 mm), 265 airwires. Its base board, data/boards/fresh_base.kicad_pcb, is gitignored and exists only in the lean-jiggle worktree. Write-up: review/settle/enclayout.html#fresh."
+
+[[boards]]
+board = "rp2350_encoder"
+variant = "a"
+ref = "rev-b-fixes"
+pro = "hardware/encoder/rp2350_encoder.kicad_pro"
+pcb = "hardware/encoder/rp2350_encoder.kicad_pcb"
+sch = "hardware/encoder/rp2350_encoder.kicad_sch"
+state = "working"
+note = "The separate encoder board. Unchanged since the hardware/ move (344bbfc); gerbers in hardware/encoder/gerber/."

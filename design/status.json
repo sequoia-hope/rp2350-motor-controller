@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "board": "rp2350_driver",
+  "phase": 7,
+  "doing": "Rev B routing. Rev A was fabricated (tag rev-A-fab). The rev-B target is the plan-of-record board on branch lean-jiggle (hardware/tools/settle/candidates/plan_of_record.kicad_pcb): 103 airwires left, none routed yet. Two alternative encoder-corner layouts on the unsqueezed lean board (enc_fan_fresh, enc_clean_fresh) are written up but not adopted. The project predates the pcb-design phases: no gate has been run under the skill; the record so far is the review hub (review/) and its findings list.",
+  "needs_user": [
+    {
+      "id": "revb-base",
+      "kind": "question",
+      "text": "Which board does rev-B routing start from: the plan of record (power stage squeezed, 103 airwires) or fresh_base + enc_fan_fresh (no squeeze, 265 airwires, stitching vias and the /D via farm as fabricated on rev A)?",
+      "options": ["plan of record", "fresh_base + enc_fan_fresh"]
+    },
+    {
+      "id": "lean-jiggle-drc-exclusions",
+      "kind": "question",
+      "text": "The lean-jiggle worktree has uncommitted .kicad_pro/.kicad_prl changes from a KiCad session that dropped 5 courtyard-overlap DRC exclusions. Keep them or discard?",
+      "options": ["keep", "discard"]
+    },
+    {
+      "id": "calibration-bench",
+      "kind": "question",
+      "text": "Bench-verify the firmware's power-cut-safe calibration slots (cal_store.h, main 54f6965) on a rev-A board."
+    }
+  ],
+  "checks": {
+    "findings": {
+      "result": "14 open (3 high: F-25 rev-B mid-rework, F-27 LM74700 abs max on VMOT, F-40 EG3113 unbuyable), 13 fixed; review/findings.html",
+      "ok": false
+    },
+    "DRC, mainline board (rev-b-fixes)": {
+      "result": "205 violations (95 silk_overlap, 55 track_dangling, 51 silk_over_copper, 4 solder_mask_bridge), 54 unconnected, 35 schematic parity (kicad-cli, 2026-10-30). Not fab-ready.",
+      "ok": false,
+      "gate": 7
+    },
+    "libraries": {
+      "result": "self-contained since 2026-10-30: lib tables and 3D model paths are ${KIPRJMOD}-relative (were absolute paths into ~/pcb/rp2040-motor-controller); DRC unchanged by pad",
+      "ok": true
+    }
+  },
+  "gates": {},
+  "links": [
+    {"label": "Board list (git refs)", "href": "design/boards.toml"},
+    {"label": "Project map", "href": "design/project-map.md"},
+    {"label": "Review hub", "href": "review/index.html"},
+    {"label": "Findings", "href": "review/findings.html"},
+    {"label": "Rev A as fabricated", "href": "review/rev-a.html"},
+    {"label": "Rev-B schematic changes", "href": "review/revb-schematic.html"},
+    {"label": "Plan of record renders", "href": "review/settle/renders.html"},
+    {"label": "Encoder layout explorer", "href": "review/settle/enclayout.html"},
+    {"label": "Rev A viewer", "href": "review/viewer/index.html"},
+    {"label": "Rev A fab files", "href": "hardware/production/"}
+  ],
+  "apps": {},
+  "updated": "2026-10-30"
+}

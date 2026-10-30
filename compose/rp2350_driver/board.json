@@ -1,0 +1,4 @@
+{
+  "note": "Hand-drawn KiCad project, not composed: Circuit Composer reads the mainline board here (nets, measurements, checks); nothing in compose/ generates it.",
+  "pcb": "../../hardware/rp2350_driver.kicad_pcb"
+}

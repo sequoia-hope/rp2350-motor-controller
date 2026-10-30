@@ -1,0 +1,4 @@
+net,class,v_max,i_cont,i_peak,impedance,length_limit,reason
+VIN,POWER,5.5,0.02,0.05,,,"Input supply, LED current only"
+GND,POWER,0,0.02,0.05,,,"Return"
+LED_A,SIGNAL,5.5,,,,,"Resistor to LED anode"
