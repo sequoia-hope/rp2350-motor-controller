@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Exact-geometry clearance analysis + relaxation using pcbnew courtyard polys."""
-import pcbnew, math, json
+import pcbnew, math, json, os
 from collections import defaultdict
 
-SCRATCH = '/tmp/claude-1000/-home-sequoia-pcb-rp2350-motor-controller/e49668e9-e4e8-48c1-bc66-ca2c73581db5/scratchpad'
-board = pcbnew.LoadBoard('/home/sequoia/pcb/rp2350-motor-controller/hardware/rp2350_driver.kicad_pcb')
+HERE = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.dirname(os.path.dirname(HERE))
+SCRATCH = HERE  # tight_pairs.json / jiggle_result.json land beside this script
+board = pcbnew.LoadBoard(os.path.join(REPO, 'hardware', 'rp2350_driver.kicad_pcb'))
 NM = 1e-6  # nm -> mm
 
 def convex_hull(pts):

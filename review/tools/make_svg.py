@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Generate before/after jiggle preview SVGs (per side) + encoder-corner zoom."""
-import json, math
+import json, math, os
 
-d = json.load(open('/tmp/claude-1000/-home-sequoia-pcb-rp2350-motor-controller/e49668e9-e4e8-48c1-bc66-ca2c73581db5/scratchpad/jiggle_result.json'))
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+d = json.load(open(os.path.join(HERE, 'jiggle_result.json')))
 BX0, BY0, BX1, BY1 = d['board']
 parts = d['parts']
 
@@ -66,7 +68,7 @@ def svg_side(side, x0, y0, x1, y1, out, label_movers=0.8, label_all_phantoms=Tru
     open(out, 'w').write('\n'.join(o))
     print('wrote', out)
 
-IMG = '/tmp/claude-1000/-home-sequoia-pcb-rp2350-motor-controller/e49668e9-e4e8-48c1-bc66-ca2c73581db5/scratchpad/report/img/'
+IMG = os.path.join(HERE, '..', 'img') + os.sep  # review/img/
 svg_side('F', BX0, BY0, BX1, BY1, IMG+'jiggle_front.svg')
 svg_side('B', BX0, BY0, BX1, BY1, IMG+'jiggle_back.svg')
 # encoder corner zoom (B side), bigger scale

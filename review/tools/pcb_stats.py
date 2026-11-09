@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Spatial analysis of rp2350_driver.kicad_pcb: courtyard clearances, density, stats."""
-import re, math, json, sys
+import re, math, json, sys, os
 from collections import Counter, defaultdict
 
-PCB = '/home/sequoia/pcb/rp2350-motor-controller/hardware/rp2350_driver.kicad_pcb'
+PCB = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'hardware', 'rp2350_driver.kicad_pcb')
 s = open(PCB).read()
 
 # ---------- helpers ----------
